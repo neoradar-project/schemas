@@ -52,6 +52,15 @@
                 },
                 "fontWeight": {
                   "type": "string"
+                },
+                "color": {
+                  "type": "string"
+                },
+                "backgroundColor": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
                 }
               },
               "required": [
