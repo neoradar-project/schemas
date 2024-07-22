@@ -1,0 +1,133 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "situation",
+        "profile"
+      ]
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "modal": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "list": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "family": {
+            "type": "number"
+          },
+          "free": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enabled",
+          "family",
+          "free"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "atmSystem": {
+      "type": "string"
+    },
+    "map": {
+      "type": "object",
+      "properties": {
+        "center": {
+          "type": "object",
+          "properties": {
+            "lng": {
+              "type": "number"
+            },
+            "lat": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "lng",
+            "lat"
+          ],
+          "additionalProperties": false
+        },
+        "zoom": {
+          "type": "number"
+        },
+        "orientation": {
+          "type": "number"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "showLabel": {
+                "type": "boolean"
+              },
+              "type": {
+                "type": "string"
+              },
+              "uniqueId": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "showLabel",
+              "type",
+              "uniqueId",
+              "name"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "center",
+        "zoom",
+        "items"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "name",
+    "type",
+    "modal",
+    "list",
+    "map"
+  ],
+  "additionalProperties": false,
+  "description": "A profile containing a view state displaying radar map items",
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

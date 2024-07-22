@@ -1,0 +1,120 @@
+{
+  "type": "object",
+  "properties": {
+    "ground": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "itemName": {
+                  "type": "string"
+                },
+                "hideInDetailed": {
+                  "type": "boolean"
+                },
+                "showOnlyInDetailed": {
+                  "type": "boolean"
+                },
+                "truncate": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "placeholder": {
+                  "type": "string"
+                },
+                "prefix": {
+                  "type": "string"
+                },
+                "suffix": {
+                  "type": "string"
+                },
+                "mapping": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "padWithZeroLeft": {
+                  "type": "number"
+                },
+                "padWithZeroRight": {
+                  "type": "number"
+                },
+                "fontSize": {
+                  "type": "number"
+                },
+                "fontWeight": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "itemName"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "arrival": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/ground/properties/default/items"
+          }
+        },
+        "departure": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/ground/properties/default/items"
+          }
+        }
+      },
+      "required": [
+        "default",
+        "arrival",
+        "departure"
+      ],
+      "additionalProperties": false
+    },
+    "airborne": {
+      "type": "object",
+      "properties": {
+        "unconcerned": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/ground/properties/default/items"
+          }
+        },
+        "concerned": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/ground/properties/default/items"
+          }
+        },
+        "assumed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/ground/properties/default/items"
+          }
+        }
+      },
+      "required": [
+        "unconcerned",
+        "concerned",
+        "assumed"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "ground",
+    "airborne"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

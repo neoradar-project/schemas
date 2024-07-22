@@ -1,0 +1,104 @@
+{
+  "type": "object",
+  "properties": {
+    "inactiveSectorBackgroundColor": {
+      "type": "string"
+    },
+    "gateLabelColor": {
+      "type": "string"
+    },
+    "sidStyle": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "type": "string"
+        },
+        "width": {
+          "type": "number"
+        },
+        "opacity": {
+          "type": "number"
+        },
+        "dashArray": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "color",
+        "width",
+        "dashArray"
+      ],
+      "additionalProperties": false
+    },
+    "starStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "sectorLineStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "activeSectorFillStyle": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "type": "string"
+        },
+        "opacity": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "color",
+        "opacity"
+      ],
+      "additionalProperties": false
+    },
+    "activeSectorLineStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "otherSectorLineStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "gateInactiveStyle": {
+      "type": "object",
+      "properties": {
+        "outlineColor": {
+          "type": "string"
+        },
+        "outlineWidth": {
+          "type": "number"
+        },
+        "outlineOpacity": {
+          "type": "number"
+        },
+        "fillColor": {
+          "type": "string"
+        },
+        "fillOpacity": {
+          "type": "number"
+        },
+        "radius": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "outlineColor",
+        "fillColor"
+      ],
+      "additionalProperties": false
+    },
+    "gateOccupiedStyle": {
+      "$ref": "#/properties/gateInactiveStyle"
+    },
+    "gateBookedStyle": {
+      "$ref": "#/properties/gateInactiveStyle"
+    }
+  },
+  "required": [
+    "inactiveSectorBackgroundColor"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
