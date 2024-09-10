@@ -48,19 +48,236 @@
                   "type": "number"
                 },
                 "fontSize": {
-                  "type": "number"
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                          }
+                        },
+                        {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": [
+                            {
+                              "type": "string",
+                              "const": "=="
+                            },
+                            {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "stopped",
+                                    "reportedHeading",
+                                    "groundspeed",
+                                    "altitude",
+                                    "agl",
+                                    "onGround",
+                                    "trackHeading"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "flight_rule",
+                                    "rawType",
+                                    "origin",
+                                    "destination",
+                                    "planned_tas",
+                                    "planned_flight_level",
+                                    "rmk",
+                                    "eobt",
+                                    "aobt",
+                                    "alternate",
+                                    "fuel_time_hours",
+                                    "fuel_time_minutes",
+                                    "flight_time_hours",
+                                    "flight_time_minutes",
+                                    "icaoEquipment",
+                                    "acShortType",
+                                    "voice_type",
+                                    "is_valid",
+                                    "icaoTransponderEquipment",
+                                    "icaoWakeCategory"
+                                  ]
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "callsign",
+                                    "reportedAcType",
+                                    "isTimingOut",
+                                    "latestSquawk",
+                                    "lastestTransponderStatus"
+                                  ]
+                                }
+                              ]
+                            },
+                            {}
+                          ]
+                        },
+                        {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": [
+                            {
+                              "type": "string",
+                              "const": "!="
+                            },
+                            {
+                              "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1/anyOf/1/items/1"
+                            },
+                            {}
+                          ]
+                        },
+                        {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": [
+                            {
+                              "type": "string",
+                              "const": "<"
+                            },
+                            {
+                              "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1/anyOf/1/items/1"
+                            },
+                            {}
+                          ]
+                        },
+                        {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": [
+                            {
+                              "type": "string",
+                              "const": "<="
+                            },
+                            {
+                              "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1/anyOf/1/items/1"
+                            },
+                            {}
+                          ]
+                        },
+                        {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": [
+                            {
+                              "type": "string",
+                              "const": ">"
+                            },
+                            {
+                              "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1/anyOf/1/items/1"
+                            },
+                            {}
+                          ]
+                        },
+                        {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": [
+                            {
+                              "type": "string",
+                              "const": ">="
+                            },
+                            {
+                              "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1/anyOf/1/items/1"
+                            },
+                            {}
+                          ]
+                        },
+                        {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": [
+                            {
+                              "type": "string",
+                              "const": "beginsWith"
+                            },
+                            {
+                              "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1/anyOf/1/items/1"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "array",
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "items": [
+                            {
+                              "type": "string",
+                              "const": "endsWith"
+                            },
+                            {
+                              "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1/anyOf/1/items/1"
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  ]
                 },
                 "fontWeight": {
-                  "type": "string"
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                    }
+                  ]
                 },
                 "color": {
-                  "type": "string"
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                    }
+                  ]
                 },
                 "backgroundColor": {
-                  "type": "string"
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                    }
+                  ]
                 },
                 "value": {
-                  "type": "string"
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                    }
+                  ]
                 }
               },
               "required": [

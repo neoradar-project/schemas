@@ -1,0 +1,325 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "filterExpressions": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/items/properties/filterExpressions/anyOf/1"
+                }
+              },
+              {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": [
+                  {
+                    "type": "string",
+                    "const": "=="
+                  },
+                  {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "stopped",
+                          "reportedHeading",
+                          "groundspeed",
+                          "altitude",
+                          "agl",
+                          "onGround",
+                          "trackHeading"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "flight_rule",
+                          "rawType",
+                          "origin",
+                          "destination",
+                          "planned_tas",
+                          "planned_flight_level",
+                          "rmk",
+                          "eobt",
+                          "aobt",
+                          "alternate",
+                          "fuel_time_hours",
+                          "fuel_time_minutes",
+                          "flight_time_hours",
+                          "flight_time_minutes",
+                          "icaoEquipment",
+                          "acShortType",
+                          "voice_type",
+                          "is_valid",
+                          "icaoTransponderEquipment",
+                          "icaoWakeCategory"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "callsign",
+                          "reportedAcType",
+                          "isTimingOut",
+                          "latestSquawk",
+                          "lastestTransponderStatus"
+                        ]
+                      }
+                    ]
+                  },
+                  {}
+                ]
+              },
+              {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": [
+                  {
+                    "type": "string",
+                    "const": "!="
+                  },
+                  {
+                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
+                  },
+                  {}
+                ]
+              },
+              {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": [
+                  {
+                    "type": "string",
+                    "const": "<"
+                  },
+                  {
+                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
+                  },
+                  {}
+                ]
+              },
+              {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": [
+                  {
+                    "type": "string",
+                    "const": "<="
+                  },
+                  {
+                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
+                  },
+                  {}
+                ]
+              },
+              {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": [
+                  {
+                    "type": "string",
+                    "const": ">"
+                  },
+                  {
+                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
+                  },
+                  {}
+                ]
+              },
+              {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": [
+                  {
+                    "type": "string",
+                    "const": ">="
+                  },
+                  {
+                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
+                  },
+                  {}
+                ]
+              },
+              {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": [
+                  {
+                    "type": "string",
+                    "const": "beginsWith"
+                  },
+                  {
+                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": [
+                  {
+                    "type": "string",
+                    "const": "endsWith"
+                  },
+                  {
+                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        ]
+      },
+      "columns": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "width": {
+              "type": "number"
+            },
+            "tagItem": {
+              "type": "object",
+              "properties": {
+                "itemName": {
+                  "type": "string"
+                },
+                "hideInDetailed": {
+                  "type": "boolean"
+                },
+                "showOnlyInDetailed": {
+                  "type": "boolean"
+                },
+                "truncate": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "placeholder": {
+                  "type": "string"
+                },
+                "prefix": {
+                  "type": "string"
+                },
+                "suffix": {
+                  "type": "string"
+                },
+                "mapping": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "padWithZeroLeft": {
+                  "type": "number"
+                },
+                "padWithZeroRight": {
+                  "type": "number"
+                },
+                "fontSize": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/1"
+                    }
+                  ]
+                },
+                "fontWeight": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/1"
+                    }
+                  ]
+                },
+                "color": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/1"
+                    }
+                  ]
+                },
+                "backgroundColor": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/1"
+                    }
+                  ]
+                },
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/1"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "itemName"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "name",
+            "width",
+            "tagItem"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "name",
+      "filterExpressions",
+      "columns"
+    ],
+    "additionalProperties": false
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
