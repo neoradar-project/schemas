@@ -6,185 +6,117 @@
       "additionalProperties": {
         "anyOf": [
           {
-            "type": "array",
-            "items": {
-              "$ref": "#/properties/expressions/additionalProperties"
-            }
-          },
-          {
-            "type": "array",
-            "minItems": 3,
-            "maxItems": 3,
-            "items": [
+            "anyOf": [
               {
-                "type": "string",
-                "const": "=="
-              },
-              {
-                "anyOf": [
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": [
                   {
                     "type": "string",
                     "enum": [
-                      "stopped",
-                      "reportedHeading",
-                      "groundspeed",
-                      "altitude",
-                      "agl",
-                      "onGround",
-                      "trackHeading"
+                      "==",
+                      "!=",
+                      "<",
+                      "<=",
+                      ">",
+                      ">=",
+                      "beginsWith",
+                      "endsWith"
                     ]
                   },
                   {
-                    "type": "string",
-                    "enum": [
-                      "flight_rule",
-                      "rawType",
-                      "origin",
-                      "destination",
-                      "planned_tas",
-                      "planned_flight_level",
-                      "rmk",
-                      "eobt",
-                      "aobt",
-                      "alternate",
-                      "fuel_time_hours",
-                      "fuel_time_minutes",
-                      "flight_time_hours",
-                      "flight_time_minutes",
-                      "icaoEquipment",
-                      "acShortType",
-                      "voice_type",
-                      "is_valid",
-                      "icaoTransponderEquipment",
-                      "icaoWakeCategory"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "stopped",
+                          "reportedHeading",
+                          "groundspeed",
+                          "altitude",
+                          "agl",
+                          "onGround",
+                          "trackHeading"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "flight_rule",
+                          "rawType",
+                          "origin",
+                          "destination",
+                          "planned_tas",
+                          "planned_flight_level",
+                          "rmk",
+                          "eobt",
+                          "aobt",
+                          "alternate",
+                          "fuel_time_hours",
+                          "fuel_time_minutes",
+                          "flight_time_hours",
+                          "flight_time_minutes",
+                          "icaoEquipment",
+                          "acShortType",
+                          "voice_type",
+                          "is_valid",
+                          "icaoTransponderEquipment",
+                          "icaoWakeCategory"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "callsign",
+                          "reportedAcType",
+                          "isTimingOut",
+                          "latestSquawk",
+                          "lastestTransponderStatus"
+                        ]
+                      }
                     ]
                   },
                   {
-                    "type": "string",
-                    "enum": [
-                      "callsign",
-                      "reportedAcType",
-                      "isTimingOut",
-                      "latestSquawk",
-                      "lastestTransponderStatus"
+                    "type": [
+                      "string",
+                      "number"
                     ]
                   }
                 ]
               },
-              {}
-            ]
-          },
-          {
-            "type": "array",
-            "minItems": 3,
-            "maxItems": 3,
-            "items": [
               {
-                "type": "string",
-                "const": "!="
-              },
-              {
-                "$ref": "#/properties/expressions/additionalProperties/anyOf/1/items/1"
-              },
-              {}
-            ]
-          },
-          {
-            "type": "array",
-            "minItems": 3,
-            "maxItems": 3,
-            "items": [
-              {
-                "type": "string",
-                "const": "<"
-              },
-              {
-                "$ref": "#/properties/expressions/additionalProperties/anyOf/1/items/1"
-              },
-              {}
-            ]
-          },
-          {
-            "type": "array",
-            "minItems": 3,
-            "maxItems": 3,
-            "items": [
-              {
-                "type": "string",
-                "const": "<="
-              },
-              {
-                "$ref": "#/properties/expressions/additionalProperties/anyOf/1/items/1"
-              },
-              {}
-            ]
-          },
-          {
-            "type": "array",
-            "minItems": 3,
-            "maxItems": 3,
-            "items": [
-              {
-                "type": "string",
-                "const": ">"
-              },
-              {
-                "$ref": "#/properties/expressions/additionalProperties/anyOf/1/items/1"
-              },
-              {}
-            ]
-          },
-          {
-            "type": "array",
-            "minItems": 3,
-            "maxItems": 3,
-            "items": [
-              {
-                "type": "string",
-                "const": ">="
-              },
-              {
-                "$ref": "#/properties/expressions/additionalProperties/anyOf/1/items/1"
-              },
-              {}
-            ]
-          },
-          {
-            "type": "array",
-            "minItems": 3,
-            "maxItems": 3,
-            "items": [
-              {
-                "type": "string",
-                "const": "beginsWith"
-              },
-              {
-                "$ref": "#/properties/expressions/additionalProperties/anyOf/1/items/1"
-              },
-              {
-                "type": "string"
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "AND",
+                      "OR",
+                      "NOT"
+                    ]
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/properties/expressions/additionalProperties/anyOf/0"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\$[A-z0-9_-]+"
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             ]
           },
           {
-            "type": "array",
-            "minItems": 3,
-            "maxItems": 3,
-            "items": [
-              {
-                "type": "string",
-                "const": "endsWith"
-              },
-              {
-                "$ref": "#/properties/expressions/additionalProperties/anyOf/1/items/1"
-              },
-              {
-                "type": "string"
-              }
-            ]
-          },
-          {
-            "type": "string"
+            "$ref": "#/properties/expressions/additionalProperties/anyOf/0/anyOf/1/items/1/items/anyOf/1"
           }
         ]
       }
@@ -195,7 +127,17 @@
         "type": "object",
         "properties": {
           "expression": {
-            "$ref": "#/properties/expressions/additionalProperties"
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/properties/expressions/additionalProperties/anyOf/0/anyOf/1/items/1/items/anyOf/1"
+                }
+              },
+              {
+                "$ref": "#/properties/expressions/additionalProperties/anyOf/0/anyOf/1/items/1/items/anyOf/1"
+              }
+            ]
           },
           "value": {
             "type": "string"

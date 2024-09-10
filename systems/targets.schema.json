@@ -7,10 +7,18 @@
           "type": "string"
         },
         {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^\\=[A-z0-9_-]+"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/targetImageExpression/anyOf/1/anyOf/0"
+              }
+            }
+          ]
         }
       ]
     },
@@ -20,10 +28,7 @@
           "type": "string"
         },
         {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "$ref": "#/properties/targetImageExpression/anyOf/1"
         }
       ]
     },

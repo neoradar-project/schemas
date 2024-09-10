@@ -9,16 +9,7 @@
       "filterExpressions": {
         "anyOf": [
           {
-            "type": "string"
-          },
-          {
             "anyOf": [
-              {
-                "type": "array",
-                "items": {
-                  "$ref": "#/items/properties/filterExpressions/anyOf/1"
-                }
-              },
               {
                 "type": "array",
                 "minItems": 3,
@@ -26,7 +17,16 @@
                 "items": [
                   {
                     "type": "string",
-                    "const": "=="
+                    "enum": [
+                      "==",
+                      "!=",
+                      "<",
+                      "<=",
+                      ">",
+                      ">=",
+                      "beginsWith",
+                      "endsWith"
+                    ]
                   },
                   {
                     "anyOf": [
@@ -79,122 +79,47 @@
                       }
                     ]
                   },
-                  {}
-                ]
-              },
-              {
-                "type": "array",
-                "minItems": 3,
-                "maxItems": 3,
-                "items": [
                   {
-                    "type": "string",
-                    "const": "!="
-                  },
-                  {
-                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
-                  },
-                  {}
-                ]
-              },
-              {
-                "type": "array",
-                "minItems": 3,
-                "maxItems": 3,
-                "items": [
-                  {
-                    "type": "string",
-                    "const": "<"
-                  },
-                  {
-                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
-                  },
-                  {}
-                ]
-              },
-              {
-                "type": "array",
-                "minItems": 3,
-                "maxItems": 3,
-                "items": [
-                  {
-                    "type": "string",
-                    "const": "<="
-                  },
-                  {
-                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
-                  },
-                  {}
-                ]
-              },
-              {
-                "type": "array",
-                "minItems": 3,
-                "maxItems": 3,
-                "items": [
-                  {
-                    "type": "string",
-                    "const": ">"
-                  },
-                  {
-                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
-                  },
-                  {}
-                ]
-              },
-              {
-                "type": "array",
-                "minItems": 3,
-                "maxItems": 3,
-                "items": [
-                  {
-                    "type": "string",
-                    "const": ">="
-                  },
-                  {
-                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
-                  },
-                  {}
-                ]
-              },
-              {
-                "type": "array",
-                "minItems": 3,
-                "maxItems": 3,
-                "items": [
-                  {
-                    "type": "string",
-                    "const": "beginsWith"
-                  },
-                  {
-                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
-                  },
-                  {
-                    "type": "string"
+                    "type": [
+                      "string",
+                      "number"
+                    ]
                   }
                 ]
               },
               {
                 "type": "array",
-                "minItems": 3,
-                "maxItems": 3,
+                "minItems": 2,
+                "maxItems": 2,
                 "items": [
                   {
                     "type": "string",
-                    "const": "endsWith"
+                    "enum": [
+                      "AND",
+                      "OR",
+                      "NOT"
+                    ]
                   },
                   {
-                    "$ref": "#/items/properties/filterExpressions/anyOf/1/anyOf/1/items/1"
-                  },
-                  {
-                    "type": "string"
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/items/properties/filterExpressions/anyOf/0"
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^\\$[A-z0-9_-]+"
+                        }
+                      ]
+                    }
                   }
                 ]
-              },
-              {
-                "type": "string"
               }
             ]
+          },
+          {
+            "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/1/items/1/items/anyOf/1"
           }
         ]
       },
@@ -254,7 +179,18 @@
                       "type": "number"
                     },
                     {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/1"
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^\\=[A-z0-9_-]+"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1/anyOf/0"
+                          }
+                        }
+                      ]
                     }
                   ]
                 },
@@ -264,7 +200,7 @@
                       "type": "string"
                     },
                     {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/1"
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
                     }
                   ]
                 },
@@ -274,7 +210,7 @@
                       "type": "string"
                     },
                     {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/1"
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
                     }
                   ]
                 },
@@ -284,7 +220,7 @@
                       "type": "string"
                     },
                     {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/1"
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
                     }
                   ]
                 },
@@ -294,7 +230,7 @@
                       "type": "string"
                     },
                     {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/1"
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
                     }
                   ]
                 }
