@@ -1,0 +1,61 @@
+{
+  "type": "object",
+  "properties": {
+    "targetImageExpression": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "targetHistoryTrailImageExpression": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "groundHistoryTrailQuantity": {
+      "type": "number"
+    },
+    "airborneHistoryTrailQuantity": {
+      "type": "number"
+    },
+    "rotateAirborneTargetWithCourse": {
+      "type": "boolean"
+    },
+    "rotateGroundTargetWithCourse": {
+      "type": "boolean"
+    },
+    "rotateAirborneHistoryTrailWithCourse": {
+      "type": "boolean"
+    },
+    "rotateGroundHistoryTrailWithCourse": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "targetImageExpression",
+    "targetHistoryTrailImageExpression",
+    "groundHistoryTrailQuantity",
+    "airborneHistoryTrailQuantity",
+    "rotateAirborneTargetWithCourse",
+    "rotateGroundTargetWithCourse",
+    "rotateAirborneHistoryTrailWithCourse",
+    "rotateGroundHistoryTrailWithCourse"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
