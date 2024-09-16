@@ -107,6 +107,15 @@
                       "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
                     }
                   ]
+                },
+                "leftClick": {
+                  "type": "string"
+                },
+                "rightClick": {
+                  "type": "string"
+                },
+                "middleClick": {
+                  "type": "string"
                 }
               },
               "required": [

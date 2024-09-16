@@ -233,6 +233,15 @@
                       "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
                     }
                   ]
+                },
+                "leftClick": {
+                  "type": "string"
+                },
+                "rightClick": {
+                  "type": "string"
+                },
+                "middleClick": {
+                  "type": "string"
                 }
               },
               "required": [
