@@ -25,7 +25,10 @@
                       ">",
                       ">=",
                       "beginsWith",
-                      "endsWith"
+                      "endsWith",
+                      "contains",
+                      "notEmpty",
+                      "isEmpty"
                     ]
                   },
                   {
@@ -35,7 +38,7 @@
                         "enum": [
                           "stopped",
                           "reportedHeading",
-                          "groundspeed",
+                          "groundSpeed",
                           "altitude",
                           "agl",
                           "onGround",
@@ -71,10 +74,10 @@
                         "type": "string",
                         "enum": [
                           "callsign",
-                          "reportedAcType",
+                          "type",
                           "isTimingOut",
-                          "latestSquawk",
-                          "lastestTransponderStatus"
+                          "squawk",
+                          "latestTransponderStatus"
                         ]
                       }
                     ]

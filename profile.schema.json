@@ -14,7 +14,7 @@
     "updatedAt": {
       "type": "string"
     },
-    "modal": {
+    "modals": {
       "type": "object",
       "additionalProperties": {
         "type": "object",
@@ -24,37 +24,39 @@
           },
           "y": {
             "type": "number"
+          },
+          "shown": {
+            "type": "boolean"
           }
         },
         "required": [
           "x",
-          "y"
+          "y",
+          "shown"
         ],
         "additionalProperties": false
       }
     },
-    "list": {
+    "radarData": {
       "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "enabled": {
-            "type": "boolean"
-          },
-          "family": {
-            "type": "number"
-          },
-          "free": {
-            "type": "boolean"
-          }
+      "properties": {
+        "gndFilterStatus": {
+          "type": "boolean"
         },
-        "required": [
-          "enabled",
-          "family",
-          "free"
-        ],
-        "additionalProperties": false
-      }
+        "primFilterStatus": {
+          "type": "boolean"
+        },
+        "vfrFilterStatus": {
+          "type": "boolean"
+        },
+        "upperFilterValue": {
+          "type": "number"
+        },
+        "lowerFilterValue": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
     },
     "atmSystem": {
       "type": "string"
@@ -123,8 +125,6 @@
   "required": [
     "name",
     "type",
-    "modal",
-    "list",
     "map"
   ],
   "additionalProperties": false,
