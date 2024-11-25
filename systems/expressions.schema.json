@@ -101,7 +101,12 @@
                         "type": "string",
                         "enum": [
                           "isArrival",
-                          "isDeparture"
+                          "isDeparture",
+                          "suggestedStar",
+                          "suggestedSid",
+                          "suggestedDepRunway",
+                          "suggestedArrRunway",
+                          "text"
                         ]
                       }
                     ]

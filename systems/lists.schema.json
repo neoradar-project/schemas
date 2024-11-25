@@ -104,7 +104,12 @@
                         "type": "string",
                         "enum": [
                           "isArrival",
-                          "isDeparture"
+                          "isDeparture",
+                          "suggestedStar",
+                          "suggestedSid",
+                          "suggestedDepRunway",
+                          "suggestedArrRunway",
+                          "text"
                         ]
                       }
                     ]
@@ -168,7 +173,7 @@
               "type": "object",
               "properties": {
                 "itemName": {
-                  "type": "string"
+                  "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1"
                 },
                 "hideInDetailed": {
                   "type": "boolean"

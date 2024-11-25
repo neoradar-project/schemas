@@ -12,7 +12,87 @@
               "type": "object",
               "properties": {
                 "itemName": {
-                  "type": "string"
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "stopped",
+                        "reportedHeading",
+                        "groundSpeed",
+                        "altitude",
+                        "agl",
+                        "onGround",
+                        "trackHeading"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "flightRule",
+                        "rawType",
+                        "origin",
+                        "destination",
+                        "plannedTas",
+                        "plannedFlightLevel",
+                        "rmk",
+                        "eobt",
+                        "aobt",
+                        "alternate",
+                        "fuelTimeHours",
+                        "fuelTimeMinutes",
+                        "flightTimeHours",
+                        "flightTimeMinutes",
+                        "icaoEquipment",
+                        "acShortType",
+                        "voiceType",
+                        "isValid",
+                        "icaoTransponderEquipment",
+                        "icaoWakeCategory"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "callsign",
+                        "type",
+                        "isTimingOut",
+                        "squawk",
+                        "latestTransponderStatus"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "callsign",
+                        "clearedFlightLevel",
+                        "direct",
+                        "heading",
+                        "assignedSpeed",
+                        "mach",
+                        "verticalRate",
+                        "clearanceIssued",
+                        "assignedSquawk",
+                        "ownedByMe",
+                        "ownedByCallsign",
+                        "futureOwnerCallsign",
+                        "scratchpad",
+                        "groundStatus",
+                        "clearanceQueuePosition"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "isArrival",
+                        "isDeparture",
+                        "suggestedStar",
+                        "suggestedSid",
+                        "suggestedDepRunway",
+                        "suggestedArrRunway",
+                        "text"
+                      ]
+                    }
+                  ]
                 },
                 "hideInDetailed": {
                   "type": "boolean"
