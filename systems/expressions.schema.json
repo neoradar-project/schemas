@@ -45,24 +45,24 @@
                       {
                         "type": "string",
                         "enum": [
-                          "flight_rule",
+                          "flightRule",
                           "rawType",
                           "origin",
                           "destination",
-                          "planned_tas",
-                          "planned_flight_level",
+                          "plannedTas",
+                          "plannedFlightLevel",
                           "rmk",
                           "eobt",
                           "aobt",
                           "alternate",
-                          "fuel_time_hours",
-                          "fuel_time_minutes",
-                          "flight_time_hours",
-                          "flight_time_minutes",
+                          "fuelTimeHours",
+                          "fuelTimeMinutes",
+                          "flightTimeHours",
+                          "flightTimeMinutes",
                           "icaoEquipment",
                           "acShortType",
-                          "voice_type",
-                          "is_valid",
+                          "voiceType",
+                          "isValid",
                           "icaoTransponderEquipment",
                           "icaoWakeCategory"
                         ]
@@ -75,6 +75,33 @@
                           "isTimingOut",
                           "squawk",
                           "latestTransponderStatus"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "callsign",
+                          "clearedFlightLevel",
+                          "direct",
+                          "heading",
+                          "assignedSpeed",
+                          "mach",
+                          "verticalRate",
+                          "clearanceIssued",
+                          "assignedSquawk",
+                          "ownedByMe",
+                          "ownedByCallsign",
+                          "futureOwnerCallsign",
+                          "scratchpad",
+                          "groundStatus",
+                          "clearanceQueuePosition"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "isArrival",
+                          "isDeparture"
                         ]
                       }
                     ]
