@@ -83,6 +83,21 @@
                     {
                       "type": "string",
                       "enum": [
+                        "sid",
+                        "star",
+                        "isAmended",
+                        "depRunway",
+                        "arrRunway",
+                        "rawRoute",
+                        "hadStar",
+                        "hadSid",
+                        "hadArrRwy",
+                        "hadDepRwy"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
                         "isArrival",
                         "isDeparture",
                         "suggestedStar",
