@@ -23,9 +23,7 @@
                       ">=",
                       "beginsWith",
                       "endsWith",
-                      "contains",
-                      "notEmpty",
-                      "isEmpty"
+                      "contains"
                     ]
                   },
                   {
@@ -161,6 +159,39 @@
                         }
                       ]
                     }
+                  }
+                ]
+              },
+              {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": [
+                  {
+                    "$ref": "#/properties/expressions/additionalProperties/anyOf/0/anyOf/1/items/0"
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "notEmpty",
+                      "isEmpty"
+                    ]
+                  },
+                  {
+                    "$ref": "#/properties/expressions/additionalProperties/anyOf/0/anyOf/0/items/1"
+                  }
+                ]
+              },
+              {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": [
+                  {
+                    "$ref": "#/properties/expressions/additionalProperties/anyOf/0/anyOf/2/items/1"
+                  },
+                  {
+                    "$ref": "#/properties/expressions/additionalProperties/anyOf/0/anyOf/0/items/1"
                   }
                 ]
               }
