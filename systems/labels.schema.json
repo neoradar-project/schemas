@@ -161,7 +161,14 @@
                         {
                           "type": "array",
                           "items": {
-                            "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1/anyOf/0"
+                            "anyOf": [
+                              {
+                                "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1/anyOf/0"
+                              },
+                              {
+                                "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1/anyOf/1"
+                              }
+                            ]
                           }
                         }
                       ]

@@ -19,7 +19,14 @@
             {
               "type": "array",
               "items": {
-                "$ref": "#/properties/targetImageExpression/anyOf/1/anyOf/0"
+                "anyOf": [
+                  {
+                    "$ref": "#/properties/targetImageExpression/anyOf/1/anyOf/0"
+                  },
+                  {
+                    "$ref": "#/properties/targetImageExpression/anyOf/1/anyOf/1"
+                  }
+                ]
               }
             }
           ]
