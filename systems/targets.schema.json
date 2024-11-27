@@ -9,8 +9,15 @@
         {
           "anyOf": [
             {
-              "type": "string",
-              "pattern": "^[=&][A-z0-9_-]+"
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^=[A-z0-9_-]+"
+                }
+              ]
             },
             {
               "type": "string",

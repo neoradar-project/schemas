@@ -119,8 +119,7 @@
                           "suggestedSid",
                           "suggestedDepRunway",
                           "suggestedArrRunway",
-                          "text",
-                          "dynamic"
+                          "text"
                         ]
                       }
                     ]

@@ -122,8 +122,7 @@
                           "suggestedSid",
                           "suggestedDepRunway",
                           "suggestedArrRunway",
-                          "text",
-                          "dynamic"
+                          "text"
                         ]
                       }
                     ]
@@ -263,8 +262,15 @@
                     {
                       "anyOf": [
                         {
-                          "type": "string",
-                          "pattern": "^[=&][A-z0-9_-]+"
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "string",
+                              "pattern": "^=[A-z0-9_-]+"
+                            }
+                          ]
                         },
                         {
                           "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/1/items/1/items/anyOf/1"
