@@ -94,6 +94,10 @@
     },
     "gateBookedStyle": {
       "$ref": "#/properties/gateInactiveStyle"
+    },
+    "$schema": {
+      "type": "string",
+      "description": "JSON schema to validate this file"
     }
   },
   "required": [

@@ -49,6 +49,10 @@
     },
     "rotateGroundHistoryTrailWithCourse": {
       "type": "boolean"
+    },
+    "$schema": {
+      "type": "string",
+      "description": "JSON schema to validate this file"
     }
   },
   "required": [
