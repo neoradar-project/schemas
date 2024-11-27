@@ -154,8 +154,16 @@
                           "$ref": "#/properties/expressions/additionalProperties/anyOf/0"
                         },
                         {
-                          "type": "string",
-                          "pattern": "^\\$[A-z0-9_-]+"
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^\\$[A-z0-9_-]+"
+                            },
+                            {
+                              "type": "string",
+                              "pattern": "^&[A-z0-9_-]+"
+                            }
+                          ]
                         }
                       ]
                     }
