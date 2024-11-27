@@ -155,6 +155,10 @@
                           "pattern": "^=[A-z0-9_-]+"
                         },
                         {
+                          "type": "string",
+                          "pattern": "^&[A-z0-9_-]+"
+                        },
+                        {
                           "type": "array",
                           "items": {
                             "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1/anyOf/0"

@@ -275,6 +275,9 @@
                           "pattern": "^=[A-z0-9_-]+"
                         },
                         {
+                          "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/1/items/1/items/anyOf/1/anyOf/1"
+                        },
+                        {
                           "type": "array",
                           "items": {
                             "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1/anyOf/0"

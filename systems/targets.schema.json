@@ -13,6 +13,10 @@
               "pattern": "^=[A-z0-9_-]+"
             },
             {
+              "type": "string",
+              "pattern": "^&[A-z0-9_-]+"
+            },
+            {
               "type": "array",
               "items": {
                 "$ref": "#/properties/targetImageExpression/anyOf/1/anyOf/0"
