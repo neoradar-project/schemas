@@ -10,11 +10,11 @@
           "anyOf": [
             {
               "type": "string",
-              "pattern": "^=[A-z0-9_-]+"
+              "pattern": "^[=&][A-z0-9_-]+"
             },
             {
               "type": "string",
-              "pattern": "^&[A-z0-9_-]+"
+              "pattern": "^\\$[A-z0-9_-]+"
             },
             {
               "type": "array",
