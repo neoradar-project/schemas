@@ -124,7 +124,8 @@
                           "suggestedSid",
                           "suggestedDepRunway",
                           "suggestedArrRunway",
-                          "text"
+                          "text",
+                          "dynamic"
                         ]
                       }
                     ]
