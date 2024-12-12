@@ -58,7 +58,7 @@
     "activeSectorLineStyle": {
       "$ref": "#/properties/sidStyle"
     },
-    "otherSectorLineStyle": {
+    "worldGeoLineStyle": {
       "$ref": "#/properties/sidStyle"
     },
     "gateInactiveStyle": {
