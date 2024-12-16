@@ -2,7 +2,12 @@
   "type": "object",
   "properties": {
     "inactiveSectorBackgroundColor": {
-      "type": "string"
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 4
     },
     "gateLabelColor": {
       "type": "string"
@@ -10,28 +15,153 @@
     "sidStyle": {
       "type": "object",
       "properties": {
-        "color": {
-          "type": "string"
+        "lineColor": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 4
         },
-        "width": {
+        "lineWidth": {
           "type": "number"
         },
-        "opacity": {
-          "type": "number"
+        "lineOpacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         },
-        "dashArray": {
+        "lineDashArray": {
           "type": "array",
           "items": {
             "type": "number"
           }
+        },
+        "lineJoinType": {
+          "type": "string",
+          "enum": ["miter", "round", "bevel"]
+        },
+        "lineCapType": {
+          "type": "string",
+          "enum": ["butt", "round", "square"]
+        },
+        "fillColor": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 4
+        },
+        "fillOpacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "filled": {
+          "type": "boolean"
+        },
+        "fillPatternScale": {
+          "type": "number"
+        },
+        "fillPatternOffset": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "pointType": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["circle", "icon", "text"]
+            },
+            {
+              "type": "string",
+              "pattern": "^(circle|icon|text)(\\+(circle|icon|text))*$"
+            }
+          ]
+        },
+        "pointRadius": {
+          "type": "number"
+        },
+        "pointRadiusScale": {
+          "type": "number"
+        },
+        "pointRadiusMinPixels": {
+          "type": "number"
+        },
+        "pointRadiusMaxPixels": {
+          "type": "number"
+        },
+        "pointBorderWidth": {
+          "type": "number"
+        },
+        "pointBorderColor": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 4
+        },
+        "textColor": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 4
+        },
+        "textSize": {
+          "type": "number"
+        },
+        "textSizeScale": {
+          "type": "number"
+        },
+        "textFont": {
+          "type": "string"
+        },
+        "textOffsetX": {
+          "type": "number"
+        },
+        "textOffsetY": {
+          "type": "number"
+        },
+        "textAnchor": {
+          "type": "string",
+          "enum": ["start", "middle", "end"]
+        },
+        "textAlignmentBaseline": {
+          "type": "string",
+          "enum": ["top", "center", "bottom"]
+        },
+        "textOutlineColor": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 4
+        },
+        "textOutlineWidth": {
+          "type": "number"
+        },
+        "iconName": {
+          "type": "string"
+        },
+        "iconSize": {
+          "type": "number"
+        },
+        "animated": {
+          "type": "boolean"
+        },
+        "animationDuration": {
+          "type": "number"
         }
-      },
-      "required": [
-        "color",
-        "width",
-        "dashArray"
-      ],
-      "additionalProperties": false
+      }
     },
     "starStyle": {
       "$ref": "#/properties/sidStyle"
@@ -40,25 +170,51 @@
       "$ref": "#/properties/sidStyle"
     },
     "activeSectorFillStyle": {
-      "type": "object",
-      "properties": {
-        "color": {
-          "type": "string"
-        },
-        "opacity": {
-          "type": "number"
-        }
-      },
-      "required": [
-        "color",
-        "opacity"
-      ],
-      "additionalProperties": false
+      "$ref": "#/properties/sidStyle"
     },
     "activeSectorLineStyle": {
       "$ref": "#/properties/sidStyle"
     },
-    "worldGeoLineStyle": {
+    "otherSectorLineStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "artccStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "artccHighStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "artccLowStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "lowAirwayStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "highAirwayStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "fixStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "vorStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "ndbStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "airportStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "runwayStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "labelStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "geoStyle": {
+      "$ref": "#/properties/sidStyle"
+    },
+    "regionStyle": {
       "$ref": "#/properties/sidStyle"
     },
     "gateInactiveStyle": {
@@ -83,11 +239,7 @@
           "type": "number"
         }
       },
-      "required": [
-        "outlineColor",
-        "fillColor"
-      ],
-      "additionalProperties": false
+      "required": ["outlineColor", "fillColor"]
     },
     "gateOccupiedStyle": {
       "$ref": "#/properties/gateInactiveStyle"
@@ -100,9 +252,7 @@
       "description": "JSON schema to validate this file"
     }
   },
-  "required": [
-    "inactiveSectorBackgroundColor"
-  ],
+  "required": ["inactiveSectorBackgroundColor"],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"
 }
