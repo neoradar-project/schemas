@@ -25,40 +25,73 @@
         "type": "string"
       }
     },
-    "images": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "sources": {
+    "mapLayers": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "id": {
+          "name": {
             "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "airport",
+              "vor",
+              "ndb",
+              "fix",
+              "label",
+              "region",
+              "geo",
+              "runway",
+              "lowAirway",
+              "highAirway",
+              "sid",
+              "star",
+              "gate",
+              "artcc",
+              "artccLow",
+              "artccHigh"
+            ]
+          },
+          "minZoom": {
+            "type": "number"
           },
           "maxZoom": {
             "type": "number"
+          },
+          "stroke": {
+            "type": "boolean"
+          },
+          "pointType": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": ["circle", "icon", "text"]
+              },
+              {
+                "type": "string",
+                "pattern": "^(circle|icon|text)(\\+(circle|icon|text))*$"
+              }
+            ],
+            "default": "circle"
+          },
+          "defaultIcon": {
+            "type": "string"
+          },
+          "pickable": {
+            "type": "boolean"
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["name", "type", "source"],
         "additionalProperties": false
       }
-    },
-    "defaultLayers": {
-      "type": "array"
     }
   },
-  "required": [
-    "id",
-    "name",
-    "namespace",
-    "createdAt"
-  ],
+  "required": ["id", "name", "namespace", "createdAt"],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"
 }
