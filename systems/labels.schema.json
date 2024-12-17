@@ -104,6 +104,7 @@
                         "suggestedSid",
                         "suggestedDepRunway",
                         "suggestedArrRunway",
+                        "myCallsign",
                         "text"
                       ]
                     }
@@ -150,15 +151,8 @@
                     {
                       "anyOf": [
                         {
-                          "anyOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "string",
-                              "pattern": "^=[A-z0-9_-]+"
-                            }
-                          ]
+                          "type": "string",
+                          "pattern": "^[&=][A-z0-9_-]+"
                         },
                         {
                           "type": "string",
@@ -197,7 +191,10 @@
                       "type": "string"
                     },
                     {
-                      "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
                     }
                   ]
                 },

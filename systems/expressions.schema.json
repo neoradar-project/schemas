@@ -119,6 +119,7 @@
                           "suggestedSid",
                           "suggestedDepRunway",
                           "suggestedArrRunway",
+                          "myCallsign",
                           "text"
                         ]
                       }
