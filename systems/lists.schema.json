@@ -266,14 +266,7 @@
                     {
                       "type": "array",
                       "items": {
-                        "anyOf": [
-                          {
-                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
-                          },
-                          {
-                            "type": "number"
-                          }
-                        ]
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
                       }
                     }
                   ]
@@ -281,22 +274,7 @@
                 "fontWeight": {
                   "anyOf": [
                     {
-                      "type": "string",
-                      "enum": [
-                        "normal",
-                        "bold",
-                        "bolder",
-                        "lighter",
-                        "100",
-                        "200",
-                        "300",
-                        "400",
-                        "500",
-                        "600",
-                        "700",
-                        "800",
-                        "900"
-                      ]
+                      "type": "string"
                     },
                     {
                       "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
@@ -304,14 +282,7 @@
                     {
                       "type": "array",
                       "items": {
-                        "anyOf": [
-                          {
-                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
-                          },
-                          {
-                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontWeight/anyOf/0"
-                          }
-                        ]
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
                       }
                     }
                   ]
@@ -327,45 +298,12 @@
                       "maxItems": 3
                     },
                     {
-                      "anyOf": [
-                        {
-                          "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
-                        },
-                        {
-                          "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/1/items/1/items/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "anyOf": [
-                              {
-                                "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
-                              },
-                              {
-                                "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/1/items/1/items/anyOf/1"
-                              },
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "number"
-                              }
-                            ]
-                          }
-                        }
-                      ]
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
                     },
                     {
                       "type": "array",
                       "items": {
-                        "anyOf": [
-                          {
-                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/0"
-                          },
-                          {
-                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/1"
-                          }
-                        ]
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
                       }
                     }
                   ]
@@ -380,7 +318,13 @@
                       "type": "string"
                     },
                     {
-                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/1"
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                      }
                     }
                   ]
                 },

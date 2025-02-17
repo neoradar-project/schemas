@@ -160,14 +160,7 @@
                         {
                           "type": "array",
                           "items": {
-                            "anyOf": [
-                              {
-                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
-                              },
-                              {
-                                "type": "number"
-                              }
-                            ]
+                            "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
                           }
                         }
                       ]
@@ -175,22 +168,7 @@
                     "fontWeight": {
                       "anyOf": [
                         {
-                          "type": "string",
-                          "enum": [
-                            "normal",
-                            "bold",
-                            "bolder",
-                            "lighter",
-                            "100",
-                            "200",
-                            "300",
-                            "400",
-                            "500",
-                            "600",
-                            "700",
-                            "800",
-                            "900"
-                          ]
+                          "type": "string"
                         },
                         {
                           "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
@@ -198,14 +176,7 @@
                         {
                           "type": "array",
                           "items": {
-                            "anyOf": [
-                              {
-                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
-                              },
-                              {
-                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontWeight/anyOf/0"
-                              }
-                            ]
+                            "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
                           }
                         }
                       ]
@@ -221,46 +192,12 @@
                           "maxItems": 3
                         },
                         {
-                          "anyOf": [
-                            {
-                              "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
-                            },
-                            {
-                              "type": "string",
-                              "pattern": "^\\$[A-z0-9_-]+"
-                            },
-                            {
-                              "type": "array",
-                              "items": {
-                                "anyOf": [
-                                  {
-                                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
-                                  },
-                                  {
-                                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/1/anyOf/1"
-                                  },
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "number"
-                                  }
-                                ]
-                              }
-                            }
-                          ]
+                          "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
                         },
                         {
                           "type": "array",
                           "items": {
-                            "anyOf": [
-                              {
-                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/0"
-                              },
-                              {
-                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/1"
-                              }
-                            ]
+                            "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
                           }
                         }
                       ]
@@ -275,7 +212,13 @@
                           "type": "string"
                         },
                         {
-                          "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/1"
+                          "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                          }
                         }
                       ]
                     },
@@ -356,7 +299,8 @@
                                       "$ref": "#/properties/ground/properties/default/properties/styleVariants/items/properties/applyWhen/anyOf/0"
                                     },
                                     {
-                                      "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/1/anyOf/1"
+                                      "type": "string",
+                                      "pattern": "^\\$[A-z0-9_-]+"
                                     }
                                   ]
                                 }
@@ -399,7 +343,7 @@
                         ]
                       },
                       {
-                        "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/1/anyOf/1"
+                        "$ref": "#/properties/ground/properties/default/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/1/items/1/items/anyOf/1"
                       }
                     ]
                   },
@@ -410,7 +354,22 @@
                     "type": "number"
                   },
                   "fontWeight": {
-                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontWeight/anyOf/0"
+                    "type": "string",
+                    "enum": [
+                      "normal",
+                      "bold",
+                      "bolder",
+                      "lighter",
+                      "100",
+                      "200",
+                      "300",
+                      "400",
+                      "500",
+                      "600",
+                      "700",
+                      "800",
+                      "900"
+                    ]
                   },
                   "textColor": {
                     "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/0"
