@@ -22,207 +22,213 @@
               "applyWhen": {
                 "anyOf": [
                   {
+                    "type": "string"
+                  },
+                  {
                     "anyOf": [
                       {
-                        "type": "array",
-                        "minItems": 3,
-                        "maxItems": 3,
-                        "items": [
+                        "anyOf": [
                           {
-                            "type": "string",
-                            "enum": [
-                              "==",
-                              "!=",
-                              "<",
-                              "<=",
-                              ">",
-                              ">=",
-                              "beginsWith",
-                              "endsWith",
-                              "contains"
-                            ]
-                          },
-                          {
-                            "anyOf": [
+                            "type": "array",
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "items": [
                               {
                                 "type": "string",
                                 "enum": [
-                                  "stopped",
-                                  "timestamp",
-                                  "verticalSpeed",
-                                  "verticalTrend",
-                                  "altitude",
-                                  "agl",
-                                  "onGround",
-                                  "groundSpeed",
-                                  "reportedHeading",
-                                  "trackHeading",
-                                  "transponder",
-                                  "latLon"
+                                  "==",
+                                  "!=",
+                                  "<",
+                                  "<=",
+                                  ">",
+                                  ">=",
+                                  "beginsWith",
+                                  "endsWith",
+                                  "contains"
                                 ]
                               },
                               {
-                                "type": "string",
-                                "enum": [
-                                  "flightRule",
-                                  "rawType",
-                                  "origin",
-                                  "destination",
-                                  "plannedTas",
-                                  "plannedFlightLevel",
-                                  "rmk",
-                                  "eobt",
-                                  "aobt",
-                                  "alternate",
-                                  "fuelTimeHours",
-                                  "fuelTimeMinutes",
-                                  "flightTimeHours",
-                                  "flightTimeMinutes",
-                                  "icaoEquipment",
-                                  "acShortType",
-                                  "voiceType",
-                                  "isValid",
-                                  "icaoTransponderEquipment",
-                                  "icaoWakeCategory"
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "stopped",
+                                      "timestamp",
+                                      "verticalSpeed",
+                                      "verticalTrend",
+                                      "altitude",
+                                      "agl",
+                                      "onGround",
+                                      "groundSpeed",
+                                      "reportedHeading",
+                                      "trackHeading",
+                                      "transponder",
+                                      "latLon"
+                                    ]
+                                  },
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "flightRule",
+                                      "rawType",
+                                      "origin",
+                                      "destination",
+                                      "plannedTas",
+                                      "plannedFlightLevel",
+                                      "rmk",
+                                      "eobt",
+                                      "aobt",
+                                      "alternate",
+                                      "fuelTimeHours",
+                                      "fuelTimeMinutes",
+                                      "flightTimeHours",
+                                      "flightTimeMinutes",
+                                      "icaoEquipment",
+                                      "acShortType",
+                                      "voiceType",
+                                      "isValid",
+                                      "icaoTransponderEquipment",
+                                      "icaoWakeCategory"
+                                    ]
+                                  },
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "callsign",
+                                      "type",
+                                      "isTimingOut",
+                                      "squawk",
+                                      "latestTransponderStatus"
+                                    ]
+                                  },
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "callsign",
+                                      "clearedFlightLevel",
+                                      "direct",
+                                      "heading",
+                                      "assignedSpeed",
+                                      "mach",
+                                      "verticalRate",
+                                      "clearanceIssued",
+                                      "assignedSquawk",
+                                      "ownedByMe",
+                                      "ownedByCallsign",
+                                      "futureOwnerCallsign",
+                                      "scratchpad",
+                                      "groundStatus",
+                                      "clearanceQueuePosition"
+                                    ]
+                                  },
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "sid",
+                                      "star",
+                                      "isAmended",
+                                      "depRunway",
+                                      "arrRunway",
+                                      "rawRoute",
+                                      "hadStar",
+                                      "hadSid",
+                                      "hadArrRwy",
+                                      "hadDepRwy"
+                                    ]
+                                  },
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "isArrival",
+                                      "isDeparture",
+                                      "suggestedStar",
+                                      "suggestedSid",
+                                      "suggestedDepRunway",
+                                      "suggestedArrRunway",
+                                      "myCallsign",
+                                      "text"
+                                    ]
+                                  }
                                 ]
                               },
                               {
-                                "type": "string",
-                                "enum": [
-                                  "callsign",
-                                  "type",
-                                  "isTimingOut",
-                                  "squawk",
-                                  "latestTransponderStatus"
-                                ]
-                              },
-                              {
-                                "type": "string",
-                                "enum": [
-                                  "callsign",
-                                  "clearedFlightLevel",
-                                  "direct",
-                                  "heading",
-                                  "assignedSpeed",
-                                  "mach",
-                                  "verticalRate",
-                                  "clearanceIssued",
-                                  "assignedSquawk",
-                                  "ownedByMe",
-                                  "ownedByCallsign",
-                                  "futureOwnerCallsign",
-                                  "scratchpad",
-                                  "groundStatus",
-                                  "clearanceQueuePosition"
-                                ]
-                              },
-                              {
-                                "type": "string",
-                                "enum": [
-                                  "sid",
-                                  "star",
-                                  "isAmended",
-                                  "depRunway",
-                                  "arrRunway",
-                                  "rawRoute",
-                                  "hadStar",
-                                  "hadSid",
-                                  "hadArrRwy",
-                                  "hadDepRwy"
-                                ]
-                              },
-                              {
-                                "type": "string",
-                                "enum": [
-                                  "isArrival",
-                                  "isDeparture",
-                                  "suggestedStar",
-                                  "suggestedSid",
-                                  "suggestedDepRunway",
-                                  "suggestedArrRunway",
-                                  "myCallsign",
-                                  "text"
+                                "type": [
+                                  "string",
+                                  "number"
                                 ]
                               }
                             ]
                           },
                           {
-                            "type": [
-                              "string",
-                              "number"
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "type": "array",
-                        "minItems": 2,
-                        "maxItems": 2,
-                        "items": [
-                          {
-                            "type": "string",
-                            "enum": [
-                              "AND",
-                              "OR",
-                              "NOT"
+                            "type": "array",
+                            "minItems": 2,
+                            "maxItems": 2,
+                            "items": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "AND",
+                                  "OR",
+                                  "NOT"
+                                ]
+                              },
+                              {
+                                "type": "array",
+                                "items": {
+                                  "anyOf": [
+                                    {
+                                      "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0"
+                                    },
+                                    {
+                                      "type": "string",
+                                      "pattern": "^\\$[A-z0-9_-]+"
+                                    }
+                                  ]
+                                }
+                              }
                             ]
                           },
                           {
                             "type": "array",
-                            "items": {
-                              "anyOf": [
-                                {
-                                  "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0"
-                                },
-                                {
-                                  "type": "string",
-                                  "pattern": "^\\$[A-z0-9_-]+"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      },
-                      {
-                        "type": "array",
-                        "minItems": 3,
-                        "maxItems": 3,
-                        "items": [
-                          {
-                            "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0/anyOf/1/items/0"
-                          },
-                          {
-                            "type": "string",
-                            "enum": [
-                              "notEmpty",
-                              "isEmpty"
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "items": [
+                              {
+                                "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/1/items/0"
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "notEmpty",
+                                  "isEmpty"
+                                ]
+                              },
+                              {
+                                "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/0/items/1"
+                              }
                             ]
                           },
                           {
-                            "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0/anyOf/0/items/1"
+                            "type": "array",
+                            "minItems": 2,
+                            "maxItems": 2,
+                            "items": [
+                              {
+                                "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/2/items/1"
+                              },
+                              {
+                                "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/0/items/1"
+                              }
+                            ]
                           }
                         ]
                       },
                       {
-                        "type": "array",
-                        "minItems": 2,
-                        "maxItems": 2,
-                        "items": [
-                          {
-                            "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0/anyOf/2/items/1"
-                          },
-                          {
-                            "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0/anyOf/0/items/1"
-                          }
-                        ]
+                        "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/1/items/1/items/anyOf/1"
                       }
                     ]
-                  },
-                  {
-                    "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0/anyOf/1/items/1/items/anyOf/1"
                   }
-                ],
-                "default": ""
+                ]
               },
               "plotImage": {
                 "type": "string",
