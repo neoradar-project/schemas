@@ -154,45 +154,18 @@
                           "type": "number"
                         },
                         {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "pattern": "^[&=][A-z0-9_-]+"
-                            },
-                            {
-                              "type": "string",
-                              "pattern": "^\\$[A-z0-9_-]+"
-                            },
-                            {
-                              "type": "array",
-                              "items": {
-                                "anyOf": [
-                                  {
-                                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1/anyOf/0"
-                                  },
-                                  {
-                                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1/anyOf/1"
-                                  },
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "number"
-                                  }
-                                ]
-                              }
-                            }
-                          ]
+                          "type": "string",
+                          "pattern": "^[&=][A-z0-9_-]+"
                         },
                         {
                           "type": "array",
                           "items": {
                             "anyOf": [
                               {
-                                "type": "number"
+                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
                               },
                               {
-                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                                "type": "number"
                               }
                             ]
                           }
@@ -223,7 +196,17 @@
                           "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
                         },
                         {
-                          "type": "number"
+                          "type": "array",
+                          "items": {
+                            "anyOf": [
+                              {
+                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                              },
+                              {
+                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontWeight/anyOf/0"
+                              }
+                            ]
+                          }
                         }
                       ]
                     },
@@ -238,10 +221,47 @@
                           "maxItems": 3
                         },
                         {
-                          "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                          "anyOf": [
+                            {
+                              "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                            },
+                            {
+                              "type": "string",
+                              "pattern": "^\\$[A-z0-9_-]+"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "anyOf": [
+                                  {
+                                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                                  },
+                                  {
+                                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/1/anyOf/1"
+                                  },
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "number"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
                         },
                         {
-                          "type": "string"
+                          "type": "array",
+                          "items": {
+                            "anyOf": [
+                              {
+                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/0"
+                              },
+                              {
+                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/1"
+                              }
+                            ]
+                          }
                         }
                       ]
                     },
@@ -255,7 +275,7 @@
                           "type": "string"
                         },
                         {
-                          "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                          "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/1"
                         }
                       ]
                     },
@@ -336,7 +356,7 @@
                                       "$ref": "#/properties/ground/properties/default/properties/styleVariants/items/properties/applyWhen/anyOf/0"
                                     },
                                     {
-                                      "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1/anyOf/1"
+                                      "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/1/anyOf/1"
                                     }
                                   ]
                                 }
@@ -379,7 +399,7 @@
                         ]
                       },
                       {
-                        "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1/anyOf/1"
+                        "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/1/anyOf/1"
                       }
                     ]
                   },

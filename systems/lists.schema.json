@@ -260,44 +260,18 @@
                       "type": "number"
                     },
                     {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "pattern": "^[&=][A-z0-9_-]+"
-                        },
-                        {
-                          "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/1/items/1/items/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "anyOf": [
-                              {
-                                "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1/anyOf/0"
-                              },
-                              {
-                                "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/1/items/1/items/anyOf/1"
-                              },
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "number"
-                              }
-                            ]
-                          }
-                        }
-                      ]
+                      "type": "string",
+                      "pattern": "^[&=][A-z0-9_-]+"
                     },
                     {
                       "type": "array",
                       "items": {
                         "anyOf": [
                           {
-                            "type": "number"
+                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
                           },
                           {
-                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                            "type": "number"
                           }
                         ]
                       }
@@ -328,7 +302,17 @@
                       "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
                     },
                     {
-                      "type": "number"
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                          },
+                          {
+                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontWeight/anyOf/0"
+                          }
+                        ]
+                      }
                     }
                   ]
                 },
@@ -343,10 +327,46 @@
                       "maxItems": 3
                     },
                     {
-                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                      "anyOf": [
+                        {
+                          "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                        },
+                        {
+                          "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/1/items/1/items/anyOf/1"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "anyOf": [
+                              {
+                                "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                              },
+                              {
+                                "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/1/items/1/items/anyOf/1"
+                              },
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              }
+                            ]
+                          }
+                        }
+                      ]
                     },
                     {
-                      "type": "string"
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/0"
+                          },
+                          {
+                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/1"
+                          }
+                        ]
+                      }
                     }
                   ]
                 },
@@ -360,7 +380,7 @@
                       "type": "string"
                     },
                     {
-                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/1"
                     }
                   ]
                 },
