@@ -13,7 +13,8 @@
             "type": "object",
             "properties": {
               "id": {
-                "type": "string"
+                "type": "string",
+                "default": ""
               },
               "description": {
                 "type": "string"
@@ -215,32 +216,31 @@
                   {
                     "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0/anyOf/1/items/1/items/anyOf/1"
                   }
-                ]
+                ],
+                "default": ""
               },
               "plotImage": {
-                "type": "string"
+                "type": "string",
+                "default": ""
               },
               "historyTrailImages": {
                 "type": "array",
                 "items": {
                   "type": "string"
-                }
+                },
+                "default": []
               },
               "rotatePlotWithHeading": {
-                "type": "boolean"
+                "type": "boolean",
+                "default": false
               },
               "rotateHistoryTrailWithHeading": {
-                "type": "boolean"
+                "type": "boolean",
+                "default": false
               }
             },
             "required": [
-              "id",
-              "description",
-              "applyWhen",
-              "plotImage",
-              "historyTrailImages",
-              "rotatePlotWithHeading",
-              "rotateHistoryTrailWithHeading"
+              "applyWhen"
             ],
             "additionalProperties": false
           }
@@ -256,19 +256,12 @@
           "items": {
             "$ref": "#/properties/groundSymbology/properties/default/items"
           }
-        },
-        "detailed": {
-          "type": "array",
-          "items": {
-            "$ref": "#/properties/groundSymbology/properties/default/items"
-          }
         }
       },
       "required": [
         "default",
         "arrival",
-        "departure",
-        "detailed"
+        "departure"
       ],
       "additionalProperties": false
     },
@@ -286,18 +279,11 @@
           "items": {
             "$ref": "#/properties/groundSymbology/properties/default/items"
           }
-        },
-        "detailed": {
-          "type": "array",
-          "items": {
-            "$ref": "#/properties/groundSymbology/properties/default/items"
-          }
         }
       },
       "required": [
         "unconcerned",
-        "concerned",
-        "detailed"
+        "concerned"
       ],
       "additionalProperties": false
     }
