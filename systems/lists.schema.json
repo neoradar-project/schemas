@@ -277,6 +277,12 @@
                               },
                               {
                                 "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/1/items/1/items/anyOf/1"
+                              },
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
                               }
                             ]
                           }

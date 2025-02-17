@@ -172,6 +172,12 @@
                                   },
                                   {
                                     "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1/anyOf/1"
+                                  },
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "number"
                                   }
                                 ]
                               }
