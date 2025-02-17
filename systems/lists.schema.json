@@ -222,12 +222,6 @@
                 "itemName": {
                   "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1"
                 },
-                "hideInDetailed": {
-                  "type": "boolean"
-                },
-                "showOnlyInDetailed": {
-                  "type": "boolean"
-                },
                 "truncate": {
                   "type": "array",
                   "items": {
@@ -318,6 +312,9 @@
                       "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
                     }
                   ]
+                },
+                "separatorBefore": {
+                  "type": "boolean"
                 },
                 "value": {
                   "anyOf": [

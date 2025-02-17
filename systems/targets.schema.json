@@ -1,80 +1,311 @@
 {
   "type": "object",
   "properties": {
-    "targetImageExpression": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "anyOf": [
-            {
-              "type": "string",
-              "pattern": "^[&=][A-z0-9_-]+"
-            },
-            {
-              "type": "string",
-              "pattern": "^\\$[A-z0-9_-]+"
-            },
-            {
-              "type": "array",
-              "items": {
+    "$schema": {
+      "type": "string"
+    },
+    "groundSymbology": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "applyWhen": {
                 "anyOf": [
                   {
-                    "$ref": "#/properties/targetImageExpression/anyOf/1/anyOf/0"
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "==",
+                              "!=",
+                              "<",
+                              "<=",
+                              ">",
+                              ">=",
+                              "beginsWith",
+                              "endsWith",
+                              "contains"
+                            ]
+                          },
+                          {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "stopped",
+                                  "reportedHeading",
+                                  "groundSpeed",
+                                  "altitude",
+                                  "agl",
+                                  "onGround",
+                                  "trackHeading"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "flightRule",
+                                  "rawType",
+                                  "origin",
+                                  "destination",
+                                  "plannedTas",
+                                  "plannedFlightLevel",
+                                  "rmk",
+                                  "eobt",
+                                  "aobt",
+                                  "alternate",
+                                  "fuelTimeHours",
+                                  "fuelTimeMinutes",
+                                  "flightTimeHours",
+                                  "flightTimeMinutes",
+                                  "icaoEquipment",
+                                  "acShortType",
+                                  "voiceType",
+                                  "isValid",
+                                  "icaoTransponderEquipment",
+                                  "icaoWakeCategory"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "callsign",
+                                  "type",
+                                  "isTimingOut",
+                                  "squawk",
+                                  "latestTransponderStatus"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "callsign",
+                                  "clearedFlightLevel",
+                                  "direct",
+                                  "heading",
+                                  "assignedSpeed",
+                                  "mach",
+                                  "verticalRate",
+                                  "clearanceIssued",
+                                  "assignedSquawk",
+                                  "ownedByMe",
+                                  "ownedByCallsign",
+                                  "futureOwnerCallsign",
+                                  "scratchpad",
+                                  "groundStatus",
+                                  "clearanceQueuePosition"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "sid",
+                                  "star",
+                                  "isAmended",
+                                  "depRunway",
+                                  "arrRunway",
+                                  "rawRoute",
+                                  "hadStar",
+                                  "hadSid",
+                                  "hadArrRwy",
+                                  "hadDepRwy"
+                                ]
+                              },
+                              {
+                                "type": "string",
+                                "enum": [
+                                  "isArrival",
+                                  "isDeparture",
+                                  "suggestedStar",
+                                  "suggestedSid",
+                                  "suggestedDepRunway",
+                                  "suggestedArrRunway",
+                                  "myCallsign",
+                                  "text"
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "type": [
+                              "string",
+                              "number"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "AND",
+                              "OR",
+                              "NOT"
+                            ]
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0"
+                                },
+                                {
+                                  "type": "string",
+                                  "pattern": "^\\$[A-z0-9_-]+"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": [
+                          {
+                            "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0/anyOf/1/items/0"
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "notEmpty",
+                              "isEmpty"
+                            ]
+                          },
+                          {
+                            "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0/anyOf/0/items/1"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": [
+                          {
+                            "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0/anyOf/2/items/1"
+                          },
+                          {
+                            "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0/anyOf/0/items/1"
+                          }
+                        ]
+                      }
+                    ]
                   },
                   {
-                    "$ref": "#/properties/targetImageExpression/anyOf/1/anyOf/1"
+                    "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/0/anyOf/1/items/1/items/anyOf/1"
                   }
                 ]
+              },
+              "plotImage": {
+                "type": "string"
+              },
+              "historyTrailImages": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "rotatePlotWithHeading": {
+                "type": "boolean"
+              },
+              "rotateHistoryTrailWithHeading": {
+                "type": "boolean"
               }
-            }
-          ]
-        }
-      ]
-    },
-    "targetHistoryTrailImageExpression": {
-      "anyOf": [
-        {
-          "type": "string"
+            },
+            "required": [
+              "id",
+              "description",
+              "applyWhen",
+              "plotImage",
+              "historyTrailImages",
+              "rotatePlotWithHeading",
+              "rotateHistoryTrailWithHeading"
+            ],
+            "additionalProperties": false
+          }
         },
-        {
-          "$ref": "#/properties/targetImageExpression/anyOf/1"
+        "arrival": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/groundSymbology/properties/default/items"
+          }
+        },
+        "departure": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/groundSymbology/properties/default/items"
+          }
+        },
+        "detailed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/groundSymbology/properties/default/items"
+          }
         }
-      ]
+      },
+      "required": [
+        "default",
+        "arrival",
+        "departure",
+        "detailed"
+      ],
+      "additionalProperties": false
     },
-    "groundHistoryTrailQuantity": {
-      "type": "number"
-    },
-    "airborneHistoryTrailQuantity": {
-      "type": "number"
-    },
-    "rotateAirborneTargetWithCourse": {
-      "type": "boolean"
-    },
-    "rotateGroundTargetWithCourse": {
-      "type": "boolean"
-    },
-    "rotateAirborneHistoryTrailWithCourse": {
-      "type": "boolean"
-    },
-    "rotateGroundHistoryTrailWithCourse": {
-      "type": "boolean"
-    },
-    "$schema": {
-      "type": "string",
-      "description": "JSON schema to validate this file"
+    "airborneSymbology": {
+      "type": "object",
+      "properties": {
+        "unconcerned": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/groundSymbology/properties/default/items"
+          }
+        },
+        "concerned": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/groundSymbology/properties/default/items"
+          }
+        },
+        "detailed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/groundSymbology/properties/default/items"
+          }
+        }
+      },
+      "required": [
+        "unconcerned",
+        "concerned",
+        "detailed"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
-    "targetImageExpression",
-    "targetHistoryTrailImageExpression",
-    "groundHistoryTrailQuantity",
-    "airborneHistoryTrailQuantity",
-    "rotateAirborneTargetWithCourse",
-    "rotateGroundTargetWithCourse",
-    "rotateAirborneHistoryTrailWithCourse",
-    "rotateGroundHistoryTrailWithCourse"
+    "$schema",
+    "groundSymbology",
+    "airborneSymbology"
   ],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"

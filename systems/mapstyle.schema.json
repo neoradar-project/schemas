@@ -46,2039 +46,254 @@
     "gateBookedStyle": {
       "$ref": "#/properties/gateInactiveStyle"
     },
-    "sidStyle": {
+    "layers": {
       "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/inactiveSectorBackgroundColor",
-          "default": [
-            255,
-            255,
-            255
-          ]
-        },
-        "lineWidth": {
-          "type": "number",
-          "default": 1
-        },
-        "lineOpacity": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 1,
-          "default": 1
-        },
-        "lineDashArray": {
-          "type": "array",
-          "items": {
-            "type": "number"
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "not": {}
           },
-          "default": []
-        },
-        "lineJointType": {
-          "type": "string",
-          "enum": [
-            "miter",
-            "round",
-            "bevel"
-          ],
-          "default": "miter"
-        },
-        "lineCapType": {
-          "type": "string",
-          "enum": [
-            "butt",
-            "round",
-            "square"
-          ],
-          "default": "butt"
-        },
-        "fillColor": {
-          "$ref": "#/properties/inactiveSectorBackgroundColor",
-          "default": [
-            255,
-            255,
-            255
-          ]
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity",
-          "default": 0.8
-        },
-        "filled": {
-          "type": "boolean",
-          "default": true
-        },
-        "fillPatternScale": {
-          "type": "number",
-          "default": 1
-        },
-        "fillPatternOffset": {
-          "type": "array",
-          "items": {
-            "type": "number"
-          },
-          "minItems": 2,
-          "maxItems": 2,
-          "default": [
-            0,
-            0
-          ]
-        },
-        "pointType": {
-          "anyOf": [
-            {
-              "type": "string",
-              "enum": [
-                "circle",
-                "icon",
-                "text"
-              ]
+          {
+            "type": "object",
+            "properties": {
+              "lineStyle": {
+                "type": "object",
+                "properties": {
+                  "color": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "description": "RGB color array [r,g,b]"
+                  },
+                  "width": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "opacity": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "dashArray": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "required": [
+                  "color"
+                ],
+                "additionalProperties": false
+              },
+              "fillStyle": {
+                "type": "object",
+                "properties": {
+                  "color": {
+                    "$ref": "#/properties/layers/additionalProperties/anyOf/1/properties/lineStyle/properties/color"
+                  },
+                  "opacity": {
+                    "type": "number",
+                    "default": 1
+                  }
+                },
+                "required": [
+                  "color"
+                ],
+                "additionalProperties": false
+              },
+              "symbolStyle": {
+                "type": "object",
+                "properties": {
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "type": "number",
+                    "default": 10
+                  }
+                },
+                "required": [
+                  "symbol"
+                ],
+                "additionalProperties": false
+              },
+              "textStyle": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "color": {
+                    "$ref": "#/properties/layers/additionalProperties/anyOf/1/properties/lineStyle/properties/color",
+                    "description": "RGB color array [r,g,b]"
+                  },
+                  "fontFamily": {
+                    "type": "string",
+                    "default": "RobotoMono-Regular"
+                  },
+                  "fontSize": {
+                    "type": "number",
+                    "default": 12
+                  },
+                  "fontWeight": {
+                    "type": [
+                      "string",
+                      "number"
+                    ],
+                    "enum": [
+                      "normal",
+                      "bold",
+                      "bolder",
+                      "lighter",
+                      100,
+                      200,
+                      300,
+                      400,
+                      500,
+                      600,
+                      700,
+                      800,
+                      900
+                    ],
+                    "default": "normal"
+                  },
+                  "size": {
+                    "type": "number",
+                    "default": 10
+                  },
+                  "offset": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "default": [
+                      0,
+                      0
+                    ]
+                  },
+                  "anchor": {
+                    "type": "string",
+                    "enum": [
+                      "start",
+                      "middle",
+                      "end"
+                    ],
+                    "default": "middle"
+                  },
+                  "baseline": {
+                    "type": "string",
+                    "enum": [
+                      "top",
+                      "middle",
+                      "bottom",
+                      "alphabetic"
+                    ],
+                    "default": "middle"
+                  },
+                  "letterSpacing": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "lineHeight": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "align": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "center",
+                      "right"
+                    ],
+                    "default": "center"
+                  },
+                  "wordWrap": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "wordWrapWidth": {
+                    "type": "number",
+                    "default": 100
+                  },
+                  "outlineColor": {
+                    "$ref": "#/properties/layers/additionalProperties/anyOf/1/properties/lineStyle/properties/color",
+                    "description": "RGB color array [r,g,b]"
+                  },
+                  "outlineWidth": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "outlineOpacity": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "dropShadow": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "dropShadowColor": {
+                    "$ref": "#/properties/layers/additionalProperties/anyOf/1/properties/lineStyle/properties/color",
+                    "description": "RGB color array [r,g,b]",
+                    "default": [
+                      0,
+                      0,
+                      0
+                    ]
+                  },
+                  "dropShadowAngle": {
+                    "type": "number",
+                    "default": 0.5235987755982988
+                  },
+                  "dropShadowBlur": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "dropShadowDistance": {
+                    "type": "number",
+                    "default": 5
+                  },
+                  "dropShadowOpacity": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "scaleWithZoom": {
+                    "type": "boolean",
+                    "default": true
+                  },
+                  "minZoom": {
+                    "type": "number"
+                  },
+                  "maxZoom": {
+                    "type": "number"
+                  },
+                  "padding": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "backgroundColor": {
+                    "$ref": "#/properties/layers/additionalProperties/anyOf/1/properties/lineStyle/properties/color",
+                    "description": "RGB color array [r,g,b]"
+                  },
+                  "backgroundOpacity": {
+                    "type": "number",
+                    "default": 0
+                  }
+                },
+                "additionalProperties": false
+              }
             },
-            {
-              "type": "string"
-            }
-          ],
-          "default": "circle"
-        },
-        "pointRadius": {
-          "type": "number",
-          "default": 5
-        },
-        "pointRadiusScale": {
-          "type": "number",
-          "default": 1
-        },
-        "pointRadiusMinPixels": {
-          "type": "number",
-          "default": 1
-        },
-        "pointRadiusMaxPixels": {
-          "type": "number",
-          "default": 100
-        },
-        "pointBorderWidth": {
-          "type": "number",
-          "default": 1
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/inactiveSectorBackgroundColor",
-          "default": [
-            0,
-            0,
-            0
-          ]
-        },
-        "textColor": {
-          "$ref": "#/properties/inactiveSectorBackgroundColor",
-          "default": [
-            255,
-            255,
-            255
-          ]
-        },
-        "textSize": {
-          "type": "number",
-          "default": 12
-        },
-        "textSizeScale": {
-          "type": "number",
-          "default": 1
-        },
-        "textFont": {
-          "type": "string",
-          "default": "Arial"
-        },
-        "textOffsetX": {
-          "type": "number",
-          "default": 0
-        },
-        "textOffsetY": {
-          "type": "number",
-          "default": 0
-        },
-        "textAnchor": {
-          "type": "string",
-          "enum": [
-            "start",
-            "middle",
-            "end"
-          ],
-          "default": "middle"
-        },
-        "textAlignmentBaseline": {
-          "type": "string",
-          "enum": [
-            "top",
-            "center",
-            "bottom"
-          ],
-          "default": "center"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/inactiveSectorBackgroundColor",
-          "default": [
-            0,
-            0,
-            0
-          ]
-        },
-        "textOutlineWidth": {
-          "type": "number",
-          "default": 0
-        },
-        "iconName": {
-          "type": "string"
-        },
-        "iconSize": {
-          "type": "number",
-          "default": 25
-        },
-        "animated": {
-          "type": "boolean",
-          "default": false
-        },
-        "animationDuration": {
-          "type": "number",
-          "default": 1000
-        }
+            "additionalProperties": false
+          }
+        ]
       },
-      "additionalProperties": false
-    },
-    "starStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "sectorLineStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "activeSectorFillStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "activeSectorLineStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "otherSectorLineStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "artccStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "artccHighStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "artccLowStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "lowAirwayStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "highAirwayStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "fixStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "vorStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "ndbStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "airportStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "runwayStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "labelStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "geoStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
-    },
-    "regionStyle": {
-      "type": "object",
-      "properties": {
-        "lineColor": {
-          "$ref": "#/properties/sidStyle/properties/lineColor"
-        },
-        "lineWidth": {
-          "$ref": "#/properties/sidStyle/properties/lineWidth"
-        },
-        "lineOpacity": {
-          "$ref": "#/properties/sidStyle/properties/lineOpacity"
-        },
-        "lineDashArray": {
-          "$ref": "#/properties/sidStyle/properties/lineDashArray"
-        },
-        "lineJointType": {
-          "$ref": "#/properties/sidStyle/properties/lineJointType"
-        },
-        "lineCapType": {
-          "$ref": "#/properties/sidStyle/properties/lineCapType"
-        },
-        "fillColor": {
-          "$ref": "#/properties/sidStyle/properties/fillColor"
-        },
-        "fillOpacity": {
-          "$ref": "#/properties/sidStyle/properties/fillOpacity"
-        },
-        "filled": {
-          "$ref": "#/properties/sidStyle/properties/filled"
-        },
-        "fillPatternScale": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternScale"
-        },
-        "fillPatternOffset": {
-          "$ref": "#/properties/sidStyle/properties/fillPatternOffset"
-        },
-        "pointType": {
-          "$ref": "#/properties/sidStyle/properties/pointType"
-        },
-        "pointRadius": {
-          "$ref": "#/properties/sidStyle/properties/pointRadius"
-        },
-        "pointRadiusScale": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusScale"
-        },
-        "pointRadiusMinPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMinPixels"
-        },
-        "pointRadiusMaxPixels": {
-          "$ref": "#/properties/sidStyle/properties/pointRadiusMaxPixels"
-        },
-        "pointBorderWidth": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderWidth"
-        },
-        "pointBorderColor": {
-          "$ref": "#/properties/sidStyle/properties/pointBorderColor"
-        },
-        "textColor": {
-          "$ref": "#/properties/sidStyle/properties/textColor"
-        },
-        "textSize": {
-          "$ref": "#/properties/sidStyle/properties/textSize"
-        },
-        "textSizeScale": {
-          "$ref": "#/properties/sidStyle/properties/textSizeScale"
-        },
-        "textFont": {
-          "$ref": "#/properties/sidStyle/properties/textFont"
-        },
-        "textOffsetX": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetX"
-        },
-        "textOffsetY": {
-          "$ref": "#/properties/sidStyle/properties/textOffsetY"
-        },
-        "textAnchor": {
-          "$ref": "#/properties/sidStyle/properties/textAnchor"
-        },
-        "textAlignmentBaseline": {
-          "$ref": "#/properties/sidStyle/properties/textAlignmentBaseline"
-        },
-        "textOutlineColor": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineColor"
-        },
-        "textOutlineWidth": {
-          "$ref": "#/properties/sidStyle/properties/textOutlineWidth"
-        },
-        "iconName": {
-          "$ref": "#/properties/sidStyle/properties/iconName"
-        },
-        "iconSize": {
-          "$ref": "#/properties/sidStyle/properties/iconSize"
-        },
-        "animated": {
-          "$ref": "#/properties/sidStyle/properties/animated"
-        },
-        "animationDuration": {
-          "$ref": "#/properties/sidStyle/properties/animationDuration"
-        }
-      },
-      "additionalProperties": false
+      "propertyNames": {
+        "pattern": ".*Style$"
+      }
     },
     "$schema": {
       "type": "string",

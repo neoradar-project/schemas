@@ -67,16 +67,16 @@
         "center": {
           "type": "object",
           "properties": {
-            "lng": {
+            "x": {
               "type": "number"
             },
-            "lat": {
+            "y": {
               "type": "number"
             }
           },
           "required": [
-            "lng",
-            "lat"
+            "x",
+            "y"
           ],
           "additionalProperties": false
         },
@@ -86,6 +86,30 @@
         "orientation": {
           "type": "number"
         },
+        "windowArea": {
+          "type": "object",
+          "properties": {
+            "minX": {
+              "type": "number"
+            },
+            "minY": {
+              "type": "number"
+            },
+            "maxX": {
+              "type": "number"
+            },
+            "maxY": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "minX",
+            "minY",
+            "maxX",
+            "maxY"
+          ],
+          "additionalProperties": false
+        },
         "items": {
           "type": "array",
           "items": {
@@ -94,21 +118,13 @@
               "showLabel": {
                 "type": "boolean"
               },
-              "type": {
-                "type": "string"
-              },
-              "uniqueId": {
-                "type": "string"
-              },
-              "name": {
+              "uuid": {
                 "type": "string"
               }
             },
             "required": [
               "showLabel",
-              "type",
-              "uniqueId",
-              "name"
+              "uuid"
             ],
             "additionalProperties": false
           }

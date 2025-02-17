@@ -19,10 +19,10 @@
     "createdAt": {
       "type": "string"
     },
-    "datasets": {
+    "centerPoint": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "number"
       }
     },
     "mapLayers": {
@@ -34,65 +34,279 @@
             "type": "string"
           },
           "type": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "geojson"
+            ]
           },
           "source": {
             "type": "string",
-            "enum": [
-              "region",
-              "airport",
-              "vor",
-              "ndb",
-              "fix",
-              "label",
-              "sid",
-              "star",
-              "runway",
-              "geo",
-              "lowAirway",
-              "highAirway",
-              "gate",
-              "artccLow",
-              "artccHigh",
-              "artcc"
-            ]
+            "default": "auto"
           },
-          "minZoom": {
-            "type": "number"
-          },
-          "maxZoom": {
-            "type": "number"
-          },
-          "stroke": {
-            "type": "boolean"
-          },
-          "pointType": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "circle",
-                  "icon",
-                  "text"
-                ]
+          "defaultStyle": {
+            "type": "object",
+            "properties": {
+              "lineStyle": {
+                "type": "object",
+                "properties": {
+                  "color": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "description": "RGB color array [r,g,b]"
+                  },
+                  "width": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "opacity": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "dashArray": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "required": [
+                  "color"
+                ],
+                "additionalProperties": false
               },
-              {
+              "fillStyle": {
+                "type": "object",
+                "properties": {
+                  "color": {
+                    "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color"
+                  },
+                  "opacity": {
+                    "type": "number",
+                    "default": 1
+                  }
+                },
+                "required": [
+                  "color"
+                ],
+                "additionalProperties": false
+              },
+              "symbolStyle": {
+                "type": "object",
+                "properties": {
+                  "symbol": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "type": "number",
+                    "default": 10
+                  }
+                },
+                "required": [
+                  "symbol"
+                ],
+                "additionalProperties": false
+              },
+              "textStyle": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "color": {
+                    "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
+                    "description": "RGB color array [r,g,b]"
+                  },
+                  "fontFamily": {
+                    "type": "string",
+                    "default": "RobotoMono-Regular"
+                  },
+                  "fontSize": {
+                    "type": "number",
+                    "default": 12
+                  },
+                  "fontWeight": {
+                    "type": [
+                      "string",
+                      "number"
+                    ],
+                    "enum": [
+                      "normal",
+                      "bold",
+                      "bolder",
+                      "lighter",
+                      100,
+                      200,
+                      300,
+                      400,
+                      500,
+                      600,
+                      700,
+                      800,
+                      900
+                    ],
+                    "default": "normal"
+                  },
+                  "size": {
+                    "type": "number",
+                    "default": 10
+                  },
+                  "offset": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "default": [
+                      0,
+                      0
+                    ]
+                  },
+                  "anchor": {
+                    "type": "string",
+                    "enum": [
+                      "start",
+                      "middle",
+                      "end"
+                    ],
+                    "default": "middle"
+                  },
+                  "baseline": {
+                    "type": "string",
+                    "enum": [
+                      "top",
+                      "middle",
+                      "bottom",
+                      "alphabetic"
+                    ],
+                    "default": "middle"
+                  },
+                  "letterSpacing": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "lineHeight": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "align": {
+                    "type": "string",
+                    "enum": [
+                      "left",
+                      "center",
+                      "right"
+                    ],
+                    "default": "center"
+                  },
+                  "wordWrap": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "wordWrapWidth": {
+                    "type": "number",
+                    "default": 100
+                  },
+                  "outlineColor": {
+                    "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
+                    "description": "RGB color array [r,g,b]"
+                  },
+                  "outlineWidth": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "outlineOpacity": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "dropShadow": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "dropShadowColor": {
+                    "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
+                    "description": "RGB color array [r,g,b]",
+                    "default": [
+                      0,
+                      0,
+                      0
+                    ]
+                  },
+                  "dropShadowAngle": {
+                    "type": "number",
+                    "default": 0.5235987755982988
+                  },
+                  "dropShadowBlur": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "dropShadowDistance": {
+                    "type": "number",
+                    "default": 5
+                  },
+                  "dropShadowOpacity": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "scaleWithZoom": {
+                    "type": "boolean",
+                    "default": true
+                  },
+                  "minZoom": {
+                    "type": "number"
+                  },
+                  "maxZoom": {
+                    "type": "number"
+                  },
+                  "padding": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "backgroundColor": {
+                    "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
+                    "description": "RGB color array [r,g,b]"
+                  },
+                  "backgroundOpacity": {
+                    "type": "number",
+                    "default": 0
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uuid": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "_mappedName": {
                 "type": "string"
               }
+            },
+            "required": [
+              "uuid"
             ],
-            "default": "circle"
+            "additionalProperties": false
           },
-          "defaultIcon": {
-            "type": "string"
+          "hasLabels": {
+            "type": "boolean"
           },
-          "pickable": {
+          "isLabelLayer": {
             "type": "boolean"
           }
         },
         "required": [
           "name",
-          "type",
-          "source"
+          "type"
         ],
         "additionalProperties": false
       }
@@ -102,7 +316,8 @@
     "id",
     "name",
     "namespace",
-    "createdAt"
+    "createdAt",
+    "centerPoint"
   ],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"
