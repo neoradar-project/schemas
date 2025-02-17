@@ -35,12 +35,17 @@
                         "type": "string",
                         "enum": [
                           "stopped",
-                          "reportedHeading",
-                          "groundSpeed",
+                          "timestamp",
+                          "verticalSpeed",
+                          "verticalTrend",
                           "altitude",
                           "agl",
                           "onGround",
-                          "trackHeading"
+                          "groundSpeed",
+                          "reportedHeading",
+                          "trackHeading",
+                          "transponder",
+                          "latLon"
                         ]
                       },
                       {
