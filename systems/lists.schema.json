@@ -282,6 +282,19 @@
                           }
                         }
                       ]
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "anyOf": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                          }
+                        ]
+                      }
                     }
                   ]
                 },
@@ -307,6 +320,9 @@
                     },
                     {
                       "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                    },
+                    {
+                      "type": "number"
                     }
                   ]
                 },
@@ -322,6 +338,9 @@
                     },
                     {
                       "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                    },
+                    {
+                      "type": "string"
                     }
                   ]
                 },

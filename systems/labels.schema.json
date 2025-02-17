@@ -177,6 +177,19 @@
                               }
                             }
                           ]
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "anyOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                              }
+                            ]
+                          }
                         }
                       ]
                     },
@@ -202,6 +215,9 @@
                         },
                         {
                           "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                        },
+                        {
+                          "type": "number"
                         }
                       ]
                     },
@@ -217,6 +233,9 @@
                         },
                         {
                           "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                        },
+                        {
+                          "type": "string"
                         }
                       ]
                     },
