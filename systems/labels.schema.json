@@ -10,226 +10,237 @@
             "items": {
               "type": "array",
               "items": {
-                "type": "object",
-                "properties": {
-                  "itemName": {
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "enum": [
-                          "stopped",
-                          "reportedHeading",
-                          "groundSpeed",
-                          "altitude",
-                          "agl",
-                          "onGround",
-                          "trackHeading"
-                        ]
-                      },
-                      {
-                        "type": "string",
-                        "enum": [
-                          "flightRule",
-                          "rawType",
-                          "origin",
-                          "destination",
-                          "plannedTas",
-                          "plannedFlightLevel",
-                          "rmk",
-                          "eobt",
-                          "aobt",
-                          "alternate",
-                          "fuelTimeHours",
-                          "fuelTimeMinutes",
-                          "flightTimeHours",
-                          "flightTimeMinutes",
-                          "icaoEquipment",
-                          "acShortType",
-                          "voiceType",
-                          "isValid",
-                          "icaoTransponderEquipment",
-                          "icaoWakeCategory"
-                        ]
-                      },
-                      {
-                        "type": "string",
-                        "enum": [
-                          "callsign",
-                          "type",
-                          "isTimingOut",
-                          "squawk",
-                          "latestTransponderStatus"
-                        ]
-                      },
-                      {
-                        "type": "string",
-                        "enum": [
-                          "callsign",
-                          "clearedFlightLevel",
-                          "direct",
-                          "heading",
-                          "assignedSpeed",
-                          "mach",
-                          "verticalRate",
-                          "clearanceIssued",
-                          "assignedSquawk",
-                          "ownedByMe",
-                          "ownedByCallsign",
-                          "futureOwnerCallsign",
-                          "scratchpad",
-                          "groundStatus",
-                          "clearanceQueuePosition"
-                        ]
-                      },
-                      {
-                        "type": "string",
-                        "enum": [
-                          "sid",
-                          "star",
-                          "isAmended",
-                          "depRunway",
-                          "arrRunway",
-                          "rawRoute",
-                          "hadStar",
-                          "hadSid",
-                          "hadArrRwy",
-                          "hadDepRwy"
-                        ]
-                      },
-                      {
-                        "type": "string",
-                        "enum": [
-                          "isArrival",
-                          "isDeparture",
-                          "suggestedStar",
-                          "suggestedSid",
-                          "suggestedDepRunway",
-                          "suggestedArrRunway",
-                          "myCallsign",
-                          "text"
-                        ]
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "itemName": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "stopped",
+                            "reportedHeading",
+                            "groundSpeed",
+                            "altitude",
+                            "agl",
+                            "onGround",
+                            "trackHeading"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "flightRule",
+                            "rawType",
+                            "origin",
+                            "destination",
+                            "plannedTas",
+                            "plannedFlightLevel",
+                            "rmk",
+                            "eobt",
+                            "aobt",
+                            "alternate",
+                            "fuelTimeHours",
+                            "fuelTimeMinutes",
+                            "flightTimeHours",
+                            "flightTimeMinutes",
+                            "icaoEquipment",
+                            "acShortType",
+                            "voiceType",
+                            "isValid",
+                            "icaoTransponderEquipment",
+                            "icaoWakeCategory"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "callsign",
+                            "type",
+                            "isTimingOut",
+                            "squawk",
+                            "latestTransponderStatus"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "callsign",
+                            "clearedFlightLevel",
+                            "direct",
+                            "heading",
+                            "assignedSpeed",
+                            "mach",
+                            "verticalRate",
+                            "clearanceIssued",
+                            "assignedSquawk",
+                            "ownedByMe",
+                            "ownedByCallsign",
+                            "futureOwnerCallsign",
+                            "scratchpad",
+                            "groundStatus",
+                            "clearanceQueuePosition"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "sid",
+                            "star",
+                            "isAmended",
+                            "depRunway",
+                            "arrRunway",
+                            "rawRoute",
+                            "hadStar",
+                            "hadSid",
+                            "hadArrRwy",
+                            "hadDepRwy"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "isArrival",
+                            "isDeparture",
+                            "suggestedStar",
+                            "suggestedSid",
+                            "suggestedDepRunway",
+                            "suggestedArrRunway",
+                            "myCallsign",
+                            "text"
+                          ]
+                        }
+                      ]
+                    },
+                    "truncate": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
                       }
-                    ]
-                  },
-                  "truncate": {
-                    "type": "array",
-                    "items": {
+                    },
+                    "placeholder": {
+                      "type": "string"
+                    },
+                    "prefix": {
+                      "type": "string"
+                    },
+                    "suffix": {
+                      "type": "string"
+                    },
+                    "mapping": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "padWithZeroLeft": {
                       "type": "number"
-                    }
-                  },
-                  "placeholder": {
-                    "type": "string"
-                  },
-                  "prefix": {
-                    "type": "string"
-                  },
-                  "suffix": {
-                    "type": "string"
-                  },
-                  "mapping": {
-                    "type": "object",
-                    "additionalProperties": {
+                    },
+                    "padWithZeroRight": {
+                      "type": "number"
+                    },
+                    "fontSize": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^[&=][A-z0-9_-]+"
+                            },
+                            {
+                              "type": "string",
+                              "pattern": "^\\$[A-z0-9_-]+"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "anyOf": [
+                                  {
+                                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1/anyOf/0"
+                                  },
+                                  {
+                                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1/anyOf/1"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "fontWeight": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "normal",
+                            "bold",
+                            "bolder",
+                            "lighter",
+                            "100",
+                            "200",
+                            "300",
+                            "400",
+                            "500",
+                            "600",
+                            "700",
+                            "800",
+                            "900"
+                          ]
+                        },
+                        {
+                          "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                        }
+                      ]
+                    },
+                    "color": {
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3
+                        },
+                        {
+                          "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                        }
+                      ]
+                    },
+                    "separatorBefore": {
+                      "type": "boolean",
+                      "default": true
+                    },
+                    "value": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
+                        }
+                      ]
+                    },
+                    "leftClick": {
+                      "type": "string"
+                    },
+                    "rightClick": {
+                      "type": "string"
+                    },
+                    "middleClick": {
                       "type": "string"
                     }
                   },
-                  "padWithZeroLeft": {
-                    "type": "number"
-                  },
-                  "padWithZeroRight": {
-                    "type": "number"
-                  },
-                  "fontSize": {
-                    "anyOf": [
-                      {
-                        "type": "number"
-                      },
-                      {
-                        "anyOf": [
-                          {
-                            "type": "string",
-                            "pattern": "^[&=][A-z0-9_-]+"
-                          },
-                          {
-                            "type": "string",
-                            "pattern": "^\\$[A-z0-9_-]+"
-                          },
-                          {
-                            "type": "array",
-                            "items": {
-                              "anyOf": [
-                                {
-                                  "$ref": "#/properties/ground/properties/default/properties/items/items/properties/fontSize/anyOf/1/anyOf/0"
-                                },
-                                {
-                                  "$ref": "#/properties/ground/properties/default/properties/items/items/properties/fontSize/anyOf/1/anyOf/1"
-                                }
-                              ]
-                            }
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "fontWeight": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "$ref": "#/properties/ground/properties/default/properties/items/items/properties/fontSize/anyOf/1"
-                      }
-                    ]
-                  },
-                  "color": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      }
-                    ]
-                  },
-                  "backgroundColor": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "$ref": "#/properties/ground/properties/default/properties/items/items/properties/fontSize/anyOf/1"
-                      }
-                    ]
-                  },
-                  "separatorBefore": {
-                    "type": "boolean"
-                  },
-                  "value": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "$ref": "#/properties/ground/properties/default/properties/items/items/properties/fontSize/anyOf/1"
-                      }
-                    ]
-                  },
-                  "leftClick": {
-                    "type": "string"
-                  },
-                  "rightClick": {
-                    "type": "string"
-                  },
-                  "middleClick": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "itemName"
-                ],
-                "additionalProperties": false
+                  "required": [
+                    "itemName"
+                  ],
+                  "additionalProperties": false
+                }
               }
             },
             "styleVariants": {
@@ -261,7 +272,7 @@
                                 ]
                               },
                               {
-                                "$ref": "#/properties/ground/properties/default/properties/items/items/properties/itemName"
+                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/itemName"
                               },
                               {
                                 "type": [
@@ -292,7 +303,7 @@
                                       "$ref": "#/properties/ground/properties/default/properties/styleVariants/items/properties/applyWhen/anyOf/0"
                                     },
                                     {
-                                      "$ref": "#/properties/ground/properties/default/properties/items/items/properties/fontSize/anyOf/1/anyOf/1"
+                                      "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1/anyOf/1"
                                     }
                                   ]
                                 }
@@ -315,7 +326,7 @@
                                 ]
                               },
                               {
-                                "$ref": "#/properties/ground/properties/default/properties/items/items/properties/itemName"
+                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/itemName"
                               }
                             ]
                           },
@@ -328,14 +339,14 @@
                                 "$ref": "#/properties/ground/properties/default/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/2/items/1"
                               },
                               {
-                                "$ref": "#/properties/ground/properties/default/properties/items/items/properties/itemName"
+                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/itemName"
                               }
                             ]
                           }
                         ]
                       },
                       {
-                        "$ref": "#/properties/ground/properties/default/properties/items/items/properties/fontSize/anyOf/1/anyOf/1"
+                        "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1/anyOf/1"
                       }
                     ]
                   },
@@ -346,16 +357,21 @@
                     "type": "number"
                   },
                   "fontWeight": {
-                    "type": "string"
+                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontWeight/anyOf/0"
                   },
                   "textColor": {
-                    "type": "array",
-                    "items": {
-                      "type": "number"
-                    }
+                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/0"
                   },
                   "backgroundColor": {
-                    "$ref": "#/properties/ground/properties/default/properties/styleVariants/items/properties/textColor"
+                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/0"
+                  },
+                  "backgroundColorOpacity": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "roundedCorners": {
+                    "type": "number",
+                    "default": 0
                   }
                 },
                 "additionalProperties": false

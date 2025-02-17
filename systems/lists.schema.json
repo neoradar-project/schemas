@@ -283,7 +283,22 @@
                 "fontWeight": {
                   "anyOf": [
                     {
-                      "type": "string"
+                      "type": "string",
+                      "enum": [
+                        "normal",
+                        "bold",
+                        "bolder",
+                        "lighter",
+                        "100",
+                        "200",
+                        "300",
+                        "400",
+                        "500",
+                        "600",
+                        "700",
+                        "800",
+                        "900"
+                      ]
                     },
                     {
                       "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
@@ -293,20 +308,12 @@
                 "color": {
                   "anyOf": [
                     {
-                      "type": "string"
-                    },
-                    {
                       "type": "array",
                       "items": {
-                        "type": "string"
-                      }
-                    }
-                  ]
-                },
-                "backgroundColor": {
-                  "anyOf": [
-                    {
-                      "type": "string"
+                        "type": "number"
+                      },
+                      "minItems": 3,
+                      "maxItems": 3
                     },
                     {
                       "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
@@ -314,7 +321,8 @@
                   ]
                 },
                 "separatorBefore": {
-                  "type": "boolean"
+                  "type": "boolean",
+                  "default": true
                 },
                 "value": {
                   "anyOf": [
