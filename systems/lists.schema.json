@@ -51,26 +51,28 @@
                       {
                         "type": "string",
                         "enum": [
+                          "callsign",
                           "flightRule",
                           "rawType",
+                          "icaoTransponderEquipment",
+                          "icaoEquipment",
+                          "icaoWakeCategory",
+                          "acShortType",
                           "origin",
                           "destination",
+                          "alternate",
                           "plannedTas",
                           "plannedFlightLevel",
                           "rmk",
-                          "eobt",
-                          "aobt",
-                          "alternate",
-                          "fuelTimeHours",
-                          "fuelTimeMinutes",
                           "flightTimeHours",
                           "flightTimeMinutes",
-                          "icaoEquipment",
-                          "acShortType",
-                          "voiceType",
+                          "fuelTimeHours",
+                          "fuelTimeMinutes",
+                          "eobt",
+                          "aobt",
                           "isValid",
-                          "icaoTransponderEquipment",
-                          "icaoWakeCategory"
+                          "voiceType",
+                          "route"
                         ]
                       },
                       {
@@ -79,6 +81,7 @@
                           "callsign",
                           "type",
                           "isTimingOut",
+                          "lastPositionUpdateReceivedAt",
                           "squawk",
                           "latestTransponderStatus"
                         ]
@@ -86,21 +89,19 @@
                       {
                         "type": "string",
                         "enum": [
-                          "callsign",
                           "clearedFlightLevel",
-                          "direct",
-                          "heading",
+                          "assignedHeading",
                           "assignedSpeed",
-                          "mach",
-                          "verticalRate",
+                          "assignedMach",
+                          "assignedVerticalRate",
                           "clearanceIssued",
                           "assignedSquawk",
                           "ownedByMe",
                           "ownedByCallsign",
-                          "futureOwnerCallsign",
                           "scratchpad",
                           "groundStatus",
-                          "clearanceQueuePosition"
+                          "clearanceQueuePosition",
+                          "attentionState"
                         ]
                       },
                       {
@@ -113,9 +114,7 @@
                           "arrRunway",
                           "rawRoute",
                           "hadStar",
-                          "hadSid",
-                          "hadArrRwy",
-                          "hadDepRwy"
+                          "hadSid"
                         ]
                       },
                       {
