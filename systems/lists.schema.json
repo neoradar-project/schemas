@@ -51,7 +51,6 @@
                       {
                         "type": "string",
                         "enum": [
-                          "callsign",
                           "flightRule",
                           "rawType",
                           "icaoTransponderEquipment",
@@ -71,8 +70,7 @@
                           "eobt",
                           "aobt",
                           "isValid",
-                          "voiceType",
-                          "route"
+                          "voiceType"
                         ]
                       },
                       {
