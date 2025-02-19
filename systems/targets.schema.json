@@ -227,6 +227,20 @@
                   }
                 ]
               },
+              "applyToAttentionStates": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "kUnconcerned",
+                    "kNotified",
+                    "kIncomingTransfer",
+                    "kAssumed",
+                    "kOutgoingTransfer",
+                    "kIntruder"
+                  ]
+                }
+              },
               "plotImage": {
                 "type": "string",
                 "default": ""
