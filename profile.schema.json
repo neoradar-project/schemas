@@ -136,6 +136,12 @@
         "items"
       ],
       "additionalProperties": false
+    },
+    "filePath": {
+      "type": "string"
+    },
+    "lastModified": {
+      "type": "number"
     }
   },
   "required": [

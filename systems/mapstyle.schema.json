@@ -9,9 +9,6 @@
       "minItems": 3,
       "maxItems": 4
     },
-    "gateLabelColor": {
-      "type": "string"
-    },
     "gateInactiveStyle": {
       "type": "object",
       "properties": {
@@ -46,285 +43,275 @@
     "gateBookedStyle": {
       "$ref": "#/properties/gateInactiveStyle"
     },
-    "layers": {
+    "layerStyles": {
       "type": "object",
       "additionalProperties": {
-        "anyOf": [
-          {
-            "not": {}
-          },
-          {
+        "type": "object",
+        "properties": {
+          "lineStyle": {
             "type": "object",
             "properties": {
-              "lineStyle": {
-                "type": "object",
-                "properties": {
-                  "color": {
-                    "type": "array",
-                    "items": {
-                      "type": "number"
-                    },
-                    "minItems": 3,
-                    "maxItems": 3,
-                    "description": "RGB color array [r,g,b]"
-                  },
-                  "width": {
-                    "type": "number",
-                    "default": 1
-                  },
-                  "opacity": {
-                    "type": "number",
-                    "default": 1
-                  },
-                  "dashArray": {
-                    "type": "array",
-                    "items": {
-                      "type": "number"
-                    }
-                  }
+              "color": {
+                "type": "array",
+                "items": {
+                  "type": "number"
                 },
-                "required": [
-                  "color"
+                "minItems": 3,
+                "maxItems": 3,
+                "description": "RGB color array [r,g,b]"
+              },
+              "width": {
+                "type": "number",
+                "default": 1
+              },
+              "opacity": {
+                "type": "number",
+                "default": 1
+              },
+              "dashArray": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            },
+            "required": [
+              "color"
+            ],
+            "additionalProperties": false
+          },
+          "fillStyle": {
+            "type": "object",
+            "properties": {
+              "color": {
+                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color"
+              },
+              "opacity": {
+                "type": "number",
+                "default": 1
+              }
+            },
+            "required": [
+              "color"
+            ],
+            "additionalProperties": false
+          },
+          "pointStyle": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "sprite",
+                  "circle",
+                  "square",
+                  "diamond",
+                  "cross"
                 ],
-                "additionalProperties": false
+                "default": "circle"
               },
-              "fillStyle": {
-                "type": "object",
-                "properties": {
-                  "color": {
-                    "$ref": "#/properties/layers/additionalProperties/anyOf/1/properties/lineStyle/properties/color"
-                  },
-                  "opacity": {
-                    "type": "number",
-                    "default": 1
-                  }
-                },
-                "required": [
-                  "color"
+              "size": {
+                "type": "number",
+                "default": 10
+              },
+              "sprite": {
+                "type": "string"
+              },
+              "fillColor": {
+                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color",
+                "description": "RGB color array [r,g,b]"
+              },
+              "fillOpacity": {
+                "type": "number",
+                "default": 1
+              },
+              "strokeColor": {
+                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color",
+                "description": "RGB color array [r,g,b]"
+              },
+              "strokeOpacity": {
+                "type": "number",
+                "default": 1
+              },
+              "strokeWidth": {
+                "type": "number",
+                "default": 1
+              },
+              "rotation": {
+                "type": "number",
+                "default": 0
+              }
+            },
+            "additionalProperties": false
+          },
+          "textStyle": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "color": {
+                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color",
+                "description": "RGB color array [r,g,b]"
+              },
+              "fontFamily": {
+                "type": "string",
+                "default": "RobotoMono-Regular"
+              },
+              "fontSize": {
+                "type": "number",
+                "default": 12
+              },
+              "fontWeight": {
+                "type": [
+                  "string",
+                  "number"
                 ],
-                "additionalProperties": false
+                "enum": [
+                  "normal",
+                  "bold",
+                  "bolder",
+                  "lighter",
+                  100,
+                  200,
+                  300,
+                  400,
+                  500,
+                  600,
+                  700,
+                  800,
+                  900
+                ],
+                "default": "normal"
               },
-              "pointStyle": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "sprite",
-                      "circle",
-                      "square",
-                      "diamond",
-                      "cross"
-                    ],
-                    "default": "circle"
-                  },
-                  "size": {
-                    "type": "number",
-                    "default": 10
-                  },
-                  "sprite": {
-                    "type": "string"
-                  },
-                  "fillColor": {
-                    "$ref": "#/properties/layers/additionalProperties/anyOf/1/properties/lineStyle/properties/color",
-                    "description": "RGB color array [r,g,b]"
-                  },
-                  "fillOpacity": {
-                    "type": "number",
-                    "default": 1
-                  },
-                  "strokeColor": {
-                    "$ref": "#/properties/layers/additionalProperties/anyOf/1/properties/lineStyle/properties/color",
-                    "description": "RGB color array [r,g,b]"
-                  },
-                  "strokeOpacity": {
-                    "type": "number",
-                    "default": 1
-                  },
-                  "strokeWidth": {
-                    "type": "number",
-                    "default": 1
-                  },
-                  "rotation": {
-                    "type": "number",
-                    "default": 0
-                  }
-                },
-                "additionalProperties": false
+              "size": {
+                "type": "number",
+                "default": 10
               },
-              "textStyle": {
-                "type": "object",
-                "properties": {
-                  "text": {
-                    "type": "string"
-                  },
-                  "color": {
-                    "$ref": "#/properties/layers/additionalProperties/anyOf/1/properties/lineStyle/properties/color",
-                    "description": "RGB color array [r,g,b]"
-                  },
-                  "fontFamily": {
-                    "type": "string",
-                    "default": "RobotoMono-Regular"
-                  },
-                  "fontSize": {
-                    "type": "number",
-                    "default": 12
-                  },
-                  "fontWeight": {
-                    "type": [
-                      "string",
-                      "number"
-                    ],
-                    "enum": [
-                      "normal",
-                      "bold",
-                      "bolder",
-                      "lighter",
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
-                    ],
-                    "default": "normal"
-                  },
-                  "size": {
-                    "type": "number",
-                    "default": 10
-                  },
-                  "offset": {
-                    "type": "array",
-                    "items": {
-                      "type": "number"
-                    },
-                    "minItems": 2,
-                    "maxItems": 2,
-                    "default": [
-                      0,
-                      0
-                    ]
-                  },
-                  "anchor": {
-                    "type": "string",
-                    "enum": [
-                      "start",
-                      "middle",
-                      "end"
-                    ],
-                    "default": "middle"
-                  },
-                  "baseline": {
-                    "type": "string",
-                    "enum": [
-                      "top",
-                      "middle",
-                      "bottom",
-                      "alphabetic"
-                    ],
-                    "default": "middle"
-                  },
-                  "letterSpacing": {
-                    "type": "number",
-                    "default": 0
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "default": 0
-                  },
-                  "align": {
-                    "type": "string",
-                    "enum": [
-                      "left",
-                      "center",
-                      "right"
-                    ],
-                    "default": "center"
-                  },
-                  "wordWrap": {
-                    "type": "boolean",
-                    "default": false
-                  },
-                  "wordWrapWidth": {
-                    "type": "number",
-                    "default": 100
-                  },
-                  "outlineColor": {
-                    "$ref": "#/properties/layers/additionalProperties/anyOf/1/properties/lineStyle/properties/color",
-                    "description": "RGB color array [r,g,b]"
-                  },
-                  "outlineWidth": {
-                    "type": "number",
-                    "default": 0
-                  },
-                  "outlineOpacity": {
-                    "type": "number",
-                    "default": 1
-                  },
-                  "dropShadow": {
-                    "type": "boolean",
-                    "default": false
-                  },
-                  "dropShadowColor": {
-                    "$ref": "#/properties/layers/additionalProperties/anyOf/1/properties/lineStyle/properties/color",
-                    "description": "RGB color array [r,g,b]",
-                    "default": [
-                      0,
-                      0,
-                      0
-                    ]
-                  },
-                  "dropShadowAngle": {
-                    "type": "number",
-                    "default": 0.5235987755982988
-                  },
-                  "dropShadowBlur": {
-                    "type": "number",
-                    "default": 0
-                  },
-                  "dropShadowDistance": {
-                    "type": "number",
-                    "default": 5
-                  },
-                  "dropShadowOpacity": {
-                    "type": "number",
-                    "default": 1
-                  },
-                  "scaleWithZoom": {
-                    "type": "boolean",
-                    "default": true
-                  },
-                  "minZoom": {
-                    "type": "number"
-                  },
-                  "maxZoom": {
-                    "type": "number"
-                  },
-                  "padding": {
-                    "type": "number",
-                    "default": 0
-                  },
-                  "backgroundColor": {
-                    "$ref": "#/properties/layers/additionalProperties/anyOf/1/properties/lineStyle/properties/color",
-                    "description": "RGB color array [r,g,b]"
-                  },
-                  "backgroundOpacity": {
-                    "type": "number",
-                    "default": 0
-                  }
+              "offset": {
+                "type": "array",
+                "items": {
+                  "type": "number"
                 },
-                "additionalProperties": false
+                "minItems": 2,
+                "maxItems": 2,
+                "default": [
+                  0,
+                  0
+                ]
+              },
+              "anchor": {
+                "type": "string",
+                "enum": [
+                  "start",
+                  "middle",
+                  "end"
+                ],
+                "default": "middle"
+              },
+              "baseline": {
+                "type": "string",
+                "enum": [
+                  "top",
+                  "middle",
+                  "bottom",
+                  "alphabetic"
+                ],
+                "default": "middle"
+              },
+              "letterSpacing": {
+                "type": "number",
+                "default": 0
+              },
+              "lineHeight": {
+                "type": "number",
+                "default": 0
+              },
+              "align": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "center",
+                  "right"
+                ],
+                "default": "center"
+              },
+              "wordWrap": {
+                "type": "boolean",
+                "default": false
+              },
+              "wordWrapWidth": {
+                "type": "number",
+                "default": 100
+              },
+              "outlineColor": {
+                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color",
+                "description": "RGB color array [r,g,b]"
+              },
+              "outlineWidth": {
+                "type": "number",
+                "default": 0
+              },
+              "outlineOpacity": {
+                "type": "number",
+                "default": 1
+              },
+              "dropShadow": {
+                "type": "boolean",
+                "default": false
+              },
+              "dropShadowColor": {
+                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color",
+                "description": "RGB color array [r,g,b]",
+                "default": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "dropShadowAngle": {
+                "type": "number",
+                "default": 0.5235987755982988
+              },
+              "dropShadowBlur": {
+                "type": "number",
+                "default": 0
+              },
+              "dropShadowDistance": {
+                "type": "number",
+                "default": 5
+              },
+              "dropShadowOpacity": {
+                "type": "number",
+                "default": 1
+              },
+              "scaleWithZoom": {
+                "type": "boolean",
+                "default": true
+              },
+              "minZoom": {
+                "type": "number"
+              },
+              "maxZoom": {
+                "type": "number"
+              },
+              "padding": {
+                "type": "number",
+                "default": 0
+              },
+              "backgroundColor": {
+                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color",
+                "description": "RGB color array [r,g,b]"
+              },
+              "backgroundOpacity": {
+                "type": "number",
+                "default": 0
               }
             },
             "additionalProperties": false
           }
-        ]
-      },
-      "propertyNames": {
-        "pattern": ".*Style$"
+        },
+        "additionalProperties": false
       }
     },
     "$schema": {
