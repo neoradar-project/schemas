@@ -274,26 +274,10 @@
       "additionalProperties": false
     },
     "airborneSymbology": {
-      "type": "object",
-      "properties": {
-        "unconcerned": {
-          "type": "array",
-          "items": {
-            "$ref": "#/properties/groundSymbology/properties/default/items"
-          }
-        },
-        "concerned": {
-          "type": "array",
-          "items": {
-            "$ref": "#/properties/groundSymbology/properties/default/items"
-          }
-        }
-      },
-      "required": [
-        "unconcerned",
-        "concerned"
-      ],
-      "additionalProperties": false
+      "type": "array",
+      "items": {
+        "$ref": "#/properties/groundSymbology/properties/default/items"
+      }
     }
   },
   "required": [
