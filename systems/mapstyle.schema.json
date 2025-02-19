@@ -7,41 +7,26 @@
         "type": "number"
       },
       "minItems": 3,
-      "maxItems": 4
+      "maxItems": 3
     },
-    "gateInactiveStyle": {
-      "type": "object",
-      "properties": {
-        "outlineColor": {
-          "type": "string"
-        },
-        "outlineWidth": {
-          "type": "number"
-        },
-        "outlineOpacity": {
-          "type": "number"
-        },
-        "fillColor": {
-          "type": "string"
-        },
-        "fillOpacity": {
-          "type": "number"
-        },
-        "radius": {
-          "type": "number"
-        }
+    "activeSectorBackgroundColor": {
+      "type": "array",
+      "items": {
+        "type": "number"
       },
-      "required": [
-        "outlineColor",
-        "fillColor"
-      ],
-      "additionalProperties": false
+      "minItems": 3,
+      "maxItems": 3
     },
-    "gateOccupiedStyle": {
-      "$ref": "#/properties/gateInactiveStyle"
+    "neighborSectorBorderLineColor": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3
     },
-    "gateBookedStyle": {
-      "$ref": "#/properties/gateInactiveStyle"
+    "neighborSectorBorderLineWidth": {
+      "type": "number"
     },
     "layerStyles": {
       "type": "object",
@@ -320,7 +305,10 @@
     }
   },
   "required": [
-    "inactiveSectorBackgroundColor"
+    "inactiveSectorBackgroundColor",
+    "activeSectorBackgroundColor",
+    "neighborSectorBorderLineColor",
+    "neighborSectorBorderLineWidth"
   ],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"
