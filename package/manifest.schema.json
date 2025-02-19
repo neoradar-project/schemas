@@ -1,6 +1,9 @@
 {
   "type": "object",
   "properties": {
+    "$schema": {
+      "type": "string"
+    },
     "id": {
       "type": "string"
     },
@@ -94,20 +97,52 @@
                 ],
                 "additionalProperties": false
               },
-              "symbolStyle": {
+              "pointStyle": {
                 "type": "object",
                 "properties": {
-                  "symbol": {
-                    "type": "string"
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "sprite",
+                      "circle",
+                      "square",
+                      "diamond",
+                      "cross"
+                    ],
+                    "default": "circle"
                   },
                   "size": {
                     "type": "number",
                     "default": 10
+                  },
+                  "sprite": {
+                    "type": "string"
+                  },
+                  "fillColor": {
+                    "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
+                    "description": "RGB color array [r,g,b]"
+                  },
+                  "fillOpacity": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "strokeColor": {
+                    "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
+                    "description": "RGB color array [r,g,b]"
+                  },
+                  "strokeOpacity": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "strokeWidth": {
+                    "type": "number",
+                    "default": 1
+                  },
+                  "rotation": {
+                    "type": "number",
+                    "default": 0
                   }
                 },
-                "required": [
-                  "symbol"
-                ],
                 "additionalProperties": false
               },
               "textStyle": {
@@ -313,6 +348,7 @@
     }
   },
   "required": [
+    "$schema",
     "id",
     "name",
     "namespace",
