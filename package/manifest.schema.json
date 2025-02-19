@@ -310,26 +310,8 @@
                   }
                 },
                 "additionalProperties": false
-              },
-              "uuid": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string"
-              },
-              "label": {
-                "type": "string"
-              },
-              "value": {
-                "type": "string"
-              },
-              "_mappedName": {
-                "type": "string"
               }
             },
-            "required": [
-              "uuid"
-            ],
             "additionalProperties": false
           },
           "hasLabels": {
