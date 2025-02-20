@@ -434,9 +434,6 @@
                 "$ref": "#/properties/ground/properties/styleVariants/items/properties/fontWeight"
               }
             },
-            "required": [
-              "textColorForState"
-            ],
             "additionalProperties": false
           }
         }
