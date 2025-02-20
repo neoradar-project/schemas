@@ -350,7 +350,10 @@
                   }
                 ]
               },
-              "applyToDetailedState": {
+              "applyToDetailedOnly": {
+                "type": "boolean"
+              },
+              "alsoApplyToDetailed": {
                 "type": "boolean"
               },
               "applyToAttentionState": {
