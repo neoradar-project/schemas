@@ -351,6 +351,9 @@
                 ]
               },
               "applyToDetailedState": {
+                "type": "boolean"
+              },
+              "applyToAttentionState": {
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -362,12 +365,6 @@
                     "kOutgoingTransfer",
                     "kIntruder"
                   ]
-                }
-              },
-              "applyToAttentionState": {
-                "type": "array",
-                "items": {
-                  "type": "string"
                 }
               },
               "applyToIsDeparture": {
