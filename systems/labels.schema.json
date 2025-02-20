@@ -247,6 +247,9 @@
           "items": {
             "type": "object",
             "properties": {
+              "description": {
+                "type": "string"
+              },
               "applyWhen": {
                 "anyOf": [
                   {
@@ -350,23 +353,6 @@
                   }
                 ]
               },
-              "applyToDetailedOnly": {
-                "type": "boolean"
-              },
-              "applyToAttentionState": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "kUnconcerned",
-                    "kNotified",
-                    "kIncomingTransfer",
-                    "kAssumed",
-                    "kOutgoingTransfer",
-                    "kIntruder"
-                  ]
-                }
-              },
               "applyToIsDeparture": {
                 "type": "boolean"
               },
@@ -400,6 +386,22 @@
               "textColor": {
                 "$ref": "#/properties/ground/properties/default/items/items/properties/color/anyOf/0"
               },
+              "textColorForState": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/properties/ground/properties/default/items/items/properties/color/anyOf/0"
+                },
+                "propertyNames": {
+                  "enum": [
+                    "kUnconcerned",
+                    "kNotified",
+                    "kIncomingTransfer",
+                    "kAssumed",
+                    "kOutgoingTransfer",
+                    "kIntruder"
+                  ]
+                }
+              },
               "backgroundColor": {
                 "$ref": "#/properties/ground/properties/default/items/items/properties/color/anyOf/0"
               },
@@ -410,8 +412,31 @@
               "roundedCorners": {
                 "type": "number",
                 "default": 0
+              },
+              "detailedBackgroundColor": {
+                "$ref": "#/properties/ground/properties/default/items/items/properties/color/anyOf/0"
+              },
+              "detailedBackgroundColorOpacity": {
+                "type": "number",
+                "default": 1
+              },
+              "detailedRoundedCorners": {
+                "type": "number",
+                "default": 0
+              },
+              "detailedTextColor": {
+                "$ref": "#/properties/ground/properties/default/items/items/properties/color/anyOf/0"
+              },
+              "detailedFontSize": {
+                "type": "number"
+              },
+              "detailedFontWeight": {
+                "$ref": "#/properties/ground/properties/styleVariants/items/properties/fontWeight"
               }
             },
+            "required": [
+              "textColorForState"
+            ],
             "additionalProperties": false
           }
         }
