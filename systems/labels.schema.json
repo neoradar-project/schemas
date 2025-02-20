@@ -8,390 +8,230 @@
       "type": "object",
       "properties": {
         "default": {
-          "type": "object",
-          "properties": {
+          "type": "array",
+          "items": {
+            "type": "array",
             "items": {
-              "type": "array",
-              "items": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "itemName": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "enum": [
-                            "stopped",
-                            "timestamp",
-                            "verticalSpeed",
-                            "verticalTrend",
-                            "altitude",
-                            "agl",
-                            "onGround",
-                            "groundSpeed",
-                            "reportedHeading",
-                            "trackHeading",
-                            "transponder",
-                            "latLon"
-                          ]
-                        },
-                        {
-                          "type": "string",
-                          "enum": [
-                            "flightRule",
-                            "rawType",
-                            "icaoTransponderEquipment",
-                            "icaoEquipment",
-                            "icaoWakeCategory",
-                            "acShortType",
-                            "origin",
-                            "destination",
-                            "alternate",
-                            "plannedTas",
-                            "plannedFlightLevel",
-                            "rmk",
-                            "flightTimeHours",
-                            "flightTimeMinutes",
-                            "fuelTimeHours",
-                            "fuelTimeMinutes",
-                            "eobt",
-                            "aobt",
-                            "isValid",
-                            "voiceType"
-                          ]
-                        },
-                        {
-                          "type": "string",
-                          "enum": [
-                            "callsign",
-                            "type",
-                            "isTimingOut",
-                            "lastPositionUpdateReceivedAt",
-                            "squawk",
-                            "latestTransponderStatus"
-                          ]
-                        },
-                        {
-                          "type": "string",
-                          "enum": [
-                            "clearedFlightLevel",
-                            "assignedHeading",
-                            "assignedSpeed",
-                            "assignedMach",
-                            "assignedVerticalRate",
-                            "clearanceIssued",
-                            "assignedSquawk",
-                            "ownedByMe",
-                            "ownedByCallsign",
-                            "scratchpad",
-                            "groundStatus",
-                            "clearanceQueuePosition",
-                            "attentionState"
-                          ]
-                        },
-                        {
-                          "type": "string",
-                          "enum": [
-                            "sid",
-                            "star",
-                            "isAmended",
-                            "depRunway",
-                            "arrRunway",
-                            "rawRoute",
-                            "hadStar",
-                            "hadSid"
-                          ]
-                        },
-                        {
-                          "type": "string",
-                          "enum": [
-                            "isArrival",
-                            "isDeparture",
-                            "suggestedStar",
-                            "suggestedSid",
-                            "suggestedDepRunway",
-                            "suggestedArrRunway",
-                            "myCallsign",
-                            "text"
-                          ]
-                        }
+              "type": "object",
+              "properties": {
+                "itemName": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "stopped",
+                        "timestamp",
+                        "verticalSpeed",
+                        "verticalTrend",
+                        "altitude",
+                        "agl",
+                        "onGround",
+                        "groundSpeed",
+                        "reportedHeading",
+                        "trackHeading",
+                        "transponder",
+                        "latLon"
                       ]
                     },
-                    "truncate": {
+                    {
+                      "type": "string",
+                      "enum": [
+                        "flightRule",
+                        "rawType",
+                        "icaoTransponderEquipment",
+                        "icaoEquipment",
+                        "icaoWakeCategory",
+                        "acShortType",
+                        "origin",
+                        "destination",
+                        "alternate",
+                        "plannedTas",
+                        "plannedFlightLevel",
+                        "rmk",
+                        "flightTimeHours",
+                        "flightTimeMinutes",
+                        "fuelTimeHours",
+                        "fuelTimeMinutes",
+                        "eobt",
+                        "aobt",
+                        "isValid",
+                        "voiceType"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "callsign",
+                        "type",
+                        "isTimingOut",
+                        "lastPositionUpdateReceivedAt",
+                        "squawk",
+                        "latestTransponderStatus"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "clearedFlightLevel",
+                        "assignedHeading",
+                        "assignedSpeed",
+                        "assignedMach",
+                        "assignedVerticalRate",
+                        "clearanceIssued",
+                        "assignedSquawk",
+                        "ownedByMe",
+                        "ownedByCallsign",
+                        "scratchpad",
+                        "groundStatus",
+                        "clearanceQueuePosition",
+                        "attentionState"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "sid",
+                        "star",
+                        "isAmended",
+                        "depRunway",
+                        "arrRunway",
+                        "rawRoute",
+                        "hadStar",
+                        "hadSid"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "isArrival",
+                        "isDeparture",
+                        "suggestedStar",
+                        "suggestedSid",
+                        "suggestedDepRunway",
+                        "suggestedArrRunway",
+                        "myCallsign",
+                        "text"
+                      ]
+                    }
+                  ]
+                },
+                "truncate": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "placeholder": {
+                  "type": "string"
+                },
+                "prefix": {
+                  "type": "string"
+                },
+                "suffix": {
+                  "type": "string"
+                },
+                "mapping": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "padWithZeroLeft": {
+                  "type": "number"
+                },
+                "padWithZeroRight": {
+                  "type": "number"
+                },
+                "fontSize": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^[&=][A-z0-9_-]+"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                      }
+                    }
+                  ]
+                },
+                "fontWeight": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                      }
+                    }
+                  ]
+                },
+                "color": {
+                  "anyOf": [
+                    {
                       "type": "array",
                       "items": {
                         "type": "number"
-                      }
-                    },
-                    "placeholder": {
-                      "type": "string"
-                    },
-                    "prefix": {
-                      "type": "string"
-                    },
-                    "suffix": {
-                      "type": "string"
-                    },
-                    "mapping": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "string"
-                      }
-                    },
-                    "padWithZeroLeft": {
-                      "type": "number"
-                    },
-                    "padWithZeroRight": {
-                      "type": "number"
-                    },
-                    "fontSize": {
-                      "anyOf": [
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "type": "string",
-                          "pattern": "^[&=][A-z0-9_-]+"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
-                          }
-                        }
-                      ]
-                    },
-                    "fontWeight": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
-                          }
-                        }
-                      ]
-                    },
-                    "color": {
-                      "anyOf": [
-                        {
-                          "type": "array",
-                          "items": {
-                            "type": "number"
-                          },
-                          "minItems": 3,
-                          "maxItems": 3
-                        },
-                        {
-                          "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
-                          }
-                        }
-                      ]
-                    },
-                    "separatorBefore": {
-                      "type": "boolean",
-                      "default": true
-                    },
-                    "value": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/fontSize/anyOf/1"
-                          }
-                        }
-                      ]
-                    },
-                    "leftClick": {
-                      "type": "string"
-                    },
-                    "rightClick": {
-                      "type": "string"
-                    },
-                    "middleClick": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "itemName"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            },
-            "styleVariants": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "applyWhen": {
-                    "anyOf": [
-                      {
-                        "anyOf": [
-                          {
-                            "type": "array",
-                            "minItems": 3,
-                            "maxItems": 3,
-                            "items": [
-                              {
-                                "type": "string",
-                                "enum": [
-                                  "==",
-                                  "!=",
-                                  "<",
-                                  "<=",
-                                  ">",
-                                  ">=",
-                                  "beginsWith",
-                                  "endsWith",
-                                  "contains"
-                                ]
-                              },
-                              {
-                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/itemName"
-                              },
-                              {
-                                "type": [
-                                  "string",
-                                  "number"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "array",
-                            "minItems": 2,
-                            "maxItems": 2,
-                            "items": [
-                              {
-                                "type": "string",
-                                "enum": [
-                                  "AND",
-                                  "OR",
-                                  "NOT"
-                                ]
-                              },
-                              {
-                                "type": "array",
-                                "items": {
-                                  "anyOf": [
-                                    {
-                                      "$ref": "#/properties/ground/properties/default/properties/styleVariants/items/properties/applyWhen/anyOf/0"
-                                    },
-                                    {
-                                      "type": "string",
-                                      "pattern": "^\\$[A-z0-9_-]+"
-                                    }
-                                  ]
-                                }
-                              }
-                            ]
-                          },
-                          {
-                            "type": "array",
-                            "minItems": 3,
-                            "maxItems": 3,
-                            "items": [
-                              {
-                                "$ref": "#/properties/ground/properties/default/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/1/items/0"
-                              },
-                              {
-                                "type": "string",
-                                "enum": [
-                                  "notEmpty",
-                                  "isEmpty"
-                                ]
-                              },
-                              {
-                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/itemName"
-                              }
-                            ]
-                          },
-                          {
-                            "type": "array",
-                            "minItems": 2,
-                            "maxItems": 2,
-                            "items": [
-                              {
-                                "$ref": "#/properties/ground/properties/default/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/2/items/1"
-                              },
-                              {
-                                "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/itemName"
-                              }
-                            ]
-                          }
-                        ]
                       },
-                      {
-                        "$ref": "#/properties/ground/properties/default/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/1/items/1/items/anyOf/1"
+                      "minItems": 3,
+                      "maxItems": 3
+                    },
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
                       }
-                    ]
-                  },
-                  "font": {
-                    "type": "string"
-                  },
-                  "fontSize": {
-                    "type": "number"
-                  },
-                  "fontWeight": {
-                    "type": "string",
-                    "enum": [
-                      "normal",
-                      "bold",
-                      "bolder",
-                      "lighter",
-                      "100",
-                      "200",
-                      "300",
-                      "400",
-                      "500",
-                      "600",
-                      "700",
-                      "800",
-                      "900"
-                    ]
-                  },
-                  "textColor": {
-                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/0"
-                  },
-                  "backgroundColor": {
-                    "$ref": "#/properties/ground/properties/default/properties/items/items/items/properties/color/anyOf/0"
-                  },
-                  "backgroundColorOpacity": {
-                    "type": "number",
-                    "default": 1
-                  },
-                  "roundedCorners": {
-                    "type": "number",
-                    "default": 0
-                  }
+                    }
+                  ]
                 },
-                "additionalProperties": false
-              }
+                "separatorBefore": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "value": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                      }
+                    }
+                  ]
+                },
+                "leftClick": {
+                  "type": "string"
+                },
+                "rightClick": {
+                  "type": "string"
+                },
+                "middleClick": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "itemName"
+              ],
+              "additionalProperties": false
             }
-          },
-          "required": [
-            "items",
-            "styleVariants"
-          ],
-          "additionalProperties": false
+          }
         },
         "arrival": {
           "$ref": "#/properties/ground/properties/default"
@@ -401,13 +241,190 @@
         },
         "detailed": {
           "$ref": "#/properties/ground/properties/default"
+        },
+        "styleVariants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "applyWhen": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "==",
+                              "!=",
+                              "<",
+                              "<=",
+                              ">",
+                              ">=",
+                              "beginsWith",
+                              "endsWith",
+                              "contains"
+                            ]
+                          },
+                          {
+                            "$ref": "#/properties/ground/properties/default/items/items/properties/itemName"
+                          },
+                          {
+                            "type": [
+                              "string",
+                              "number"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "AND",
+                              "OR",
+                              "NOT"
+                            ]
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "anyOf": [
+                                {
+                                  "$ref": "#/properties/ground/properties/styleVariants/items/properties/applyWhen/anyOf/0"
+                                },
+                                {
+                                  "type": "string",
+                                  "pattern": "^\\$[A-z0-9_-]+"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "array",
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "items": [
+                          {
+                            "$ref": "#/properties/ground/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/1/items/0"
+                          },
+                          {
+                            "type": "string",
+                            "enum": [
+                              "notEmpty",
+                              "isEmpty"
+                            ]
+                          },
+                          {
+                            "$ref": "#/properties/ground/properties/default/items/items/properties/itemName"
+                          }
+                        ]
+                      },
+                      {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "items": [
+                          {
+                            "$ref": "#/properties/ground/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/2/items/1"
+                          },
+                          {
+                            "$ref": "#/properties/ground/properties/default/items/items/properties/itemName"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "$ref": "#/properties/ground/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/1/items/1/items/anyOf/1"
+                  }
+                ]
+              },
+              "applyToDetailedState": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "kUnconcerned",
+                    "kNotified",
+                    "kIncomingTransfer",
+                    "kAssumed",
+                    "kOutgoingTransfer",
+                    "kIntruder"
+                  ]
+                }
+              },
+              "applyToAttentionState": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "applyToIsDeparture": {
+                "type": "boolean"
+              },
+              "applyToIsArrival": {
+                "type": "boolean"
+              },
+              "font": {
+                "type": "string"
+              },
+              "fontSize": {
+                "type": "number"
+              },
+              "fontWeight": {
+                "type": "string",
+                "enum": [
+                  "normal",
+                  "bold",
+                  "bolder",
+                  "lighter",
+                  "100",
+                  "200",
+                  "300",
+                  "400",
+                  "500",
+                  "600",
+                  "700",
+                  "800",
+                  "900"
+                ]
+              },
+              "textColor": {
+                "$ref": "#/properties/ground/properties/default/items/items/properties/color/anyOf/0"
+              },
+              "backgroundColor": {
+                "$ref": "#/properties/ground/properties/default/items/items/properties/color/anyOf/0"
+              },
+              "backgroundColorOpacity": {
+                "type": "number",
+                "default": 1
+              },
+              "roundedCorners": {
+                "type": "number",
+                "default": 0
+              }
+            },
+            "additionalProperties": false
+          }
         }
       },
       "required": [
         "default",
         "arrival",
         "departure",
-        "detailed"
+        "detailed",
+        "styleVariants"
       ],
       "additionalProperties": false
     },
@@ -422,12 +439,19 @@
         },
         "detailed": {
           "$ref": "#/properties/ground/properties/default"
+        },
+        "styleVariants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/properties/ground/properties/styleVariants/items"
+          }
         }
       },
       "required": [
         "unconcerned",
         "concerned",
-        "detailed"
+        "detailed",
+        "styleVariants"
       ],
       "additionalProperties": false
     }
