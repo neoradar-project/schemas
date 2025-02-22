@@ -284,6 +284,9 @@
                     }
                   ]
                 },
+                "fontFamily": {
+                  "type": "string"
+                },
                 "color": {
                   "anyOf": [
                     {
