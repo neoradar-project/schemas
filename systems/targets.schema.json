@@ -12,10 +12,6 @@
           "items": {
             "type": "object",
             "properties": {
-              "id": {
-                "type": "string",
-                "default": ""
-              },
               "description": {
                 "type": "string"
               },
@@ -138,6 +134,8 @@
                                     "enum": [
                                       "isArrival",
                                       "isDeparture",
+                                      "isMyDeparture",
+                                      "isMyArrival",
                                       "suggestedStar",
                                       "suggestedSid",
                                       "suggestedDepRunway",
@@ -259,6 +257,10 @@
               "rotateHistoryTrailWithHeading": {
                 "type": "boolean",
                 "default": false
+              },
+              "historyTrailsSkipSteps": {
+                "type": "number",
+                "default": 0
               }
             },
             "required": [

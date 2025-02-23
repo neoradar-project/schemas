@@ -117,6 +117,8 @@
                         "enum": [
                           "isArrival",
                           "isDeparture",
+                          "isMyDeparture",
+                          "isMyArrival",
                           "suggestedStar",
                           "suggestedSid",
                           "suggestedDepRunway",
