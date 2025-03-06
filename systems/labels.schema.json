@@ -60,14 +60,7 @@
                     },
                     {
                       "type": "string",
-                      "enum": [
-                        "callsign",
-                        "type",
-                        "isTimingOut",
-                        "lastPositionUpdateReceivedAt",
-                        "squawk",
-                        "latestTransponderStatus"
-                      ]
+                      "enum": ["callsign", "type", "isTimingOut", "lastPositionUpdateReceivedAt", "squawk", "latestTransponderStatus"]
                     },
                     {
                       "type": "string",
@@ -89,16 +82,7 @@
                     },
                     {
                       "type": "string",
-                      "enum": [
-                        "sid",
-                        "star",
-                        "isAmended",
-                        "depRunway",
-                        "arrRunway",
-                        "rawRoute",
-                        "hadStar",
-                        "hadSid"
-                      ]
+                      "enum": ["sid", "star", "isAmended", "depRunway", "arrRunway", "rawRoute", "hadStar", "hadSid"]
                     },
                     {
                       "type": "string",
@@ -112,6 +96,7 @@
                         "suggestedDepRunway",
                         "suggestedArrRunway",
                         "myCallsign",
+                        "ownedByID",
                         "text"
                       ]
                     }
@@ -180,6 +165,23 @@
                 "fontFamily": {
                   "type": "string"
                 },
+                "lineHeight": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^[&=][A-z0-9_-]+"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                      }
+                    }
+                  ]
+                },
                 "color": {
                   "anyOf": [
                     {
@@ -231,9 +233,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "itemName"
-              ],
+              "required": ["itemName"],
               "additionalProperties": false
             }
           }
@@ -266,26 +266,13 @@
                         "items": [
                           {
                             "type": "string",
-                            "enum": [
-                              "==",
-                              "!=",
-                              "<",
-                              "<=",
-                              ">",
-                              ">=",
-                              "beginsWith",
-                              "endsWith",
-                              "contains"
-                            ]
+                            "enum": ["==", "!=", "<", "<=", ">", ">=", "beginsWith", "endsWith", "contains"]
                           },
                           {
                             "$ref": "#/properties/ground/properties/default/items/items/properties/itemName"
                           },
                           {
-                            "type": [
-                              "string",
-                              "number"
-                            ]
+                            "type": ["string", "number"]
                           }
                         ]
                       },
@@ -296,11 +283,7 @@
                         "items": [
                           {
                             "type": "string",
-                            "enum": [
-                              "AND",
-                              "OR",
-                              "NOT"
-                            ]
+                            "enum": ["AND", "OR", "NOT"]
                           },
                           {
                             "type": "array",
@@ -328,10 +311,7 @@
                           },
                           {
                             "type": "string",
-                            "enum": [
-                              "notEmpty",
-                              "isEmpty"
-                            ]
+                            "enum": ["notEmpty", "isEmpty"]
                           },
                           {
                             "$ref": "#/properties/ground/properties/default/items/items/properties/itemName"
@@ -370,23 +350,12 @@
               "fontSize": {
                 "type": "number"
               },
+              "lineHeight": {
+                "type": "number"
+              },
               "fontWeight": {
                 "type": "string",
-                "enum": [
-                  "normal",
-                  "bold",
-                  "bolder",
-                  "lighter",
-                  "100",
-                  "200",
-                  "300",
-                  "400",
-                  "500",
-                  "600",
-                  "700",
-                  "800",
-                  "900"
-                ]
+                "enum": ["normal", "bold", "bolder", "lighter", "100", "200", "300", "400", "500", "600", "700", "800", "900"]
               },
               "textColor": {
                 "$ref": "#/properties/ground/properties/default/items/items/properties/color/anyOf/0"
@@ -397,14 +366,7 @@
                   "$ref": "#/properties/ground/properties/default/items/items/properties/color/anyOf/0"
                 },
                 "propertyNames": {
-                  "enum": [
-                    "kUnconcerned",
-                    "kNotified",
-                    "kIncomingTransfer",
-                    "kAssumed",
-                    "kOutgoingTransfer",
-                    "kIntruder"
-                  ]
+                  "enum": ["kUnconcerned", "kNotified", "kIncomingTransfer", "kAssumed", "kOutgoingTransfer", "kIntruder"]
                 }
               },
               "backgroundColor": {
@@ -437,19 +399,53 @@
               },
               "detailedFontWeight": {
                 "$ref": "#/properties/ground/properties/styleVariants/items/properties/fontWeight"
+              },
+              "tagItemPaddingY": {
+                "type": "number",
+                "default": 0
+              },
+              "tagItemPaddingX": {
+                "type": "number",
+                "default": 5
+              },
+              "tagContainerPaddingLeft": {
+                "type": "number",
+                "default": 2
+              },
+              "tagContainerPaddingRight": {
+                "type": "number",
+                "default": 2
+              },
+              "tagContainerPaddingTop": {
+                "type": "number",
+                "default": 2
+              },
+              "tagContainerPaddingBottom": {
+                "type": "number",
+                "default": 2
+              },
+              "detailedTagContainerPaddingLeft": {
+                "type": "number",
+                "default": 6
+              },
+              "detailedTagContainerPaddingRight": {
+                "type": "number",
+                "default": 5
+              },
+              "detailedTagContainerPaddingTop": {
+                "type": "number",
+                "default": 5
+              },
+              "detailedTagContainerPaddingBottom": {
+                "type": "number",
+                "default": 5
               }
             },
             "additionalProperties": false
           }
         }
       },
-      "required": [
-        "default",
-        "arrival",
-        "departure",
-        "detailed",
-        "styleVariants"
-      ],
+      "required": ["default", "arrival", "departure", "detailed", "styleVariants"],
       "additionalProperties": false
     },
     "airborne": {
@@ -471,19 +467,11 @@
           }
         }
       },
-      "required": [
-        "unconcerned",
-        "concerned",
-        "detailed",
-        "styleVariants"
-      ],
+      "required": ["unconcerned", "concerned", "detailed", "styleVariants"],
       "additionalProperties": false
     }
   },
-  "required": [
-    "ground",
-    "airborne"
-  ],
+  "required": ["ground", "airborne"],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"
 }
