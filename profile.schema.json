@@ -54,6 +54,26 @@
         },
         "lowerFilterValue": {
           "type": "number"
+        },
+        "speedVector": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "NM",
+                "MIN"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "type"
+          ],
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -142,6 +162,12 @@
     },
     "lastModified": {
       "type": "number"
+    },
+    "folderTree": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "required": [

@@ -42,7 +42,9 @@
                           "reportedHeading",
                           "trackHeading",
                           "transponder",
-                          "latLon"
+                          "latLon",
+                          "trueAltitude",
+                          "pressureAltitude"
                         ]
                       },
                       {
@@ -124,6 +126,7 @@
                           "suggestedDepRunway",
                           "suggestedArrRunway",
                           "myCallsign",
+                          "ownedByID",
                           "text"
                         ]
                       }
