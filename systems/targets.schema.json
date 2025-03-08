@@ -31,17 +31,7 @@
                             "items": [
                               {
                                 "type": "string",
-                                "enum": [
-                                  "==",
-                                  "!=",
-                                  "<",
-                                  "<=",
-                                  ">",
-                                  ">=",
-                                  "beginsWith",
-                                  "endsWith",
-                                  "contains"
-                                ]
+                                "enum": ["==", "!=", "<", "<=", ">", ">=", "beginsWith", "endsWith", "contains"]
                               },
                               {
                                 "anyOf": [
@@ -89,14 +79,7 @@
                                   },
                                   {
                                     "type": "string",
-                                    "enum": [
-                                      "callsign",
-                                      "type",
-                                      "isTimingOut",
-                                      "lastPositionUpdateReceivedAt",
-                                      "squawk",
-                                      "latestTransponderStatus"
-                                    ]
+                                    "enum": ["callsign", "type", "isTimingOut", "lastPositionUpdateReceivedAt", "squawk", "latestTransponderStatus"]
                                   },
                                   {
                                     "type": "string",
@@ -118,16 +101,7 @@
                                   },
                                   {
                                     "type": "string",
-                                    "enum": [
-                                      "sid",
-                                      "star",
-                                      "isAmended",
-                                      "depRunway",
-                                      "arrRunway",
-                                      "rawRoute",
-                                      "hadStar",
-                                      "hadSid"
-                                    ]
+                                    "enum": ["sid", "star", "isAmended", "depRunway", "arrRunway", "rawRoute", "hadStar", "hadSid"]
                                   },
                                   {
                                     "type": "string",
@@ -147,10 +121,7 @@
                                 ]
                               },
                               {
-                                "type": [
-                                  "string",
-                                  "number"
-                                ]
+                                "type": ["string", "number"]
                               }
                             ]
                           },
@@ -161,11 +132,7 @@
                             "items": [
                               {
                                 "type": "string",
-                                "enum": [
-                                  "AND",
-                                  "OR",
-                                  "NOT"
-                                ]
+                                "enum": ["AND", "OR", "NOT"]
                               },
                               {
                                 "type": "array",
@@ -193,10 +160,7 @@
                               },
                               {
                                 "type": "string",
-                                "enum": [
-                                  "notEmpty",
-                                  "isEmpty"
-                                ]
+                                "enum": ["notEmpty", "isEmpty"]
                               },
                               {
                                 "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/0/items/1"
@@ -229,18 +193,21 @@
                 "type": "array",
                 "items": {
                   "type": "string",
-                  "enum": [
-                    "kUnconcerned",
-                    "kNotified",
-                    "kIncomingTransfer",
-                    "kAssumed",
-                    "kOutgoingTransfer",
-                    "kIntruder"
-                  ]
+                  "enum": ["kUnconcerned", "kNotified", "kIncomingTransfer", "kAssumed", "kOutgoingTransfer", "kIntruder"]
                 }
               },
               "plotImage": {
-                "type": "string",
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ],
                 "default": ""
               },
               "historyTrailImages": {
@@ -249,6 +216,29 @@
                   "type": "string"
                 },
                 "default": []
+              },
+              "speedVectorColor": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^[&=][A-z0-9_-]+"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[&=][A-z0-9_-]+"
+                    }
+                  }
+                ]
               },
               "rotatePlotWithHeading": {
                 "type": "boolean",
@@ -263,9 +253,7 @@
                 "default": 0
               }
             },
-            "required": [
-              "applyWhen"
-            ],
+            "required": ["applyWhen"],
             "additionalProperties": false
           }
         },
@@ -282,11 +270,7 @@
           }
         }
       },
-      "required": [
-        "default",
-        "arrival",
-        "departure"
-      ],
+      "required": ["default", "arrival", "departure"],
       "additionalProperties": false
     },
     "airborneSymbology": {
@@ -296,11 +280,7 @@
       }
     }
   },
-  "required": [
-    "$schema",
-    "groundSymbology",
-    "airborneSymbology"
-  ],
+  "required": ["$schema", "groundSymbology", "airborneSymbology"],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"
 }
