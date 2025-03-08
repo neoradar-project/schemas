@@ -45,7 +45,9 @@
                           "reportedHeading",
                           "trackHeading",
                           "transponder",
-                          "latLon"
+                          "latLon",
+                          "trueAltitude",
+                          "pressureAltitude"
                         ]
                       },
                       {
@@ -127,6 +129,7 @@
                           "suggestedDepRunway",
                           "suggestedArrRunway",
                           "myCallsign",
+                          "ownedByID",
                           "text"
                         ]
                       }
@@ -289,6 +292,22 @@
                 "fontFamily": {
                   "type": "string"
                 },
+                "lineHeight": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                      }
+                    }
+                  ]
+                },
                 "color": {
                   "anyOf": [
                     {
@@ -313,6 +332,10 @@
                 "separatorBefore": {
                   "type": "boolean",
                   "default": true
+                },
+                "showPlusMinus": {
+                  "type": "boolean",
+                  "default": false
                 },
                 "value": {
                   "anyOf": [

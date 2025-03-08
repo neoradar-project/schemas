@@ -30,7 +30,9 @@
                         "reportedHeading",
                         "trackHeading",
                         "transponder",
-                        "latLon"
+                        "latLon",
+                        "trueAltitude",
+                        "pressureAltitude"
                       ]
                     },
                     {
@@ -112,6 +114,7 @@
                         "suggestedDepRunway",
                         "suggestedArrRunway",
                         "myCallsign",
+                        "ownedByID",
                         "text"
                       ]
                     }
@@ -180,6 +183,22 @@
                 "fontFamily": {
                   "type": "string"
                 },
+                "lineHeight": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                      }
+                    }
+                  ]
+                },
                 "color": {
                   "anyOf": [
                     {
@@ -204,6 +223,10 @@
                 "separatorBefore": {
                   "type": "boolean",
                   "default": true
+                },
+                "showPlusMinus": {
+                  "type": "boolean",
+                  "default": false
                 },
                 "value": {
                   "anyOf": [
@@ -388,6 +411,9 @@
                   "900"
                 ]
               },
+              "lineHeight": {
+                "type": "number"
+              },
               "textColor": {
                 "$ref": "#/properties/ground/properties/default/items/items/properties/color/anyOf/0"
               },
@@ -437,6 +463,42 @@
               },
               "detailedFontWeight": {
                 "$ref": "#/properties/ground/properties/styleVariants/items/properties/fontWeight"
+              },
+              "tagItemPaddingY": {
+                "type": "number",
+                "default": 2
+              },
+              "tagItemPaddingX": {
+                "type": "number",
+                "default": 3
+              },
+              "tagContainerPaddingLeft": {
+                "type": "number",
+                "default": 2
+              },
+              "tagContainerPaddingRight": {
+                "type": "number",
+                "default": 2
+              },
+              "tagContainerPaddingTop": {
+                "type": "number",
+                "default": 2
+              },
+              "tagContainerPaddingBottom": {
+                "type": "number",
+                "default": 2
+              },
+              "detailedTagContainerPaddingLeft": {
+                "type": "number"
+              },
+              "detailedTagContainerPaddingRight": {
+                "type": "number"
+              },
+              "detailedTagContainerPaddingTop": {
+                "type": "number"
+              },
+              "detailedTagContainerPaddingBottom": {
+                "type": "number"
               }
             },
             "additionalProperties": false
