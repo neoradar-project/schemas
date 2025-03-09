@@ -62,14 +62,7 @@
                     },
                     {
                       "type": "string",
-                      "enum": [
-                        "callsign",
-                        "type",
-                        "isTimingOut",
-                        "lastPositionUpdateReceivedAt",
-                        "squawk",
-                        "latestTransponderStatus"
-                      ]
+                      "enum": ["callsign", "type", "isTimingOut", "lastPositionUpdateReceivedAt", "squawk", "latestTransponderStatus"]
                     },
                     {
                       "type": "string",
@@ -91,16 +84,7 @@
                     },
                     {
                       "type": "string",
-                      "enum": [
-                        "sid",
-                        "star",
-                        "isAmended",
-                        "depRunway",
-                        "arrRunway",
-                        "rawRoute",
-                        "hadStar",
-                        "hadSid"
-                      ]
+                      "enum": ["sid", "star", "isAmended", "depRunway", "arrRunway", "rawRoute", "hadStar", "hadSid"]
                     },
                     {
                       "type": "string",
@@ -115,6 +99,8 @@
                         "suggestedArrRunway",
                         "myCallsign",
                         "ownedByID",
+                        "computedSpeed",
+                        "computedCFL",
                         "text"
                       ]
                     }
@@ -254,9 +240,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "itemName"
-              ],
+              "required": ["itemName"],
               "additionalProperties": false
             }
           }
@@ -289,26 +273,13 @@
                         "items": [
                           {
                             "type": "string",
-                            "enum": [
-                              "==",
-                              "!=",
-                              "<",
-                              "<=",
-                              ">",
-                              ">=",
-                              "beginsWith",
-                              "endsWith",
-                              "contains"
-                            ]
+                            "enum": ["==", "!=", "<", "<=", ">", ">=", "beginsWith", "endsWith", "contains"]
                           },
                           {
                             "$ref": "#/properties/ground/properties/default/items/items/properties/itemName"
                           },
                           {
-                            "type": [
-                              "string",
-                              "number"
-                            ]
+                            "type": ["string", "number"]
                           }
                         ]
                       },
@@ -319,11 +290,7 @@
                         "items": [
                           {
                             "type": "string",
-                            "enum": [
-                              "AND",
-                              "OR",
-                              "NOT"
-                            ]
+                            "enum": ["AND", "OR", "NOT"]
                           },
                           {
                             "type": "array",
@@ -351,10 +318,7 @@
                           },
                           {
                             "type": "string",
-                            "enum": [
-                              "notEmpty",
-                              "isEmpty"
-                            ]
+                            "enum": ["notEmpty", "isEmpty"]
                           },
                           {
                             "$ref": "#/properties/ground/properties/default/items/items/properties/itemName"
@@ -395,21 +359,7 @@
               },
               "fontWeight": {
                 "type": "string",
-                "enum": [
-                  "normal",
-                  "bold",
-                  "bolder",
-                  "lighter",
-                  "100",
-                  "200",
-                  "300",
-                  "400",
-                  "500",
-                  "600",
-                  "700",
-                  "800",
-                  "900"
-                ]
+                "enum": ["normal", "bold", "bolder", "lighter", "100", "200", "300", "400", "500", "600", "700", "800", "900"]
               },
               "lineHeight": {
                 "type": "number"
@@ -423,14 +373,7 @@
                   "$ref": "#/properties/ground/properties/default/items/items/properties/color/anyOf/0"
                 },
                 "propertyNames": {
-                  "enum": [
-                    "kUnconcerned",
-                    "kNotified",
-                    "kIncomingTransfer",
-                    "kAssumed",
-                    "kOutgoingTransfer",
-                    "kIntruder"
-                  ]
+                  "enum": ["kUnconcerned", "kNotified", "kIncomingTransfer", "kAssumed", "kOutgoingTransfer", "kIntruder"]
                 }
               },
               "backgroundColor": {
@@ -505,13 +448,7 @@
           }
         }
       },
-      "required": [
-        "default",
-        "arrival",
-        "departure",
-        "detailed",
-        "styleVariants"
-      ],
+      "required": ["default", "arrival", "departure", "detailed", "styleVariants"],
       "additionalProperties": false
     },
     "airborne": {
@@ -533,19 +470,11 @@
           }
         }
       },
-      "required": [
-        "unconcerned",
-        "concerned",
-        "detailed",
-        "styleVariants"
-      ],
+      "required": ["unconcerned", "concerned", "detailed", "styleVariants"],
       "additionalProperties": false
     }
   },
-  "required": [
-    "ground",
-    "airborne"
-  ],
+  "required": ["ground", "airborne"],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"
 }

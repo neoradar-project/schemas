@@ -119,6 +119,7 @@
                                       "myCallsign",
                                       "ownedByID",
                                       "computedSpeed",
+                                      "computedCFL",
                                       "text"
                                     ]
                                   }
