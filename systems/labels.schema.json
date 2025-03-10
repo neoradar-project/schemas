@@ -107,16 +107,44 @@
                   ]
                 },
                 "truncate": {
-                  "type": "array",
-                  "items": {
-                    "type": "number"
-                  }
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 2,
+                      "maxItems": 2
+                    },
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                      }
+                    }
+                  ]
                 },
                 "placeholder": {
                   "type": "string"
                 },
                 "prefix": {
-                  "type": "string"
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                      }
+                    }
+                  ]
                 },
                 "suffix": {
                   "type": "string"
@@ -128,10 +156,38 @@
                   }
                 },
                 "padWithZeroLeft": {
-                  "type": "number"
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^[&=][A-z0-9_-]+"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                      }
+                    }
+                  ]
                 },
                 "padWithZeroRight": {
-                  "type": "number"
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^[&=][A-z0-9_-]+"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/ground/properties/default/items/items/properties/fontSize/anyOf/1"
+                      }
+                    }
+                  ]
                 },
                 "fontSize": {
                   "anyOf": [

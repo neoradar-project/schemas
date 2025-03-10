@@ -120,6 +120,7 @@
                                       "ownedByID",
                                       "computedSpeed",
                                       "computedCFL",
+                                      "transitionAltitude",
                                       "text"
                                     ]
                                   }
