@@ -102,6 +102,7 @@
                           "myCallsign",
                           "ownedByID",
                           "computedSpeed",
+                          "computedAltitude",
                           "computedCFL",
                           "transitionAltitude",
                           "text"
