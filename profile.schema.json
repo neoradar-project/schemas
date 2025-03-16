@@ -74,6 +74,9 @@
             "type"
           ],
           "additionalProperties": false
+        },
+        "transitionAltitude": {
+          "type": "number"
         }
       },
       "additionalProperties": false

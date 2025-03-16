@@ -327,6 +327,25 @@
         ],
         "additionalProperties": false
       }
+    },
+    "fonts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "alias": {
+            "type": "string"
+          },
+          "src": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "alias",
+          "src"
+        ],
+        "additionalProperties": false
+      }
     }
   },
   "required": [

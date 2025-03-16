@@ -127,6 +127,10 @@
                           "suggestedArrRunway",
                           "myCallsign",
                           "ownedByID",
+                          "computedSpeed",
+                          "computedCFL",
+                          "computedAltitude",
+                          "transitionAltitude",
                           "text"
                         ]
                       }

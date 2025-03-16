@@ -130,6 +130,10 @@
                           "suggestedArrRunway",
                           "myCallsign",
                           "ownedByID",
+                          "computedSpeed",
+                          "computedCFL",
+                          "computedAltitude",
+                          "transitionAltitude",
                           "text"
                         ]
                       }
@@ -230,16 +234,43 @@
                   "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1"
                 },
                 "truncate": {
-                  "type": "array",
-                  "items": {
-                    "type": "number"
-                  }
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^[&=][A-z0-9_-]+"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                      }
+                    }
+                  ]
                 },
                 "placeholder": {
                   "type": "string"
                 },
                 "prefix": {
-                  "type": "string"
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                      }
+                    }
+                  ]
                 },
                 "suffix": {
                   "type": "string"
@@ -251,10 +282,36 @@
                   }
                 },
                 "padWithZeroLeft": {
-                  "type": "number"
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                      }
+                    }
+                  ]
                 },
                 "padWithZeroRight": {
-                  "type": "number"
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                      }
+                    }
+                  ]
                 },
                 "fontSize": {
                   "anyOf": [
@@ -262,13 +319,12 @@
                       "type": "number"
                     },
                     {
-                      "type": "string",
-                      "pattern": "^[&=][A-z0-9_-]+"
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                     },
                     {
                       "type": "array",
                       "items": {
-                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
                   ]
@@ -279,12 +335,12 @@
                       "type": "string"
                     },
                     {
-                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                     },
                     {
                       "type": "array",
                       "items": {
-                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
                   ]
@@ -298,12 +354,12 @@
                       "type": "number"
                     },
                     {
-                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                     },
                     {
                       "type": "array",
                       "items": {
-                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
                   ]
@@ -319,12 +375,12 @@
                       "maxItems": 3
                     },
                     {
-                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                     },
                     {
                       "type": "array",
                       "items": {
-                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
                   ]
@@ -343,12 +399,12 @@
                       "type": "string"
                     },
                     {
-                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                     },
                     {
                       "type": "array",
                       "items": {
-                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/fontSize/anyOf/1"
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
                   ]
