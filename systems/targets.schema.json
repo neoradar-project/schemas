@@ -148,6 +148,7 @@
                                       "computedCFL",
                                       "computedAltitude",
                                       "transitionAltitude",
+                                      "assignedDirect",
                                       "text"
                                     ]
                                   }
@@ -230,7 +231,8 @@
                       }
                     ]
                   }
-                ]
+                ],
+                "default": ""
               },
               "applyToAttentionStates": {
                 "type": "array",
@@ -257,8 +259,7 @@
                       "type": "string"
                     }
                   }
-                ],
-                "default": ""
+                ]
               },
               "historyTrailImages": {
                 "type": "array",
@@ -310,7 +311,7 @@
               }
             },
             "required": [
-              "applyWhen"
+              "plotImage"
             ],
             "additionalProperties": false
           }

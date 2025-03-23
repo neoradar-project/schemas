@@ -119,6 +119,7 @@
                         "computedCFL",
                         "computedAltitude",
                         "transitionAltitude",
+                        "assignedDirect",
                         "text"
                       ]
                     }
