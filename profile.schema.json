@@ -171,6 +171,18 @@
       "items": {
         "type": "string"
       }
+    },
+    "relatedProfiles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedLoginProfiles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "required": [

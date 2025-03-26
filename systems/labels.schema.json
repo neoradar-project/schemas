@@ -302,13 +302,34 @@
                   ]
                 },
                 "leftClick": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "triggerScratchpad",
+                    "triggerCFL",
+                    "cfl",
+                    "spd",
+                    "clearSpd",
+                    "routeDraw",
+                    "pfl",
+                    "hdg",
+                    "callsignMenu",
+                    "fpDialog",
+                    "toggleClearanceFlag",
+                    "groundStatusMenu",
+                    "voiceTypeMenu",
+                    "depRunwayMenu",
+                    "arrRunwayMenu",
+                    "sidMenu",
+                    "starMenu",
+                    "assignRandomSquawk",
+                    "assignSq1000"
+                  ]
                 },
                 "rightClick": {
-                  "type": "string"
+                  "$ref": "#/properties/ground/properties/default/items/items/properties/leftClick"
                 },
                 "middleClick": {
-                  "type": "string"
+                  "$ref": "#/properties/ground/properties/default/items/items/properties/leftClick"
                 }
               },
               "required": [
