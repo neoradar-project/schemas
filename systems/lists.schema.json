@@ -138,6 +138,43 @@
                           "assignedDirect",
                           "text"
                         ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "metarICAO",
+                          "metarRawMetar",
+                          "metarTimestamp",
+                          "metarWindDirection",
+                          "metarWindSpeed",
+                          "metarWindGust",
+                          "metarWindString",
+                          "metarQNHString",
+                          "metarQNH",
+                          "metarQNHUnit",
+                          "metarVisibility",
+                          "metarVisibilityUnit",
+                          "metarVisibilityString",
+                          "metarTemperature",
+                          "metarDewpoint"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "controllerCallsign",
+                          "controllerIdentifier",
+                          "controllerPosition",
+                          "controllerFrequency",
+                          "controllerIsTimingOut",
+                          "controllerLastUpdate",
+                          "controllerIsATIS",
+                          "controllerIsGround",
+                          "controllerIsTower",
+                          "controllerIsApproach",
+                          "controllerIsCenter",
+                          "controllerHasIdentifier"
+                        ]
                       }
                     ]
                   },
@@ -446,10 +483,17 @@
                     "starMenu",
                     "assignRandomSquawk",
                     "assignSq1000",
-                    "directMenu"
+                    "directMenu",
+                    "openPrivateMessage",
+                    "showAtisLines",
+                    "focusMetar",
+                    "acknowledgeMetarUpdate"
                   ]
                 },
                 "rightClick": {
+                  "$ref": "#/items/properties/columns/items/properties/tagItem/properties/leftClick"
+                },
+                "doubleClick": {
                   "$ref": "#/items/properties/columns/items/properties/tagItem/properties/leftClick"
                 },
                 "middleClick": {
@@ -460,38 +504,70 @@
                 "itemName"
               ],
               "additionalProperties": false
+            },
+            "metarField": {
+              "type": "string"
+            },
+            "controllerField": {
+              "type": "string"
             }
           },
           "required": [
             "name",
-            "width",
-            "tagItem"
+            "width"
           ],
           "additionalProperties": false
+        }
+      },
+      "type": {
+        "type": "string",
+        "enum": [
+          "aircraft",
+          "metar",
+          "atc"
+        ],
+        "default": "aircraft"
+      },
+      "icaos": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "filters": {
+        "type": "array",
+        "items": {
+          "type": "string"
         }
       },
       "style": {
         "type": "object",
         "properties": {
-          "blur": {
-            "type": "string",
-            "enum": [
-              "backdrop-blur-none",
-              "backdrop-blur-xs",
-              "backdrop-blur-sm",
-              "backdrop-blur",
-              "backdrop-blur-md",
-              "backdrop-blur-lg",
-              "backdrop-blur-xl",
-              "backdrop-blur-2xl",
-              "backdrop-blur-3xl"
-            ]
+          "background": {
+            "type": "object",
+            "properties": {
+              "color": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "opacity": {
+                "type": "number",
+                "default": 1
+              },
+              "blur": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "additionalProperties": false
           },
-          "backgroundColor": {
-            "type": "string"
-          },
-          "additionalClasses": {
-            "type": "string"
+          "showHeaders": {
+            "type": "boolean",
+            "default": true
           }
         },
         "additionalProperties": false
@@ -499,7 +575,6 @@
     },
     "required": [
       "name",
-      "filterExpressions",
       "columns"
     ],
     "additionalProperties": false

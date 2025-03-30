@@ -135,6 +135,43 @@
                           "assignedDirect",
                           "text"
                         ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "metarICAO",
+                          "metarRawMetar",
+                          "metarTimestamp",
+                          "metarWindDirection",
+                          "metarWindSpeed",
+                          "metarWindGust",
+                          "metarWindString",
+                          "metarQNHString",
+                          "metarQNH",
+                          "metarQNHUnit",
+                          "metarVisibility",
+                          "metarVisibilityUnit",
+                          "metarVisibilityString",
+                          "metarTemperature",
+                          "metarDewpoint"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "controllerCallsign",
+                          "controllerIdentifier",
+                          "controllerPosition",
+                          "controllerFrequency",
+                          "controllerIsTimingOut",
+                          "controllerLastUpdate",
+                          "controllerIsATIS",
+                          "controllerIsGround",
+                          "controllerIsTower",
+                          "controllerIsApproach",
+                          "controllerIsCenter",
+                          "controllerHasIdentifier"
+                        ]
                       }
                     ]
                   },

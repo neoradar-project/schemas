@@ -123,6 +123,43 @@
                         "assignedDirect",
                         "text"
                       ]
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "metarICAO",
+                        "metarRawMetar",
+                        "metarTimestamp",
+                        "metarWindDirection",
+                        "metarWindSpeed",
+                        "metarWindGust",
+                        "metarWindString",
+                        "metarQNHString",
+                        "metarQNH",
+                        "metarQNHUnit",
+                        "metarVisibility",
+                        "metarVisibilityUnit",
+                        "metarVisibilityString",
+                        "metarTemperature",
+                        "metarDewpoint"
+                      ]
+                    },
+                    {
+                      "type": "string",
+                      "enum": [
+                        "controllerCallsign",
+                        "controllerIdentifier",
+                        "controllerPosition",
+                        "controllerFrequency",
+                        "controllerIsTimingOut",
+                        "controllerLastUpdate",
+                        "controllerIsATIS",
+                        "controllerIsGround",
+                        "controllerIsTower",
+                        "controllerIsApproach",
+                        "controllerIsCenter",
+                        "controllerHasIdentifier"
+                      ]
                     }
                   ]
                 },
@@ -337,10 +374,17 @@
                     "starMenu",
                     "assignRandomSquawk",
                     "assignSq1000",
-                    "directMenu"
+                    "directMenu",
+                    "openPrivateMessage",
+                    "showAtisLines",
+                    "focusMetar",
+                    "acknowledgeMetarUpdate"
                   ]
                 },
                 "rightClick": {
+                  "$ref": "#/properties/ground/properties/default/items/items/properties/leftClick"
+                },
+                "doubleClick": {
                   "$ref": "#/properties/ground/properties/default/items/items/properties/leftClick"
                 },
                 "middleClick": {
