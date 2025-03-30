@@ -166,7 +166,20 @@
                   ]
                 },
                 "suffix": {
-                  "type": "string"
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/truncate/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/ground/properties/default/items/items/properties/truncate/anyOf/1"
+                      }
+                    }
+                  ]
                 },
                 "mapping": {
                   "type": "object",

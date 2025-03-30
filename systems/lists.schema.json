@@ -275,7 +275,20 @@
                   ]
                 },
                 "suffix": {
-                  "type": "string"
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                      }
+                    }
+                  ]
                 },
                 "mapping": {
                   "type": "object",
