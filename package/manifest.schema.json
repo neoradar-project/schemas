@@ -53,13 +53,27 @@
                 "type": "object",
                 "properties": {
                   "color": {
-                    "type": "array",
-                    "items": {
-                      "type": "number"
-                    },
-                    "minItems": 3,
-                    "maxItems": 3,
-                    "description": "RGB color array [r,g,b]"
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "description": "RGB color array [r,g,b]"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 4,
+                        "maxItems": 4,
+                        "description": "RGBA color array [r,g,b,a]"
+                      }
+                    ],
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b]"
                   },
                   "width": {
                     "type": "number",
@@ -71,9 +85,17 @@
                   },
                   "dashArray": {
                     "type": "array",
-                    "items": {
-                      "type": "number"
-                    }
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ],
+                    "description": "Dash array [length, gap]"
                   }
                 },
                 "required": [
@@ -120,7 +142,7 @@
                   },
                   "fillColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGB color array [r,g,b]"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b]"
                   },
                   "fillOpacity": {
                     "type": "number",
@@ -128,7 +150,7 @@
                   },
                   "strokeColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGB color array [r,g,b]"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b]"
                   },
                   "strokeOpacity": {
                     "type": "number",
@@ -153,7 +175,7 @@
                   },
                   "color": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGB color array [r,g,b]"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b]"
                   },
                   "fontFamily": {
                     "type": "string",
@@ -247,7 +269,7 @@
                   },
                   "outlineColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGB color array [r,g,b]"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b]"
                   },
                   "outlineWidth": {
                     "type": "number",
@@ -263,7 +285,7 @@
                   },
                   "dropShadowColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGB color array [r,g,b]",
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b]",
                     "default": [
                       0,
                       0,
@@ -302,7 +324,7 @@
                   },
                   "backgroundColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGB color array [r,g,b]"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b]"
                   },
                   "backgroundOpacity": {
                     "type": "number",
@@ -346,6 +368,9 @@
         ],
         "additionalProperties": false
       }
+    },
+    "lastActiveProfile": {
+      "type": "string"
     }
   },
   "required": [

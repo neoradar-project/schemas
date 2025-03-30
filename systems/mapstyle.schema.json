@@ -1,40 +1,142 @@
 {
   "type": "object",
   "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON schema to validate this file"
+    },
     "inactiveSectorBackgroundColor": {
-      "type": "array",
-      "items": {
-        "type": "number"
-      },
-      "minItems": 3,
-      "maxItems": 3
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "RGB color array [r,g,b]"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 4,
+          "maxItems": 4,
+          "description": "RGBA color array [r,g,b,a]"
+        }
+      ],
+      "description": "RGBA color array [r,g,b,a] or [r,g,b]"
     },
     "activeSectorBackgroundColor": {
-      "type": "array",
-      "items": {
-        "type": "number"
-      },
-      "minItems": 3,
-      "maxItems": 3
+      "$ref": "#/properties/inactiveSectorBackgroundColor"
     },
     "areaOfInterestBackgroundColor": {
-      "type": "array",
-      "items": {
-        "type": "number"
-      },
-      "minItems": 3,
-      "maxItems": 3
+      "$ref": "#/properties/inactiveSectorBackgroundColor",
+      "description": "RGBA color array [r,g,b,a] or [r,g,b]"
     },
     "neighborSectorBorderLineColor": {
+      "$ref": "#/properties/inactiveSectorBackgroundColor"
+    },
+    "neighborSectorBorderDashArray": {
       "type": "array",
-      "items": {
-        "type": "number"
-      },
-      "minItems": 3,
-      "maxItems": 3
+      "minItems": 2,
+      "maxItems": 2,
+      "items": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "description": "Dash array [length, gap]"
     },
     "neighborSectorBorderLineWidth": {
-      "type": "number"
+      "type": "number",
+      "default": 1
+    },
+    "extendedCenterlines": {
+      "type": "object",
+      "properties": {
+        "lengthNm": {
+          "type": "number"
+        },
+        "thresholdOffsetNm": {
+          "type": "number",
+          "default": 0
+        },
+        "minorTickType": {
+          "type": "string",
+          "enum": [
+            "none",
+            "circle",
+            "line",
+            "leftSideLine",
+            "rightSideLine"
+          ],
+          "default": "none"
+        },
+        "minorTickSpacingNm": {
+          "type": "number"
+        },
+        "minorTickLengthNm": {
+          "type": "number",
+          "default": 0.5
+        },
+        "minorTickWidth": {
+          "type": "number",
+          "default": 1,
+          "description": "Line width of the major tick, or the radius of the circle"
+        },
+        "minorTickColor": {
+          "$ref": "#/properties/inactiveSectorBackgroundColor",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+        },
+        "majorTickType": {
+          "type": "string",
+          "enum": [
+            "none",
+            "circle",
+            "line",
+            "leftSideLine",
+            "rightSideLine"
+          ],
+          "default": "none"
+        },
+        "majorTickSpacingNm": {
+          "type": "number"
+        },
+        "majorTickLengthNm": {
+          "type": "number",
+          "default": 1
+        },
+        "majorTickWidth": {
+          "type": "number",
+          "default": 1,
+          "description": "Line width of the major tick, or the radius of the circle"
+        },
+        "majorTickColor": {
+          "$ref": "#/properties/inactiveSectorBackgroundColor",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+        },
+        "color": {
+          "$ref": "#/properties/inactiveSectorBackgroundColor"
+        },
+        "lineWidth": {
+          "type": "number",
+          "default": 1
+        },
+        "dashArray": {
+          "$ref": "#/properties/neighborSectorBorderDashArray",
+          "description": "Dash array [length, gap]"
+        }
+      },
+      "required": [
+        "lengthNm",
+        "color"
+      ],
+      "additionalProperties": false
     },
     "layerStyles": {
       "type": "object",
@@ -45,13 +147,7 @@
             "type": "object",
             "properties": {
               "color": {
-                "type": "array",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 3,
-                "maxItems": 3,
-                "description": "RGB color array [r,g,b]"
+                "$ref": "#/properties/inactiveSectorBackgroundColor"
               },
               "width": {
                 "type": "number",
@@ -62,10 +158,8 @@
                 "default": 1
               },
               "dashArray": {
-                "type": "array",
-                "items": {
-                  "type": "number"
-                }
+                "$ref": "#/properties/neighborSectorBorderDashArray",
+                "description": "Dash array [length, gap]"
               }
             },
             "required": [
@@ -77,7 +171,7 @@
             "type": "object",
             "properties": {
               "color": {
-                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color"
+                "$ref": "#/properties/inactiveSectorBackgroundColor"
               },
               "opacity": {
                 "type": "number",
@@ -111,16 +205,16 @@
                 "type": "string"
               },
               "fillColor": {
-                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color",
-                "description": "RGB color array [r,g,b]"
+                "$ref": "#/properties/inactiveSectorBackgroundColor",
+                "description": "RGBA color array [r,g,b,a] or [r,g,b]"
               },
               "fillOpacity": {
                 "type": "number",
                 "default": 1
               },
               "strokeColor": {
-                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color",
-                "description": "RGB color array [r,g,b]"
+                "$ref": "#/properties/inactiveSectorBackgroundColor",
+                "description": "RGBA color array [r,g,b,a] or [r,g,b]"
               },
               "strokeOpacity": {
                 "type": "number",
@@ -144,8 +238,8 @@
                 "type": "string"
               },
               "color": {
-                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color",
-                "description": "RGB color array [r,g,b]"
+                "$ref": "#/properties/inactiveSectorBackgroundColor",
+                "description": "RGBA color array [r,g,b,a] or [r,g,b]"
               },
               "fontFamily": {
                 "type": "string",
@@ -238,8 +332,8 @@
                 "default": 100
               },
               "outlineColor": {
-                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color",
-                "description": "RGB color array [r,g,b]"
+                "$ref": "#/properties/inactiveSectorBackgroundColor",
+                "description": "RGBA color array [r,g,b,a] or [r,g,b]"
               },
               "outlineWidth": {
                 "type": "number",
@@ -254,8 +348,8 @@
                 "default": false
               },
               "dropShadowColor": {
-                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color",
-                "description": "RGB color array [r,g,b]",
+                "$ref": "#/properties/inactiveSectorBackgroundColor",
+                "description": "RGBA color array [r,g,b,a] or [r,g,b]",
                 "default": [
                   0,
                   0,
@@ -293,8 +387,8 @@
                 "default": 0
               },
               "backgroundColor": {
-                "$ref": "#/properties/layerStyles/additionalProperties/properties/lineStyle/properties/color",
-                "description": "RGB color array [r,g,b]"
+                "$ref": "#/properties/inactiveSectorBackgroundColor",
+                "description": "RGBA color array [r,g,b,a] or [r,g,b]"
               },
               "backgroundOpacity": {
                 "type": "number",
@@ -306,17 +400,12 @@
         },
         "additionalProperties": false
       }
-    },
-    "$schema": {
-      "type": "string",
-      "description": "JSON schema to validate this file"
     }
   },
   "required": [
     "inactiveSectorBackgroundColor",
     "activeSectorBackgroundColor",
-    "neighborSectorBorderLineColor",
-    "neighborSectorBorderLineWidth"
+    "neighborSectorBorderLineColor"
   ],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"

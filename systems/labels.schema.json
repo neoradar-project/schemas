@@ -116,6 +116,7 @@
                         "myCallsign",
                         "ownedByID",
                         "computedSpeed",
+                        "computedAssignedSpeed",
                         "computedCFL",
                         "computedAltitude",
                         "transitionAltitude",
@@ -322,7 +323,8 @@
                     "sidMenu",
                     "starMenu",
                     "assignRandomSquawk",
-                    "assignSq1000"
+                    "assignSq1000",
+                    "directMenu"
                   ]
                 },
                 "rightClick": {

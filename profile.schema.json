@@ -183,6 +183,21 @@
       "items": {
         "type": "string"
       }
+    },
+    "_saveMetadata": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "operationId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "operationId"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [

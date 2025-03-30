@@ -131,6 +131,7 @@
                           "myCallsign",
                           "ownedByID",
                           "computedSpeed",
+                          "computedAssignedSpeed",
                           "computedCFL",
                           "computedAltitude",
                           "transitionAltitude",
@@ -431,7 +432,8 @@
                     "sidMenu",
                     "starMenu",
                     "assignRandomSquawk",
-                    "assignSq1000"
+                    "assignSq1000",
+                    "directMenu"
                   ]
                 },
                 "rightClick": {
@@ -454,6 +456,32 @@
           ],
           "additionalProperties": false
         }
+      },
+      "style": {
+        "type": "object",
+        "properties": {
+          "blur": {
+            "type": "string",
+            "enum": [
+              "backdrop-blur-none",
+              "backdrop-blur-xs",
+              "backdrop-blur-sm",
+              "backdrop-blur",
+              "backdrop-blur-md",
+              "backdrop-blur-lg",
+              "backdrop-blur-xl",
+              "backdrop-blur-2xl",
+              "backdrop-blur-3xl"
+            ]
+          },
+          "backgroundColor": {
+            "type": "string"
+          },
+          "additionalClasses": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
       }
     },
     "required": [
