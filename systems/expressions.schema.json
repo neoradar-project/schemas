@@ -13,17 +13,52 @@
                 "maxItems": 3,
                 "items": [
                   {
-                    "type": "string",
-                    "enum": [
-                      "==",
-                      "!=",
-                      "<",
-                      "<=",
-                      ">",
-                      ">=",
-                      "beginsWith",
-                      "endsWith",
-                      "contains"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "==",
+                        "description": "Equality operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "!=",
+                        "description": "Inequality operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "<",
+                        "description": "Less than operator, only works with numbers"
+                      },
+                      {
+                        "type": "string",
+                        "const": "<=",
+                        "description": "Less than or equal to operator, only works with numbers"
+                      },
+                      {
+                        "type": "string",
+                        "const": ">",
+                        "description": "Greater than operator, only works with numbers"
+                      },
+                      {
+                        "type": "string",
+                        "const": ">=",
+                        "description": "Greater than or equal to operator, only works with numbers"
+                      },
+                      {
+                        "type": "string",
+                        "const": "beginsWith",
+                        "description": "String begins with operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "endsWith",
+                        "description": "String ends with operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "contains",
+                        "description": "String contains operator"
+                      }
                     ]
                   },
                   {
@@ -115,25 +150,92 @@
                         ]
                       },
                       {
-                        "type": "string",
-                        "enum": [
-                          "isArrival",
-                          "isDeparture",
-                          "isMyDeparture",
-                          "isMyArrival",
-                          "suggestedStar",
-                          "suggestedSid",
-                          "suggestedDepRunway",
-                          "suggestedArrRunway",
-                          "myCallsign",
-                          "ownedByID",
-                          "computedSpeed",
-                          "computedAssignedSpeed",
-                          "computedCFL",
-                          "computedAltitude",
-                          "transitionAltitude",
-                          "assignedDirect",
-                          "text"
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "const": "isArrival",
+                            "description": "Is the flight an arrival (both active and observed airport)?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "isDeparture",
+                            "description": "Is the flight a departure (both active and observed airport)?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "isMyDeparture",
+                            "description": "Is the flight a departure (my active airport)?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "isMyArrival",
+                            "description": "Is the flight an arrival (my active airport)?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "suggestedStar",
+                            "description": "The star that is calculated but not assigned in the flightplan."
+                          },
+                          {
+                            "type": "string",
+                            "const": "suggestedSid",
+                            "description": "The sid that is calculated but not assigned in the flightplan."
+                          },
+                          {
+                            "type": "string",
+                            "const": "suggestedDepRunway",
+                            "description": "The departure runway that is calculated but not assigned in the flightplan."
+                          },
+                          {
+                            "type": "string",
+                            "const": "suggestedArrRunway",
+                            "description": "The arrival runway that is calculated but not assigned in the flightplan."
+                          },
+                          {
+                            "type": "string",
+                            "const": "myCallsign",
+                            "description": "The callsign of the user."
+                          },
+                          {
+                            "type": "string",
+                            "const": "ownedByID",
+                            "description": "The ID of ATC station which is assuming the track."
+                          },
+                          {
+                            "type": "string",
+                            "const": "computedSpeed",
+                            "description": "DEPRECATED: The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                          },
+                          {
+                            "type": "string",
+                            "const": "computedAssignedSpeed",
+                            "description": "The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                          },
+                          {
+                            "type": "string",
+                            "const": "computedCFL",
+                            "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
+                          },
+                          {
+                            "type": "string",
+                            "const": "computedAltitude",
+                            "description": "The computed assigned altitude, which reflects pressure altitude and dependings on transition level setting."
+                          },
+                          {
+                            "type": "string",
+                            "const": "transitionAltitude",
+                            "description": "The transition altitude set by the user."
+                          },
+                          {
+                            "type": "string",
+                            "const": "assignedDirect",
+                            "description": "The assigned direct waypoint identifier."
+                          },
+                          {
+                            "type": "string",
+                            "const": "text",
+                            "description": "Any text value that is defined in the value property."
+                          }
                         ]
                       },
                       {
@@ -189,11 +291,22 @@
                 "maxItems": 2,
                 "items": [
                   {
-                    "type": "string",
-                    "enum": [
-                      "AND",
-                      "OR",
-                      "NOT"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "AND",
+                        "description": "Logical AND operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "OR",
+                        "description": "Logical OR operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "NOT",
+                        "description": "Logical NOT operator"
+                      }
                     ]
                   },
                   {
@@ -221,10 +334,17 @@
                     "$ref": "#/properties/expressions/additionalProperties/anyOf/0/anyOf/1/items/0"
                   },
                   {
-                    "type": "string",
-                    "enum": [
-                      "notEmpty",
-                      "isEmpty"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "notEmpty",
+                        "description": "Logical NOT EMPTY operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "isEmpty",
+                        "description": "Logical IS EMPTY operator"
+                      }
                     ]
                   },
                   {

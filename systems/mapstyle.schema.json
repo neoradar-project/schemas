@@ -26,17 +26,32 @@
           "description": "RGBA color array [r,g,b,a]"
         }
       ],
-      "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+      "description": "Background color of the inactive sector, this is the default color of the map"
     },
     "activeSectorBackgroundColor": {
-      "$ref": "#/properties/inactiveSectorBackgroundColor"
+      "anyOf": [
+        {
+          "$ref": "#/properties/inactiveSectorBackgroundColor/anyOf/0"
+        },
+        {
+          "$ref": "#/properties/inactiveSectorBackgroundColor/anyOf/1"
+        }
+      ],
+      "description": "Background color of the user's current active sector"
     },
     "areaOfInterestBackgroundColor": {
-      "$ref": "#/properties/inactiveSectorBackgroundColor",
-      "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+      "anyOf": [
+        {
+          "$ref": "#/properties/inactiveSectorBackgroundColor/anyOf/0"
+        },
+        {
+          "$ref": "#/properties/inactiveSectorBackgroundColor/anyOf/1"
+        }
+      ],
+      "description": "Background color of the area of interest, which is around 15% larger than the user's active sector. This is optional and you do not have to display this"
     },
     "neighborSectorBorderLineColor": {
-      "$ref": "#/properties/inactiveSectorBackgroundColor"
+      "$ref": "#/properties/areaOfInterestBackgroundColor"
     },
     "neighborSectorBorderDashArray": {
       "type": "array",
@@ -54,17 +69,20 @@
     },
     "neighborSectorBorderLineWidth": {
       "type": "number",
-      "default": 1
+      "default": 1,
+      "description": "Line width of the neighbor sector border, this is the line that separates your sector from another active neighbor sectors"
     },
     "extendedCenterlines": {
       "type": "object",
       "properties": {
         "lengthNm": {
-          "type": "number"
+          "type": "number",
+          "description": "Length of the extended centerline in nautical miles"
         },
         "thresholdOffsetNm": {
           "type": "number",
-          "default": 0
+          "default": 0,
+          "description": "Offset of the extended centerline from the threshold in nautical miles"
         },
         "minorTickType": {
           "type": "string",
@@ -75,23 +93,26 @@
             "leftSideLine",
             "rightSideLine"
           ],
-          "default": "none"
+          "default": "none",
+          "description": "Type of the minor tick"
         },
         "minorTickSpacingNm": {
-          "type": "number"
+          "type": "number",
+          "description": "Spacing between minor ticks in nautical miles"
         },
         "minorTickLengthNm": {
           "type": "number",
-          "default": 0.5
+          "default": 0.5,
+          "description": "Length of the minor tick in nautical miles, this does not apply to circle ticks"
         },
         "minorTickWidth": {
           "type": "number",
           "default": 1,
-          "description": "Line width of the major tick, or the radius of the circle"
+          "description": "Line width of the major tick, or the radius of the circle in arbitrary units"
         },
         "minorTickColor": {
-          "$ref": "#/properties/inactiveSectorBackgroundColor",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
         },
         "majorTickType": {
           "type": "string",
@@ -102,14 +123,17 @@
             "leftSideLine",
             "rightSideLine"
           ],
-          "default": "none"
+          "default": "none",
+          "description": "Type of the major tick"
         },
         "majorTickSpacingNm": {
-          "type": "number"
+          "type": "number",
+          "description": "Spacing between major ticks in nautical miles"
         },
         "majorTickLengthNm": {
           "type": "number",
-          "default": 1
+          "default": 1,
+          "description": "Length of the major tick in nautical miles, this does not apply to circle ticks"
         },
         "majorTickWidth": {
           "type": "number",
@@ -117,11 +141,11 @@
           "description": "Line width of the major tick, or the radius of the circle"
         },
         "majorTickColor": {
-          "$ref": "#/properties/inactiveSectorBackgroundColor",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
         },
         "color": {
-          "$ref": "#/properties/inactiveSectorBackgroundColor"
+          "$ref": "#/properties/areaOfInterestBackgroundColor"
         },
         "lineWidth": {
           "type": "number",
@@ -136,7 +160,8 @@
         "lengthNm",
         "color"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Extended centerlines configuration"
     },
     "layerStyles": {
       "type": "object",
@@ -147,7 +172,7 @@
             "type": "object",
             "properties": {
               "color": {
-                "$ref": "#/properties/inactiveSectorBackgroundColor"
+                "$ref": "#/properties/areaOfInterestBackgroundColor"
               },
               "width": {
                 "type": "number",
@@ -171,7 +196,7 @@
             "type": "object",
             "properties": {
               "color": {
-                "$ref": "#/properties/inactiveSectorBackgroundColor"
+                "$ref": "#/properties/areaOfInterestBackgroundColor"
               },
               "opacity": {
                 "type": "number",
@@ -199,22 +224,24 @@
               },
               "size": {
                 "type": "number",
-                "default": 10
+                "default": 10,
+                "description": "Size of the point in cartesian units"
               },
               "sprite": {
-                "type": "string"
+                "type": "string",
+                "description": "Name of the sprite defined in the sprite atlas"
               },
               "fillColor": {
-                "$ref": "#/properties/inactiveSectorBackgroundColor",
-                "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+                "$ref": "#/properties/areaOfInterestBackgroundColor",
+                "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
               },
               "fillOpacity": {
                 "type": "number",
                 "default": 1
               },
               "strokeColor": {
-                "$ref": "#/properties/inactiveSectorBackgroundColor",
-                "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+                "$ref": "#/properties/areaOfInterestBackgroundColor",
+                "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
               },
               "strokeOpacity": {
                 "type": "number",
@@ -226,7 +253,8 @@
               },
               "rotation": {
                 "type": "number",
-                "default": 0
+                "default": 0,
+                "description": "Rotation of the symbol in degrees"
               }
             },
             "additionalProperties": false
@@ -238,8 +266,8 @@
                 "type": "string"
               },
               "color": {
-                "$ref": "#/properties/inactiveSectorBackgroundColor",
-                "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+                "$ref": "#/properties/areaOfInterestBackgroundColor",
+                "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
               },
               "fontFamily": {
                 "type": "string",
@@ -250,24 +278,21 @@
                 "default": 12
               },
               "fontWeight": {
-                "type": [
-                  "string",
-                  "number"
-                ],
+                "type": "string",
                 "enum": [
                   "normal",
                   "bold",
                   "bolder",
                   "lighter",
-                  100,
-                  200,
-                  300,
-                  400,
-                  500,
-                  600,
-                  700,
-                  800,
-                  900
+                  "100",
+                  "200",
+                  "300",
+                  "400",
+                  "500",
+                  "600",
+                  "700",
+                  "800",
+                  "900"
                 ],
                 "default": "normal"
               },
@@ -332,8 +357,8 @@
                 "default": 100
               },
               "outlineColor": {
-                "$ref": "#/properties/inactiveSectorBackgroundColor",
-                "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+                "$ref": "#/properties/areaOfInterestBackgroundColor",
+                "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
               },
               "outlineWidth": {
                 "type": "number",
@@ -348,8 +373,8 @@
                 "default": false
               },
               "dropShadowColor": {
-                "$ref": "#/properties/inactiveSectorBackgroundColor",
-                "description": "RGBA color array [r,g,b,a] or [r,g,b]",
+                "$ref": "#/properties/areaOfInterestBackgroundColor",
+                "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)",
                 "default": [
                   0,
                   0,
@@ -387,8 +412,8 @@
                 "default": 0
               },
               "backgroundColor": {
-                "$ref": "#/properties/inactiveSectorBackgroundColor",
-                "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+                "$ref": "#/properties/areaOfInterestBackgroundColor",
+                "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
               },
               "backgroundOpacity": {
                 "type": "number",
@@ -399,7 +424,8 @@
           }
         },
         "additionalProperties": false
-      }
+      },
+      "description": "Layer styles for the map, this is a dictionary of layer names to layer styles, and overrides the default values in the manifest for the layer"
     }
   },
   "required": [

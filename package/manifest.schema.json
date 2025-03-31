@@ -73,7 +73,7 @@
                         "description": "RGBA color array [r,g,b,a]"
                       }
                     ],
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
                   },
                   "width": {
                     "type": "number",
@@ -135,14 +135,16 @@
                   },
                   "size": {
                     "type": "number",
-                    "default": 10
+                    "default": 10,
+                    "description": "Size of the point in cartesian units"
                   },
                   "sprite": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of the sprite defined in the sprite atlas"
                   },
                   "fillColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
                   },
                   "fillOpacity": {
                     "type": "number",
@@ -150,7 +152,7 @@
                   },
                   "strokeColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
                   },
                   "strokeOpacity": {
                     "type": "number",
@@ -162,7 +164,8 @@
                   },
                   "rotation": {
                     "type": "number",
-                    "default": 0
+                    "default": 0,
+                    "description": "Rotation of the symbol in degrees"
                   }
                 },
                 "additionalProperties": false
@@ -175,7 +178,7 @@
                   },
                   "color": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
                   },
                   "fontFamily": {
                     "type": "string",
@@ -186,24 +189,21 @@
                     "default": 12
                   },
                   "fontWeight": {
-                    "type": [
-                      "string",
-                      "number"
-                    ],
+                    "type": "string",
                     "enum": [
                       "normal",
                       "bold",
                       "bolder",
                       "lighter",
-                      100,
-                      200,
-                      300,
-                      400,
-                      500,
-                      600,
-                      700,
-                      800,
-                      900
+                      "100",
+                      "200",
+                      "300",
+                      "400",
+                      "500",
+                      "600",
+                      "700",
+                      "800",
+                      "900"
                     ],
                     "default": "normal"
                   },
@@ -269,7 +269,7 @@
                   },
                   "outlineColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
                   },
                   "outlineWidth": {
                     "type": "number",
@@ -285,7 +285,7 @@
                   },
                   "dropShadowColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b]",
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)",
                     "default": [
                       0,
                       0,
@@ -324,7 +324,7 @@
                   },
                   "backgroundColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b]"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
                   },
                   "backgroundOpacity": {
                     "type": "number",

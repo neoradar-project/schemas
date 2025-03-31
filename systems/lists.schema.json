@@ -16,17 +16,52 @@
                 "maxItems": 3,
                 "items": [
                   {
-                    "type": "string",
-                    "enum": [
-                      "==",
-                      "!=",
-                      "<",
-                      "<=",
-                      ">",
-                      ">=",
-                      "beginsWith",
-                      "endsWith",
-                      "contains"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "==",
+                        "description": "Equality operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "!=",
+                        "description": "Inequality operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "<",
+                        "description": "Less than operator, only works with numbers"
+                      },
+                      {
+                        "type": "string",
+                        "const": "<=",
+                        "description": "Less than or equal to operator, only works with numbers"
+                      },
+                      {
+                        "type": "string",
+                        "const": ">",
+                        "description": "Greater than operator, only works with numbers"
+                      },
+                      {
+                        "type": "string",
+                        "const": ">=",
+                        "description": "Greater than or equal to operator, only works with numbers"
+                      },
+                      {
+                        "type": "string",
+                        "const": "beginsWith",
+                        "description": "String begins with operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "endsWith",
+                        "description": "String ends with operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "contains",
+                        "description": "String contains operator"
+                      }
                     ]
                   },
                   {
@@ -118,25 +153,92 @@
                         ]
                       },
                       {
-                        "type": "string",
-                        "enum": [
-                          "isArrival",
-                          "isDeparture",
-                          "isMyDeparture",
-                          "isMyArrival",
-                          "suggestedStar",
-                          "suggestedSid",
-                          "suggestedDepRunway",
-                          "suggestedArrRunway",
-                          "myCallsign",
-                          "ownedByID",
-                          "computedSpeed",
-                          "computedAssignedSpeed",
-                          "computedCFL",
-                          "computedAltitude",
-                          "transitionAltitude",
-                          "assignedDirect",
-                          "text"
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "const": "isArrival",
+                            "description": "Is the flight an arrival (both active and observed airport)?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "isDeparture",
+                            "description": "Is the flight a departure (both active and observed airport)?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "isMyDeparture",
+                            "description": "Is the flight a departure (my active airport)?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "isMyArrival",
+                            "description": "Is the flight an arrival (my active airport)?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "suggestedStar",
+                            "description": "The star that is calculated but not assigned in the flightplan."
+                          },
+                          {
+                            "type": "string",
+                            "const": "suggestedSid",
+                            "description": "The sid that is calculated but not assigned in the flightplan."
+                          },
+                          {
+                            "type": "string",
+                            "const": "suggestedDepRunway",
+                            "description": "The departure runway that is calculated but not assigned in the flightplan."
+                          },
+                          {
+                            "type": "string",
+                            "const": "suggestedArrRunway",
+                            "description": "The arrival runway that is calculated but not assigned in the flightplan."
+                          },
+                          {
+                            "type": "string",
+                            "const": "myCallsign",
+                            "description": "The callsign of the user."
+                          },
+                          {
+                            "type": "string",
+                            "const": "ownedByID",
+                            "description": "The ID of ATC station which is assuming the track."
+                          },
+                          {
+                            "type": "string",
+                            "const": "computedSpeed",
+                            "description": "DEPRECATED: The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                          },
+                          {
+                            "type": "string",
+                            "const": "computedAssignedSpeed",
+                            "description": "The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                          },
+                          {
+                            "type": "string",
+                            "const": "computedCFL",
+                            "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
+                          },
+                          {
+                            "type": "string",
+                            "const": "computedAltitude",
+                            "description": "The computed assigned altitude, which reflects pressure altitude and dependings on transition level setting."
+                          },
+                          {
+                            "type": "string",
+                            "const": "transitionAltitude",
+                            "description": "The transition altitude set by the user."
+                          },
+                          {
+                            "type": "string",
+                            "const": "assignedDirect",
+                            "description": "The assigned direct waypoint identifier."
+                          },
+                          {
+                            "type": "string",
+                            "const": "text",
+                            "description": "Any text value that is defined in the value property."
+                          }
                         ]
                       },
                       {
@@ -192,11 +294,22 @@
                 "maxItems": 2,
                 "items": [
                   {
-                    "type": "string",
-                    "enum": [
-                      "AND",
-                      "OR",
-                      "NOT"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "AND",
+                        "description": "Logical AND operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "OR",
+                        "description": "Logical OR operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "NOT",
+                        "description": "Logical NOT operator"
+                      }
                     ]
                   },
                   {
@@ -224,10 +337,17 @@
                     "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/1/items/0"
                   },
                   {
-                    "type": "string",
-                    "enum": [
-                      "notEmpty",
-                      "isEmpty"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "notEmpty",
+                        "description": "Logical NOT EMPTY operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "isEmpty",
+                        "description": "Logical IS EMPTY operator"
+                      }
                     ]
                   },
                   {
@@ -270,7 +390,33 @@
               "type": "object",
               "properties": {
                 "itemName": {
-                  "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1"
+                  "anyOf": [
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/0"
+                    },
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/1"
+                    },
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/2"
+                    },
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/3"
+                    },
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/4"
+                    },
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/5"
+                    },
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/6"
+                    },
+                    {
+                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/7"
+                    }
+                  ],
+                  "description": "The name of the item to be displayed."
                 },
                 "truncate": {
                   "anyOf": [
@@ -290,10 +436,12 @@
                         "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
-                  ]
+                  ],
+                  "description": "An array of two numbers representing the start and end index of the substring to be displayed."
                 },
                 "placeholder": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "A placeholder string to be displayed when the item is empty or equal to 0."
                 },
                 "prefix": {
                   "anyOf": [
@@ -309,7 +457,8 @@
                         "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
-                  ]
+                  ],
+                  "description": "A prefix string to be displayed before the item, it can also be an expression rule."
                 },
                 "suffix": {
                   "anyOf": [
@@ -325,13 +474,15 @@
                         "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
-                  ]
+                  ],
+                  "description": "A suffix string to be displayed after the item, it can also be an expression rule."
                 },
                 "mapping": {
                   "type": "object",
                   "additionalProperties": {
                     "type": "string"
-                  }
+                  },
+                  "description": "A mapping object to map item values to display values, this forces the display value based on the item value you set."
                 },
                 "padWithZeroLeft": {
                   "anyOf": [
@@ -347,7 +498,8 @@
                         "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
-                  ]
+                  ],
+                  "description": "A number to pad the item value with leading zeros."
                 },
                 "padWithZeroRight": {
                   "anyOf": [
@@ -363,7 +515,8 @@
                         "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
-                  ]
+                  ],
+                  "description": "A number to pad the item value with trailing zeros."
                 },
                 "fontSize": {
                   "anyOf": [
@@ -379,12 +532,28 @@
                         "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
-                  ]
+                  ],
+                  "description": "Font size of the itemm can also be an expression rule."
                 },
                 "fontWeight": {
                   "anyOf": [
                     {
-                      "type": "string"
+                      "type": "string",
+                      "enum": [
+                        "normal",
+                        "bold",
+                        "bolder",
+                        "lighter",
+                        "100",
+                        "200",
+                        "300",
+                        "400",
+                        "500",
+                        "600",
+                        "700",
+                        "800",
+                        "900"
+                      ]
                     },
                     {
                       "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
@@ -395,10 +564,12 @@
                         "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
-                  ]
+                  ],
+                  "description": "Font weight of the item, can also be an expression rule."
                 },
                 "fontFamily": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Font family of the item."
                 },
                 "lineHeight": {
                   "anyOf": [
@@ -414,7 +585,8 @@
                         "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
-                  ]
+                  ],
+                  "description": "Line height of the item, can also be an expression rule."
                 },
                 "color": {
                   "anyOf": [
@@ -424,7 +596,8 @@
                         "type": "number"
                       },
                       "minItems": 3,
-                      "maxItems": 3
+                      "maxItems": 3,
+                      "description": "An array of three numbers representing the RGB color values (0-255)."
                     },
                     {
                       "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
@@ -435,15 +608,18 @@
                         "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
-                  ]
+                  ],
+                  "description": "Color of the item (in RGBA), can also be an expression rule."
                 },
                 "separatorBefore": {
                   "type": "boolean",
-                  "default": true
+                  "default": true,
+                  "description": "Whether add a blank padding the item."
                 },
                 "showPlusMinus": {
                   "type": "boolean",
-                  "default": false
+                  "default": false,
+                  "description": "Whether to show a plus/minus sign before the item if the item is a number."
                 },
                 "value": {
                   "anyOf": [
@@ -459,45 +635,145 @@
                         "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                       }
                     }
-                  ]
+                  ],
+                  "description": "A static value or expression to be displayed instead of the item if the item name is set to text."
                 },
                 "leftClick": {
-                  "type": "string",
-                  "enum": [
-                    "triggerScratchpad",
-                    "triggerCFL",
-                    "cfl",
-                    "spd",
-                    "clearSpd",
-                    "routeDraw",
-                    "pfl",
-                    "hdg",
-                    "callsignMenu",
-                    "fpDialog",
-                    "toggleClearanceFlag",
-                    "groundStatusMenu",
-                    "voiceTypeMenu",
-                    "depRunwayMenu",
-                    "arrRunwayMenu",
-                    "sidMenu",
-                    "starMenu",
-                    "assignRandomSquawk",
-                    "assignSq1000",
-                    "directMenu",
-                    "openPrivateMessage",
-                    "showAtisLines",
-                    "focusMetar",
-                    "acknowledgeMetarUpdate"
-                  ]
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "triggerScratchpad",
+                      "description": "Opens the scratchpad input box."
+                    },
+                    {
+                      "type": "string",
+                      "const": "triggerCFL",
+                      "description": "Opens the scratchpad input box that will set the CFL."
+                    },
+                    {
+                      "type": "string",
+                      "const": "cfl",
+                      "description": "Opens the CFL poupup."
+                    },
+                    {
+                      "type": "string",
+                      "const": "spd",
+                      "description": "Opens the speed assignment popup."
+                    },
+                    {
+                      "type": "string",
+                      "const": "clearSpd",
+                      "description": "Clears the speed assignment."
+                    },
+                    {
+                      "type": "string",
+                      "const": "routeDraw",
+                      "description": "Draws the route on the map."
+                    },
+                    {
+                      "type": "string",
+                      "const": "pfl",
+                      "description": "Opens the Planned Flight Level popup."
+                    },
+                    {
+                      "type": "string",
+                      "const": "hdg",
+                      "description": "Opens the heading assignment popup."
+                    },
+                    {
+                      "type": "string",
+                      "const": "callsignMenu",
+                      "description": "Opens the callsign assignment popup."
+                    },
+                    {
+                      "type": "string",
+                      "const": "fpDialog",
+                      "description": "Opens the flight plan dialog."
+                    },
+                    {
+                      "type": "string",
+                      "const": "toggleClearanceFlag",
+                      "description": "Toggles the clearance flag."
+                    },
+                    {
+                      "type": "string",
+                      "const": "groundStatusMenu",
+                      "description": "Opens the ground status menu."
+                    },
+                    {
+                      "type": "string",
+                      "const": "voiceTypeMenu",
+                      "description": "Opens the voice type assignment menu."
+                    },
+                    {
+                      "type": "string",
+                      "const": "depRunwayMenu",
+                      "description": "Opens the departure runway assignment menu."
+                    },
+                    {
+                      "type": "string",
+                      "const": "arrRunwayMenu",
+                      "description": "Opens the arrival runway assignment menu."
+                    },
+                    {
+                      "type": "string",
+                      "const": "sidMenu",
+                      "description": "Opens the SID assignment menu."
+                    },
+                    {
+                      "type": "string",
+                      "const": "starMenu",
+                      "description": "Opens the STAR assignment menu."
+                    },
+                    {
+                      "type": "string",
+                      "const": "assignRandomSquawk",
+                      "description": "Assigns a random squawk code."
+                    },
+                    {
+                      "type": "string",
+                      "const": "assignSq1000",
+                      "description": "Assigns a squawk code of 1000."
+                    },
+                    {
+                      "type": "string",
+                      "const": "directMenu",
+                      "description": "Opens the direct to menu."
+                    },
+                    {
+                      "type": "string",
+                      "const": "openPrivateMessage",
+                      "description": "Opens the private message input box for a controller."
+                    },
+                    {
+                      "type": "string",
+                      "const": "showAtisLines",
+                      "description": "Shows the ATIS lines for a controller."
+                    },
+                    {
+                      "type": "string",
+                      "const": "focusMetar",
+                      "description": "Displays the full METAR in the focus bar."
+                    },
+                    {
+                      "type": "string",
+                      "const": "acknowledgeMetarUpdate",
+                      "description": "Acknowledges the METAR update."
+                    }
+                  ],
+                  "description": "The action to be performed when the item is left-clicked"
                 },
                 "rightClick": {
-                  "$ref": "#/items/properties/columns/items/properties/tagItem/properties/leftClick"
+                  "$ref": "#/items/properties/columns/items/properties/tagItem/properties/leftClick",
+                  "description": "The action to be performed when the item is right-clicked"
                 },
                 "doubleClick": {
-                  "$ref": "#/items/properties/columns/items/properties/tagItem/properties/leftClick"
+                  "$ref": "#/items/properties/columns/items/properties/tagItem/properties/leftClick",
+                  "description": "The action to be performed when the item is double-clicked, this is only supported for lists"
                 },
                 "middleClick": {
-                  "$ref": "#/items/properties/columns/items/properties/tagItem/properties/leftClick"
+                  "$ref": "#/items/properties/columns/items/properties/tagItem/properties/leftClick",
+                  "description": "The action to be performed when the item is middle-clicked."
                 }
               },
               "required": [
@@ -546,7 +822,7 @@
           "background": {
             "type": "object",
             "properties": {
-              "color": {
+              "headerColor": {
                 "type": "array",
                 "items": {
                   "type": "number"
@@ -554,11 +830,25 @@
                 "minItems": 3,
                 "maxItems": 3
               },
-              "opacity": {
-                "type": "number",
-                "default": 1
+              "headerOpacity": {
+                "type": "number"
               },
-              "blur": {
+              "bodyColor": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "bodyOpacity": {
+                "type": "number"
+              },
+              "headerBlur": {
+                "type": "boolean",
+                "default": false
+              },
+              "bodyBlur": {
                 "type": "boolean",
                 "default": false
               }
@@ -568,6 +858,14 @@
           "showHeaders": {
             "type": "boolean",
             "default": true
+          },
+          "headerTextSize": {
+            "type": "number",
+            "default": 11
+          },
+          "bodyTextSize": {
+            "type": "number",
+            "default": 11
           }
         },
         "additionalProperties": false
