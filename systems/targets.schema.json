@@ -163,7 +163,11 @@
                                       "arrRunway",
                                       "rawRoute",
                                       "hadStar",
-                                      "hadSid"
+                                      "hadSid",
+                                      "suggestedArrRunway",
+                                      "suggestedDepRunway",
+                                      "suggestedSid",
+                                      "suggestedStar"
                                     ]
                                   },
                                   {
@@ -187,26 +191,6 @@
                                         "type": "string",
                                         "const": "isMyArrival",
                                         "description": "Is the flight an arrival (my active airport)?"
-                                      },
-                                      {
-                                        "type": "string",
-                                        "const": "suggestedStar",
-                                        "description": "The star that is calculated but not assigned in the flightplan."
-                                      },
-                                      {
-                                        "type": "string",
-                                        "const": "suggestedSid",
-                                        "description": "The sid that is calculated but not assigned in the flightplan."
-                                      },
-                                      {
-                                        "type": "string",
-                                        "const": "suggestedDepRunway",
-                                        "description": "The departure runway that is calculated but not assigned in the flightplan."
-                                      },
-                                      {
-                                        "type": "string",
-                                        "const": "suggestedArrRunway",
-                                        "description": "The arrival runway that is calculated but not assigned in the flightplan."
                                       },
                                       {
                                         "type": "string",
@@ -291,6 +275,9 @@
                                       "controllerIsCenter",
                                       "controllerHasIdentifier"
                                     ]
+                                  },
+                                  {
+                                    "type": "string"
                                   }
                                 ]
                               },

@@ -17,216 +17,210 @@
                 "itemName": {
                   "anyOf": [
                     {
-                      "type": "string",
-                      "enum": [
-                        "stopped",
-                        "timestamp",
-                        "verticalSpeed",
-                        "verticalTrend",
-                        "altitude",
-                        "agl",
-                        "onGround",
-                        "groundSpeed",
-                        "reportedHeading",
-                        "trackHeading",
-                        "transponder",
-                        "latLon",
-                        "trueAltitude",
-                        "pressureAltitude"
-                      ]
-                    },
-                    {
-                      "type": "string",
-                      "enum": [
-                        "flightRule",
-                        "rawType",
-                        "icaoTransponderEquipment",
-                        "icaoEquipment",
-                        "icaoWakeCategory",
-                        "acShortType",
-                        "origin",
-                        "destination",
-                        "alternate",
-                        "plannedTas",
-                        "plannedFlightLevel",
-                        "rmk",
-                        "flightTimeHours",
-                        "flightTimeMinutes",
-                        "fuelTimeHours",
-                        "fuelTimeMinutes",
-                        "eobt",
-                        "aobt",
-                        "isValid",
-                        "voiceType"
-                      ]
-                    },
-                    {
-                      "type": "string",
-                      "enum": [
-                        "callsign",
-                        "type",
-                        "isTimingOut",
-                        "lastPositionUpdateReceivedAt",
-                        "squawk",
-                        "latestTransponderStatus"
-                      ]
-                    },
-                    {
-                      "type": "string",
-                      "enum": [
-                        "clearedFlightLevel",
-                        "assignedHeading",
-                        "assignedSpeed",
-                        "assignedMach",
-                        "assignedVerticalRate",
-                        "clearanceIssued",
-                        "assignedSquawk",
-                        "ownedByMe",
-                        "ownedByCallsign",
-                        "scratchpad",
-                        "groundStatus",
-                        "clearanceQueuePosition",
-                        "attentionState"
-                      ]
-                    },
-                    {
-                      "type": "string",
-                      "enum": [
-                        "sid",
-                        "star",
-                        "isAmended",
-                        "depRunway",
-                        "arrRunway",
-                        "rawRoute",
-                        "hadStar",
-                        "hadSid"
-                      ]
-                    },
-                    {
                       "anyOf": [
                         {
                           "type": "string",
-                          "const": "isArrival",
-                          "description": "Is the flight an arrival (both active and observed airport)?"
+                          "enum": [
+                            "stopped",
+                            "timestamp",
+                            "verticalSpeed",
+                            "verticalTrend",
+                            "altitude",
+                            "agl",
+                            "onGround",
+                            "groundSpeed",
+                            "reportedHeading",
+                            "trackHeading",
+                            "transponder",
+                            "latLon",
+                            "trueAltitude",
+                            "pressureAltitude"
+                          ]
                         },
                         {
                           "type": "string",
-                          "const": "isDeparture",
-                          "description": "Is the flight a departure (both active and observed airport)?"
+                          "enum": [
+                            "flightRule",
+                            "rawType",
+                            "icaoTransponderEquipment",
+                            "icaoEquipment",
+                            "icaoWakeCategory",
+                            "acShortType",
+                            "origin",
+                            "destination",
+                            "alternate",
+                            "plannedTas",
+                            "plannedFlightLevel",
+                            "rmk",
+                            "flightTimeHours",
+                            "flightTimeMinutes",
+                            "fuelTimeHours",
+                            "fuelTimeMinutes",
+                            "eobt",
+                            "aobt",
+                            "isValid",
+                            "voiceType"
+                          ]
                         },
                         {
                           "type": "string",
-                          "const": "isMyDeparture",
-                          "description": "Is the flight a departure (my active airport)?"
+                          "enum": [
+                            "callsign",
+                            "type",
+                            "isTimingOut",
+                            "lastPositionUpdateReceivedAt",
+                            "squawk",
+                            "latestTransponderStatus"
+                          ]
                         },
                         {
                           "type": "string",
-                          "const": "isMyArrival",
-                          "description": "Is the flight an arrival (my active airport)?"
+                          "enum": [
+                            "clearedFlightLevel",
+                            "assignedHeading",
+                            "assignedSpeed",
+                            "assignedMach",
+                            "assignedVerticalRate",
+                            "clearanceIssued",
+                            "assignedSquawk",
+                            "ownedByMe",
+                            "ownedByCallsign",
+                            "scratchpad",
+                            "groundStatus",
+                            "clearanceQueuePosition",
+                            "attentionState"
+                          ]
                         },
                         {
                           "type": "string",
-                          "const": "suggestedStar",
-                          "description": "The star that is calculated but not assigned in the flightplan."
+                          "enum": [
+                            "sid",
+                            "star",
+                            "isAmended",
+                            "depRunway",
+                            "arrRunway",
+                            "rawRoute",
+                            "hadStar",
+                            "hadSid",
+                            "suggestedArrRunway",
+                            "suggestedDepRunway",
+                            "suggestedSid",
+                            "suggestedStar"
+                          ]
+                        },
+                        {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "const": "isArrival",
+                              "description": "Is the flight an arrival (both active and observed airport)?"
+                            },
+                            {
+                              "type": "string",
+                              "const": "isDeparture",
+                              "description": "Is the flight a departure (both active and observed airport)?"
+                            },
+                            {
+                              "type": "string",
+                              "const": "isMyDeparture",
+                              "description": "Is the flight a departure (my active airport)?"
+                            },
+                            {
+                              "type": "string",
+                              "const": "isMyArrival",
+                              "description": "Is the flight an arrival (my active airport)?"
+                            },
+                            {
+                              "type": "string",
+                              "const": "myCallsign",
+                              "description": "The callsign of the user."
+                            },
+                            {
+                              "type": "string",
+                              "const": "ownedByID",
+                              "description": "The ID of ATC station which is assuming the track."
+                            },
+                            {
+                              "type": "string",
+                              "const": "computedSpeed",
+                              "description": "DEPRECATED: The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                            },
+                            {
+                              "type": "string",
+                              "const": "computedAssignedSpeed",
+                              "description": "The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                            },
+                            {
+                              "type": "string",
+                              "const": "computedCFL",
+                              "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
+                            },
+                            {
+                              "type": "string",
+                              "const": "computedAltitude",
+                              "description": "The computed assigned altitude, which reflects pressure altitude and dependings on transition level setting."
+                            },
+                            {
+                              "type": "string",
+                              "const": "transitionAltitude",
+                              "description": "The transition altitude set by the user."
+                            },
+                            {
+                              "type": "string",
+                              "const": "assignedDirect",
+                              "description": "The assigned direct waypoint identifier."
+                            },
+                            {
+                              "type": "string",
+                              "const": "text",
+                              "description": "Any text value that is defined in the value property."
+                            }
+                          ]
                         },
                         {
                           "type": "string",
-                          "const": "suggestedSid",
-                          "description": "The sid that is calculated but not assigned in the flightplan."
+                          "enum": [
+                            "metarICAO",
+                            "metarRawMetar",
+                            "metarTimestamp",
+                            "metarWindDirection",
+                            "metarWindSpeed",
+                            "metarWindGust",
+                            "metarWindString",
+                            "metarQNHString",
+                            "metarQNH",
+                            "metarQNHUnit",
+                            "metarVisibility",
+                            "metarVisibilityUnit",
+                            "metarVisibilityString",
+                            "metarTemperature",
+                            "metarDewpoint"
+                          ]
                         },
                         {
                           "type": "string",
-                          "const": "suggestedDepRunway",
-                          "description": "The departure runway that is calculated but not assigned in the flightplan."
+                          "enum": [
+                            "controllerCallsign",
+                            "controllerIdentifier",
+                            "controllerPosition",
+                            "controllerFrequency",
+                            "controllerIsTimingOut",
+                            "controllerLastUpdate",
+                            "controllerIsATIS",
+                            "controllerIsGround",
+                            "controllerIsTower",
+                            "controllerIsApproach",
+                            "controllerIsCenter",
+                            "controllerHasIdentifier"
+                          ]
                         },
                         {
-                          "type": "string",
-                          "const": "suggestedArrRunway",
-                          "description": "The arrival runway that is calculated but not assigned in the flightplan."
-                        },
-                        {
-                          "type": "string",
-                          "const": "myCallsign",
-                          "description": "The callsign of the user."
-                        },
-                        {
-                          "type": "string",
-                          "const": "ownedByID",
-                          "description": "The ID of ATC station which is assuming the track."
-                        },
-                        {
-                          "type": "string",
-                          "const": "computedSpeed",
-                          "description": "DEPRECATED: The computed assigned speed, with a -/+ at the end of the string (2 digits)."
-                        },
-                        {
-                          "type": "string",
-                          "const": "computedAssignedSpeed",
-                          "description": "The computed assigned speed, with a -/+ at the end of the string (2 digits)."
-                        },
-                        {
-                          "type": "string",
-                          "const": "computedCFL",
-                          "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
-                        },
-                        {
-                          "type": "string",
-                          "const": "computedAltitude",
-                          "description": "The computed assigned altitude, which reflects pressure altitude and dependings on transition level setting."
-                        },
-                        {
-                          "type": "string",
-                          "const": "transitionAltitude",
-                          "description": "The transition altitude set by the user."
-                        },
-                        {
-                          "type": "string",
-                          "const": "assignedDirect",
-                          "description": "The assigned direct waypoint identifier."
-                        },
-                        {
-                          "type": "string",
-                          "const": "text",
-                          "description": "Any text value that is defined in the value property."
+                          "type": "string"
                         }
                       ]
                     },
                     {
-                      "type": "string",
-                      "enum": [
-                        "metarICAO",
-                        "metarRawMetar",
-                        "metarTimestamp",
-                        "metarWindDirection",
-                        "metarWindSpeed",
-                        "metarWindGust",
-                        "metarWindString",
-                        "metarQNHString",
-                        "metarQNH",
-                        "metarQNHUnit",
-                        "metarVisibility",
-                        "metarVisibilityUnit",
-                        "metarVisibilityString",
-                        "metarTemperature",
-                        "metarDewpoint"
-                      ]
-                    },
-                    {
-                      "type": "string",
-                      "enum": [
-                        "controllerCallsign",
-                        "controllerIdentifier",
-                        "controllerPosition",
-                        "controllerFrequency",
-                        "controllerIsTimingOut",
-                        "controllerLastUpdate",
-                        "controllerIsATIS",
-                        "controllerIsGround",
-                        "controllerIsTower",
-                        "controllerIsApproach",
-                        "controllerIsCenter",
-                        "controllerHasIdentifier"
-                      ]
+                      "type": "string"
                     }
                   ],
                   "description": "The name of the item to be displayed."
@@ -572,6 +566,10 @@
                       "type": "string",
                       "const": "acknowledgeMetarUpdate",
                       "description": "Acknowledges the METAR update."
+                    },
+                    {
+                      "type": "string",
+                      "description": "Custom plugin action"
                     }
                   ],
                   "description": "The action to be performed when the item is left-clicked"
@@ -697,32 +695,7 @@
                             ]
                           },
                           {
-                            "anyOf": [
-                              {
-                                "$ref": "#/properties/ground/properties/default/items/items/properties/itemName/anyOf/0"
-                              },
-                              {
-                                "$ref": "#/properties/ground/properties/default/items/items/properties/itemName/anyOf/1"
-                              },
-                              {
-                                "$ref": "#/properties/ground/properties/default/items/items/properties/itemName/anyOf/2"
-                              },
-                              {
-                                "$ref": "#/properties/ground/properties/default/items/items/properties/itemName/anyOf/3"
-                              },
-                              {
-                                "$ref": "#/properties/ground/properties/default/items/items/properties/itemName/anyOf/4"
-                              },
-                              {
-                                "$ref": "#/properties/ground/properties/default/items/items/properties/itemName/anyOf/5"
-                              },
-                              {
-                                "$ref": "#/properties/ground/properties/default/items/items/properties/itemName/anyOf/6"
-                              },
-                              {
-                                "$ref": "#/properties/ground/properties/default/items/items/properties/itemName/anyOf/7"
-                              }
-                            ]
+                            "$ref": "#/properties/ground/properties/default/items/items/properties/itemName/anyOf/0"
                           },
                           {
                             "type": [
@@ -795,7 +768,7 @@
                             ]
                           },
                           {
-                            "$ref": "#/properties/ground/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/0/items/1"
+                            "$ref": "#/properties/ground/properties/default/items/items/properties/itemName/anyOf/0"
                           }
                         ]
                       },
@@ -808,7 +781,7 @@
                             "$ref": "#/properties/ground/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/2/items/1"
                           },
                           {
-                            "$ref": "#/properties/ground/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/0/items/1"
+                            "$ref": "#/properties/ground/properties/default/items/items/properties/itemName/anyOf/0"
                           }
                         ]
                       }

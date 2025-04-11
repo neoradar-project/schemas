@@ -371,12 +371,49 @@
     },
     "lastActiveProfile": {
       "type": "string"
+    },
+    "remoteSource": {
+      "type": "object",
+      "properties": {
+        "providerId": {
+          "type": "string"
+        },
+        "providerName": {
+          "type": "string"
+        },
+        "downloadedAt": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "providerId",
+        "providerName",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "devDisableAntialiasing": {
+      "type": "boolean",
+      "default": false
+    },
+    "plugins": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "required": [
     "$schema",
     "id",
     "name",
+    "version",
     "namespace",
     "createdAt",
     "centerPoint"

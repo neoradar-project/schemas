@@ -149,7 +149,11 @@
                           "arrRunway",
                           "rawRoute",
                           "hadStar",
-                          "hadSid"
+                          "hadSid",
+                          "suggestedArrRunway",
+                          "suggestedDepRunway",
+                          "suggestedSid",
+                          "suggestedStar"
                         ]
                       },
                       {
@@ -173,26 +177,6 @@
                             "type": "string",
                             "const": "isMyArrival",
                             "description": "Is the flight an arrival (my active airport)?"
-                          },
-                          {
-                            "type": "string",
-                            "const": "suggestedStar",
-                            "description": "The star that is calculated but not assigned in the flightplan."
-                          },
-                          {
-                            "type": "string",
-                            "const": "suggestedSid",
-                            "description": "The sid that is calculated but not assigned in the flightplan."
-                          },
-                          {
-                            "type": "string",
-                            "const": "suggestedDepRunway",
-                            "description": "The departure runway that is calculated but not assigned in the flightplan."
-                          },
-                          {
-                            "type": "string",
-                            "const": "suggestedArrRunway",
-                            "description": "The arrival runway that is calculated but not assigned in the flightplan."
                           },
                           {
                             "type": "string",
@@ -277,6 +261,9 @@
                           "controllerIsCenter",
                           "controllerHasIdentifier"
                         ]
+                      },
+                      {
+                        "type": "string"
                       }
                     ]
                   },
@@ -392,28 +379,10 @@
                 "itemName": {
                   "anyOf": [
                     {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/0"
+                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1"
                     },
                     {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/1"
-                    },
-                    {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/2"
-                    },
-                    {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/3"
-                    },
-                    {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/4"
-                    },
-                    {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/5"
-                    },
-                    {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/6"
-                    },
-                    {
-                      "$ref": "#/items/properties/filterExpressions/anyOf/0/anyOf/0/items/1/anyOf/7"
+                      "type": "string"
                     }
                   ],
                   "description": "The name of the item to be displayed."
@@ -759,6 +728,10 @@
                       "type": "string",
                       "const": "acknowledgeMetarUpdate",
                       "description": "Acknowledges the METAR update."
+                    },
+                    {
+                      "type": "string",
+                      "description": "Custom plugin action"
                     }
                   ],
                   "description": "The action to be performed when the item is left-clicked"
