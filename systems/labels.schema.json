@@ -418,6 +418,23 @@
                   ],
                   "description": "Color of the item (in RGBA), can also be an expression rule."
                 },
+                "backgroundColor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/color/anyOf/0"
+                    },
+                    {
+                      "$ref": "#/properties/ground/properties/default/items/items/properties/truncate/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/properties/ground/properties/default/items/items/properties/truncate/anyOf/1"
+                      }
+                    }
+                  ],
+                  "description": "Background color of the item (in RGBA), can also be an expression rule."
+                },
                 "separatorBefore": {
                   "type": "boolean",
                   "default": true,

@@ -580,6 +580,23 @@
                   ],
                   "description": "Color of the item (in RGBA), can also be an expression rule."
                 },
+                "backgroundColor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/0"
+                    },
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                      }
+                    }
+                  ],
+                  "description": "Background color of the item (in RGBA), can also be an expression rule."
+                },
                 "separatorBefore": {
                   "type": "boolean",
                   "default": true,
@@ -831,6 +848,10 @@
           "showHeaders": {
             "type": "boolean",
             "default": true
+          },
+          "headerOnlyBorder": {
+            "type": "boolean",
+            "default": false
           },
           "headerTextSize": {
             "type": "number",
