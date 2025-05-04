@@ -236,6 +236,16 @@
                                         "type": "string",
                                         "const": "text",
                                         "description": "Any text value that is defined in the value property."
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "databaseIcaoWakeCat",
+                                        "description": "The icao wake category based on the aircraft type and the database in ATCData, default to the one in the flightplan if not present in database."
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "databaseWakeRecat",
+                                        "description": "The recat wake category based on the database in ATCData, defaults to the ICAO Wake cat in the database, and then in the flightplan if not found."
                                       }
                                     ]
                                   },
