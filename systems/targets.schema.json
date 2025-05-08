@@ -5,495 +5,501 @@
       "type": "string"
     },
     "groundSymbology": {
-      "type": "object",
-      "properties": {
-        "default": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "description": {
-                "type": "string"
-              },
-              "applyWhen": {
-                "anyOf": [
-                  {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^(#[A-z-_]+)"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "default": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "description": {
                     "type": "string"
                   },
-                  {
+                  "applyWhen": {
                     "anyOf": [
+                      {
+                        "type": "string"
+                      },
                       {
                         "anyOf": [
                           {
-                            "type": "array",
-                            "minItems": 3,
-                            "maxItems": 3,
-                            "items": [
+                            "anyOf": [
                               {
-                                "anyOf": [
+                                "type": "array",
+                                "minItems": 3,
+                                "maxItems": 3,
+                                "items": [
                                   {
-                                    "type": "string",
-                                    "const": "==",
-                                    "description": "Equality operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "!=",
-                                    "description": "Inequality operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "<",
-                                    "description": "Less than operator, only works with numbers"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "<=",
-                                    "description": "Less than or equal to operator, only works with numbers"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": ">",
-                                    "description": "Greater than operator, only works with numbers"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": ">=",
-                                    "description": "Greater than or equal to operator, only works with numbers"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "beginsWith",
-                                    "description": "String begins with operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "endsWith",
-                                    "description": "String ends with operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "contains",
-                                    "description": "String contains operator"
-                                  }
-                                ]
-                              },
-                              {
-                                "anyOf": [
-                                  {
-                                    "type": "string",
-                                    "enum": [
-                                      "stopped",
-                                      "timestamp",
-                                      "verticalSpeed",
-                                      "verticalTrend",
-                                      "altitude",
-                                      "agl",
-                                      "onGround",
-                                      "groundSpeed",
-                                      "reportedHeading",
-                                      "trackHeading",
-                                      "transponder",
-                                      "latLon",
-                                      "trueAltitude",
-                                      "pressureAltitude"
-                                    ]
-                                  },
-                                  {
-                                    "type": "string",
-                                    "enum": [
-                                      "flightRule",
-                                      "rawType",
-                                      "icaoTransponderEquipment",
-                                      "icaoEquipment",
-                                      "icaoWakeCategory",
-                                      "acShortType",
-                                      "origin",
-                                      "destination",
-                                      "alternate",
-                                      "plannedTas",
-                                      "plannedFlightLevel",
-                                      "rmk",
-                                      "flightTimeHours",
-                                      "flightTimeMinutes",
-                                      "fuelTimeHours",
-                                      "fuelTimeMinutes",
-                                      "eobt",
-                                      "aobt",
-                                      "isValid",
-                                      "voiceType"
-                                    ]
-                                  },
-                                  {
-                                    "type": "string",
-                                    "enum": [
-                                      "callsign",
-                                      "type",
-                                      "isTimingOut",
-                                      "lastPositionUpdateReceivedAt",
-                                      "squawk",
-                                      "latestTransponderStatus"
-                                    ]
-                                  },
-                                  {
-                                    "type": "string",
-                                    "enum": [
-                                      "clearedFlightLevel",
-                                      "assignedHeading",
-                                      "assignedSpeed",
-                                      "assignedMach",
-                                      "assignedVerticalRate",
-                                      "clearanceIssued",
-                                      "assignedSquawk",
-                                      "ownedByMe",
-                                      "ownedByCallsign",
-                                      "scratchpad",
-                                      "groundStatus",
-                                      "clearanceQueuePosition",
-                                      "attentionState"
-                                    ]
-                                  },
-                                  {
-                                    "type": "string",
-                                    "enum": [
-                                      "sid",
-                                      "star",
-                                      "isAmended",
-                                      "depRunway",
-                                      "arrRunway",
-                                      "rawRoute",
-                                      "hadStar",
-                                      "hadSid",
-                                      "suggestedArrRunway",
-                                      "suggestedDepRunway",
-                                      "suggestedSid",
-                                      "suggestedStar"
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "const": "==",
+                                        "description": "Equality operator"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "!=",
+                                        "description": "Inequality operator"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "<",
+                                        "description": "Less than operator, only works with numbers"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "<=",
+                                        "description": "Less than or equal to operator, only works with numbers"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": ">",
+                                        "description": "Greater than operator, only works with numbers"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": ">=",
+                                        "description": "Greater than or equal to operator, only works with numbers"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "beginsWith",
+                                        "description": "String begins with operator"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "endsWith",
+                                        "description": "String ends with operator"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "contains",
+                                        "description": "String contains operator"
+                                      }
                                     ]
                                   },
                                   {
                                     "anyOf": [
                                       {
                                         "type": "string",
-                                        "const": "isArrival",
-                                        "description": "Is the flight an arrival (both active and observed airport)?"
+                                        "enum": [
+                                          "stopped",
+                                          "timestamp",
+                                          "verticalSpeed",
+                                          "verticalTrend",
+                                          "altitude",
+                                          "agl",
+                                          "onGround",
+                                          "groundSpeed",
+                                          "reportedHeading",
+                                          "trackHeading",
+                                          "transponder",
+                                          "latLon",
+                                          "trueAltitude",
+                                          "pressureAltitude"
+                                        ]
                                       },
                                       {
                                         "type": "string",
-                                        "const": "isDeparture",
-                                        "description": "Is the flight a departure (both active and observed airport)?"
+                                        "enum": [
+                                          "flightRule",
+                                          "rawType",
+                                          "icaoTransponderEquipment",
+                                          "icaoEquipment",
+                                          "icaoWakeCategory",
+                                          "acShortType",
+                                          "origin",
+                                          "destination",
+                                          "alternate",
+                                          "plannedTas",
+                                          "plannedFlightLevel",
+                                          "rmk",
+                                          "flightTimeHours",
+                                          "flightTimeMinutes",
+                                          "fuelTimeHours",
+                                          "fuelTimeMinutes",
+                                          "eobt",
+                                          "aobt",
+                                          "isValid",
+                                          "voiceType"
+                                        ]
                                       },
                                       {
                                         "type": "string",
-                                        "const": "isMyDeparture",
-                                        "description": "Is the flight a departure (my active airport)?"
+                                        "enum": [
+                                          "callsign",
+                                          "type",
+                                          "isTimingOut",
+                                          "lastPositionUpdateReceivedAt",
+                                          "squawk",
+                                          "latestTransponderStatus"
+                                        ]
                                       },
                                       {
                                         "type": "string",
-                                        "const": "isMyArrival",
-                                        "description": "Is the flight an arrival (my active airport)?"
+                                        "enum": [
+                                          "clearedFlightLevel",
+                                          "assignedHeading",
+                                          "assignedSpeed",
+                                          "assignedMach",
+                                          "assignedVerticalRate",
+                                          "clearanceIssued",
+                                          "assignedSquawk",
+                                          "ownedByMe",
+                                          "ownedByCallsign",
+                                          "scratchpad",
+                                          "groundStatus",
+                                          "clearanceQueuePosition",
+                                          "attentionState"
+                                        ]
                                       },
                                       {
                                         "type": "string",
-                                        "const": "myCallsign",
-                                        "description": "The callsign of the user."
+                                        "enum": [
+                                          "sid",
+                                          "star",
+                                          "isAmended",
+                                          "depRunway",
+                                          "arrRunway",
+                                          "rawRoute",
+                                          "hadStar",
+                                          "hadSid",
+                                          "suggestedArrRunway",
+                                          "suggestedDepRunway",
+                                          "suggestedSid",
+                                          "suggestedStar"
+                                        ]
+                                      },
+                                      {
+                                        "anyOf": [
+                                          {
+                                            "type": "string",
+                                            "const": "isArrival",
+                                            "description": "Is the flight an arrival (both active and observed airport)?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "isDeparture",
+                                            "description": "Is the flight a departure (both active and observed airport)?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "isMyDeparture",
+                                            "description": "Is the flight a departure (my active airport)?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "isMyArrival",
+                                            "description": "Is the flight an arrival (my active airport)?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "myCallsign",
+                                            "description": "The callsign of the user."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "ownedByID",
+                                            "description": "The ID of ATC station which is assuming the track."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "computedSpeed",
+                                            "description": "DEPRECATED: The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "computedAssignedSpeed",
+                                            "description": "The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "computedCFL",
+                                            "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "computedAltitude",
+                                            "description": "The computed assigned altitude, which reflects pressure altitude and dependings on transition level setting."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "transitionAltitude",
+                                            "description": "The transition altitude set by the user."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "assignedDirect",
+                                            "description": "The assigned direct waypoint identifier."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "text",
+                                            "description": "Any text value that is defined in the value property."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "databaseIcaoWakeCat",
+                                            "description": "The icao wake category based on the aircraft type and the database in ATCData, default to the one in the flightplan if not present in database."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "databaseWakeRecat",
+                                            "description": "The recat wake category based on the database in ATCData, defaults to the ICAO Wake cat in the database, and then in the flightplan if not found."
+                                          }
+                                        ]
                                       },
                                       {
                                         "type": "string",
-                                        "const": "ownedByID",
-                                        "description": "The ID of ATC station which is assuming the track."
+                                        "enum": [
+                                          "metarICAO",
+                                          "metarRawMetar",
+                                          "metarTimestamp",
+                                          "metarWindDirection",
+                                          "metarWindSpeed",
+                                          "metarWindGust",
+                                          "metarWindString",
+                                          "metarQNHString",
+                                          "metarQNH",
+                                          "metarQNHUnit",
+                                          "metarVisibility",
+                                          "metarVisibilityUnit",
+                                          "metarVisibilityString",
+                                          "metarTemperature",
+                                          "metarDewpoint"
+                                        ]
                                       },
                                       {
                                         "type": "string",
-                                        "const": "computedSpeed",
-                                        "description": "DEPRECATED: The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                                        "enum": [
+                                          "controllerCallsign",
+                                          "controllerIdentifier",
+                                          "controllerPosition",
+                                          "controllerFrequency",
+                                          "controllerIsTimingOut",
+                                          "controllerLastUpdate",
+                                          "controllerIsATIS",
+                                          "controllerIsGround",
+                                          "controllerIsTower",
+                                          "controllerIsApproach",
+                                          "controllerIsCenter",
+                                          "controllerHasIdentifier"
+                                        ]
                                       },
                                       {
-                                        "type": "string",
-                                        "const": "computedAssignedSpeed",
-                                        "description": "The computed assigned speed, with a -/+ at the end of the string (2 digits)."
-                                      },
-                                      {
-                                        "type": "string",
-                                        "const": "computedCFL",
-                                        "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
-                                      },
-                                      {
-                                        "type": "string",
-                                        "const": "computedAltitude",
-                                        "description": "The computed assigned altitude, which reflects pressure altitude and dependings on transition level setting."
-                                      },
-                                      {
-                                        "type": "string",
-                                        "const": "transitionAltitude",
-                                        "description": "The transition altitude set by the user."
-                                      },
-                                      {
-                                        "type": "string",
-                                        "const": "assignedDirect",
-                                        "description": "The assigned direct waypoint identifier."
-                                      },
-                                      {
-                                        "type": "string",
-                                        "const": "text",
-                                        "description": "Any text value that is defined in the value property."
-                                      },
-                                      {
-                                        "type": "string",
-                                        "const": "databaseIcaoWakeCat",
-                                        "description": "The icao wake category based on the aircraft type and the database in ATCData, default to the one in the flightplan if not present in database."
-                                      },
-                                      {
-                                        "type": "string",
-                                        "const": "databaseWakeRecat",
-                                        "description": "The recat wake category based on the database in ATCData, defaults to the ICAO Wake cat in the database, and then in the flightplan if not found."
+                                        "type": "string"
                                       }
                                     ]
                                   },
                                   {
-                                    "type": "string",
-                                    "enum": [
-                                      "metarICAO",
-                                      "metarRawMetar",
-                                      "metarTimestamp",
-                                      "metarWindDirection",
-                                      "metarWindSpeed",
-                                      "metarWindGust",
-                                      "metarWindString",
-                                      "metarQNHString",
-                                      "metarQNH",
-                                      "metarQNHUnit",
-                                      "metarVisibility",
-                                      "metarVisibilityUnit",
-                                      "metarVisibilityString",
-                                      "metarTemperature",
-                                      "metarDewpoint"
+                                    "type": [
+                                      "string",
+                                      "number"
                                     ]
-                                  },
-                                  {
-                                    "type": "string",
-                                    "enum": [
-                                      "controllerCallsign",
-                                      "controllerIdentifier",
-                                      "controllerPosition",
-                                      "controllerFrequency",
-                                      "controllerIsTimingOut",
-                                      "controllerLastUpdate",
-                                      "controllerIsATIS",
-                                      "controllerIsGround",
-                                      "controllerIsTower",
-                                      "controllerIsApproach",
-                                      "controllerIsCenter",
-                                      "controllerHasIdentifier"
-                                    ]
-                                  },
-                                  {
-                                    "type": "string"
-                                  }
-                                ]
-                              },
-                              {
-                                "type": [
-                                  "string",
-                                  "number"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "array",
-                            "minItems": 2,
-                            "maxItems": 2,
-                            "items": [
-                              {
-                                "anyOf": [
-                                  {
-                                    "type": "string",
-                                    "const": "AND",
-                                    "description": "Logical AND operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "OR",
-                                    "description": "Logical OR operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "NOT",
-                                    "description": "Logical NOT operator"
                                   }
                                 ]
                               },
                               {
                                 "type": "array",
-                                "items": {
-                                  "anyOf": [
-                                    {
-                                      "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0"
-                                    },
-                                    {
-                                      "type": "string",
-                                      "pattern": "^\\$[A-z0-9_-]+"
-                                    }
-                                  ]
-                                }
-                              }
-                            ]
-                          },
-                          {
-                            "type": "array",
-                            "minItems": 3,
-                            "maxItems": 3,
-                            "items": [
-                              {
-                                "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/1/items/0"
-                              },
-                              {
-                                "anyOf": [
+                                "minItems": 2,
+                                "maxItems": 2,
+                                "items": [
                                   {
-                                    "type": "string",
-                                    "const": "notEmpty",
-                                    "description": "Logical NOT EMPTY operator"
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "const": "AND",
+                                        "description": "Logical AND operator"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "OR",
+                                        "description": "Logical OR operator"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "NOT",
+                                        "description": "Logical NOT operator"
+                                      }
+                                    ]
                                   },
                                   {
-                                    "type": "string",
-                                    "const": "isEmpty",
-                                    "description": "Logical IS EMPTY operator"
+                                    "type": "array",
+                                    "items": {
+                                      "anyOf": [
+                                        {
+                                          "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0"
+                                        },
+                                        {
+                                          "type": "string",
+                                          "pattern": "^\\$[A-z0-9_-]+"
+                                        }
+                                      ]
+                                    }
                                   }
                                 ]
                               },
                               {
-                                "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/0/items/1"
+                                "type": "array",
+                                "minItems": 3,
+                                "maxItems": 3,
+                                "items": [
+                                  {
+                                    "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/1/items/0"
+                                  },
+                                  {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "const": "notEmpty",
+                                        "description": "Logical NOT EMPTY operator"
+                                      },
+                                      {
+                                        "type": "string",
+                                        "const": "isEmpty",
+                                        "description": "Logical IS EMPTY operator"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/0/items/1"
+                                  }
+                                ]
+                              },
+                              {
+                                "type": "array",
+                                "minItems": 2,
+                                "maxItems": 2,
+                                "items": [
+                                  {
+                                    "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/2/items/1"
+                                  },
+                                  {
+                                    "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/0/items/1"
+                                  }
+                                ]
                               }
                             ]
                           },
                           {
-                            "type": "array",
-                            "minItems": 2,
-                            "maxItems": 2,
-                            "items": [
-                              {
-                                "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/2/items/1"
-                              },
-                              {
-                                "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/0/items/1"
-                              }
-                            ]
+                            "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/1/items/1/items/anyOf/1"
                           }
                         ]
-                      },
-                      {
-                        "$ref": "#/properties/groundSymbology/properties/default/items/properties/applyWhen/anyOf/1/anyOf/0/anyOf/1/items/1/items/anyOf/1"
                       }
                     ]
-                  }
-                ]
-              },
-              "applyToAttentionStates": {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "kUnconcerned",
-                    "kNotified",
-                    "kIncomingTransfer",
-                    "kAssumed",
-                    "kOutgoingTransfer",
-                    "kIntruder"
-                  ]
-                }
-              },
-              "plotImage": {
-                "anyOf": [
-                  {
-                    "type": "string"
                   },
-                  {
+                  "applyToAttentionStates": {
                     "type": "array",
                     "items": {
-                      "type": "string"
+                      "type": "string",
+                      "enum": [
+                        "kUnconcerned",
+                        "kNotified",
+                        "kIncomingTransfer",
+                        "kAssumed",
+                        "kOutgoingTransfer",
+                        "kIntruder"
+                      ]
                     }
-                  }
-                ]
-              },
-              "historyTrailImages": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "default": []
-              },
-              "rotatePlotWithHeading": {
-                "type": "boolean",
-                "default": false
-              },
-              "rotateHistoryTrailWithHeading": {
-                "type": "boolean",
-                "default": false
-              },
-              "historyTrailsSkipSteps": {
-                "type": "number",
-                "default": 0
-              },
-              "speedVectorColor": {
-                "anyOf": [
-                  {
+                  },
+                  "plotImage": {
                     "anyOf": [
                       {
-                        "not": {}
+                        "type": "string"
                       },
                       {
                         "type": "array",
                         "items": {
-                          "type": "number"
-                        },
-                        "minItems": 3,
-                        "maxItems": 3
+                          "type": "string"
+                        }
                       }
                     ]
                   },
-                  {
-                    "type": "string",
-                    "pattern": "^[&=][A-z0-9_-]+"
-                  },
-                  {
+                  "historyTrailImages": {
                     "type": "array",
                     "items": {
-                      "$ref": "#/properties/groundSymbology/properties/default/items/properties/speedVectorColor/anyOf/1"
-                    }
+                      "type": "string"
+                    },
+                    "default": []
+                  },
+                  "rotatePlotWithHeading": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "rotateHistoryTrailWithHeading": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "historyTrailsSkipSteps": {
+                    "type": "number",
+                    "default": 0
+                  },
+                  "speedVectorColor": {
+                    "anyOf": [
+                      {
+                        "anyOf": [
+                          {
+                            "not": {}
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            },
+                            "minItems": 3,
+                            "maxItems": 3
+                          }
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "pattern": "^[&=][A-z0-9_-]+"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/speedVectorColor/anyOf/1"
+                        }
+                      }
+                    ]
                   }
-                ]
+                },
+                "required": [
+                  "plotImage"
+                ],
+                "additionalProperties": false
               }
             },
-            "required": [
-              "plotImage"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "arrival": {
-          "type": "array",
-          "items": {
-            "$ref": "#/properties/groundSymbology/properties/default/items"
-          }
-        },
-        "departure": {
-          "type": "array",
-          "items": {
-            "$ref": "#/properties/groundSymbology/properties/default/items"
-          }
+            "arrival": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items"
+              }
+            },
+            "departure": {
+              "type": "array",
+              "items": {
+                "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items"
+              }
+            }
+          },
+          "required": [
+            "default"
+          ],
+          "additionalProperties": false
         }
-      },
-      "required": [
-        "default",
-        "arrival",
-        "departure"
-      ],
-      "additionalProperties": false
+      ]
     },
     "airborneSymbology": {
       "type": "array",
       "items": {
-        "$ref": "#/properties/groundSymbology/properties/default/items"
+        "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items"
       }
     }
   },
