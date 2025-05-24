@@ -186,6 +186,11 @@
                                   "type": "string",
                                   "const": "databaseWakeRecat",
                                   "description": "The recat wake category based on the database in ATCData, defaults to the ICAO Wake cat in the database, and then in the flightplan if not found."
+                                },
+                                {
+                                  "type": "string",
+                                  "const": "focusedAircraftCallsign",
+                                  "description": "The callsign of the focused aircraft."
                                 }
                               ]
                             },
@@ -389,6 +394,16 @@
                     "fontFamily": {
                       "type": "string",
                       "description": "Font family of the item."
+                    },
+                    "textAlign": {
+                      "type": "string",
+                      "enum": [
+                        "left",
+                        "center",
+                        "right"
+                      ],
+                      "default": "center",
+                      "description": "Text alignment of the item, can be left, center or right."
                     },
                     "lineHeight": {
                       "anyOf": [

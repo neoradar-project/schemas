@@ -184,6 +184,45 @@
         "type": "string"
       }
     },
+    "cursors": {
+      "type": "object",
+      "properties": {
+        "global": {
+          "type": "string"
+        },
+        "map": {
+          "type": "string"
+        },
+        "qdmTool": {
+          "type": "string"
+        },
+        "distanceTool": {
+          "type": "string"
+        },
+        "headingTool": {
+          "type": "string"
+        },
+        "routeDraw": {
+          "type": "string"
+        },
+        "vectorDraw": {
+          "type": "string"
+        },
+        "rangeRings": {
+          "type": "string"
+        },
+        "directTo": {
+          "type": "string"
+        },
+        "pointAndClick": {
+          "type": "string"
+        },
+        "pointer": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
     "_saveMetadata": {
       "type": "object",
       "properties": {

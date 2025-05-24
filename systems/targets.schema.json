@@ -252,6 +252,11 @@
                                             "type": "string",
                                             "const": "databaseWakeRecat",
                                             "description": "The recat wake category based on the database in ATCData, defaults to the ICAO Wake cat in the database, and then in the flightplan if not found."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "focusedAircraftCallsign",
+                                            "description": "The callsign of the focused aircraft."
                                           }
                                         ]
                                       },
