@@ -190,6 +190,11 @@
                           },
                           {
                             "type": "string",
+                            "const": "sectorIndicator",
+                            "description": "Current owner or next sector indicator or frequency based on status"
+                          },
+                          {
+                            "type": "string",
                             "const": "computedSpeed",
                             "description": "DEPRECATED: The computed assigned speed, with a -/+ at the end of the string (2 digits)."
                           },
@@ -202,6 +207,61 @@
                             "type": "string",
                             "const": "computedCFL",
                             "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
+                          },
+                          {
+                            "type": "string",
+                            "const": "datalinkStatus",
+                            "description": "The datalink status of the aircraft."
+                          },
+                          {
+                            "type": "string",
+                            "const": "isPDCRequested",
+                            "description": "Is the PDC requested for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "isPDCStandby",
+                            "description": "Is the PDC in standby status for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasReceivedHoppieMessage",
+                            "description": "Has received any Hoppie message from/to the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCAcknowledgment",
+                            "description": "Has CPDLC acknowledgment for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCSentMessage",
+                            "description": "Has sent CPDLC message to the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCUnableAcknowledgment",
+                            "description": "Has UNABLE CPDLC acknowledgment for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCWilcoAcknowledgment",
+                            "description": "Has WILCO CPDLC acknowledgment for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCRogerAcknowledgment",
+                            "description": "Has ROGER CPDLC acknowledgment for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCStandbyAcknowledgment",
+                            "description": "Has STANDBY CPDLC acknowledgment for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCAcceptAcknowledgment",
+                            "description": "Has ACCEPT CPDLC acknowledgment for the aircraft?"
                           },
                           {
                             "type": "string",
@@ -257,7 +317,8 @@
                           "metarVisibilityUnit",
                           "metarVisibilityString",
                           "metarTemperature",
-                          "metarDewpoint"
+                          "metarDewpoint",
+                          "metarATISLetter"
                         ]
                       },
                       {
@@ -275,6 +336,25 @@
                           "controllerIsApproach",
                           "controllerIsCenter",
                           "controllerHasIdentifier"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "frequencyCallsign",
+                          "frequencyHz",
+                          "frequencyMHz",
+                          "frequencyLastReceivedCallsigns",
+                          "frequencyCurrentlyRX",
+                          "frequencyCurrentlyTX",
+                          "frequencyRX",
+                          "frequencyTX",
+                          "frequencyXC",
+                          "frequencyXCA",
+                          "frequencyOnSpeaker",
+                          "frequencyIsOutputMuted",
+                          "frequencyOutputVolume",
+                          "frequencyIsActiveRxTx"
                         ]
                       },
                       {
@@ -605,6 +685,20 @@
                   ],
                   "description": "Color of the item (in RGBA), can also be an expression rule."
                 },
+                "blinkColor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                      }
+                    }
+                  ],
+                  "description": "Blink color of the item, to be used as an expression rule."
+                },
                 "backgroundColor": {
                   "anyOf": [
                     {
@@ -718,6 +812,11 @@
                     },
                     {
                       "type": "string",
+                      "const": "pdcMenu",
+                      "description": "Opens the PDC assignment menu."
+                    },
+                    {
+                      "type": "string",
                       "const": "depRunwayMenu",
                       "description": "Opens the departure runway assignment menu."
                     },
@@ -755,6 +854,31 @@
                       "type": "string",
                       "const": "directMenu",
                       "description": "Opens the direct to menu."
+                    },
+                    {
+                      "type": "string",
+                      "const": "assumeAircraft",
+                      "description": "Assumes ownership of the aircraft."
+                    },
+                    {
+                      "type": "string",
+                      "const": "cancelHandoff",
+                      "description": "Cancels an outbound handoff of the aircraft."
+                    },
+                    {
+                      "type": "string",
+                      "const": "releaseAircraft",
+                      "description": "Releases ownership of the aircraft."
+                    },
+                    {
+                      "type": "string",
+                      "const": "handoffAircraft",
+                      "description": "Initiates a handoff of the aircraft to the next controller."
+                    },
+                    {
+                      "type": "string",
+                      "const": "openNextControllerMenu",
+                      "description": "Opens the next controller menu."
                     },
                     {
                       "type": "string",
@@ -806,6 +930,9 @@
             },
             "controllerField": {
               "type": "string"
+            },
+            "frequencyField": {
+              "type": "string"
             }
           },
           "required": [
@@ -820,7 +947,8 @@
         "enum": [
           "aircraft",
           "metar",
-          "atc"
+          "atc",
+          "frequency"
         ],
         "default": "aircraft"
       },

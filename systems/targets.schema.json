@@ -210,6 +210,11 @@
                                           },
                                           {
                                             "type": "string",
+                                            "const": "sectorIndicator",
+                                            "description": "Current owner or next sector indicator or frequency based on status"
+                                          },
+                                          {
+                                            "type": "string",
                                             "const": "computedSpeed",
                                             "description": "DEPRECATED: The computed assigned speed, with a -/+ at the end of the string (2 digits)."
                                           },
@@ -222,6 +227,61 @@
                                             "type": "string",
                                             "const": "computedCFL",
                                             "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "datalinkStatus",
+                                            "description": "The datalink status of the aircraft."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "isPDCRequested",
+                                            "description": "Is the PDC requested for the aircraft?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "isPDCStandby",
+                                            "description": "Is the PDC in standby status for the aircraft?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "hasReceivedHoppieMessage",
+                                            "description": "Has received any Hoppie message from/to the aircraft?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "hasCPDLCAcknowledgment",
+                                            "description": "Has CPDLC acknowledgment for the aircraft?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "hasCPDLCSentMessage",
+                                            "description": "Has sent CPDLC message to the aircraft?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "hasCPDLCUnableAcknowledgment",
+                                            "description": "Has UNABLE CPDLC acknowledgment for the aircraft?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "hasCPDLCWilcoAcknowledgment",
+                                            "description": "Has WILCO CPDLC acknowledgment for the aircraft?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "hasCPDLCRogerAcknowledgment",
+                                            "description": "Has ROGER CPDLC acknowledgment for the aircraft?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "hasCPDLCStandbyAcknowledgment",
+                                            "description": "Has STANDBY CPDLC acknowledgment for the aircraft?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "hasCPDLCAcceptAcknowledgment",
+                                            "description": "Has ACCEPT CPDLC acknowledgment for the aircraft?"
                                           },
                                           {
                                             "type": "string",
@@ -277,7 +337,8 @@
                                           "metarVisibilityUnit",
                                           "metarVisibilityString",
                                           "metarTemperature",
-                                          "metarDewpoint"
+                                          "metarDewpoint",
+                                          "metarATISLetter"
                                         ]
                                       },
                                       {
@@ -295,6 +356,25 @@
                                           "controllerIsApproach",
                                           "controllerIsCenter",
                                           "controllerHasIdentifier"
+                                        ]
+                                      },
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "frequencyCallsign",
+                                          "frequencyHz",
+                                          "frequencyMHz",
+                                          "frequencyLastReceivedCallsigns",
+                                          "frequencyCurrentlyRX",
+                                          "frequencyCurrentlyTX",
+                                          "frequencyRX",
+                                          "frequencyTX",
+                                          "frequencyXC",
+                                          "frequencyXCA",
+                                          "frequencyOnSpeaker",
+                                          "frequencyIsOutputMuted",
+                                          "frequencyOutputVolume",
+                                          "frequencyIsActiveRxTx"
                                         ]
                                       },
                                       {

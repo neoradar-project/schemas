@@ -41,13 +41,16 @@
       "type": "object",
       "properties": {
         "gndFilterStatus": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": true
         },
         "primFilterStatus": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": true
         },
         "vfrFilterStatus": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": true
         },
         "upperFilterValue": {
           "type": "number"
@@ -222,6 +225,13 @@
         }
       },
       "additionalProperties": false
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "local",
+        "package"
+      ]
     },
     "_saveMetadata": {
       "type": "object",
