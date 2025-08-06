@@ -505,13 +505,27 @@
                     "color": {
                       "anyOf": [
                         {
-                          "type": "array",
-                          "items": {
-                            "type": "number"
-                          },
-                          "minItems": 3,
-                          "maxItems": 3,
-                          "description": "An array of three numbers representing the RGB color values (0-255)."
+                          "anyOf": [
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "number"
+                              },
+                              "minItems": 3,
+                              "maxItems": 3,
+                              "description": "RGB color array [r,g,b]"
+                            },
+                            {
+                              "type": "array",
+                              "items": {
+                                "type": "number"
+                              },
+                              "minItems": 4,
+                              "maxItems": 4,
+                              "description": "RGBA color array [r,g,b,a]"
+                            }
+                          ],
+                          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
                         },
                         {
                           "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"

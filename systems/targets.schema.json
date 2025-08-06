@@ -494,17 +494,30 @@
                     }
                   },
                   "plotImage": {
+                    "type": "string"
+                  },
+                  "primaryPlotColor": {
                     "anyOf": [
                       {
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 3,
+                        "maxItems": 3,
+                        "description": "RGB color array [r,g,b]"
                       },
                       {
                         "type": "array",
                         "items": {
-                          "type": "string"
-                        }
+                          "type": "number"
+                        },
+                        "minItems": 4,
+                        "maxItems": 4,
+                        "description": "RGBA color array [r,g,b,a]"
                       }
-                    ]
+                    ],
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
                   },
                   "historyTrailImages": {
                     "type": "array",
@@ -512,6 +525,12 @@
                       "type": "string"
                     },
                     "default": []
+                  },
+                  "primaryHistoryTrailColor": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor"
+                    }
                   },
                   "rotatePlotWithHeading": {
                     "type": "boolean",
