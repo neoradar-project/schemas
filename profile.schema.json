@@ -41,13 +41,16 @@
       "type": "object",
       "properties": {
         "gndFilterStatus": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": true
         },
         "primFilterStatus": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": true
         },
         "vfrFilterStatus": {
-          "type": "boolean"
+          "type": "boolean",
+          "default": true
         },
         "upperFilterValue": {
           "type": "number"
@@ -183,6 +186,52 @@
       "items": {
         "type": "string"
       }
+    },
+    "cursors": {
+      "type": "object",
+      "properties": {
+        "global": {
+          "type": "string"
+        },
+        "map": {
+          "type": "string"
+        },
+        "qdmTool": {
+          "type": "string"
+        },
+        "distanceTool": {
+          "type": "string"
+        },
+        "headingTool": {
+          "type": "string"
+        },
+        "routeDraw": {
+          "type": "string"
+        },
+        "vectorDraw": {
+          "type": "string"
+        },
+        "rangeRings": {
+          "type": "string"
+        },
+        "directTo": {
+          "type": "string"
+        },
+        "pointAndClick": {
+          "type": "string"
+        },
+        "pointer": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "local",
+        "package"
+      ]
     },
     "_saveMetadata": {
       "type": "object",

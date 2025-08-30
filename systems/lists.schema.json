@@ -153,7 +153,12 @@
                           "suggestedArrRunway",
                           "suggestedDepRunway",
                           "suggestedSid",
-                          "suggestedStar"
+                          "suggestedStar",
+                          "waypoints",
+                          "segments",
+                          "explicitSegments",
+                          "errors",
+                          "hasDirectApplied"
                         ]
                       },
                       {
@@ -190,6 +195,16 @@
                           },
                           {
                             "type": "string",
+                            "const": "sectorIndicator",
+                            "description": "Current owner or next sector indicator or frequency based on status"
+                          },
+                          {
+                            "type": "string",
+                            "const": "nextControllerFrequency",
+                            "description": "The frequency of the next controller if set."
+                          },
+                          {
+                            "type": "string",
                             "const": "computedSpeed",
                             "description": "DEPRECATED: The computed assigned speed, with a -/+ at the end of the string (2 digits)."
                           },
@@ -202,6 +217,61 @@
                             "type": "string",
                             "const": "computedCFL",
                             "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
+                          },
+                          {
+                            "type": "string",
+                            "const": "datalinkStatus",
+                            "description": "The datalink status of the aircraft."
+                          },
+                          {
+                            "type": "string",
+                            "const": "isPDCRequested",
+                            "description": "Is the PDC requested for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "isPDCStandby",
+                            "description": "Is the PDC in standby status for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasReceivedHoppieMessage",
+                            "description": "Has received any Hoppie message from/to the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCAcknowledgment",
+                            "description": "Has CPDLC acknowledgment for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCSentMessage",
+                            "description": "Has sent CPDLC message to the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCUnableAcknowledgment",
+                            "description": "Has UNABLE CPDLC acknowledgment for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCWilcoAcknowledgment",
+                            "description": "Has WILCO CPDLC acknowledgment for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCRogerAcknowledgment",
+                            "description": "Has ROGER CPDLC acknowledgment for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCStandbyAcknowledgment",
+                            "description": "Has STANDBY CPDLC acknowledgment for the aircraft?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "hasCPDLCAcceptAcknowledgment",
+                            "description": "Has ACCEPT CPDLC acknowledgment for the aircraft?"
                           },
                           {
                             "type": "string",
@@ -222,6 +292,21 @@
                             "type": "string",
                             "const": "text",
                             "description": "Any text value that is defined in the value property."
+                          },
+                          {
+                            "type": "string",
+                            "const": "databaseIcaoWakeCat",
+                            "description": "The icao wake category based on the aircraft type and the database in ATCData, default to the one in the flightplan if not present in database."
+                          },
+                          {
+                            "type": "string",
+                            "const": "databaseWakeRecat",
+                            "description": "The recat wake category based on the database in ATCData, defaults to the ICAO Wake cat in the database, and then in the flightplan if not found."
+                          },
+                          {
+                            "type": "string",
+                            "const": "focusedAircraftCallsign",
+                            "description": "The callsign of the focused aircraft."
                           }
                         ]
                       },
@@ -242,7 +327,8 @@
                           "metarVisibilityUnit",
                           "metarVisibilityString",
                           "metarTemperature",
-                          "metarDewpoint"
+                          "metarDewpoint",
+                          "metarATISLetter"
                         ]
                       },
                       {
@@ -260,6 +346,25 @@
                           "controllerIsApproach",
                           "controllerIsCenter",
                           "controllerHasIdentifier"
+                        ]
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "frequencyCallsign",
+                          "frequencyHz",
+                          "frequencyMHz",
+                          "frequencyLastReceivedCallsigns",
+                          "frequencyCurrentlyRX",
+                          "frequencyCurrentlyTX",
+                          "frequencyRX",
+                          "frequencyTX",
+                          "frequencyXC",
+                          "frequencyXCA",
+                          "frequencyOnSpeaker",
+                          "frequencyIsOutputMuted",
+                          "frequencyOutputVolume",
+                          "frequencyIsActiveRxTx"
                         ]
                       },
                       {
@@ -540,6 +645,16 @@
                   "type": "string",
                   "description": "Font family of the item."
                 },
+                "textAlign": {
+                  "type": "string",
+                  "enum": [
+                    "left",
+                    "center",
+                    "right"
+                  ],
+                  "default": "center",
+                  "description": "Text alignment of the item, can be left, center or right."
+                },
                 "lineHeight": {
                   "anyOf": [
                     {
@@ -560,13 +675,27 @@
                 "color": {
                   "anyOf": [
                     {
-                      "type": "array",
-                      "items": {
-                        "type": "number"
-                      },
-                      "minItems": 3,
-                      "maxItems": 3,
-                      "description": "An array of three numbers representing the RGB color values (0-255)."
+                      "anyOf": [
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 3,
+                          "maxItems": 3,
+                          "description": "RGB color array [r,g,b]"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          },
+                          "minItems": 4,
+                          "maxItems": 4,
+                          "description": "RGBA color array [r,g,b,a]"
+                        }
+                      ],
+                      "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
                     },
                     {
                       "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
@@ -579,6 +708,37 @@
                     }
                   ],
                   "description": "Color of the item (in RGBA), can also be an expression rule."
+                },
+                "blinkColor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                      }
+                    }
+                  ],
+                  "description": "Blink color of the item, to be used as an expression rule."
+                },
+                "backgroundColor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/0"
+                    },
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                      }
+                    }
+                  ],
+                  "description": "Background color of the item (in RGBA), can also be an expression rule."
                 },
                 "separatorBefore": {
                   "type": "boolean",
@@ -613,6 +773,11 @@
                       "type": "string",
                       "const": "triggerScratchpad",
                       "description": "Opens the scratchpad input box."
+                    },
+                    {
+                      "type": "string",
+                      "const": "triggerManualSquawk",
+                      "description": "Opens the manual squawk input box."
                     },
                     {
                       "type": "string",
@@ -676,6 +841,11 @@
                     },
                     {
                       "type": "string",
+                      "const": "pdcMenu",
+                      "description": "Opens the PDC assignment menu."
+                    },
+                    {
+                      "type": "string",
                       "const": "depRunwayMenu",
                       "description": "Opens the departure runway assignment menu."
                     },
@@ -697,7 +867,12 @@
                     {
                       "type": "string",
                       "const": "assignRandomSquawk",
-                      "description": "Assigns a random squawk code."
+                      "description": "Assigns a squawk code based on the available providers, otherwise a random squawk."
+                    },
+                    {
+                      "type": "string",
+                      "const": "assignSquawk",
+                      "description": "Assigns a squawk code based on the available providers, otherwise a random squawk."
                     },
                     {
                       "type": "string",
@@ -708,6 +883,31 @@
                       "type": "string",
                       "const": "directMenu",
                       "description": "Opens the direct to menu."
+                    },
+                    {
+                      "type": "string",
+                      "const": "assumeAircraft",
+                      "description": "Assumes ownership of the aircraft."
+                    },
+                    {
+                      "type": "string",
+                      "const": "cancelHandoff",
+                      "description": "Cancels an outbound handoff of the aircraft."
+                    },
+                    {
+                      "type": "string",
+                      "const": "releaseAircraft",
+                      "description": "Releases ownership of the aircraft."
+                    },
+                    {
+                      "type": "string",
+                      "const": "handoffAircraft",
+                      "description": "Initiates a handoff of the aircraft to the next controller."
+                    },
+                    {
+                      "type": "string",
+                      "const": "openNextControllerMenu",
+                      "description": "Opens the next controller menu."
                     },
                     {
                       "type": "string",
@@ -759,6 +959,9 @@
             },
             "controllerField": {
               "type": "string"
+            },
+            "frequencyField": {
+              "type": "string"
             }
           },
           "required": [
@@ -773,7 +976,8 @@
         "enum": [
           "aircraft",
           "metar",
-          "atc"
+          "atc",
+          "frequency"
         ],
         "default": "aircraft"
       },
@@ -824,6 +1028,34 @@
               "bodyBlur": {
                 "type": "boolean",
                 "default": false
+              },
+              "rowColor": {
+                "anyOf": [
+                  {
+                    "anyOf": [
+                      {
+                        "not": {}
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 3,
+                        "maxItems": 3
+                      }
+                    ]
+                  },
+                  {
+                    "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                    }
+                  }
+                ]
               }
             },
             "additionalProperties": false
@@ -831,6 +1063,10 @@
           "showHeaders": {
             "type": "boolean",
             "default": true
+          },
+          "headerOnlyBorder": {
+            "type": "boolean",
+            "default": false
           },
           "headerTextSize": {
             "type": "number",

@@ -407,6 +407,12 @@
       "items": {
         "type": "string"
       }
+    },
+    "ignorePaths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "required": [
