@@ -342,7 +342,7 @@
                         },
                         {
                           "type": "string",
-                          "pattern": "^[&=][A-z0-9_-]+"
+                          "pattern": "^[&=][A-z0-9_\\-:]+"
                         },
                         {
                           "type": "array",
@@ -1053,6 +1053,10 @@
                     "type": "number",
                     "default": 0,
                     "description": "Rounded corners of the label (0-100). This is the default rounded corners for all states."
+                  },
+                  "hoverBorderColor": {
+                    "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0",
+                    "description": "Border color of the label when the aircraft is hovered (in RGB)."
                   },
                   "detailedBackgroundColor": {
                     "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0",
