@@ -163,6 +163,37 @@
       "additionalProperties": false,
       "description": "Extended centerlines configuration"
     },
+    "distanceMeasurementTool": {
+      "type": "object",
+      "properties": {
+        "startCircleColour": {
+          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+        },
+        "endCircleColour": {
+          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+        },
+        "dashedLineColour": {
+          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+        },
+        "distanceTextColour": {
+          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+        },
+        "startBearingTextColour": {
+          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+        },
+        "endBearingTextColour": {
+          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Distance measurement tool configuration"
+    },
     "layerStyles": {
       "type": "object",
       "additionalProperties": {
