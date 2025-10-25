@@ -5,25 +5,93 @@
       "type": "string",
       "description": "JSON schema to validate this file"
     },
+    "rdf": {
+      "type": "object",
+      "properties": {
+        "singleTransmissionColor": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3,
+              "description": "RGB color array [r,g,b]"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4,
+              "description": "RGBA color array [r,g,b,a]"
+            }
+          ],
+          "description": "Color for single transmission circles"
+        },
+        "concurrentTransmissionColor": {
+          "anyOf": [
+            {
+              "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/0"
+            },
+            {
+              "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/1"
+            }
+          ],
+          "description": "Color for concurrent transmission circles"
+        },
+        "circleRadius": {
+          "type": "number",
+          "default": 10,
+          "description": "Default circle radius in NM"
+        },
+        "circlePrecision": {
+          "type": "number",
+          "default": 10,
+          "description": "Default precision/offset in NM"
+        },
+        "circleThreshold": {
+          "type": "number",
+          "default": 10,
+          "description": "Minimum circle size in pixels"
+        },
+        "lowAltitude": {
+          "type": "number",
+          "default": 3000,
+          "description": "Minimum altitude filter in feet"
+        },
+        "highAltitude": {
+          "type": "number",
+          "default": 41100,
+          "description": "Maximum altitude for interpolation in feet"
+        },
+        "lowPrecision": {
+          "type": "number",
+          "default": 2,
+          "description": "Precision at low altitude in NM"
+        },
+        "highPrecision": {
+          "type": "number",
+          "default": 25,
+          "description": "Precision at high altitude in NM"
+        }
+      },
+      "required": [
+        "singleTransmissionColor",
+        "concurrentTransmissionColor"
+      ],
+      "additionalProperties": false,
+      "description": "Radio Direction Finder configuration. If not present, RDF will be disabled"
+    },
     "inactiveSectorBackgroundColor": {
       "anyOf": [
         {
-          "type": "array",
-          "items": {
-            "type": "number"
-          },
-          "minItems": 3,
-          "maxItems": 3,
-          "description": "RGB color array [r,g,b]"
+          "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/0"
         },
         {
-          "type": "array",
-          "items": {
-            "type": "number"
-          },
-          "minItems": 4,
-          "maxItems": 4,
-          "description": "RGBA color array [r,g,b,a]"
+          "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/1"
         }
       ],
       "description": "Background color of the inactive sector, this is the default color of the map"
@@ -31,10 +99,10 @@
     "activeSectorBackgroundColor": {
       "anyOf": [
         {
-          "$ref": "#/properties/inactiveSectorBackgroundColor/anyOf/0"
+          "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/0"
         },
         {
-          "$ref": "#/properties/inactiveSectorBackgroundColor/anyOf/1"
+          "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/1"
         }
       ],
       "description": "Background color of the user's current active sector"
@@ -42,10 +110,10 @@
     "areaOfInterestBackgroundColor": {
       "anyOf": [
         {
-          "$ref": "#/properties/inactiveSectorBackgroundColor/anyOf/0"
+          "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/0"
         },
         {
-          "$ref": "#/properties/inactiveSectorBackgroundColor/anyOf/1"
+          "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/1"
         }
       ],
       "description": "Background color of the area of interest, which is around 15% larger than the user's active sector. This is optional and you do not have to display this"
