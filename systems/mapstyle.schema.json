@@ -85,6 +85,270 @@
       "additionalProperties": false,
       "description": "Radio Direction Finder configuration. If not present, RDF will be disabled"
     },
+    "routeDraw": {
+      "type": "object",
+      "properties": {
+        "lineStyle": {
+          "type": "object",
+          "properties": {
+            "color": {
+              "anyOf": [
+                {
+                  "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/0"
+                },
+                {
+                  "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/1"
+                }
+              ],
+              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+            },
+            "width": {
+              "type": "number",
+              "default": 1
+            },
+            "opacity": {
+              "type": "number",
+              "default": 1
+            },
+            "dashArray": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "description": "Dash array [length, gap]"
+            }
+          },
+          "required": [
+            "color"
+          ],
+          "additionalProperties": false
+        },
+        "textStyle": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "color": {
+              "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+            },
+            "fontFamily": {
+              "type": "string",
+              "default": "RobotoMono-Regular"
+            },
+            "fontSize": {
+              "type": "number",
+              "default": 12
+            },
+            "fontWeight": {
+              "type": "string",
+              "enum": [
+                "normal",
+                "bold",
+                "bolder",
+                "lighter",
+                "100",
+                "200",
+                "300",
+                "400",
+                "500",
+                "600",
+                "700",
+                "800",
+                "900"
+              ],
+              "default": "normal"
+            },
+            "size": {
+              "type": "number",
+              "default": 10
+            },
+            "offset": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "default": [
+                0,
+                0
+              ]
+            },
+            "anchor": {
+              "type": "string",
+              "enum": [
+                "start",
+                "middle",
+                "end"
+              ],
+              "default": "middle"
+            },
+            "baseline": {
+              "type": "string",
+              "enum": [
+                "top",
+                "middle",
+                "bottom",
+                "alphabetic"
+              ],
+              "default": "middle"
+            },
+            "letterSpacing": {
+              "type": "number",
+              "default": 0
+            },
+            "lineHeight": {
+              "type": "number",
+              "default": 0
+            },
+            "align": {
+              "type": "string",
+              "enum": [
+                "left",
+                "center",
+                "right"
+              ],
+              "default": "center"
+            },
+            "wordWrap": {
+              "type": "boolean",
+              "default": false
+            },
+            "wordWrapWidth": {
+              "type": "number",
+              "default": 100
+            },
+            "outlineColor": {
+              "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+            },
+            "outlineWidth": {
+              "type": "number",
+              "default": 0
+            },
+            "outlineOpacity": {
+              "type": "number",
+              "default": 1
+            },
+            "dropShadow": {
+              "type": "boolean",
+              "default": false
+            },
+            "dropShadowColor": {
+              "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)",
+              "default": [
+                0,
+                0,
+                0
+              ]
+            },
+            "dropShadowAngle": {
+              "type": "number",
+              "default": 0.5235987755982988
+            },
+            "dropShadowBlur": {
+              "type": "number",
+              "default": 0
+            },
+            "dropShadowDistance": {
+              "type": "number",
+              "default": 5
+            },
+            "dropShadowOpacity": {
+              "type": "number",
+              "default": 1
+            },
+            "scaleWithZoom": {
+              "type": "boolean",
+              "default": true
+            },
+            "minZoom": {
+              "type": "number"
+            },
+            "maxZoom": {
+              "type": "number"
+            },
+            "padding": {
+              "type": "number",
+              "default": 0
+            },
+            "backgroundColor": {
+              "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+            },
+            "backgroundOpacity": {
+              "type": "number",
+              "default": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "pointStyle": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "sprite",
+                "circle",
+                "square",
+                "diamond",
+                "cross"
+              ],
+              "default": "circle"
+            },
+            "size": {
+              "type": "number",
+              "default": 10,
+              "description": "Size of the point in cartesian units"
+            },
+            "sprite": {
+              "type": "string",
+              "description": "Name of the sprite defined in the sprite atlas"
+            },
+            "fillColor": {
+              "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+            },
+            "fillOpacity": {
+              "type": "number",
+              "default": 1
+            },
+            "strokeColor": {
+              "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+            },
+            "strokeOpacity": {
+              "type": "number",
+              "default": 1
+            },
+            "strokeWidth": {
+              "type": "number",
+              "default": 1
+            },
+            "rotation": {
+              "type": "number",
+              "default": 0,
+              "description": "Rotation of the symbol in degrees"
+            }
+          },
+          "additionalProperties": false,
+          "description": "Style of the waypoints along the route"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Route drawing configuration"
+    },
     "inactiveSectorBackgroundColor": {
       "anyOf": [
         {
@@ -108,31 +372,14 @@
       "description": "Background color of the user's current active sector"
     },
     "areaOfInterestBackgroundColor": {
-      "anyOf": [
-        {
-          "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/0"
-        },
-        {
-          "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/1"
-        }
-      ],
+      "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
       "description": "Background color of the area of interest, which is around 15% larger than the user's active sector. This is optional and you do not have to display this"
     },
     "neighborSectorBorderLineColor": {
-      "$ref": "#/properties/areaOfInterestBackgroundColor"
+      "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color"
     },
     "neighborSectorBorderDashArray": {
-      "type": "array",
-      "minItems": 2,
-      "maxItems": 2,
-      "items": [
-        {
-          "type": "number"
-        },
-        {
-          "type": "number"
-        }
-      ],
+      "$ref": "#/properties/routeDraw/properties/lineStyle/properties/dashArray",
       "description": "Dash array [length, gap]"
     },
     "neighborSectorBorderLineWidth": {
@@ -179,7 +426,7 @@
           "description": "Line width of the major tick, or the radius of the circle in arbitrary units"
         },
         "minorTickColor": {
-          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
           "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
         },
         "majorTickType": {
@@ -209,18 +456,18 @@
           "description": "Line width of the major tick, or the radius of the circle"
         },
         "majorTickColor": {
-          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
           "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
         },
         "color": {
-          "$ref": "#/properties/areaOfInterestBackgroundColor"
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color"
         },
         "lineWidth": {
           "type": "number",
           "default": 1
         },
         "dashArray": {
-          "$ref": "#/properties/neighborSectorBorderDashArray",
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/dashArray",
           "description": "Dash array [length, gap]"
         }
       },
@@ -235,27 +482,27 @@
       "type": "object",
       "properties": {
         "startCircleColour": {
-          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
           "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
         },
         "endCircleColour": {
-          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
           "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
         },
         "dashedLineColour": {
-          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
           "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
         },
         "distanceTextColour": {
-          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
           "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
         },
         "startBearingTextColour": {
-          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
           "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
         },
         "endBearingTextColour": {
-          "$ref": "#/properties/areaOfInterestBackgroundColor",
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
           "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
         }
       },
@@ -271,7 +518,7 @@
             "type": "object",
             "properties": {
               "color": {
-                "$ref": "#/properties/areaOfInterestBackgroundColor"
+                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color"
               },
               "width": {
                 "type": "number",
@@ -282,7 +529,7 @@
                 "default": 1
               },
               "dashArray": {
-                "$ref": "#/properties/neighborSectorBorderDashArray",
+                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/dashArray",
                 "description": "Dash array [length, gap]"
               }
             },
@@ -295,7 +542,7 @@
             "type": "object",
             "properties": {
               "color": {
-                "$ref": "#/properties/areaOfInterestBackgroundColor"
+                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color"
               },
               "opacity": {
                 "type": "number",
@@ -311,49 +558,31 @@
             "type": "object",
             "properties": {
               "type": {
-                "type": "string",
-                "enum": [
-                  "sprite",
-                  "circle",
-                  "square",
-                  "diamond",
-                  "cross"
-                ],
-                "default": "circle"
+                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/type"
               },
               "size": {
-                "type": "number",
-                "default": 10,
-                "description": "Size of the point in cartesian units"
+                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/size"
               },
               "sprite": {
-                "type": "string",
-                "description": "Name of the sprite defined in the sprite atlas"
+                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/sprite"
               },
               "fillColor": {
-                "$ref": "#/properties/areaOfInterestBackgroundColor",
-                "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/fillColor"
               },
               "fillOpacity": {
-                "type": "number",
-                "default": 1
+                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/fillOpacity"
               },
               "strokeColor": {
-                "$ref": "#/properties/areaOfInterestBackgroundColor",
-                "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/strokeColor"
               },
               "strokeOpacity": {
-                "type": "number",
-                "default": 1
+                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/strokeOpacity"
               },
               "strokeWidth": {
-                "type": "number",
-                "default": 1
+                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/strokeWidth"
               },
               "rotation": {
-                "type": "number",
-                "default": 0,
-                "description": "Rotation of the symbol in degrees"
+                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/rotation"
               }
             },
             "additionalProperties": false
@@ -365,7 +594,7 @@
                 "type": "string"
               },
               "color": {
-                "$ref": "#/properties/areaOfInterestBackgroundColor",
+                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
                 "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
               },
               "fontFamily": {
@@ -377,22 +606,7 @@
                 "default": 12
               },
               "fontWeight": {
-                "type": "string",
-                "enum": [
-                  "normal",
-                  "bold",
-                  "bolder",
-                  "lighter",
-                  "100",
-                  "200",
-                  "300",
-                  "400",
-                  "500",
-                  "600",
-                  "700",
-                  "800",
-                  "900"
-                ],
+                "$ref": "#/properties/routeDraw/properties/textStyle/properties/fontWeight",
                 "default": "normal"
               },
               "size": {
@@ -456,7 +670,7 @@
                 "default": 100
               },
               "outlineColor": {
-                "$ref": "#/properties/areaOfInterestBackgroundColor",
+                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
                 "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
               },
               "outlineWidth": {
@@ -472,7 +686,7 @@
                 "default": false
               },
               "dropShadowColor": {
-                "$ref": "#/properties/areaOfInterestBackgroundColor",
+                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
                 "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)",
                 "default": [
                   0,
@@ -511,7 +725,7 @@
                 "default": 0
               },
               "backgroundColor": {
-                "$ref": "#/properties/areaOfInterestBackgroundColor",
+                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
                 "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
               },
               "backgroundOpacity": {
