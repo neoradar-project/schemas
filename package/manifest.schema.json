@@ -26,7 +26,8 @@
       "type": "array",
       "items": {
         "type": "number"
-      }
+      },
+      "description": "NOT HONOURED. Parsed and validated as [lon, lat] but never read: the startup viewport comes from the active profile's map/windowArea."
     },
     "mapLayers": {
       "type": "array",
@@ -180,11 +181,12 @@
                   },
                   "color": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a) NOT HONOURED here: a map label takes its point's own colour at full alpha. Set the point colour instead."
                   },
                   "fontFamily": {
                     "type": "string",
-                    "default": "RobotoMono-Regular"
+                    "default": "RobotoMono-Regular",
+                    "description": "NOT HONOURED here: map labels are rasterised in the renderer-wide font family."
                   },
                   "fontSize": {
                     "type": "number",
@@ -207,11 +209,13 @@
                       "800",
                       "900"
                     ],
-                    "default": "normal"
+                    "default": "normal",
+                    "description": "NOT HONOURED: the label atlas is rasterised at one weight. Use a bold fontFamily if the renderer gains per-layer families."
                   },
                   "size": {
                     "type": "number",
-                    "default": 10
+                    "default": 10,
+                    "description": "NOT HONOURED. Use fontSize."
                   },
                   "offset": {
                     "type": "array",
@@ -232,7 +236,8 @@
                       "middle",
                       "end"
                     ],
-                    "default": "middle"
+                    "default": "middle",
+                    "description": "NOT HONOURED. Labels are positioned by offset alone."
                   },
                   "baseline": {
                     "type": "string",
@@ -242,15 +247,18 @@
                       "bottom",
                       "alphabetic"
                     ],
-                    "default": "middle"
+                    "default": "middle",
+                    "description": "NOT HONOURED. Labels are positioned by offset alone."
                   },
                   "letterSpacing": {
                     "type": "number",
-                    "default": 0
+                    "default": 0,
+                    "description": "NOT HONOURED."
                   },
                   "lineHeight": {
                     "type": "number",
-                    "default": 0
+                    "default": 0,
+                    "description": "NOT HONOURED. Map labels are single-line."
                   },
                   "align": {
                     "type": "string",
@@ -259,35 +267,41 @@
                       "center",
                       "right"
                     ],
-                    "default": "center"
+                    "default": "center",
+                    "description": "NOT HONOURED. Map labels are single-line."
                   },
                   "wordWrap": {
                     "type": "boolean",
-                    "default": false
+                    "default": false,
+                    "description": "NOT HONOURED. Map labels are single-line."
                   },
                   "wordWrapWidth": {
                     "type": "number",
-                    "default": 100
+                    "default": 100,
+                    "description": "NOT HONOURED. Map labels are single-line."
                   },
                   "outlineColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a) NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
                   },
                   "outlineWidth": {
                     "type": "number",
-                    "default": 0
+                    "default": 0,
+                    "description": "NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
                   },
                   "outlineOpacity": {
                     "type": "number",
-                    "default": 1
+                    "default": 1,
+                    "description": "NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
                   },
                   "dropShadow": {
                     "type": "boolean",
-                    "default": false
+                    "default": false,
+                    "description": "NOT HONOURED."
                   },
                   "dropShadowColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)",
+                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a) NOT HONOURED.",
                     "default": [
                       0,
                       0,
@@ -296,33 +310,41 @@
                   },
                   "dropShadowAngle": {
                     "type": "number",
-                    "default": 0.5235987755982988
+                    "default": 0.5235987755982988,
+                    "description": "NOT HONOURED."
                   },
                   "dropShadowBlur": {
                     "type": "number",
-                    "default": 0
+                    "default": 0,
+                    "description": "NOT HONOURED."
                   },
                   "dropShadowDistance": {
                     "type": "number",
-                    "default": 5
+                    "default": 5,
+                    "description": "NOT HONOURED."
                   },
                   "dropShadowOpacity": {
                     "type": "number",
-                    "default": 1
+                    "default": 1,
+                    "description": "NOT HONOURED."
                   },
                   "scaleWithZoom": {
                     "type": "boolean",
-                    "default": true
+                    "default": true,
+                    "description": "NOT SUPPORTED. Map labels are a constant screen size by design, and the per-size glyph atlases depend on that; zoom-scaled text would need an SDF path."
                   },
                   "minZoom": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "NOT HONOURED. Zoom gating is per layer, not per text style."
                   },
                   "maxZoom": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "NOT HONOURED. Zoom gating is per layer, not per text style."
                   },
                   "padding": {
                     "type": "number",
-                    "default": 0
+                    "default": 0,
+                    "description": "NOT HONOURED."
                   },
                   "backgroundColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
@@ -330,7 +352,8 @@
                   },
                   "backgroundOpacity": {
                     "type": "number",
-                    "default": 0
+                    "default": 0,
+                    "description": "NOT HONOURED: labels have no background plate."
                   }
                 },
                 "additionalProperties": false
@@ -406,7 +429,8 @@
     },
     "devDisableAntialiasing": {
       "type": "boolean",
-      "default": false
+      "default": false,
+      "description": "NOT HONOURED. Parsed but never read; the renderer has no runtime antialiasing switch."
     },
     "plugins": {
       "type": "array",
