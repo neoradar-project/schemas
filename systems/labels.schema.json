@@ -1129,6 +1129,22 @@
                   "detailedTagContainerPaddingBottom": {
                     "type": "number",
                     "description": "Padding of the tag container in the bottom direction when the aircraft is hovered."
+                  },
+                  "applyToAttentionStates": {
+                    "type": "array",
+                    "description": "Restricts this variant to aircraft in one of the listed attention states. Omit to apply regardless of attention state.",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "kUnconcerned",
+                        "kNotified",
+                        "kIncomingTransfer",
+                        "kAssumed",
+                        "kOutgoingTransfer",
+                        "kIntruder",
+                        "kConcerned"
+                      ]
+                    }
                   }
                 },
                 "additionalProperties": false

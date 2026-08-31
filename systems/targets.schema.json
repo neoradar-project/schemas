@@ -499,7 +499,8 @@
                         "kIncomingTransfer",
                         "kAssumed",
                         "kOutgoingTransfer",
-                        "kIntruder"
+                        "kIntruder",
+                        "kConcerned"
                       ]
                     }
                   },
