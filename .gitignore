@@ -1,1 +1,9 @@
 .DS_Store
+
+# Per-machine constellation repo paths (see neoradar.repos.json)
+neoradar.repos.local.json
+
+# Claude Code: machine-local settings stay out of git; skills are shared.
+.claude/*
+!.claude/skills/
+neoradar.repos.local.json

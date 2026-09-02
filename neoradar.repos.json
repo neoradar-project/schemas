@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "self": "@schemas",
+  "resolution": {
+    "order": [
+      "NEORADAR_<ID>_DIR environment variable (e.g. NEORADAR_SERVER_DIR)",
+      "neoradar.repos.local.json at this repo root (gitignored, per-machine)",
+      "upward scan from this repo root, trying each entry of defaultSubpaths in order"
+    ],
+    "rules": [
+      "Never guess a path. If an id does not resolve, say so and work from this repo alone.",
+      "A sibling repo is normally ABSENT in CI. That is the expected case, not an error."
+    ]
+  },
+  "repos": {
+    "@client": {
+      "name": "NeoRadar client (C#, Avalonia radar client)",
+      "remote": "https://github.com/neoradar-project/client-sharp.git",
+      "defaultSubpaths": ["C#/Client-Sharp", "Client-Sharp", "client-sharp"]
+    },
+    "@server": {
+      "name": "NeoRadar server (Go compute tier)",
+      "remote": "https://github.com/neoradar-project/neoradar-server.git",
+      "defaultSubpaths": ["Go/Server", "Server", "neoradar-server"]
+    },
+    "@hub": {
+      "name": "NeoRadar Hub (JS management dashboard)",
+      "remote": "https://github.com/neoradar-project/neoradar-hub.git",
+      "defaultSubpaths": ["JS/neoradar-hub", "neoradar-hub"]
+    },
+    "@cli": {
+      "name": "NeoRadar CLI (JS package and dataset build pipeline)",
+      "remote": "https://github.com/neoradar-project/cli.git",
+      "defaultSubpaths": ["JS/CLI", "CLI", "cli"]
+    },
+    "@schemas": {
+      "name": "NeoRadar schemas (shared JSON Schemas)",
+      "remote": "git@github.com:neoradar-project/schemas.git",
+      "defaultSubpaths": ["schemas"]
+    }
+  },
+  "lockstepPairs": [
+    ["@server/internal/contract/", "@client/src/NeoRadar.Core/ServerLink/Contract/"],
+    ["@server/internal/contract/testdata/*.json", "@client/tests/NeoRadar.Core.Tests/ServerLink/Vectors/*.json"]
+  ],
+  "dataIds": {
+    "@data": {
+      "name": "Runtime data root",
+      "see": "dataRoot"
+    },
+    "@packages": {
+      "name": "Built packages the client loads at runtime",
+      "resolvesTo": "<@data>/packages",
+      "defaultSubpaths": []
+    },
+    "@sectorsrc": {
+      "name": "CLI source sector files (the inputs the CLI builds packages from)",
+      "defaultSubpaths": ["Packages"],
+      "note": "Not a repo and not under @data. One directory per sector file (e.g. UK-Sector-File)."
+    }
+  },
+  "dataRoot": {
+    "id": "@data",
+    "override": "NEORADAR_DATA_DIR",
+    "overrideMustBeAbsolute": true,
+    "perPlatform": {
+      "windows": "%USERPROFILE%\\Documents\\NeoRadar",
+      "macos": "~/Documents/NeoRadar",
+      "linux": "$XDG_DATA_HOME/NeoRadar, defaulting to ~/.local/share/NeoRadar"
+    },
+    "notes": [
+      "MyDocuments is deliberately not used on Linux: .NET resolves it through localised XDG_DOCUMENTS_DIR, so persisted absolute paths would move with the session locale.",
+      "A relative NEORADAR_DATA_DIR is rejected, not resolved against the current directory."
+    ],
+    "authority": "@client/src/NeoRadar.Core/Utils/AppDataRoot.cs"
+  }
+}
