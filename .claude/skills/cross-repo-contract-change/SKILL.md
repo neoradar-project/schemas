@@ -1,6 +1,6 @@
 ---
 name: cross-repo-contract-change
-description: Land one contract change in lockstep across the five NeoRadar repos (@client, @server, @hub, @cli, @schemas) in the right order. Use when the user says "keep the repos in lockstep", "what else has to change", "I only have the server checkout", "cross-repo change", "which repos does this touch", "the sibling repo is missing", "mirror this on the client", or is changing a session frame, a panel route, the server-dataset artifact or a package schema from inside one repo. Covers the repo id registry, the two lockstep pairs, which repos actually move for which lane, the order, and the per-repo verify command.
+description: Land one contract change in lockstep across the five NeoRadar repos (@client, @server, @hub, @cli, @schemas) in the right order. Use when the user says "keep the repos in lockstep", "what else has to change", "I only have the server checkout", "cross-repo change", "which repos does this touch", "the sibling repo is missing", "mirror this on the client", or is changing a session frame, a panel route, the server-dataset artifact or a package schema from inside one repo. Covers the repo id registry, the three lockstep pairs, which repos actually move for which lane, the order, and the per-repo verify command.
 ---
 
 > **Shared skill.** Copied verbatim into `@client`, `@server`, `@hub`, `@cli`, `@schemas`. Editing one copy alone is a break, not a cleanup.
@@ -42,16 +42,17 @@ So when only one checkout exists: do your half in full, then write the other hal
 
 **All five almost never move for one change.** Say which lane you are in before editing anything.
 
-## 3 · The two lockstep pairs
+## 3 · The three lockstep pairs
 
 Straight from `lockstepPairs` in the registry, and these are hard pairs, not conventions:
 
 ```
 @server/internal/contract/                  ↔  @client/src/NeoRadar.Core/ServerLink/Contract/
 @server/internal/contract/testdata/*.json   ↔  @client/tests/NeoRadar.Core.Tests/ServerLink/Vectors/*.json
+@server/internal/contract/vocabulary.json   ↔  @client/tests/NeoRadar.Core.Tests/ServerLink/vocabulary.json
 ```
 
-The 26 vector files are byte-identical LF on both sides, and `diff -r` between the two directories must report only `vectors.sha256` (client-side only). A one-sided edit is a contract break.
+The 28 vector files are byte-identical LF on both sides, and `diff -r` between the two directories must report only `vectors.sha256` (client-side only). The vocabulary copy sits outside `Vectors/`, so that `diff -r` never sees it; check it with its own `diff`. A one-sided edit is a contract break.
 
 Third copy to remember, NOT in `lockstepPairs`: `@hub/src/lib/panel/types.ts` hand-mirrors the panel wire in TypeScript. It is a real third transcription of some lane-A types — `contract.AirportConfig` is reused by `@server/internal/api/admin.go`, so `AirportConfig` exists in Go, in C# as `AirportConfigDto`, and in TS as `AirportConfig`. Identifier names differ across all three; **the JSON key is the contract.**
 
@@ -66,9 +67,9 @@ Third copy to remember, NOT in `lockstepPairs`: `@hub/src/lib/panel/types.ts` ha
    `go test ./internal/contract -run TestVocabularyManifestIsCurrent -update-vocabulary`
    `TestVocabularyManifestIsCurrent` fails the build while `vocabulary.json` is stale.
 3. **`@client`** — mirror the DTO, register **every** new type on `ServerContractJsonContext` (source-gen only, no reflection fallback), dispatch or send it, copy the vector in **identical bytes**, add the C# assertion. Full procedure and the traps are in the `serverlink-wire-change` skill; do not improvise the client half from this file.
-4. **`@client`** — refresh the hash manifest: `pwsh .github/scripts/check-golden-vectors.ps1 -Update`, then re-run it with no switch.
+4. **`@client`** — copy the regenerated `@server/internal/contract/vocabulary.json` byte for byte to `@client/tests/NeoRadar.Core.Tests/ServerLink/vocabulary.json`, then refresh the hash manifest: `pwsh .github/scripts/check-golden-vectors.ps1 -Update`, then re-run it with no switch. The manifest hashes the 28 vectors plus a 29th line for `../vocabulary.json`, so a mirrored copy without `-Update` fails the gate.
 5. **`@hub`** — only if the type also appears on a `/v1/panel` route. Update `@hub/src/lib/panel/types.ts` and whatever renders it.
-6. Read the regenerated `vocabulary.json` by eye against the client's `FrameTypes`, `ServerFeatures` and `SessionErrorCodes`. Nothing on the C# side reads that manifest, so this comparison is manual.
+6. Run `WireVocabularyManifestTests` on the client. It reads the committed copy and checks the contract version, features, frame types, declared error codes, enum members and enum openness against the C# side, so no part of this is by eye. Only `CommittedManifest_IsByteIdenticalToTheServerRepoCopy` may skip, and only when `@server` does not resolve.
 
 ### Lane B · panel plane
 
@@ -103,14 +104,17 @@ Cross-repo check, only possible when both resolve:
 ```bash
 diff -r @server/internal/contract/testdata @client/tests/NeoRadar.Core.Tests/ServerLink/Vectors
 # expected output: "Only in ...Vectors: vectors.sha256" and nothing else
+
+diff @server/internal/contract/vocabulary.json @client/tests/NeoRadar.Core.Tests/ServerLink/vocabulary.json
+# expected output: nothing at all
 ```
 
 The `@client` hash gate compares against its own committed manifest, not against `@server`, so **passing it does not prove the repos agree.** Run the diff.
 
 ## 6 · Traps
 
-- **Vector line endings.** `@client` pins the vectors `text eol=lf` in `.gitattributes`; `@server` has no `.gitattributes` and relies on repo-local `core.autocrlf=false`. A CR byte is a hard failure in the gate. Never reformat a vector, never re-indent one, never let an editor add or strip a trailing newline.
-- **The manifest and the vectors are two artifacts.** Editing a vector without `-Update` fails the gate; running `-Update` without mirroring the byte change in `@server` silently breaks the pair.
+- **Vector line endings.** Both repos pin them `text eol=lf` in their own `.gitattributes`: `@client` the `Vectors/*.json` glob, `vectors.sha256` and `vocabulary.json`, `@server` the `internal/contract/testdata/*.json` glob and `internal/contract/vocabulary.json`. A CR byte is a hard failure in the gate. Never reformat a vector, never re-indent one, never let an editor add or strip a trailing newline.
+- **The hash manifest, the vectors and the vocabulary copy are three artifacts.** Editing a vector without `-Update` fails the gate; running `-Update` without mirroring the byte change in `@server` silently breaks the pair; regenerating `vocabulary.json` on the server without copying it across leaves `WireVocabularyManifestTests` failing on the client.
 - **Adding a Go const without listing it** in `AllFrameTypes` / `AllFeatures` / `apiErrorCodes` fails a `go/ast`-based completeness test, not the code that uses it. Read the test failure; it names the constant.
 - **A feature name the client never declares reads as unsupported and fails silently.** `Supports` takes a raw string. Adding a feature constant is not the same as wiring a gate.
 - **Closed enums reject unknown values**, so a new member on a closed enum is a breaking change for older peers even though it looks additive. Open enums degrade to `unknown`.

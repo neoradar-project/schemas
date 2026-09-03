@@ -41,7 +41,8 @@
   },
   "lockstepPairs": [
     ["@server/internal/contract/", "@client/src/NeoRadar.Core/ServerLink/Contract/"],
-    ["@server/internal/contract/testdata/*.json", "@client/tests/NeoRadar.Core.Tests/ServerLink/Vectors/*.json"]
+    ["@server/internal/contract/testdata/*.json", "@client/tests/NeoRadar.Core.Tests/ServerLink/Vectors/*.json"],
+    ["@server/internal/contract/vocabulary.json", "@client/tests/NeoRadar.Core.Tests/ServerLink/vocabulary.json"]
   ],
   "dataIds": {
     "@data": {
