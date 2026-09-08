@@ -2,9 +2,10 @@
 
 ## The NeoRadar constellation
 
-Five repos, developed together. Cross-repo references use `@id` tokens, never paths:
+Six repos, developed together. Cross-repo references use `@id` tokens, never paths:
 `@client` (C# radar client), `@server` (Go compute tier), `@hub` (JS management dashboard),
-`@cli` (JS package and dataset build pipeline), `@schemas` (shared JSON Schemas). Data ids:
+`@cli` (JS package and dataset build pipeline), `@schemas` (shared JSON Schemas), `@pluginsdk` (C#
+plugin SDK, vendored into `@client` at `extern/NeoRadar.PluginSdk`). Data ids:
 `@packages` (built packages), `@sectorsrc` (CLI source sector files), `@data` (runtime data root).
 
 Resolve an id in this order: the `NEORADAR_<ID>_DIR` env var; then `neoradar.repos.local.json`
@@ -22,7 +23,7 @@ in ServerLink. Document any process change and how it rolls out to other sector 
 infrastructure serves thousands of users, so handle failure paths and never swallow an error.
 Never add `Co-Authored-By` or any AI attribution to a commit or PR.
 
-This block is identical in all five repos. Editing one copy alone is a break.
+This block is identical in all six repos. Editing one copy alone is a break.
 
 ## What this repo is
 

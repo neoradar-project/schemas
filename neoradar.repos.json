@@ -37,6 +37,11 @@
       "name": "NeoRadar schemas (shared JSON Schemas)",
       "remote": "git@github.com:neoradar-project/schemas.git",
       "defaultSubpaths": ["schemas"]
+    },
+    "@pluginsdk": {
+      "name": "NeoRadar plugin SDK (C#, public plugin contract)",
+      "remote": "https://github.com/neoradar-project/plugin-sdk.git",
+      "defaultSubpaths": ["C#/plugin-sdk", "plugin-sdk"]
     }
   },
   "lockstepPairs": [
