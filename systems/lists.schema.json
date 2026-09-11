@@ -964,6 +964,20 @@
                 "middleClick": {
                   "$ref": "#/items/properties/columns/items/properties/tagItem/properties/leftClick",
                   "description": "The action to be performed when the item is middle-clicked."
+                },
+                "textWeight": {
+                  "type": "number",
+                  "minimum": -0.45,
+                  "maximum": 0.45,
+                  "default": 0,
+                  "description": "Fine stroke weight. Negative thins the strokes, positive thickens them, 0 is the font's own weight. Overrides fontWeight."
+                },
+                "textSharpness": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "default": 0,
+                  "description": "Edge hardness. 0 keeps the rasteriser's own antialiasing, 1 gives a near-binary edge. A negative textWeight with some sharpness gives a thin, crisp look."
                 }
               },
               "required": [

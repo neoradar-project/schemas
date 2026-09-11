@@ -436,7 +436,8 @@
       "type": "array",
       "items": {
         "type": "string"
-      }
+      },
+      "description": "Plugins this package loads when it is opened. Each entry is a .dll or a .nrplugin archive, given either as a full path or as a path relative to the package root (e.g. \"plugins/UKControllerPlugin.nrplugin\"). A .nrplugin is referenced as the archive, never as the binary it unpacks. The client's plugin window writes full paths here; a package ships its own plugins as relative ones."
     },
     "ignorePaths": {
       "type": "array",

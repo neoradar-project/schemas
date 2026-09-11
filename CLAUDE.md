@@ -34,6 +34,26 @@ URL on `main` (`.../schemas/refs/heads/main/systems/targets.schema.json`), so au
 validate live; `@cli` builds those files into packages; `@client` parses the same files at load
 time (`Package/`, `Utils/Expressions/`) and is the real arbiter of what a package may hold.
 
+## Keeping up with @client
+
+`@client` is the arbiter, and nothing structural binds the two, so a property added to a config
+model just silently fails to appear in authors' completion. That is how `textWeight` and
+`textSharpness` reached `labels.schema.json` but not the copy of `tagItem` inside
+`lists.schema.json`: the tag-item shape is duplicated between those two files and only one was
+updated.
+
+`@client`'s `SystemsSchemaDriftTests` is the guard. It resolves this repo through
+`ConstellationRepos`, skips when absent (the normal CI case), and asserts that each schema's
+property names and the matching models' `[JsonPropertyName]` names are the same SET - both
+directions, so a schema advertising something the parser ignores fails too. It checks presence
+only: types, ranges, enums and descriptions carry intent no C# property expresses, which is why
+these schemas stay hand-written rather than generated. `mapstyle.schema.json` has no case because
+`MapStyleParser` reads it by hand with nothing to reflect over; it needs eyes.
+
+**Authors validate against raw `main`, not your branch.** A schema sitting correct on a feature
+branch is invisible to every sector file until it merges, and the symptom is "the client accepts
+this but my editor says it is invalid".
+
 ## The one rule
 
 There is no schema versioning and no pinned ref, so a merge to `main` is instantly live for
