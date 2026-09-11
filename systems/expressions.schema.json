@@ -130,10 +130,20 @@
                           "assignedSquawk",
                           "ownedByMe",
                           "ownedByCallsign",
+                          "futureOwnerCallsign",
                           "scratchpad",
                           "groundStatus",
                           "clearanceQueuePosition",
-                          "attentionState"
+                          "attentionState",
+                          "currentSector",
+                          "currentController",
+                          "nextSector",
+                          "nextController",
+                          "sectorExitPoint",
+                          "sectorExitLevel",
+                          "sectorEntryLevel",
+                          "sectorExitLevelPredicted",
+                          "sectorExitTime"
                         ]
                       },
                       {

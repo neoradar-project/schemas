@@ -133,10 +133,20 @@
                           "assignedSquawk",
                           "ownedByMe",
                           "ownedByCallsign",
+                          "futureOwnerCallsign",
                           "scratchpad",
                           "groundStatus",
                           "clearanceQueuePosition",
-                          "attentionState"
+                          "attentionState",
+                          "currentSector",
+                          "currentController",
+                          "nextSector",
+                          "nextController",
+                          "sectorExitPoint",
+                          "sectorExitLevel",
+                          "sectorEntryLevel",
+                          "sectorExitLevelPredicted",
+                          "sectorExitTime"
                         ]
                       },
                       {
@@ -476,7 +486,14 @@
               "type": "string"
             },
             "width": {
-              "type": "number"
+              "type": "number",
+              "description": "Column width in pixels. Ignored when widthChars is set."
+            },
+            "widthChars": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "description": "Column width in characters, measured at the column's own font and size. Overrides width. Prefer this: a pixel width means a different number of visible characters at every body text size."
             },
             "tagItem": {
               "type": "object",
@@ -965,8 +982,7 @@
             }
           },
           "required": [
-            "name",
-            "width"
+            "name"
           ],
           "additionalProperties": false
         }

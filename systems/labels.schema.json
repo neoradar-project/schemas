@@ -4,6 +4,13 @@
     "$schema": {
       "type": "string"
     },
+    "tagFontScale": {
+      "type": "number",
+      "minimum": 0.5,
+      "maximum": 3,
+      "default": 1,
+      "description": "Multiplier on every tag's fontSize for this system. 1 means the authored fontSize is the em size, which matches EuroScope for the same number. Raise it to scale all tag text at once without editing each fontSize."
+    },
     "ground": {
       "anyOf": [
         {
@@ -87,10 +94,20 @@
                                 "assignedSquawk",
                                 "ownedByMe",
                                 "ownedByCallsign",
+                                "futureOwnerCallsign",
                                 "scratchpad",
                                 "groundStatus",
                                 "clearanceQueuePosition",
-                                "attentionState"
+                                "attentionState",
+                                "currentSector",
+                                "currentController",
+                                "nextSector",
+                                "nextController",
+                                "sectorExitPoint",
+                                "sectorExitLevel",
+                                "sectorEntryLevel",
+                                "sectorExitLevelPredicted",
+                                "sectorExitTime"
                               ]
                             },
                             {
@@ -448,6 +465,20 @@
                         }
                       ],
                       "description": "Font size of the itemm can also be an expression rule."
+                    },
+                    "textWeight": {
+                      "type": "number",
+                      "minimum": -0.45,
+                      "maximum": 0.45,
+                      "default": 0,
+                      "description": "Fine stroke weight. Negative thins the strokes, positive thickens them, 0 is the font's own weight. Overrides fontWeight."
+                    },
+                    "textSharpness": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1,
+                      "default": 0,
+                      "description": "Edge hardness. 0 keeps the rasteriser's own antialiasing, 1 gives a near-binary edge. A negative textWeight with some sharpness gives a thin, crisp look."
                     },
                     "fontWeight": {
                       "anyOf": [
@@ -1014,6 +1045,20 @@
                   "fontWeight": {
                     "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/fontWeight/anyOf/0",
                     "description": "Font weight of the label."
+                  },
+                  "textWeight": {
+                    "type": "number",
+                    "minimum": -0.45,
+                    "maximum": 0.45,
+                    "default": 0,
+                    "description": "Fine stroke weight for every item this variant applies to. Negative thins. Overrides fontWeight; a tag item's own textWeight wins over this."
+                  },
+                  "textSharpness": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "default": 0,
+                    "description": "Edge hardness for every item this variant applies to, 0 to 1. A tag item's own textSharpness wins over this."
                   },
                   "lineHeight": {
                     "type": "number",
