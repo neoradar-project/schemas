@@ -146,7 +146,16 @@
                           "sectorExitLevel",
                           "sectorEntryLevel",
                           "sectorExitLevelPredicted",
-                          "sectorExitTime"
+                          "sectorExitTime",
+                          "sectorEntryPoint",
+                          "sectorEntryTime",
+                          "firExitPoint",
+                          "firExitTime",
+                          "coordinationState",
+                          "coordinationKind",
+                          "coordinationLevel",
+                          "coordinationPoint",
+                          "coordinationWith"
                         ]
                       },
                       {
@@ -317,7 +326,117 @@
                             "type": "string",
                             "const": "focusedAircraftCallsign",
                             "description": "The callsign of the focused aircraft."
-                          }
+                          },
+                            {
+                              "type": "string",
+                              "const": "temporaryAltitude",
+                              "description": "EuroScope chain: cleared level, else coordinated level."
+                            },
+                            {
+                              "type": "string",
+                              "const": "coordinatedLevel",
+                              "description": "Agreed COPX exit level (ft), else the filed cruise level."
+                            },
+                            {
+                              "type": "string",
+                              "const": "hasControllerData",
+                              "description": "Aircraft has controller data."
+                            },
+                            {
+                              "type": "string",
+                              "const": "hasFlightplan",
+                              "description": "Aircraft has an associated flight plan."
+                            },
+                            {
+                              "type": "string",
+                              "const": "hoppieState",
+                              "description": "Datalink (Hoppie) aircraft state."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isConnected",
+                              "description": "FSD connection is active."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isHoppieConnected",
+                              "description": "Datalink is connected."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isIFR",
+                              "description": "Flight rule is IFR."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isVFR",
+                              "description": "Flight rule is VFR."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isClimbing",
+                              "description": "Vertical speed above +100 ft/min."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isDescending",
+                              "description": "Vertical speed below -100 ft/min."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isLevel",
+                              "description": "Vertical speed within +/-100 ft/min."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isIdent",
+                              "description": "Transponder identing."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isModeC",
+                              "description": "Transponder in Mode C."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isStandby",
+                              "description": "Transponder in standby."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isUnconcerned",
+                              "description": "Attention state is Unconcerned."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isNotified",
+                              "description": "Attention state is Notified."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isIncomingTransfer",
+                              "description": "Attention state is incoming transfer."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isAssumed",
+                              "description": "Attention state is Assumed."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isOutgoingTransfer",
+                              "description": "Attention state is outgoing transfer."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isIntruder",
+                              "description": "Attention state is Intruder."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isConcerned",
+                              "description": "Predicted to enter an owned sector."
+                            }
                         ]
                       },
                       {
@@ -836,6 +955,41 @@
                       "const": "routeDraw",
                       "description": "Draws the route on the map."
                     },
+                      {
+                        "type": "string",
+                        "const": "copnAltitudeMenu",
+                        "description": "Opens the COPN (sector entry) level coordination list."
+                      },
+                      {
+                        "type": "string",
+                        "const": "copnPointMenu",
+                        "description": "Opens the COPN (sector entry) point coordination list."
+                      },
+                      {
+                        "type": "string",
+                        "const": "copxAltitudeMenu",
+                        "description": "Opens the COPX (sector exit) level coordination list."
+                      },
+                      {
+                        "type": "string",
+                        "const": "copxPointMenu",
+                        "description": "Opens the COPX (sector exit) point coordination list."
+                      },
+                      {
+                        "type": "string",
+                        "const": "coordinationMenu",
+                        "description": "Opens the combined COPN/COPX coordination list, whichever side you hold."
+                      },
+                      {
+                        "type": "string",
+                        "const": "fpDialogCreateShort",
+                        "description": "Opens the short flight plan create dialog."
+                      },
+                      {
+                        "type": "string",
+                        "const": "fpDialogModifyShort",
+                        "description": "Opens the short flight plan modify dialog."
+                      },
                     {
                       "type": "string",
                       "const": "pfl",
