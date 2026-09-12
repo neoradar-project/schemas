@@ -114,6 +114,8 @@
                                 "sectorEntryPoint",
                                 "sectorEntryTime",
                                 "firExitPoint",
+                                "sectorEntryExitPoint",
+                                "sectorEntryExitLevel",
                                 "firExitTime",
                                 "coordinationState",
                                 "coordinationKind",
