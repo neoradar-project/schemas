@@ -1,0 +1,183 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "shapes": {
+      "type": "object",
+      "description": "Named vector symbols, referenced from targets.json by plotShape and historyTrailShape.shape. A name may contain '/' so it reads like a sprite frame name, for example 'sct/aircraft'.",
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9_][A-Za-z0-9_\\-./]*$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/shape"
+      }
+    }
+  },
+  "required": ["shapes"],
+  "$defs": {
+    "point": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "number"
+      },
+      "description": "A point in design units: logical pixels at 100% DPI, origin at the symbol anchor, +x right and +y DOWN (screen convention, matching a EuroScope GDI listing)."
+    },
+    "color": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 4,
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 255
+      },
+      "description": "Literal colour as [r, g, b] or [r, g, b, a], each 0-255. A literal is never overridden by the variant's plotColor."
+    },
+    "shape": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "strokeWidth": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 1,
+          "description": "Default stroke width in design units for every element that does not set its own."
+        },
+        "pixelSnap": {
+          "type": "boolean",
+          "default": true,
+          "description": "Snap axis-aligned strokes and fill edges to the physical pixel grid so a 1px stroke lands on exactly one pixel column at full alpha. Turn off for smooth sub-pixel motion instead of maximum crispness."
+        },
+        "rotateWithHeading": {
+          "type": "boolean",
+          "description": "Set false on a rotation-invariant glyph to ignore heading rotation from whatever uses it. Omit to inherit the caller's rotation."
+        },
+        "sizeMode": {
+          "type": "string",
+          "enum": ["screen"],
+          "default": "screen",
+          "description": "Design units are logical pixels, scaled by DPI at draw time. 'world' (metres, scaling with zoom) is not implemented yet."
+        },
+        "color": {
+          "$ref": "#/$defs/color",
+          "description": "Fallback colour for elements that inherit and whose variant supplies no plotColor."
+        },
+        "elements": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/element"
+          }
+        }
+      },
+      "required": ["elements"]
+    },
+    "element": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Exactly one of line, polygon, circle, rect, dot or shapeRef.",
+      "properties": {
+        "line": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/point"
+          },
+          "description": "Polyline. Transcribing GDI, MOVETO x0 y0 / LINETO x1 y1 is one line element; GDI's LineTo excludes its endpoint, so MOVETO -4 -4 / LINETO 5 5 becomes [[-4, -4], [4, 4]]."
+        },
+        "polygon": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "$ref": "#/$defs/point"
+          },
+          "description": "Closed polygon. GDI POLYGON -1 -1 -1 1 1 1 1 -1 becomes [[-1, -1], [-1, 1], [1, 1], [1, -1]]. Set fill true to fill it; only axis-aligned rectangles can be filled today, other polygons draw as an outline."
+        },
+        "circle": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "center": { "$ref": "#/$defs/point" },
+            "radius": { "type": "number", "exclusiveMinimum": 0 },
+            "start": { "type": "number", "description": "Arc start in degrees, 0 = up, clockwise. Omit both start and end for a full circle." },
+            "end": { "type": "number", "description": "Arc end in degrees, 0 = up, clockwise." }
+          },
+          "required": ["radius"],
+          "description": "Stroked circle or arc. Filled circles are not implemented yet."
+        },
+        "rect": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "center": { "$ref": "#/$defs/point" },
+            "size": { "$ref": "#/$defs/point" }
+          },
+          "required": ["size"],
+          "description": "Axis-aligned rectangle, size as [width, height] in design units."
+        },
+        "dot": {
+          "$ref": "#/$defs/point",
+          "description": "A single physical pixel at this point, never scaled by DPI."
+        },
+        "shapeRef": {
+          "type": "string",
+          "description": "Compose another shape from this library by name. Nesting is capped at 4 deep."
+        },
+        "fill": {
+          "type": "boolean",
+          "default": false,
+          "description": "Fill a polygon or rect instead of stroking its outline."
+        },
+        "closed": {
+          "type": "boolean",
+          "default": false,
+          "description": "Join a line's last point back to its first."
+        },
+        "color": {
+          "anyOf": [
+            { "$ref": "#/$defs/color" },
+            { "type": "string", "const": "inherit" }
+          ],
+          "description": "A literal colour is used as-is and never overridden. 'inherit', or omitting this key, takes the variant's plotColor (or historyTrailShape.color on a trail), then the shape's own color."
+        },
+        "strokeWidth": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Overrides the shape's strokeWidth for this element."
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1
+        },
+        "rotateWithHeading": {
+          "type": "boolean",
+          "description": "Per-element rotation override, so a ring can stay upright while an arrow inside it turns."
+        },
+        "offset": {
+          "$ref": "#/$defs/point",
+          "description": "shapeRef only: translate the referenced shape."
+        },
+        "scale": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "shapeRef only: scale the referenced shape."
+        },
+        "rotate": {
+          "type": "number",
+          "description": "shapeRef only: rotate the referenced shape by a fixed angle in degrees."
+        }
+      }
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

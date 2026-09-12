@@ -154,6 +154,18 @@
             ],
             "additionalProperties": false
           }
+        },
+        "sweepIntervalSeconds": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 60,
+          "description": "Seconds between aircraft repaints on this view, simulating a tracker's system-track update cycle (roughly 4 for approach, 8 for area). Omitted, 0, or anything below 0.5 leaves the view uncapped, repainting on every position batch. Values above 60 are clamped. Each radar view reads its own profile, so a main window and an inset can run different rates."
+        },
+        "sweepJitterSeconds": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 60,
+          "description": "Seconds over which each aircraft's repaint is staggered within the cycle, so the population shares a beat with a minority trailing it rather than every aircraft looking independently timed. 0 repaints every aircraft on the same tick; setting it to the interval spreads them evenly across the whole cycle. Clamped to the interval; defaults to 0.75. Repaints quantise to the 0.5s position batch, so a window below that collapses to no stagger at all."
         }
       },
       "required": [

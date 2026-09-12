@@ -28,7 +28,7 @@ This block is identical in all six repos. Editing one copy alone is a break.
 ## What this repo is
 
 The JSON Schemas for the NeoRadar package format: `package/manifest.schema.json`,
-`profile.schema.json`, `systems/{expressions,labels,lists,mapstyle,targets}.schema.json`. No
+`profile.schema.json`, `systems/{expressions,labels,lists,mapstyle,shapes,targets}.schema.json`. No
 code, no build, no tests. Consumers: source sector files (`@sectorsrc`) reference them by raw
 URL on `main` (`.../schemas/refs/heads/main/systems/targets.schema.json`), so authors' editors
 validate live; `@cli` builds those files into packages; `@client` parses the same files at load

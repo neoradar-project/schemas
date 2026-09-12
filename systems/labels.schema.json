@@ -11,6 +11,9 @@
       "default": 1,
       "description": "Multiplier on every tag's fontSize for this system. 1 means the authored fontSize is the em size, which matches EuroScope for the same number. Raise it to scale all tag text at once without editing each fontSize."
     },
+    "altitudeFormat": {
+      "$ref": "#/$defs/altitudeFormat"
+    },
     "ground": {
       "anyOf": [
         {
@@ -369,6 +372,21 @@
                         }
                       ],
                       "description": "An array of two numbers representing the start and end index of the substring to be displayed."
+                    },
+                    "format": {
+                      "description": "Transition-altitude presentation for this item. \"altitude\" uses the system's altitudeFormat and picks the band from the item's own value; \"flightLevel\" always uses the above-transition band, for values that are always a level. An object overrides the system default inline. Explicit truncate, padWithZeroLeft, prefix or suffix on this item override the matching part.",
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "altitude",
+                            "flightLevel"
+                          ]
+                        },
+                        {
+                          "$ref": "#/$defs/altitudeFormat"
+                        }
+                      ]
                     },
                     "placeholder": {
                       "type": "string",
@@ -1259,5 +1277,54 @@
     "airborne"
   ],
   "additionalProperties": false,
-  "$schema": "http://json-schema.org/draft-07/schema#"
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "altitudeFormat": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "How altitude-valued tag items render either side of the transition altitude. Declared once per system; items opt in with \"format\".",
+      "properties": {
+        "belowTransition": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "prefix": {
+              "type": "string",
+              "description": "Text placed before the digits, e.g. \"A\" below the transition altitude."
+            },
+            "suffix": {
+              "type": "string",
+              "description": "Text placed after the digits, e.g. \"00\" to render full feet rather than hundreds."
+            },
+            "digits": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5,
+              "description": "MINIMUM digit count of the value in hundreds of feet, zero-padded and never truncated. 2 renders 3000 as \"30\" and still renders 12000 as \"120\"."
+            }
+          }
+        },
+        "aboveTransition": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "prefix": {
+              "type": "string",
+              "description": "Text placed before the digits, e.g. \"A\" below the transition altitude."
+            },
+            "suffix": {
+              "type": "string",
+              "description": "Text placed after the digits, e.g. \"00\" to render full feet rather than hundreds."
+            },
+            "digits": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5,
+              "description": "MINIMUM digit count of the value in hundreds of feet, zero-padded and never truncated. 2 renders 3000 as \"30\" and still renders 12000 as \"120\"."
+            }
+          }
+        }
+      }
+    }
+  }
 }

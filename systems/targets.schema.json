@@ -505,7 +505,46 @@
                     }
                   },
                   "plotImage": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Sprite atlas frame name. Either this or plotShape is required."
+                  },
+                  "plotShape": {
+                    "type": "string",
+                    "description": "Vector symbol name from systems/shapes.json. Wins when plotImage is also present."
+                  },
+                  "plotColor": {
+                    "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor",
+                    "description": "Colour that the plotShape's inheriting elements take. Lets one shape serve every attention state."
+                  },
+                  "historyTrailShape": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "shape": {
+                        "type": "string",
+                        "description": "Vector symbol name from systems/shapes.json."
+                      },
+                      "steps": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "default": 6,
+                        "description": "How many trail marks to draw. Replaces repeating historyTrailImages N times."
+                      },
+                      "color": {
+                        "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor"
+                      },
+                      "opacityRamp": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "description": "Per-step opacity, oldest last. Shorter than steps repeats the final value."
+                      }
+                    },
+                    "required": ["shape"],
+                    "description": "Vector history trail. Wins over historyTrailImages. historyTrailsSkipSteps still applies."
                   },
                   "primaryPlotColor": {
                     "anyOf": [
@@ -585,8 +624,17 @@
                     ]
                   }
                 },
-                "required": [
-                  "plotImage"
+                "anyOf": [
+                  {
+                    "required": [
+                      "plotImage"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "plotShape"
+                    ]
+                  }
                 ],
                 "additionalProperties": false
               }

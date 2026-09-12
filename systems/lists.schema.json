@@ -530,6 +530,21 @@
                   ],
                   "description": "An array of two numbers representing the start and end index of the substring to be displayed."
                 },
+                "format": {
+                  "description": "Transition-altitude presentation for this item. \"altitude\" uses the system's altitudeFormat and picks the band from the item's own value; \"flightLevel\" always uses the above-transition band, for values that are always a level. An object overrides the system default inline. Explicit truncate, padWithZeroLeft, prefix or suffix on this item override the matching part.",
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "enum": [
+                        "altitude",
+                        "flightLevel"
+                      ]
+                    },
+                    {
+                      "$ref": "#/$defs/altitudeFormat"
+                    }
+                  ]
+                },
                 "placeholder": {
                   "type": "string",
                   "description": "A placeholder string to be displayed when the item is empty or equal to 0."
@@ -1105,6 +1120,20 @@
           "bodyTextSize": {
             "type": "number",
             "default": 11
+          },
+          "paddingLeft": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 64,
+            "default": 0,
+            "description": "Inset in DIP between the list frame and the first column. Without it a left-aligned first column sits against the border. The header bar and each row highlight still span the full frame; only their content moves in, and the window widens to keep every column visible."
+          },
+          "paddingRight": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 64,
+            "default": 0,
+            "description": "Inset in DIP between the last column and the list frame. Separate from paddingLeft because the first and last columns usually carry opposite text alignments, so the optical gap they need is not the same."
           }
         },
         "additionalProperties": false
@@ -1116,5 +1145,54 @@
     ],
     "additionalProperties": false
   },
-  "$schema": "http://json-schema.org/draft-07/schema#"
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "altitudeFormat": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "How altitude-valued tag items render either side of the transition altitude. Declared once per system; items opt in with \"format\".",
+      "properties": {
+        "belowTransition": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "prefix": {
+              "type": "string",
+              "description": "Text placed before the digits, e.g. \"A\" below the transition altitude."
+            },
+            "suffix": {
+              "type": "string",
+              "description": "Text placed after the digits, e.g. \"00\" to render full feet rather than hundreds."
+            },
+            "digits": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5,
+              "description": "MINIMUM digit count of the value in hundreds of feet, zero-padded and never truncated. 2 renders 3000 as \"30\" and still renders 12000 as \"120\"."
+            }
+          }
+        },
+        "aboveTransition": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "prefix": {
+              "type": "string",
+              "description": "Text placed before the digits, e.g. \"A\" below the transition altitude."
+            },
+            "suffix": {
+              "type": "string",
+              "description": "Text placed after the digits, e.g. \"00\" to render full feet rather than hundreds."
+            },
+            "digits": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5,
+              "description": "MINIMUM digit count of the value in hundreds of feet, zero-padded and never truncated. 2 renders 3000 as \"30\" and still renders 12000 as \"120\"."
+            }
+          }
+        }
+      }
+    }
+  }
 }
