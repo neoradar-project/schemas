@@ -427,10 +427,8 @@
       ],
       "additionalProperties": false
     },
-    "devDisableAntialiasing": {
-      "type": "boolean",
-      "default": false,
-      "description": "NOT HONOURED. Parsed but never read; the renderer has no runtime antialiasing switch."
+    "altitudeFormat": {
+      "$ref": "#/$defs/altitudeFormat"
     },
     "plugins": {
       "type": "array",
@@ -456,5 +454,54 @@
     "centerPoint"
   ],
   "additionalProperties": false,
-  "$schema": "http://json-schema.org/draft-07/schema#"
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$defs": {
+    "altitudeFormat": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "How altitude-valued tag items render either side of the transition altitude. A system's labels.json overrides this; omit both and items using \"format\" fall back to the EuroScope convention (an \"A\" and two digits below, three above).",
+      "properties": {
+        "belowTransition": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "prefix": {
+              "type": "string",
+              "description": "Text before the digits, e.g. \"A\" below the transition altitude."
+            },
+            "suffix": {
+              "type": "string",
+              "description": "Text after the digits, e.g. \"00\" to render full feet rather than hundreds."
+            },
+            "digits": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5,
+              "description": "MINIMUM digit count of the value in hundreds of feet, zero-padded and never truncated. 2 renders 3000 as \"30\" and still renders 12000 as \"120\"."
+            }
+          }
+        },
+        "aboveTransition": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "prefix": {
+              "type": "string",
+              "description": "Text before the digits, e.g. \"A\" below the transition altitude."
+            },
+            "suffix": {
+              "type": "string",
+              "description": "Text after the digits, e.g. \"00\" to render full feet rather than hundreds."
+            },
+            "digits": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5,
+              "description": "MINIMUM digit count of the value in hundreds of feet, zero-padded and never truncated. 2 renders 3000 as \"30\" and still renders 12000 as \"120\"."
+            }
+          }
+        }
+      }
+    }
+  }
 }

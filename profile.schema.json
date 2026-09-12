@@ -80,6 +80,10 @@
         },
         "transitionAltitude": {
           "type": "number"
+        },
+        "disableAntiAliasing": {
+          "type": "boolean",
+          "description": "Hard-threshold every line at its half-width instead of ramping coverage. Covers map geometry, speed vectors, route legs, tag leaders, measurers and vector symbols; text, point symbols and tag corners keep their own anti-aliasing."
         }
       },
       "additionalProperties": false
