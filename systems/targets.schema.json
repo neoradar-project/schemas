@@ -596,6 +596,43 @@
                       "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor"
                     }
                   },
+                  "primaryPlotWingspan": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "default": 36,
+                    "description": "Half-span of the raw video blob in metres. The quad is drawn two wingspans across, so the blob inside the texture's padding reads near life size. Ground variants only."
+                  },
+                  "primaryPlotWingspanByWakeCategory": {
+                    "type": "object",
+                    "propertyNames": {
+                      "pattern": "^[A-Z]$"
+                    },
+                    "additionalProperties": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "description": "Wingspan in metres per filed ICAO wake category, e.g. {\"L\":13,\"M\":34,\"H\":61,\"J\":80}. A category not listed, or an aircraft with no flight plan, falls back to primaryPlotWingspan."
+                  },
+                  "primaryPlotSizeJitter": {
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 0,
+                    "description": "Metres of random size variation, plus or minus, redrawn with each reroll. 0 holds one size, so the blob changes shape but not extent."
+                  },
+                  "primaryPlotRerollIntervalMs": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "default": 0,
+                    "description": "Milliseconds between reshapes of a STATIONARY aircraft's blob. 0 reshapes only on movement, so traffic on stand holds one shape."
+                  },
+                  "hoverShape": {
+                    "type": "string",
+                    "description": "Vector symbol from systems/shapes.json drawn at the target position while the pointer is over the aircraft or its tag, as a grab affordance. The shape's own rotateWithHeading decides whether it turns with the aircraft."
+                  },
+                  "hoverShapeColor": {
+                    "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor",
+                    "description": "Colour the hover shape's inheriting elements take. Falls back to plotColor."
+                  },
                   "rotatePlotWithHeading": {
                     "type": "boolean",
                     "default": false
@@ -643,6 +680,16 @@
                         "type": "string",
                         "const": "headingTool",
                         "description": "Starts the heading assignment tool on this target: a line follows the cursor and the heading is assigned on release. Requires an ATC session that may edit the track."
+                      },
+                      {
+                        "type": "string",
+                        "const": "rotateTagClockwise",
+                        "description": "Steps this aircraft's tag one position clockwise around it, by labels.json tagPositioning.stepDegrees (45 degrees when unset). Binding the action enables it; tagPositioning.rotationEnabled gates only the built-in shift+click gesture."
+                      },
+                      {
+                        "type": "string",
+                        "const": "rotateTagAntiClockwise",
+                        "description": "Steps this aircraft's tag one position anticlockwise around it. See rotateTagClockwise."
                       },
                       {
                         "type": "string",

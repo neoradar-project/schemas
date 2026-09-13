@@ -1277,12 +1277,51 @@
           "items": {
             "$ref": "#/$defs/styleVariant"
           }
+        },
+        "tagPositioning": {
+          "$ref": "#/$defs/tagPositioning"
         }
       },
       "required": [
         "labels"
       ],
       "additionalProperties": false
+    },
+    "tagPositioning": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Where a tag may sit relative to its aircraft. Declared per section, so ground and airborne can differ. Absent leaves the free-drag behaviour: no rotation, no snapping, no distance limit.",
+      "properties": {
+        "rotationEnabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enables shift+left and shift+right on the target symbol as rotate one step anticlockwise and clockwise. The rotateTagClockwise and rotateTagAntiClockwise click actions work wherever they are bound, with or without this."
+        },
+        "stepDegrees": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 180,
+          "default": 45,
+          "description": "Degrees per rotation step, and the lattice snapDragToStep settles onto. 45 gives the eight positions around the aircraft, 22.5 gives sixteen."
+        },
+        "snapDragToStep": {
+          "type": "boolean",
+          "default": false,
+          "description": "Settles a dragged tag onto the stepDegrees lattice when the drag ends. The drag itself stays free, so the tag does not jump under the pointer."
+        },
+        "minLeaderLength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "Shortest distance in logical pixels from the aircraft to the tag CENTRE. Applied continuously while dragging, so a tag cannot be parked on top of its own target."
+        },
+        "maxLeaderLength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "Longest distance in logical pixels from the aircraft to the tag centre. Absent leaves the drag unbounded."
+        }
+      }
     },
     "applyWhen": {
       "anyOf": [
