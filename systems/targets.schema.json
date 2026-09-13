@@ -504,6 +504,18 @@
                       ]
                     }
                   },
+                  "applyToFilterStates": {
+                    "type": "array",
+                    "description": "Restricts this variant to aircraft in one of the listed display-filter states. An aircraft above the profile's upper altitude filter is kUpperFiltered, one below the lower filter is kLowerFiltered, and any other aircraft is kUnfiltered. OMITTING this key means unfiltered traffic only: filtered traffic is drawn solely by the variants that list its state and there is no fallback, so a system that says nothing about filtered traffic keeps hiding it.",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "kUnfiltered",
+                        "kUpperFiltered",
+                        "kLowerFiltered"
+                      ]
+                    }
+                  },
                   "plotImage": {
                     "type": "string",
                     "description": "Sprite atlas frame name. Either this or plotShape is required."
@@ -543,7 +555,9 @@
                         "description": "Per-step opacity, oldest last. Shorter than steps repeats the final value."
                       }
                     },
-                    "required": ["shape"],
+                    "required": [
+                      "shape"
+                    ],
                     "description": "Vector history trail. Wins over historyTrailImages. historyTrailsSkipSteps still applies."
                   },
                   "primaryPlotColor": {
@@ -622,6 +636,212 @@
                         }
                       }
                     ]
+                  },
+                  "leftClick": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "headingTool",
+                        "description": "Starts the heading assignment tool on this target: a line follows the cursor and the heading is assigned on release. Requires an ATC session that may edit the track."
+                      },
+                      {
+                        "type": "string",
+                        "const": "triggerScratchpad",
+                        "description": "Opens the scratchpad input box."
+                      },
+                      {
+                        "type": "string",
+                        "const": "triggerCFL",
+                        "description": "Opens the scratchpad input box that will set the CFL."
+                      },
+                      {
+                        "type": "string",
+                        "const": "triggerManualSquawk",
+                        "description": "Opens the manual squawk input box."
+                      },
+                      {
+                        "type": "string",
+                        "const": "clearSpd",
+                        "description": "Clears the speed assignment."
+                      },
+                      {
+                        "type": "string",
+                        "const": "toggleClearanceFlag",
+                        "description": "Toggles the clearance flag."
+                      },
+                      {
+                        "type": "string",
+                        "const": "assignRandomSquawk",
+                        "description": "Assigns a squawk code based on the available providers, otherwise a random squawk."
+                      },
+                      {
+                        "type": "string",
+                        "const": "assignSquawk",
+                        "description": "Assigns a squawk code based on the available providers, otherwise a random squawk."
+                      },
+                      {
+                        "type": "string",
+                        "const": "assignSq1000",
+                        "description": "Assigns a squawk code of 1000."
+                      },
+                      {
+                        "type": "string",
+                        "const": "assumeAircraft",
+                        "description": "Assumes ownership of the aircraft."
+                      },
+                      {
+                        "type": "string",
+                        "const": "cancelHandoff",
+                        "description": "Cancels an outbound handoff of the aircraft."
+                      },
+                      {
+                        "type": "string",
+                        "const": "releaseAircraft",
+                        "description": "Releases ownership of the aircraft."
+                      },
+                      {
+                        "type": "string",
+                        "const": "handoffAircraft",
+                        "description": "Initiates a handoff of the aircraft to the next controller."
+                      },
+                      {
+                        "type": "string",
+                        "const": "routeDraw",
+                        "description": "Draws the route on the map."
+                      },
+                      {
+                        "type": "string",
+                        "const": "callsignMenu",
+                        "description": "Opens the callsign assignment popup."
+                      },
+                      {
+                        "type": "string",
+                        "const": "fpDialog",
+                        "description": "Opens the flight plan dialog."
+                      },
+                      {
+                        "type": "string",
+                        "const": "fpDialogCreateShort",
+                        "description": "Opens the short flight plan create dialog."
+                      },
+                      {
+                        "type": "string",
+                        "const": "fpDialogModifyShort",
+                        "description": "Opens the short flight plan modify dialog."
+                      },
+                      {
+                        "type": "string",
+                        "const": "cfl",
+                        "description": "Opens the CFL poupup."
+                      },
+                      {
+                        "type": "string",
+                        "const": "spd",
+                        "description": "Opens the speed assignment popup."
+                      },
+                      {
+                        "type": "string",
+                        "const": "hdg",
+                        "description": "Opens the heading assignment popup."
+                      },
+                      {
+                        "type": "string",
+                        "const": "pfl",
+                        "description": "Opens the Planned Flight Level popup."
+                      },
+                      {
+                        "type": "string",
+                        "const": "openNextControllerMenu",
+                        "description": "Opens the next controller menu."
+                      },
+                      {
+                        "type": "string",
+                        "const": "groundStatusMenu",
+                        "description": "Opens the ground status menu."
+                      },
+                      {
+                        "type": "string",
+                        "const": "voiceTypeMenu",
+                        "description": "Opens the voice type assignment menu."
+                      },
+                      {
+                        "type": "string",
+                        "const": "pdcMenu",
+                        "description": "Opens the PDC assignment menu."
+                      },
+                      {
+                        "type": "string",
+                        "const": "depRunwayMenu",
+                        "description": "Opens the departure runway assignment menu."
+                      },
+                      {
+                        "type": "string",
+                        "const": "arrRunwayMenu",
+                        "description": "Opens the arrival runway assignment menu."
+                      },
+                      {
+                        "type": "string",
+                        "const": "sidMenu",
+                        "description": "Opens the SID assignment menu."
+                      },
+                      {
+                        "type": "string",
+                        "const": "starMenu",
+                        "description": "Opens the STAR assignment menu."
+                      },
+                      {
+                        "type": "string",
+                        "const": "directMenu",
+                        "description": "Opens the direct to menu."
+                      },
+                      {
+                        "type": "string",
+                        "const": "copnAltitudeMenu",
+                        "description": "Opens the COPN (sector entry) level coordination list."
+                      },
+                      {
+                        "type": "string",
+                        "const": "copnPointMenu",
+                        "description": "Opens the COPN (sector entry) point coordination list."
+                      },
+                      {
+                        "type": "string",
+                        "const": "copxAltitudeMenu",
+                        "description": "Opens the COPX (sector exit) level coordination list."
+                      },
+                      {
+                        "type": "string",
+                        "const": "copxPointMenu",
+                        "description": "Opens the COPX (sector exit) point coordination list."
+                      },
+                      {
+                        "type": "string",
+                        "const": "coordinationMenu",
+                        "description": "Opens the combined COPN/COPX coordination list, whichever side you hold."
+                      },
+                      {
+                        "type": "string",
+                        "const": "quickLook",
+                        "description": "Toggles a quick-look pin on this aircraft for the radar view that was clicked: while pinned it is shown regardless of the view's upper and lower altitude filters (the GND, PRIM and VFR filters still apply). Click again to unpin. Per view, never saved."
+                      },
+                      {
+                        "type": "string",
+                        "description": "A plugin action id, in the form plugin:{pluginId}:{actionName}."
+                      }
+                    ],
+                    "description": "Action run when the symbol is left-clicked while this variant is the one drawn. Clicking a target always selects it; this runs on top of that."
+                  },
+                  "rightClick": {
+                    "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/leftClick",
+                    "description": "Action run when the symbol is right-clicked while this variant is the one drawn."
+                  },
+                  "middleClick": {
+                    "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/leftClick",
+                    "description": "Action run when the symbol is middle-clicked while this variant is the one drawn."
+                  },
+                  "doubleClick": {
+                    "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/leftClick",
+                    "description": "Action run when the symbol is double-clicked while this variant is the one drawn."
                   }
                 },
                 "anyOf": [

@@ -904,6 +904,9 @@
                 "blinkColor": {
                   "anyOf": [
                     {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/0"
+                    },
+                    {
                       "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
                     },
                     {
@@ -913,7 +916,7 @@
                       }
                     }
                   ],
-                  "description": "Blink color of the item, to be used as an expression rule."
+                  "description": "Blink color of the item (in RGBA), can also be an expression rule."
                 },
                 "backgroundColor": {
                   "anyOf": [
@@ -1020,6 +1023,11 @@
                         "type": "string",
                         "const": "coordinationMenu",
                         "description": "Opens the combined COPN/COPX coordination list, whichever side you hold."
+                      },
+                      {
+                        "type": "string",
+                        "const": "quickLook",
+                        "description": "Toggles a quick-look pin on this aircraft for the radar view that was clicked: while pinned it is shown regardless of the view's upper and lower altitude filters (the GND, PRIM and VFR filters still apply). Click again to unpin. Per view, never saved."
                       },
                       {
                         "type": "string",
@@ -1169,7 +1177,7 @@
                 },
                 "doubleClick": {
                   "$ref": "#/items/properties/columns/items/properties/tagItem/properties/leftClick",
-                  "description": "The action to be performed when the item is double-clicked, this is only supported for lists"
+                  "description": "The action to be performed when the item is double-clicked, on a radar label as well as in a list."
                 },
                 "middleClick": {
                   "$ref": "#/items/properties/columns/items/properties/tagItem/properties/leftClick",

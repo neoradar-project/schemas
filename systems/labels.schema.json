@@ -15,1384 +15,10 @@
       "$ref": "#/$defs/altitudeFormat"
     },
     "ground": {
+      "description": "Tags for aircraft on the ground, or a \"#systemId\" reference to another system's ground section.",
       "anyOf": [
         {
-          "type": "object",
-          "properties": {
-            "default": {
-              "type": "array",
-              "items": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "itemName": {
-                      "anyOf": [
-                        {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "enum": [
-                                "stopped",
-                                "timestamp",
-                                "verticalSpeed",
-                                "verticalTrend",
-                                "altitude",
-                                "agl",
-                                "onGround",
-                                "groundSpeed",
-                                "reportedHeading",
-                                "trackHeading",
-                                "transponder",
-                                "latLon",
-                                "trueAltitude",
-                                "pressureAltitude"
-                              ]
-                            },
-                            {
-                              "type": "string",
-                              "enum": [
-                                "flightRule",
-                                "rawType",
-                                "icaoTransponderEquipment",
-                                "icaoEquipment",
-                                "icaoWakeCategory",
-                                "acShortType",
-                                "origin",
-                                "destination",
-                                "alternate",
-                                "plannedTas",
-                                "plannedFlightLevel",
-                                "rmk",
-                                "flightTimeHours",
-                                "flightTimeMinutes",
-                                "fuelTimeHours",
-                                "fuelTimeMinutes",
-                                "eobt",
-                                "aobt",
-                                "isValid",
-                                "voiceType"
-                              ]
-                            },
-                            {
-                              "type": "string",
-                              "enum": [
-                                "callsign",
-                                "type",
-                                "isTimingOut",
-                                "lastPositionUpdateReceivedAt",
-                                "squawk",
-                                "latestTransponderStatus"
-                              ]
-                            },
-                            {
-                              "type": "string",
-                              "enum": [
-                                "clearedFlightLevel",
-                                "assignedHeading",
-                                "assignedSpeed",
-                                "assignedMach",
-                                "assignedVerticalRate",
-                                "clearanceIssued",
-                                "assignedSquawk",
-                                "ownedByMe",
-                                "ownedByCallsign",
-                                "futureOwnerCallsign",
-                                "scratchpad",
-                                "groundStatus",
-                                "clearanceQueuePosition",
-                                "attentionState",
-                                "currentSector",
-                                "currentController",
-                                "nextSector",
-                                "nextController",
-                                "sectorExitPoint",
-                                "sectorExitLevel",
-                                "sectorEntryLevel",
-                                "sectorExitLevelPredicted",
-                                "sectorExitTime",
-                                "sectorEntryPoint",
-                                "sectorEntryTime",
-                                "firExitPoint",
-                                "sectorEntryExitPoint",
-                                "sectorEntryExitLevel",
-                                "firExitTime",
-                                "coordinationState",
-                                "coordinationKind",
-                                "coordinationLevel",
-                                "coordinationPoint",
-                                "coordinationWith"
-                              ]
-                            },
-                            {
-                              "type": "string",
-                              "enum": [
-                                "sid",
-                                "star",
-                                "isAmended",
-                                "depRunway",
-                                "arrRunway",
-                                "rawRoute",
-                                "hadStar",
-                                "hadSid",
-                                "suggestedArrRunway",
-                                "suggestedDepRunway",
-                                "suggestedSid",
-                                "suggestedStar",
-                                "waypoints",
-                                "segments",
-                                "explicitSegments",
-                                "errors",
-                                "hasDirectApplied"
-                              ]
-                            },
-                            {
-                              "anyOf": [
-                                {
-                                  "type": "string",
-                                  "const": "isArrival",
-                                  "description": "Is the flight an arrival (both active and observed airport)?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "isDeparture",
-                                  "description": "Is the flight a departure (both active and observed airport)?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "isMyDeparture",
-                                  "description": "Is the flight a departure (my active airport)?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "isMyArrival",
-                                  "description": "Is the flight an arrival (my active airport)?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "myCallsign",
-                                  "description": "The callsign of the user."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "ownedByID",
-                                  "description": "The ID of ATC station which is assuming the track."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "sectorIndicator",
-                                  "description": "Current owner or next sector indicator or frequency based on status"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "nextControllerFrequency",
-                                  "description": "The frequency of the next controller if set."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "computedSpeed",
-                                  "description": "DEPRECATED: The computed assigned speed, with a -/+ at the end of the string (2 digits)."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "computedAssignedSpeed",
-                                  "description": "The computed assigned speed, with a -/+ at the end of the string (2 digits)."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "computedCFL",
-                                  "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "datalinkStatus",
-                                  "description": "The datalink status of the aircraft."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "isPDCRequested",
-                                  "description": "Is the PDC requested for the aircraft?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "isPDCStandby",
-                                  "description": "Is the PDC in standby status for the aircraft?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "hasReceivedHoppieMessage",
-                                  "description": "Has received any Hoppie message from/to the aircraft?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "hasCPDLCAcknowledgment",
-                                  "description": "Has CPDLC acknowledgment for the aircraft?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "hasCPDLCSentMessage",
-                                  "description": "Has sent CPDLC message to the aircraft?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "hasCPDLCUnableAcknowledgment",
-                                  "description": "Has UNABLE CPDLC acknowledgment for the aircraft?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "hasCPDLCWilcoAcknowledgment",
-                                  "description": "Has WILCO CPDLC acknowledgment for the aircraft?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "hasCPDLCRogerAcknowledgment",
-                                  "description": "Has ROGER CPDLC acknowledgment for the aircraft?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "hasCPDLCStandbyAcknowledgment",
-                                  "description": "Has STANDBY CPDLC acknowledgment for the aircraft?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "hasCPDLCAcceptAcknowledgment",
-                                  "description": "Has ACCEPT CPDLC acknowledgment for the aircraft?"
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "computedAltitude",
-                                  "description": "The computed assigned altitude, which reflects pressure altitude and dependings on transition level setting."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "transitionAltitude",
-                                  "description": "The transition altitude set by the user."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "assignedDirect",
-                                  "description": "The assigned direct waypoint identifier."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "text",
-                                  "description": "Any text value that is defined in the value property."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "databaseIcaoWakeCat",
-                                  "description": "The icao wake category based on the aircraft type and the database in ATCData, default to the one in the flightplan if not present in database."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "databaseWakeRecat",
-                                  "description": "The recat wake category based on the database in ATCData, defaults to the ICAO Wake cat in the database, and then in the flightplan if not found."
-                                },
-                                {
-                                  "type": "string",
-                                  "const": "focusedAircraftCallsign",
-                                  "description": "The callsign of the focused aircraft."
-                                },
-                                  {
-                                    "type": "string",
-                                    "const": "temporaryAltitude",
-                                    "description": "EuroScope chain: cleared level, else coordinated level."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "coordinatedLevel",
-                                    "description": "Agreed COPX exit level (ft), else the filed cruise level."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "hasControllerData",
-                                    "description": "Aircraft has controller data."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "hasFlightplan",
-                                    "description": "Aircraft has an associated flight plan."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "hoppieState",
-                                    "description": "Datalink (Hoppie) aircraft state."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isConnected",
-                                    "description": "FSD connection is active."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isHoppieConnected",
-                                    "description": "Datalink is connected."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isIFR",
-                                    "description": "Flight rule is IFR."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isVFR",
-                                    "description": "Flight rule is VFR."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isClimbing",
-                                    "description": "Vertical speed above +100 ft/min."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isDescending",
-                                    "description": "Vertical speed below -100 ft/min."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isLevel",
-                                    "description": "Vertical speed within +/-100 ft/min."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isIdent",
-                                    "description": "Transponder identing."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isModeC",
-                                    "description": "Transponder in Mode C."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isStandby",
-                                    "description": "Transponder in standby."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isUnconcerned",
-                                    "description": "Attention state is Unconcerned."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isNotified",
-                                    "description": "Attention state is Notified."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isIncomingTransfer",
-                                    "description": "Attention state is incoming transfer."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isAssumed",
-                                    "description": "Attention state is Assumed."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isOutgoingTransfer",
-                                    "description": "Attention state is outgoing transfer."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isIntruder",
-                                    "description": "Attention state is Intruder."
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isConcerned",
-                                    "description": "Predicted to enter an owned sector."
-                                  }
-                              ]
-                            },
-                            {
-                              "type": "string",
-                              "enum": [
-                                "metarICAO",
-                                "metarRawMetar",
-                                "metarTimestamp",
-                                "metarWindDirection",
-                                "metarWindSpeed",
-                                "metarWindGust",
-                                "metarWindString",
-                                "metarQNHString",
-                                "metarQNH",
-                                "metarQNHUnit",
-                                "metarVisibility",
-                                "metarVisibilityUnit",
-                                "metarVisibilityString",
-                                "metarTemperature",
-                                "metarDewpoint",
-                                "metarATISLetter"
-                              ]
-                            },
-                            {
-                              "type": "string",
-                              "enum": [
-                                "controllerCallsign",
-                                "controllerIdentifier",
-                                "controllerPosition",
-                                "controllerFrequency",
-                                "controllerIsTimingOut",
-                                "controllerLastUpdate",
-                                "controllerIsATIS",
-                                "controllerIsGround",
-                                "controllerIsTower",
-                                "controllerIsApproach",
-                                "controllerIsCenter",
-                                "controllerHasIdentifier"
-                              ]
-                            },
-                            {
-                              "type": "string",
-                              "enum": [
-                                "frequencyCallsign",
-                                "frequencyHz",
-                                "frequencyMHz",
-                                "frequencyLastReceivedCallsigns",
-                                "frequencyCurrentlyRX",
-                                "frequencyCurrentlyTX",
-                                "frequencyRX",
-                                "frequencyTX",
-                                "frequencyXC",
-                                "frequencyXCA",
-                                "frequencyOnSpeaker",
-                                "frequencyIsOutputMuted",
-                                "frequencyOutputVolume",
-                                "frequencyIsActiveRxTx"
-                              ]
-                            },
-                            {
-                              "type": "string"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "string"
-                        }
-                      ],
-                      "description": "The name of the item to be displayed."
-                    },
-                    "truncate": {
-                      "anyOf": [
-                        {
-                          "type": "array",
-                          "items": {
-                            "type": "number"
-                          }
-                        },
-                        {
-                          "type": "string",
-                          "pattern": "^[&=][A-z0-9_\\-:]+"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                          }
-                        }
-                      ],
-                      "description": "An array of two numbers representing the start and end index of the substring to be displayed."
-                    },
-                    "format": {
-                      "description": "Transition-altitude presentation for this item. \"altitude\" uses the system's altitudeFormat and picks the band from the item's own value; \"flightLevel\" always uses the above-transition band, for values that are always a level. An object overrides the system default inline. Explicit truncate, padWithZeroLeft, prefix or suffix on this item override the matching part.",
-                      "oneOf": [
-                        {
-                          "type": "string",
-                          "enum": [
-                            "altitude",
-                            "flightLevel"
-                          ]
-                        },
-                        {
-                          "$ref": "#/$defs/altitudeFormat"
-                        }
-                      ]
-                    },
-                    "placeholder": {
-                      "type": "string",
-                      "description": "A placeholder string to be displayed when the item is empty or equal to 0."
-                    },
-                    "prefix": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                          }
-                        }
-                      ],
-                      "description": "A prefix string to be displayed before the item, it can also be an expression rule."
-                    },
-                    "suffix": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                          }
-                        }
-                      ],
-                      "description": "A suffix string to be displayed after the item, it can also be an expression rule."
-                    },
-                    "mapping": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "string"
-                      },
-                      "description": "A mapping object to map item values to display values, this forces the display value based on the item value you set."
-                    },
-                    "padWithZeroLeft": {
-                      "anyOf": [
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                          }
-                        }
-                      ],
-                      "description": "A number to pad the item value with leading zeros."
-                    },
-                    "padWithZeroRight": {
-                      "anyOf": [
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                          }
-                        }
-                      ],
-                      "description": "A number to pad the item value with trailing zeros."
-                    },
-                    "fontSize": {
-                      "anyOf": [
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                          }
-                        }
-                      ],
-                      "description": "Font size of the itemm can also be an expression rule."
-                    },
-                    "textWeight": {
-                      "type": "number",
-                      "minimum": -0.45,
-                      "maximum": 0.45,
-                      "default": 0,
-                      "description": "Fine stroke weight. Negative thins the strokes, positive thickens them, 0 is the font's own weight. Overrides fontWeight."
-                    },
-                    "textSharpness": {
-                      "type": "number",
-                      "minimum": 0,
-                      "maximum": 1,
-                      "default": 0,
-                      "description": "Edge hardness. 0 keeps the rasteriser's own antialiasing, 1 gives a near-binary edge. A negative textWeight with some sharpness gives a thin, crisp look."
-                    },
-                    "fontWeight": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "enum": [
-                            "normal",
-                            "bold",
-                            "bolder",
-                            "lighter",
-                            "100",
-                            "200",
-                            "300",
-                            "400",
-                            "500",
-                            "600",
-                            "700",
-                            "800",
-                            "900"
-                          ]
-                        },
-                        {
-                          "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                          }
-                        }
-                      ],
-                      "description": "Font weight of the item, can also be an expression rule."
-                    },
-                    "fontFamily": {
-                      "type": "string",
-                      "description": "Font family of the item."
-                    },
-                    "textAlign": {
-                      "type": "string",
-                      "enum": [
-                        "left",
-                        "center",
-                        "right"
-                      ],
-                      "default": "center",
-                      "description": "Text alignment of the item, can be left, center or right."
-                    },
-                    "lineHeight": {
-                      "anyOf": [
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                          }
-                        }
-                      ],
-                      "description": "Line height of the item, can also be an expression rule."
-                    },
-                    "color": {
-                      "anyOf": [
-                        {
-                          "anyOf": [
-                            {
-                              "type": "array",
-                              "items": {
-                                "type": "number"
-                              },
-                              "minItems": 3,
-                              "maxItems": 3,
-                              "description": "RGB color array [r,g,b]"
-                            },
-                            {
-                              "type": "array",
-                              "items": {
-                                "type": "number"
-                              },
-                              "minItems": 4,
-                              "maxItems": 4,
-                              "description": "RGBA color array [r,g,b,a]"
-                            }
-                          ],
-                          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
-                        },
-                        {
-                          "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                          }
-                        }
-                      ],
-                      "description": "Color of the item (in RGBA), can also be an expression rule."
-                    },
-                    "blinkColor": {
-                      "anyOf": [
-                        {
-                          "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                          }
-                        }
-                      ],
-                      "description": "Blink color of the item, to be used as an expression rule."
-                    },
-                    "backgroundColor": {
-                      "anyOf": [
-                        {
-                          "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0"
-                        },
-                        {
-                          "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                          }
-                        }
-                      ],
-                      "description": "Background color of the item (in RGBA), can also be an expression rule."
-                    },
-                    "separatorBefore": {
-                      "type": "boolean",
-                      "default": true,
-                      "description": "Whether add a blank padding the item."
-                    },
-                    "showPlusMinus": {
-                      "type": "boolean",
-                      "default": false,
-                      "description": "Whether to show a plus/minus sign before the item if the item is a number."
-                    },
-                    "value": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/truncate/anyOf/1"
-                          }
-                        }
-                      ],
-                      "description": "A static value or expression to be displayed instead of the item if the item name is set to text."
-                    },
-                    "leftClick": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "const": "triggerScratchpad",
-                          "description": "Opens the scratchpad input box."
-                        },
-                        {
-                          "type": "string",
-                          "const": "triggerManualSquawk",
-                          "description": "Opens the manual squawk input box."
-                        },
-                        {
-                          "type": "string",
-                          "const": "triggerCFL",
-                          "description": "Opens the scratchpad input box that will set the CFL."
-                        },
-                        {
-                          "type": "string",
-                          "const": "cfl",
-                          "description": "Opens the CFL poupup."
-                        },
-                        {
-                          "type": "string",
-                          "const": "spd",
-                          "description": "Opens the speed assignment popup."
-                        },
-                        {
-                          "type": "string",
-                          "const": "clearSpd",
-                          "description": "Clears the speed assignment."
-                        },
-                        {
-                          "type": "string",
-                          "const": "routeDraw",
-                          "description": "Draws the route on the map."
-                        },
-                          {
-                            "type": "string",
-                            "const": "copnAltitudeMenu",
-                            "description": "Opens the COPN (sector entry) level coordination list."
-                          },
-                          {
-                            "type": "string",
-                            "const": "copnPointMenu",
-                            "description": "Opens the COPN (sector entry) point coordination list."
-                          },
-                          {
-                            "type": "string",
-                            "const": "copxAltitudeMenu",
-                            "description": "Opens the COPX (sector exit) level coordination list."
-                          },
-                          {
-                            "type": "string",
-                            "const": "copxPointMenu",
-                            "description": "Opens the COPX (sector exit) point coordination list."
-                          },
-                          {
-                            "type": "string",
-                            "const": "coordinationMenu",
-                            "description": "Opens the combined COPN/COPX coordination list, whichever side you hold."
-                          },
-                          {
-                            "type": "string",
-                            "const": "fpDialogCreateShort",
-                            "description": "Opens the short flight plan create dialog."
-                          },
-                          {
-                            "type": "string",
-                            "const": "fpDialogModifyShort",
-                            "description": "Opens the short flight plan modify dialog."
-                          },
-                        {
-                          "type": "string",
-                          "const": "pfl",
-                          "description": "Opens the Planned Flight Level popup."
-                        },
-                        {
-                          "type": "string",
-                          "const": "hdg",
-                          "description": "Opens the heading assignment popup."
-                        },
-                        {
-                          "type": "string",
-                          "const": "callsignMenu",
-                          "description": "Opens the callsign assignment popup."
-                        },
-                        {
-                          "type": "string",
-                          "const": "fpDialog",
-                          "description": "Opens the flight plan dialog."
-                        },
-                        {
-                          "type": "string",
-                          "const": "toggleClearanceFlag",
-                          "description": "Toggles the clearance flag."
-                        },
-                        {
-                          "type": "string",
-                          "const": "groundStatusMenu",
-                          "description": "Opens the ground status menu."
-                        },
-                        {
-                          "type": "string",
-                          "const": "voiceTypeMenu",
-                          "description": "Opens the voice type assignment menu."
-                        },
-                        {
-                          "type": "string",
-                          "const": "pdcMenu",
-                          "description": "Opens the PDC assignment menu."
-                        },
-                        {
-                          "type": "string",
-                          "const": "depRunwayMenu",
-                          "description": "Opens the departure runway assignment menu."
-                        },
-                        {
-                          "type": "string",
-                          "const": "arrRunwayMenu",
-                          "description": "Opens the arrival runway assignment menu."
-                        },
-                        {
-                          "type": "string",
-                          "const": "sidMenu",
-                          "description": "Opens the SID assignment menu."
-                        },
-                        {
-                          "type": "string",
-                          "const": "starMenu",
-                          "description": "Opens the STAR assignment menu."
-                        },
-                        {
-                          "type": "string",
-                          "const": "assignRandomSquawk",
-                          "description": "Assigns a squawk code based on the available providers, otherwise a random squawk."
-                        },
-                        {
-                          "type": "string",
-                          "const": "assignSquawk",
-                          "description": "Assigns a squawk code based on the available providers, otherwise a random squawk."
-                        },
-                        {
-                          "type": "string",
-                          "const": "assignSq1000",
-                          "description": "Assigns a squawk code of 1000."
-                        },
-                        {
-                          "type": "string",
-                          "const": "directMenu",
-                          "description": "Opens the direct to menu."
-                        },
-                        {
-                          "type": "string",
-                          "const": "assumeAircraft",
-                          "description": "Assumes ownership of the aircraft."
-                        },
-                        {
-                          "type": "string",
-                          "const": "cancelHandoff",
-                          "description": "Cancels an outbound handoff of the aircraft."
-                        },
-                        {
-                          "type": "string",
-                          "const": "releaseAircraft",
-                          "description": "Releases ownership of the aircraft."
-                        },
-                        {
-                          "type": "string",
-                          "const": "handoffAircraft",
-                          "description": "Initiates a handoff of the aircraft to the next controller."
-                        },
-                        {
-                          "type": "string",
-                          "const": "openNextControllerMenu",
-                          "description": "Opens the next controller menu."
-                        },
-                        {
-                          "type": "string",
-                          "const": "openPrivateMessage",
-                          "description": "Opens the private message input box for a controller."
-                        },
-                        {
-                          "type": "string",
-                          "const": "showAtisLines",
-                          "description": "Shows the ATIS lines for a controller."
-                        },
-                        {
-                          "type": "string",
-                          "const": "focusMetar",
-                          "description": "Displays the full METAR in the focus bar."
-                        },
-                        {
-                          "type": "string",
-                          "const": "acknowledgeMetarUpdate",
-                          "description": "Acknowledges the METAR update."
-                        },
-                        {
-                          "type": "string",
-                          "description": "Custom plugin action"
-                        }
-                      ],
-                      "description": "The action to be performed when the item is left-clicked"
-                    },
-                    "rightClick": {
-                      "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/leftClick",
-                      "description": "The action to be performed when the item is right-clicked"
-                    },
-                    "doubleClick": {
-                      "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/leftClick",
-                      "description": "The action to be performed when the item is double-clicked, this is only supported for lists"
-                    },
-                    "leftDrag": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "const": "headingPrediction",
-                          "description": "Dragging from this item draws the ground track the aircraft would fly to reach the heading under the cursor, turning at the bank angle it can hold, and assigns that heading on release."
-                        }
-                      ],
-                      "description": "The tool started by dragging from this item. The item does not move the label while this is set; a click without a drag still fires leftClick."
-                    },
-                    "middleClick": {
-                      "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/leftClick",
-                      "description": "The action to be performed when the item is middle-clicked."
-                    }
-                  },
-                  "required": [
-                    "itemName"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "description": "Default label items for ground (not arrival or departure or without flightplans)."
-            },
-            "arrival": {
-              "type": "array",
-              "items": {
-                "$ref": "#/properties/ground/anyOf/0/properties/default/items"
-              },
-              "description": "Label items for ground when the aircraft is an arrival (with flightplans)."
-            },
-            "departure": {
-              "type": "array",
-              "items": {
-                "$ref": "#/properties/ground/anyOf/0/properties/default/items"
-              },
-              "description": "Label items for ground when the aircraft is a departure (with flightplans)."
-            },
-            "detailed": {
-              "type": "array",
-              "items": {
-                "$ref": "#/properties/ground/anyOf/0/properties/default/items"
-              },
-              "description": "Label items for ground when the aircraft is hovered"
-            },
-            "arrivalDetailed": {
-              "type": "array",
-              "items": {
-                "$ref": "#/properties/ground/anyOf/0/properties/default/items"
-              },
-              "description": "Label items for ground when the aircraft is hovered and is an arrival (with flightplans)."
-            },
-            "departureDetailed": {
-              "$ref": "#/properties/ground/anyOf/0/properties/arrivalDetailed",
-              "description": "Label items for ground when the aircraft is hovered and is a departure (with flightplans)."
-            },
-            "styleVariants": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "description": {
-                    "type": "string",
-                    "description": "Description of the style variant (this is not used for anything and is just for you to add note)."
-                  },
-                  "applyWhen": {
-                    "anyOf": [
-                      {
-                        "anyOf": [
-                          {
-                            "type": "array",
-                            "minItems": 3,
-                            "maxItems": 3,
-                            "items": [
-                              {
-                                "anyOf": [
-                                  {
-                                    "type": "string",
-                                    "const": "==",
-                                    "description": "Equality operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "!=",
-                                    "description": "Inequality operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "<",
-                                    "description": "Less than operator, only works with numbers"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "<=",
-                                    "description": "Less than or equal to operator, only works with numbers"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": ">",
-                                    "description": "Greater than operator, only works with numbers"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": ">=",
-                                    "description": "Greater than or equal to operator, only works with numbers"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "beginsWith",
-                                    "description": "String begins with operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "endsWith",
-                                    "description": "String ends with operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "contains",
-                                    "description": "String contains operator"
-                                  }
-                                ]
-                              },
-                              {
-                                "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/itemName/anyOf/0"
-                              },
-                              {
-                                "type": [
-                                  "string",
-                                  "number"
-                                ]
-                              }
-                            ]
-                          },
-                          {
-                            "type": "array",
-                            "minItems": 2,
-                            "maxItems": 2,
-                            "items": [
-                              {
-                                "anyOf": [
-                                  {
-                                    "type": "string",
-                                    "const": "AND",
-                                    "description": "Logical AND operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "OR",
-                                    "description": "Logical OR operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "NOT",
-                                    "description": "Logical NOT operator"
-                                  }
-                                ]
-                              },
-                              {
-                                "type": "array",
-                                "items": {
-                                  "anyOf": [
-                                    {
-                                      "$ref": "#/properties/ground/anyOf/0/properties/styleVariants/items/properties/applyWhen/anyOf/0"
-                                    },
-                                    {
-                                      "type": "string",
-                                      "pattern": "^\\$[A-z0-9_-]+"
-                                    }
-                                  ]
-                                }
-                              }
-                            ]
-                          },
-                          {
-                            "type": "array",
-                            "minItems": 3,
-                            "maxItems": 3,
-                            "items": [
-                              {
-                                "$ref": "#/properties/ground/anyOf/0/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/1/items/0"
-                              },
-                              {
-                                "anyOf": [
-                                  {
-                                    "type": "string",
-                                    "const": "notEmpty",
-                                    "description": "Logical NOT EMPTY operator"
-                                  },
-                                  {
-                                    "type": "string",
-                                    "const": "isEmpty",
-                                    "description": "Logical IS EMPTY operator"
-                                  }
-                                ]
-                              },
-                              {
-                                "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/itemName/anyOf/0"
-                              }
-                            ]
-                          },
-                          {
-                            "type": "array",
-                            "minItems": 2,
-                            "maxItems": 2,
-                            "items": [
-                              {
-                                "$ref": "#/properties/ground/anyOf/0/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/2/items/1"
-                              },
-                              {
-                                "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/itemName/anyOf/0"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "$ref": "#/properties/ground/anyOf/0/properties/styleVariants/items/properties/applyWhen/anyOf/0/anyOf/1/items/1/items/anyOf/1"
-                      }
-                    ],
-                    "description": "An expression that determines when this style variant should be applied. This expression is evaluated in the context of the aircraft."
-                  },
-                  "applyToIsDeparture": {
-                    "type": "boolean",
-                    "description": "Whether this style variant should be applied when the aircraft is a departure."
-                  },
-                  "applyToIsArrival": {
-                    "type": "boolean",
-                    "description": "Whether this style variant should be applied when the aircraft is an arrival."
-                  },
-                  "font": {
-                    "type": "string",
-                    "description": "Font family of the label."
-                  },
-                  "fontSize": {
-                    "type": "number",
-                    "description": "Font size of the label."
-                  },
-                  "fontWeight": {
-                    "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/fontWeight/anyOf/0",
-                    "description": "Font weight of the label."
-                  },
-                  "textWeight": {
-                    "type": "number",
-                    "minimum": -0.45,
-                    "maximum": 0.45,
-                    "default": 0,
-                    "description": "Fine stroke weight for every item this variant applies to. Negative thins. Overrides fontWeight; a tag item's own textWeight wins over this."
-                  },
-                  "textSharpness": {
-                    "type": "number",
-                    "minimum": 0,
-                    "maximum": 1,
-                    "default": 0,
-                    "description": "Edge hardness for every item this variant applies to, 0 to 1. A tag item's own textSharpness wins over this."
-                  },
-                  "lineHeight": {
-                    "type": "number",
-                    "description": "Line height of the label text."
-                  },
-                  "textColor": {
-                    "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0",
-                    "description": "Text color of the label (in RGB). This is the default text color for all states."
-                  },
-                  "textColorForState": {
-                    "type": "object",
-                    "additionalProperties": {
-                      "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0"
-                    },
-                    "propertyNames": {
-                      "enum": [
-                        "kUnconcerned",
-                        "kNotified",
-                        "kIncomingTransfer",
-                        "kAssumed",
-                        "kOutgoingTransfer",
-                        "kIntruder"
-                      ]
-                    },
-                    "description": "Text color of the label (in RGB) for each attention state. This overrides the default text color."
-                  },
-                  "backgroundColor": {
-                    "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0",
-                    "description": "Background color of the label (in RGB). This is the default background color for all states."
-                  },
-                  "backgroundColorOpacity": {
-                    "type": "number",
-                    "default": 1,
-                    "description": "Background color opacity of the label (0-1). This is the default background color opacity for all states."
-                  },
-                  "roundedCorners": {
-                    "type": "number",
-                    "default": 0,
-                    "description": "Rounded corners of the label (0-100). This is the default rounded corners for all states."
-                  },
-                  "hoverBorderColor": {
-                    "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0",
-                    "description": "Border color of the label when the aircraft is hovered (in RGB)."
-                  },
-                  "leaderLineColor": {
-                    "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0",
-                    "description": "Color of the leader line drawn between the aircraft position and the label (in RGB). Omit it and no leader line is drawn for this variant."
-                  },
-                  "detailedBackgroundColor": {
-                    "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0",
-                    "description": "Background color of the label when the aircraft is hovered (in RGB). This overrides the default background color."
-                  },
-                  "detailedBackgroundColorOpacity": {
-                    "type": "number",
-                    "default": 1,
-                    "description": "Background color opacity of the label when the aircraft is hovered (0-1). This overrides the default background color opacity."
-                  },
-                  "detailedRoundedCorners": {
-                    "type": "number",
-                    "default": 0,
-                    "description": "Rounded corners of the label when the aircraft is hovered (0-100). This overrides the default rounded corners."
-                  },
-                  "detailedTextColor": {
-                    "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0",
-                    "description": "Text color of the label when the aircraft is hovered (in RGB). This overrides the default text color."
-                  },
-                  "detailedFontSize": {
-                    "type": "number",
-                    "description": "Font size of the label when the aircraft is hovered. This overrides the default font size."
-                  },
-                  "detailedFontWeight": {
-                    "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/fontWeight/anyOf/0",
-                    "description": "Font weight of the label when the aircraft is hovered. This overrides the default font weight."
-                  },
-                  "tagItemPaddingY": {
-                    "type": "number",
-                    "default": 2,
-                    "description": "Padding of the tag item in the Y direction (top and bottom). The default is 2."
-                  },
-                  "tagItemPaddingX": {
-                    "type": "number",
-                    "default": 3,
-                    "description": "Padding of the tag item in the X direction (left and right). The default is 3."
-                  },
-                  "tagContainerPaddingLeft": {
-                    "type": "number",
-                    "default": 2,
-                    "description": "Padding of the tag container in the left direction. The default is 2."
-                  },
-                  "tagContainerPaddingRight": {
-                    "type": "number",
-                    "default": 2,
-                    "description": "Padding of the tag container in the right direction. The default is 2."
-                  },
-                  "tagContainerPaddingTop": {
-                    "type": "number",
-                    "default": 2,
-                    "description": "Padding of the tag container in the top direction. The default is 2."
-                  },
-                  "tagContainerPaddingBottom": {
-                    "type": "number",
-                    "default": 2,
-                    "description": "Padding of the tag container in the bottom direction. The default is 2."
-                  },
-                  "detailedTagContainerPaddingLeft": {
-                    "type": "number",
-                    "description": "Padding of the tag container in the left direction when the aircraft is hovered."
-                  },
-                  "detailedTagContainerPaddingRight": {
-                    "type": "number",
-                    "description": "Padding of the tag container in the right direction when the aircraft is hovered."
-                  },
-                  "detailedTagContainerPaddingTop": {
-                    "type": "number",
-                    "description": "Padding of the tag container in the top direction when the aircraft is hovered."
-                  },
-                  "detailedTagContainerPaddingBottom": {
-                    "type": "number",
-                    "description": "Padding of the tag container in the bottom direction when the aircraft is hovered."
-                  },
-                  "applyToAttentionStates": {
-                    "type": "array",
-                    "description": "Restricts this variant to aircraft in one of the listed attention states. Omit to apply regardless of attention state.",
-                    "items": {
-                      "type": "string",
-                      "enum": [
-                        "kUnconcerned",
-                        "kNotified",
-                        "kIncomingTransfer",
-                        "kAssumed",
-                        "kOutgoingTransfer",
-                        "kIntruder",
-                        "kConcerned"
-                      ]
-                    }
-                  }
-                },
-                "additionalProperties": false
-              },
-              "description": "Defines the style of the label for ground aircrafts. This is calculated based on the order of the array."
-            }
-          },
-          "required": [
-            "default",
-            "arrival",
-            "departure",
-            "detailed",
-            "styleVariants"
-          ],
-          "additionalProperties": false
+          "$ref": "#/$defs/section"
         },
         {
           "type": "string",
@@ -1402,44 +28,8 @@
       ]
     },
     "airborne": {
-      "type": "object",
-      "properties": {
-        "unconcerned": {
-          "type": "array",
-          "items": {
-            "$ref": "#/properties/ground/anyOf/0/properties/default/items"
-          },
-          "description": "Label items for airborne aircrafts that are not concerned."
-        },
-        "concerned": {
-          "type": "array",
-          "items": {
-            "$ref": "#/properties/ground/anyOf/0/properties/default/items"
-          },
-          "description": "Label items for airborne aircrafts that are concerned. This includes assumed, ongoing transfer, coordinated or notifed"
-        },
-        "detailed": {
-          "type": "array",
-          "items": {
-            "$ref": "#/properties/ground/anyOf/0/properties/default/items"
-          },
-          "description": "Label items for airborne aircrafts when the tag is hovered."
-        },
-        "styleVariants": {
-          "type": "array",
-          "items": {
-            "$ref": "#/properties/ground/anyOf/0/properties/styleVariants/items"
-          },
-          "description": "Defines the style of the label for airborne aircrafts. This is calculated based on the order of the array."
-        }
-      },
-      "required": [
-        "unconcerned",
-        "concerned",
-        "detailed",
-        "styleVariants"
-      ],
-      "additionalProperties": false
+      "$ref": "#/$defs/section",
+      "description": "Tags for airborne aircraft, and for ground traffic when there is no ground section."
     }
   },
   "required": [
@@ -1449,6 +39,1436 @@
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$defs": {
+    "tagItem": {
+      "type": "object",
+      "description": "One item in a tag row.",
+      "properties": {
+        "itemName": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "enum": [
+                    "stopped",
+                    "timestamp",
+                    "verticalSpeed",
+                    "verticalTrend",
+                    "altitude",
+                    "agl",
+                    "onGround",
+                    "groundSpeed",
+                    "reportedHeading",
+                    "trackHeading",
+                    "transponder",
+                    "latLon",
+                    "trueAltitude",
+                    "pressureAltitude"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "flightRule",
+                    "rawType",
+                    "icaoTransponderEquipment",
+                    "icaoEquipment",
+                    "icaoWakeCategory",
+                    "acShortType",
+                    "origin",
+                    "destination",
+                    "alternate",
+                    "plannedTas",
+                    "plannedFlightLevel",
+                    "rmk",
+                    "flightTimeHours",
+                    "flightTimeMinutes",
+                    "fuelTimeHours",
+                    "fuelTimeMinutes",
+                    "eobt",
+                    "aobt",
+                    "isValid",
+                    "voiceType"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "callsign",
+                    "type",
+                    "isTimingOut",
+                    "lastPositionUpdateReceivedAt",
+                    "squawk",
+                    "latestTransponderStatus"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "clearedFlightLevel",
+                    "assignedHeading",
+                    "assignedSpeed",
+                    "assignedMach",
+                    "assignedVerticalRate",
+                    "clearanceIssued",
+                    "assignedSquawk",
+                    "ownedByMe",
+                    "ownedByCallsign",
+                    "futureOwnerCallsign",
+                    "scratchpad",
+                    "groundStatus",
+                    "clearanceQueuePosition",
+                    "attentionState",
+                    "currentSector",
+                    "currentController",
+                    "nextSector",
+                    "nextController",
+                    "sectorExitPoint",
+                    "sectorExitLevel",
+                    "sectorEntryLevel",
+                    "sectorExitLevelPredicted",
+                    "sectorExitTime",
+                    "sectorEntryPoint",
+                    "sectorEntryTime",
+                    "firExitPoint",
+                    "sectorEntryExitPoint",
+                    "sectorEntryExitLevel",
+                    "firExitTime",
+                    "coordinationState",
+                    "coordinationKind",
+                    "coordinationLevel",
+                    "coordinationPoint",
+                    "coordinationWith"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "sid",
+                    "star",
+                    "isAmended",
+                    "depRunway",
+                    "arrRunway",
+                    "rawRoute",
+                    "hadStar",
+                    "hadSid",
+                    "suggestedArrRunway",
+                    "suggestedDepRunway",
+                    "suggestedSid",
+                    "suggestedStar",
+                    "waypoints",
+                    "segments",
+                    "explicitSegments",
+                    "errors",
+                    "hasDirectApplied"
+                  ]
+                },
+                {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "isArrival",
+                      "description": "Is the flight an arrival (both active and observed airport)?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "isDeparture",
+                      "description": "Is the flight a departure (both active and observed airport)?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "isMyDeparture",
+                      "description": "Is the flight a departure (my active airport)?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "isMyArrival",
+                      "description": "Is the flight an arrival (my active airport)?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "myCallsign",
+                      "description": "The callsign of the user."
+                    },
+                    {
+                      "type": "string",
+                      "const": "ownedByID",
+                      "description": "The ID of ATC station which is assuming the track."
+                    },
+                    {
+                      "type": "string",
+                      "const": "sectorIndicator",
+                      "description": "Current owner or next sector indicator or frequency based on status"
+                    },
+                    {
+                      "type": "string",
+                      "const": "nextControllerFrequency",
+                      "description": "The frequency of the next controller if set."
+                    },
+                    {
+                      "type": "string",
+                      "const": "computedSpeed",
+                      "description": "DEPRECATED: The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                    },
+                    {
+                      "type": "string",
+                      "const": "computedAssignedSpeed",
+                      "description": "The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                    },
+                    {
+                      "type": "string",
+                      "const": "computedCFL",
+                      "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
+                    },
+                    {
+                      "type": "string",
+                      "const": "datalinkStatus",
+                      "description": "The datalink status of the aircraft."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isPDCRequested",
+                      "description": "Is the PDC requested for the aircraft?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "isPDCStandby",
+                      "description": "Is the PDC in standby status for the aircraft?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "hasReceivedHoppieMessage",
+                      "description": "Has received any Hoppie message from/to the aircraft?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "hasCPDLCAcknowledgment",
+                      "description": "Has CPDLC acknowledgment for the aircraft?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "hasCPDLCSentMessage",
+                      "description": "Has sent CPDLC message to the aircraft?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "hasCPDLCUnableAcknowledgment",
+                      "description": "Has UNABLE CPDLC acknowledgment for the aircraft?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "hasCPDLCWilcoAcknowledgment",
+                      "description": "Has WILCO CPDLC acknowledgment for the aircraft?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "hasCPDLCRogerAcknowledgment",
+                      "description": "Has ROGER CPDLC acknowledgment for the aircraft?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "hasCPDLCStandbyAcknowledgment",
+                      "description": "Has STANDBY CPDLC acknowledgment for the aircraft?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "hasCPDLCAcceptAcknowledgment",
+                      "description": "Has ACCEPT CPDLC acknowledgment for the aircraft?"
+                    },
+                    {
+                      "type": "string",
+                      "const": "computedAltitude",
+                      "description": "The computed assigned altitude, which reflects pressure altitude and dependings on transition level setting."
+                    },
+                    {
+                      "type": "string",
+                      "const": "transitionAltitude",
+                      "description": "The transition altitude set by the user."
+                    },
+                    {
+                      "type": "string",
+                      "const": "assignedDirect",
+                      "description": "The assigned direct waypoint identifier."
+                    },
+                    {
+                      "type": "string",
+                      "const": "text",
+                      "description": "Any text value that is defined in the value property."
+                    },
+                    {
+                      "type": "string",
+                      "const": "databaseIcaoWakeCat",
+                      "description": "The icao wake category based on the aircraft type and the database in ATCData, default to the one in the flightplan if not present in database."
+                    },
+                    {
+                      "type": "string",
+                      "const": "databaseWakeRecat",
+                      "description": "The recat wake category based on the database in ATCData, defaults to the ICAO Wake cat in the database, and then in the flightplan if not found."
+                    },
+                    {
+                      "type": "string",
+                      "const": "focusedAircraftCallsign",
+                      "description": "The callsign of the focused aircraft."
+                    },
+                    {
+                      "type": "string",
+                      "const": "temporaryAltitude",
+                      "description": "EuroScope chain: cleared level, else coordinated level."
+                    },
+                    {
+                      "type": "string",
+                      "const": "coordinatedLevel",
+                      "description": "Agreed COPX exit level (ft), else the filed cruise level."
+                    },
+                    {
+                      "type": "string",
+                      "const": "hasControllerData",
+                      "description": "Aircraft has controller data."
+                    },
+                    {
+                      "type": "string",
+                      "const": "hasFlightplan",
+                      "description": "Aircraft has an associated flight plan."
+                    },
+                    {
+                      "type": "string",
+                      "const": "hoppieState",
+                      "description": "Datalink (Hoppie) aircraft state."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isConnected",
+                      "description": "FSD connection is active."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isHoppieConnected",
+                      "description": "Datalink is connected."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isIFR",
+                      "description": "Flight rule is IFR."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isVFR",
+                      "description": "Flight rule is VFR."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isClimbing",
+                      "description": "Vertical speed above +100 ft/min."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isDescending",
+                      "description": "Vertical speed below -100 ft/min."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isLevel",
+                      "description": "Vertical speed within +/-100 ft/min."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isIdent",
+                      "description": "Transponder identing."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isModeC",
+                      "description": "Transponder in Mode C."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isStandby",
+                      "description": "Transponder in standby."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isUnconcerned",
+                      "description": "Attention state is Unconcerned."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isNotified",
+                      "description": "Attention state is Notified."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isIncomingTransfer",
+                      "description": "Attention state is incoming transfer."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isAssumed",
+                      "description": "Attention state is Assumed."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isOutgoingTransfer",
+                      "description": "Attention state is outgoing transfer."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isIntruder",
+                      "description": "Attention state is Intruder."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isConcerned",
+                      "description": "Predicted to enter an owned sector."
+                    }
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "metarICAO",
+                    "metarRawMetar",
+                    "metarTimestamp",
+                    "metarWindDirection",
+                    "metarWindSpeed",
+                    "metarWindGust",
+                    "metarWindString",
+                    "metarQNHString",
+                    "metarQNH",
+                    "metarQNHUnit",
+                    "metarVisibility",
+                    "metarVisibilityUnit",
+                    "metarVisibilityString",
+                    "metarTemperature",
+                    "metarDewpoint",
+                    "metarATISLetter"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "controllerCallsign",
+                    "controllerIdentifier",
+                    "controllerPosition",
+                    "controllerFrequency",
+                    "controllerIsTimingOut",
+                    "controllerLastUpdate",
+                    "controllerIsATIS",
+                    "controllerIsGround",
+                    "controllerIsTower",
+                    "controllerIsApproach",
+                    "controllerIsCenter",
+                    "controllerHasIdentifier"
+                  ]
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "frequencyCallsign",
+                    "frequencyHz",
+                    "frequencyMHz",
+                    "frequencyLastReceivedCallsigns",
+                    "frequencyCurrentlyRX",
+                    "frequencyCurrentlyTX",
+                    "frequencyRX",
+                    "frequencyTX",
+                    "frequencyXC",
+                    "frequencyXCA",
+                    "frequencyOnSpeaker",
+                    "frequencyIsOutputMuted",
+                    "frequencyOutputVolume",
+                    "frequencyIsActiveRxTx"
+                  ]
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "The name of the item to be displayed."
+        },
+        "truncate": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "string",
+              "pattern": "^[&=][A-z0-9_\\-:]+"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "An array of two numbers representing the start and end index of the substring to be displayed."
+        },
+        "format": {
+          "description": "Transition-altitude presentation for this item. \"altitude\" uses the system's altitudeFormat and picks the band from the item's own value; \"flightLevel\" always uses the above-transition band, for values that are always a level. An object overrides the system default inline. Explicit truncate, padWithZeroLeft, prefix or suffix on this item override the matching part.",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "altitude",
+                "flightLevel"
+              ]
+            },
+            {
+              "$ref": "#/$defs/altitudeFormat"
+            }
+          ]
+        },
+        "placeholder": {
+          "type": "string",
+          "description": "A placeholder string to be displayed when the item is empty or equal to 0."
+        },
+        "prefix": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "A prefix string to be displayed before the item, it can also be an expression rule."
+        },
+        "suffix": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "A suffix string to be displayed after the item, it can also be an expression rule."
+        },
+        "mapping": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "A mapping object to map item values to display values, this forces the display value based on the item value you set."
+        },
+        "padWithZeroLeft": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "A number to pad the item value with leading zeros."
+        },
+        "padWithZeroRight": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "A number to pad the item value with trailing zeros."
+        },
+        "fontSize": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "Font size of the itemm can also be an expression rule."
+        },
+        "textWeight": {
+          "type": "number",
+          "minimum": -0.45,
+          "maximum": 0.45,
+          "default": 0,
+          "description": "Fine stroke weight. Negative thins the strokes, positive thickens them, 0 is the font's own weight. Overrides fontWeight."
+        },
+        "textSharpness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0,
+          "description": "Edge hardness. 0 keeps the rasteriser's own antialiasing, 1 gives a near-binary edge. A negative textWeight with some sharpness gives a thin, crisp look."
+        },
+        "fontWeight": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "normal",
+                "bold",
+                "bolder",
+                "lighter",
+                "100",
+                "200",
+                "300",
+                "400",
+                "500",
+                "600",
+                "700",
+                "800",
+                "900"
+              ]
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "Font weight of the item, can also be an expression rule."
+        },
+        "fontFamily": {
+          "type": "string",
+          "description": "Font family of the item."
+        },
+        "textAlign": {
+          "type": "string",
+          "enum": [
+            "left",
+            "center",
+            "right"
+          ],
+          "default": "center",
+          "description": "Text alignment of the item, can be left, center or right."
+        },
+        "lineHeight": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "Line height of the item, can also be an expression rule."
+        },
+        "color": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "description": "RGB color array [r,g,b]"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4,
+                  "description": "RGBA color array [r,g,b,a]"
+                }
+              ],
+              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "Color of the item (in RGBA), can also be an expression rule."
+        },
+        "blinkColor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/tagItem/properties/color/anyOf/0"
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "Blink color of the item (in RGBA), can also be an expression rule."
+        },
+        "backgroundColor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/tagItem/properties/color/anyOf/0"
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "Background color of the item (in RGBA), can also be an expression rule."
+        },
+        "separatorBefore": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether add a blank padding the item."
+        },
+        "showPlusMinus": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether to show a plus/minus sign before the item if the item is a number."
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "A static value or expression to be displayed instead of the item if the item name is set to text."
+        },
+        "leftClick": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "triggerScratchpad",
+              "description": "Opens the scratchpad input box."
+            },
+            {
+              "type": "string",
+              "const": "triggerManualSquawk",
+              "description": "Opens the manual squawk input box."
+            },
+            {
+              "type": "string",
+              "const": "triggerCFL",
+              "description": "Opens the scratchpad input box that will set the CFL."
+            },
+            {
+              "type": "string",
+              "const": "cfl",
+              "description": "Opens the CFL poupup."
+            },
+            {
+              "type": "string",
+              "const": "spd",
+              "description": "Opens the speed assignment popup."
+            },
+            {
+              "type": "string",
+              "const": "clearSpd",
+              "description": "Clears the speed assignment."
+            },
+            {
+              "type": "string",
+              "const": "routeDraw",
+              "description": "Draws the route on the map."
+            },
+            {
+              "type": "string",
+              "const": "copnAltitudeMenu",
+              "description": "Opens the COPN (sector entry) level coordination list."
+            },
+            {
+              "type": "string",
+              "const": "copnPointMenu",
+              "description": "Opens the COPN (sector entry) point coordination list."
+            },
+            {
+              "type": "string",
+              "const": "copxAltitudeMenu",
+              "description": "Opens the COPX (sector exit) level coordination list."
+            },
+            {
+              "type": "string",
+              "const": "copxPointMenu",
+              "description": "Opens the COPX (sector exit) point coordination list."
+            },
+            {
+              "type": "string",
+              "const": "coordinationMenu",
+              "description": "Opens the combined COPN/COPX coordination list, whichever side you hold."
+            },
+            {
+              "type": "string",
+              "const": "quickLook",
+              "description": "Toggles a quick-look pin on this aircraft for the radar view that was clicked: while pinned it is shown regardless of the view's upper and lower altitude filters (the GND, PRIM and VFR filters still apply). Click again to unpin. Per view, never saved."
+            },
+            {
+              "type": "string",
+              "const": "fpDialogCreateShort",
+              "description": "Opens the short flight plan create dialog."
+            },
+            {
+              "type": "string",
+              "const": "fpDialogModifyShort",
+              "description": "Opens the short flight plan modify dialog."
+            },
+            {
+              "type": "string",
+              "const": "pfl",
+              "description": "Opens the Planned Flight Level popup."
+            },
+            {
+              "type": "string",
+              "const": "hdg",
+              "description": "Opens the heading assignment popup."
+            },
+            {
+              "type": "string",
+              "const": "callsignMenu",
+              "description": "Opens the callsign assignment popup."
+            },
+            {
+              "type": "string",
+              "const": "fpDialog",
+              "description": "Opens the flight plan dialog."
+            },
+            {
+              "type": "string",
+              "const": "toggleClearanceFlag",
+              "description": "Toggles the clearance flag."
+            },
+            {
+              "type": "string",
+              "const": "groundStatusMenu",
+              "description": "Opens the ground status menu."
+            },
+            {
+              "type": "string",
+              "const": "voiceTypeMenu",
+              "description": "Opens the voice type assignment menu."
+            },
+            {
+              "type": "string",
+              "const": "pdcMenu",
+              "description": "Opens the PDC assignment menu."
+            },
+            {
+              "type": "string",
+              "const": "depRunwayMenu",
+              "description": "Opens the departure runway assignment menu."
+            },
+            {
+              "type": "string",
+              "const": "arrRunwayMenu",
+              "description": "Opens the arrival runway assignment menu."
+            },
+            {
+              "type": "string",
+              "const": "sidMenu",
+              "description": "Opens the SID assignment menu."
+            },
+            {
+              "type": "string",
+              "const": "starMenu",
+              "description": "Opens the STAR assignment menu."
+            },
+            {
+              "type": "string",
+              "const": "assignRandomSquawk",
+              "description": "Assigns a squawk code based on the available providers, otherwise a random squawk."
+            },
+            {
+              "type": "string",
+              "const": "assignSquawk",
+              "description": "Assigns a squawk code based on the available providers, otherwise a random squawk."
+            },
+            {
+              "type": "string",
+              "const": "assignSq1000",
+              "description": "Assigns a squawk code of 1000."
+            },
+            {
+              "type": "string",
+              "const": "directMenu",
+              "description": "Opens the direct to menu."
+            },
+            {
+              "type": "string",
+              "const": "assumeAircraft",
+              "description": "Assumes ownership of the aircraft."
+            },
+            {
+              "type": "string",
+              "const": "cancelHandoff",
+              "description": "Cancels an outbound handoff of the aircraft."
+            },
+            {
+              "type": "string",
+              "const": "releaseAircraft",
+              "description": "Releases ownership of the aircraft."
+            },
+            {
+              "type": "string",
+              "const": "handoffAircraft",
+              "description": "Initiates a handoff of the aircraft to the next controller."
+            },
+            {
+              "type": "string",
+              "const": "openNextControllerMenu",
+              "description": "Opens the next controller menu."
+            },
+            {
+              "type": "string",
+              "const": "openPrivateMessage",
+              "description": "Opens the private message input box for a controller."
+            },
+            {
+              "type": "string",
+              "const": "showAtisLines",
+              "description": "Shows the ATIS lines for a controller."
+            },
+            {
+              "type": "string",
+              "const": "focusMetar",
+              "description": "Displays the full METAR in the focus bar."
+            },
+            {
+              "type": "string",
+              "const": "acknowledgeMetarUpdate",
+              "description": "Acknowledges the METAR update."
+            },
+            {
+              "type": "string",
+              "description": "Custom plugin action"
+            }
+          ],
+          "description": "The action to be performed when the item is left-clicked"
+        },
+        "rightClick": {
+          "$ref": "#/$defs/tagItem/properties/leftClick",
+          "description": "The action to be performed when the item is right-clicked"
+        },
+        "doubleClick": {
+          "$ref": "#/$defs/tagItem/properties/leftClick",
+          "description": "The action to be performed when the item is double-clicked, on a radar label as well as in a list."
+        },
+        "leftDrag": {
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "headingPrediction",
+              "description": "Dragging from this item draws the ground track the aircraft would fly to reach the heading under the cursor, turning at the bank angle it can hold, and assigns that heading on release."
+            }
+          ],
+          "description": "The tool started by dragging from this item. The item does not move the label while this is set; a click without a drag still fires leftClick."
+        },
+        "middleClick": {
+          "$ref": "#/$defs/tagItem/properties/leftClick",
+          "description": "The action to be performed when the item is middle-clicked."
+        }
+      },
+      "required": [
+        "itemName"
+      ],
+      "additionalProperties": false
+    },
+    "tagRow": {
+      "type": "array",
+      "description": "One row of a tag, its items laid out left to right.",
+      "items": {
+        "$ref": "#/$defs/tagItem"
+      }
+    },
+    "labelVariant": {
+      "type": "object",
+      "description": "One tag layout and the conditions that select it. Every selector present must pass and the FIRST variant in the array whose selectors all pass wins, so order is the priority. A variant with no selectors matches everything from its position onwards.",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Free-text note for the author; nothing reads it."
+        },
+        "applyWhen": {
+          "$ref": "#/$defs/applyWhen"
+        },
+        "applyToAttentionStates": {
+          "$ref": "#/$defs/attentionStates"
+        },
+        "applyToFilterStates": {
+          "$ref": "#/$defs/filterStates"
+        },
+        "applyToIsArrival": {
+          "type": "boolean",
+          "description": "Restricts this variant to aircraft that are an arrival."
+        },
+        "applyToIsDeparture": {
+          "type": "boolean",
+          "description": "Restricts this variant to aircraft that are a departure."
+        },
+        "detailed": {
+          "type": "boolean",
+          "default": false,
+          "description": "True marks the layout shown while the tag is hovered. A detailed variant is a candidate only while hovering, and a hovered tag with no matching detailed variant keeps the compact rows it already had."
+        },
+        "rows": {
+          "type": "array",
+          "description": "The rows of the tag, top to bottom. An empty array means this variant draws no tag.",
+          "items": {
+            "$ref": "#/$defs/tagRow"
+          }
+        }
+      },
+      "required": [
+        "rows"
+      ],
+      "additionalProperties": false
+    },
+    "styleVariant": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Description of the style variant (this is not used for anything and is just for you to add note)."
+        },
+        "applyWhen": {
+          "$ref": "#/$defs/applyWhen"
+        },
+        "applyToAttentionStates": {
+          "$ref": "#/$defs/attentionStates"
+        },
+        "applyToFilterStates": {
+          "$ref": "#/$defs/filterStates"
+        },
+        "applyToIsArrival": {
+          "type": "boolean",
+          "description": "Whether this style variant should be applied when the aircraft is an arrival."
+        },
+        "applyToIsDeparture": {
+          "type": "boolean",
+          "description": "Whether this style variant should be applied when the aircraft is a departure."
+        },
+        "font": {
+          "type": "string",
+          "description": "Font family of the label."
+        },
+        "fontSize": {
+          "type": "number",
+          "description": "Font size of the label."
+        },
+        "fontWeight": {
+          "$ref": "#/$defs/tagItem/properties/fontWeight/anyOf/0",
+          "description": "Font weight of the label."
+        },
+        "textWeight": {
+          "type": "number",
+          "minimum": -0.45,
+          "maximum": 0.45,
+          "default": 0,
+          "description": "Fine stroke weight for every item this variant applies to. Negative thins. Overrides fontWeight; a tag item's own textWeight wins over this."
+        },
+        "textSharpness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0,
+          "description": "Edge hardness for every item this variant applies to, 0 to 1. A tag item's own textSharpness wins over this."
+        },
+        "lineHeight": {
+          "type": "number",
+          "description": "Line height of the label text."
+        },
+        "textColor": {
+          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
+          "description": "Text color of the label (in RGB). This is the default text color for all states."
+        },
+        "textColorForState": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/tagItem/properties/color/anyOf/0"
+          },
+          "propertyNames": {
+            "enum": [
+              "kUnconcerned",
+              "kNotified",
+              "kIncomingTransfer",
+              "kAssumed",
+              "kOutgoingTransfer",
+              "kIntruder"
+            ]
+          },
+          "description": "Text color of the label (in RGB) for each attention state. This overrides the default text color."
+        },
+        "backgroundColor": {
+          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
+          "description": "Background color of the label (in RGB). This is the default background color for all states."
+        },
+        "backgroundColorOpacity": {
+          "type": "number",
+          "default": 1,
+          "description": "Background color opacity of the label (0-1). This is the default background color opacity for all states."
+        },
+        "roundedCorners": {
+          "type": "number",
+          "default": 0,
+          "description": "Rounded corners of the label (0-100). This is the default rounded corners for all states."
+        },
+        "hoverBorderColor": {
+          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
+          "description": "Border color of the label when the aircraft is hovered (in RGB)."
+        },
+        "leaderLineColor": {
+          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
+          "description": "Color of the leader line drawn between the aircraft position and the label (in RGB). Omit it and no leader line is drawn for this variant."
+        },
+        "detailedLeaderLineColor": {
+          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
+          "description": "Color of the leader line while the aircraft is hovered (in RGB). Omit it and the hovered tag keeps leaderLineColor. Set only this key and the leader line is drawn in the detailed (hovered) tag alone."
+        },
+        "detailedBackgroundColor": {
+          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
+          "description": "Background color of the label when the aircraft is hovered (in RGB). This overrides the default background color."
+        },
+        "detailedBackgroundColorOpacity": {
+          "type": "number",
+          "default": 1,
+          "description": "Background color opacity of the label when the aircraft is hovered (0-1). This overrides the default background color opacity."
+        },
+        "detailedRoundedCorners": {
+          "type": "number",
+          "default": 0,
+          "description": "Rounded corners of the label when the aircraft is hovered (0-100). This overrides the default rounded corners."
+        },
+        "detailedTextColor": {
+          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
+          "description": "Text color of the label when the aircraft is hovered (in RGB). This overrides the default text color."
+        },
+        "detailedFontSize": {
+          "type": "number",
+          "description": "Font size of the label when the aircraft is hovered. This overrides the default font size."
+        },
+        "detailedFontWeight": {
+          "$ref": "#/$defs/tagItem/properties/fontWeight/anyOf/0",
+          "description": "Font weight of the label when the aircraft is hovered. This overrides the default font weight."
+        },
+        "tagItemPaddingY": {
+          "type": "number",
+          "default": 2,
+          "description": "Padding of the tag item in the Y direction (top and bottom). The default is 2."
+        },
+        "tagItemPaddingX": {
+          "type": "number",
+          "default": 3,
+          "description": "Padding of the tag item in the X direction (left and right). The default is 3."
+        },
+        "tagContainerPaddingLeft": {
+          "type": "number",
+          "default": 2,
+          "description": "Padding of the tag container in the left direction. The default is 2."
+        },
+        "tagContainerPaddingRight": {
+          "type": "number",
+          "default": 2,
+          "description": "Padding of the tag container in the right direction. The default is 2."
+        },
+        "tagContainerPaddingTop": {
+          "type": "number",
+          "default": 2,
+          "description": "Padding of the tag container in the top direction. The default is 2."
+        },
+        "tagContainerPaddingBottom": {
+          "type": "number",
+          "default": 2,
+          "description": "Padding of the tag container in the bottom direction. The default is 2."
+        },
+        "detailedTagContainerPaddingLeft": {
+          "type": "number",
+          "description": "Padding of the tag container in the left direction when the aircraft is hovered."
+        },
+        "detailedTagContainerPaddingRight": {
+          "type": "number",
+          "description": "Padding of the tag container in the right direction when the aircraft is hovered."
+        },
+        "detailedTagContainerPaddingTop": {
+          "type": "number",
+          "description": "Padding of the tag container in the top direction when the aircraft is hovered."
+        },
+        "detailedTagContainerPaddingBottom": {
+          "type": "number",
+          "description": "Padding of the tag container in the bottom direction when the aircraft is hovered."
+        }
+      },
+      "additionalProperties": false
+    },
+    "section": {
+      "type": "object",
+      "description": "One half of a labels config: the tag layouts in selection order plus the styles.",
+      "properties": {
+        "labels": {
+          "type": "array",
+          "description": "Tag layouts in priority order. The first one whose selectors all pass is used.",
+          "items": {
+            "$ref": "#/$defs/labelVariant"
+          }
+        },
+        "styleVariants": {
+          "type": "array",
+          "description": "Tag styles in priority order. The first one whose selectors all pass is used.",
+          "items": {
+            "$ref": "#/$defs/styleVariant"
+          }
+        }
+      },
+      "required": [
+        "labels"
+      ],
+      "additionalProperties": false
+    },
+    "applyWhen": {
+      "anyOf": [
+        {
+          "anyOf": [
+            {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": [
+                {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "==",
+                      "description": "Equality operator"
+                    },
+                    {
+                      "type": "string",
+                      "const": "!=",
+                      "description": "Inequality operator"
+                    },
+                    {
+                      "type": "string",
+                      "const": "<",
+                      "description": "Less than operator, only works with numbers"
+                    },
+                    {
+                      "type": "string",
+                      "const": "<=",
+                      "description": "Less than or equal to operator, only works with numbers"
+                    },
+                    {
+                      "type": "string",
+                      "const": ">",
+                      "description": "Greater than operator, only works with numbers"
+                    },
+                    {
+                      "type": "string",
+                      "const": ">=",
+                      "description": "Greater than or equal to operator, only works with numbers"
+                    },
+                    {
+                      "type": "string",
+                      "const": "beginsWith",
+                      "description": "String begins with operator"
+                    },
+                    {
+                      "type": "string",
+                      "const": "endsWith",
+                      "description": "String ends with operator"
+                    },
+                    {
+                      "type": "string",
+                      "const": "contains",
+                      "description": "String contains operator"
+                    }
+                  ]
+                },
+                {
+                  "$ref": "#/$defs/tagItem/properties/itemName/anyOf/0"
+                },
+                {
+                  "type": [
+                    "string",
+                    "number"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": [
+                {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "AND",
+                      "description": "Logical AND operator"
+                    },
+                    {
+                      "type": "string",
+                      "const": "OR",
+                      "description": "Logical OR operator"
+                    },
+                    {
+                      "type": "string",
+                      "const": "NOT",
+                      "description": "Logical NOT operator"
+                    }
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/$defs/applyWhen/anyOf/0"
+                      },
+                      {
+                        "type": "string",
+                        "pattern": "^\\$[A-z0-9_-]+"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": [
+                {
+                  "$ref": "#/$defs/applyWhen/anyOf/0/anyOf/1/items/0"
+                },
+                {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "notEmpty",
+                      "description": "Logical NOT EMPTY operator"
+                    },
+                    {
+                      "type": "string",
+                      "const": "isEmpty",
+                      "description": "Logical IS EMPTY operator"
+                    }
+                  ]
+                },
+                {
+                  "$ref": "#/$defs/tagItem/properties/itemName/anyOf/0"
+                }
+              ]
+            },
+            {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": [
+                {
+                  "$ref": "#/$defs/applyWhen/anyOf/0/anyOf/2/items/1"
+                },
+                {
+                  "$ref": "#/$defs/tagItem/properties/itemName/anyOf/0"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "$ref": "#/$defs/applyWhen/anyOf/0/anyOf/1/items/1/items/anyOf/1"
+        }
+      ],
+      "description": "An expression that determines when this style variant should be applied. This expression is evaluated in the context of the aircraft."
+    },
+    "attentionStates": {
+      "type": "array",
+      "description": "Restricts this variant to aircraft in one of the listed attention states. Omit to apply regardless of attention state.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "kUnconcerned",
+          "kNotified",
+          "kIncomingTransfer",
+          "kAssumed",
+          "kOutgoingTransfer",
+          "kIntruder",
+          "kConcerned"
+        ]
+      }
+    },
+    "filterStates": {
+      "type": "array",
+      "description": "Restricts this variant to aircraft in one of the listed display-filter states. An aircraft above the profile's upper altitude filter is kUpperFiltered, one below the lower filter is kLowerFiltered, and any other aircraft is kUnfiltered. OMITTING this key means unfiltered traffic only: filtered traffic is drawn solely by the variants that list its state and there is no fallback, so a system that says nothing about filtered traffic keeps hiding it.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "kUnfiltered",
+          "kUpperFiltered",
+          "kLowerFiltered"
+        ]
+      }
+    },
     "altitudeFormat": {
       "type": "object",
       "additionalProperties": false,
