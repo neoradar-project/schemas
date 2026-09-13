@@ -497,6 +497,29 @@
       "additionalProperties": false,
       "description": "Extended centerlines configuration"
     },
+    "headingTool": {
+      "type": "object",
+      "description": "Styling for the heading tools: double-click a target for a straight line, or drag a tag item with a leftDrag of headingPrediction for the turn the aircraft would actually fly. Anything left out falls back to distanceMeasurementTool, then to the aircraft's own speed vector colour.",
+      "properties": {
+        "lineColour": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+        },
+        "textColour": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+        },
+        "lineWidth": {
+          "type": "number",
+          "description": "Line width in logical pixels."
+        },
+        "dashArray": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/dashArray",
+          "description": "Dash and gap in logical pixels, e.g. [12, 6]. Prediction tool only; the straight heading line is always solid."
+        }
+      },
+      "additionalProperties": false
+    },
     "distanceMeasurementTool": {
       "type": "object",
       "properties": {

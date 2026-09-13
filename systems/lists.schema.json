@@ -1136,6 +1136,11 @@
                   "$ref": "#/items/properties/columns/items/properties/tagItem/properties/leftClick",
                   "description": "The action to be performed when the item is middle-clicked."
                 },
+                "leftDrag": {
+                  "type": "string",
+                  "const": "headingPrediction",
+                  "description": "Radar-label only: dragging from a tag item starts a drawing tool. A list column has nothing to drag from, so this does nothing here."
+                },
                 "textWeight": {
                   "type": "number",
                   "minimum": -0.45,
@@ -1276,6 +1281,10 @@
           "bodyTextSize": {
             "type": "number",
             "default": 11
+          },
+          "fontFamily": {
+            "type": "string",
+            "description": "Font family for this list's column headers and cells. Bundled with the client: \"Roboto Mono\" (the default when this is absent), \"Cascadia Mono\", \"Inter\". A column whose tagItem sets its own style.fontFamily wins over this for that column. An unknown name falls back to Roboto Mono."
           },
           "paddingLeft": {
             "type": "integer",

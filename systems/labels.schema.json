@@ -989,6 +989,16 @@
                       "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/leftClick",
                       "description": "The action to be performed when the item is double-clicked, this is only supported for lists"
                     },
+                    "leftDrag": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "const": "headingPrediction",
+                          "description": "Dragging from this item draws the ground track the aircraft would fly to reach the heading under the cursor, turning at the bank angle it can hold, and assigns that heading on release."
+                        }
+                      ],
+                      "description": "The tool started by dragging from this item. The item does not move the label while this is set; a click without a drag still fires leftClick."
+                    },
                     "middleClick": {
                       "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/leftClick",
                       "description": "The action to be performed when the item is middle-clicked."
@@ -1276,6 +1286,10 @@
                   "hoverBorderColor": {
                     "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0",
                     "description": "Border color of the label when the aircraft is hovered (in RGB)."
+                  },
+                  "leaderLineColor": {
+                    "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0",
+                    "description": "Color of the leader line drawn between the aircraft position and the label (in RGB). Omit it and no leader line is drawn for this variant."
                   },
                   "detailedBackgroundColor": {
                     "$ref": "#/properties/ground/anyOf/0/properties/default/items/items/properties/color/anyOf/0",
