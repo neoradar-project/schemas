@@ -616,6 +616,45 @@
               "maximum": 200,
               "description": "Column width in characters, measured at the column's own font and size. Overrides width. Prefer this: a pixel width means a different number of visible characters at every body text size."
             },
+            "header": {
+              "type": "object",
+              "description": "This column's header, overriding the list-wide header style. A header shows a fixed label, so it resolves no expression and carries no click action beyond the sort toggle.",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "description": "Shown instead of the column name. The name stays the sort key either way."
+                },
+                "textAlign": {
+                  "type": "string",
+                  "enum": ["left", "center", "right"],
+                  "default": "center",
+                  "description": "Horizontal alignment of the header label within the column."
+                },
+                "color": {
+                  "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/0",
+                  "description": "RGB colour array [r,g,b] or [r,g,b,a]. Overrides the sorted-column highlight for this header."
+                },
+                "backgroundColor": {
+                  "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/0",
+                  "description": "RGB colour array [r,g,b] or [r,g,b,a] painted behind the header label."
+                },
+                "fontSize": {
+                  "type": "integer",
+                  "minimum": 6,
+                  "maximum": 48,
+                  "description": "Overrides the list style headerTextSize for this column."
+                },
+                "fontWeight": {
+                  "type": "string",
+                  "description": "bold or light; anything else renders normal."
+                },
+                "fontFamily": {
+                  "type": "string",
+                  "description": "Overrides the list face for this header."
+                }
+              },
+              "additionalProperties": false
+            },
             "tagItem": {
               "type": "object",
               "properties": {
