@@ -28,11 +28,19 @@ This block is identical in all six repos. Editing one copy alone is a break.
 ## What this repo is
 
 The JSON Schemas for the NeoRadar package format: `package/manifest.schema.json`,
-`profile.schema.json`, `systems/{expressions,labels,lists,mapstyle,shapes,targets}.schema.json`. No
+`profile.schema.json`, `systems/{expressions,labels,lists,mapstyle,shapes,targets}.schema.json`, and
+`injector/scenario.schema.json`. No
 code, no build, no tests. Consumers: source sector files (`@sectorsrc`) reference them by raw
 URL on `main` (`.../schemas/refs/heads/main/systems/targets.schema.json`), so authors' editors
 validate live; `@cli` builds those files into packages; `@client` parses the same files at load
 time (`Package/`, `Utils/Expressions/`) and is the real arbiter of what a package may hold.
+
+`injector/scenario.schema.json` is the odd one out: it is not a package file. It documents the
+scenario format of `@client/tools/NeoRadar.Injector`, which no package carries and `@cli` never
+builds, and it is draft 2020-12 where the package schemas are draft-07. `SystemsSchemaDriftTests`
+does not cover it, and the injector validates by hand rather than against it: this file is the
+written format and the arbiter, and `ScenarioValidator` plus `JsonScenarioParser` are what enforce
+it. The two move together or authors get completion for a field the tool drops.
 
 ## Keeping up with @client
 

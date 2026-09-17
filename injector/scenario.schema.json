@@ -1,0 +1,435 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NeoRadar injector scenario",
+  "description": "A scenario for tools/NeoRadar.Injector. Either the C++ SqwkstbyInjector group generator, or an explicit aircraft list, or both. A EuroScope sweatbox .txt converts to this shape with 'injector convert'.",
+  "type": "object",
+  "anyOf": [
+    { "required": ["groups"], "properties": { "groups": { "type": "array", "minItems": 1 } } },
+    { "required": ["aircraft"], "properties": { "aircraft": { "type": "array", "minItems": 1 } } }
+  ],
+  "if": { "required": ["groups"] },
+  "then": { "required": ["basePoint"] },
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "routesFile": {
+      "type": "string",
+      "description": "Path, relative to this file, of the {arrivals,departures} route file the group generator draws flight plans from. Default ./routes.json.",
+      "default": "./routes.json"
+    },
+    "basePoint": {
+      "type": "object",
+      "description": "Required when 'groups' is present, which the top-level if/then states. The first generated aircraft is one spacing step from here.",
+      "properties": {
+        "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+        "lon": { "type": "number", "minimum": -180, "maximum": 180 }
+      },
+      "required": ["lat", "lon"]
+    },
+    "spacingKm": {
+      "type": "number",
+      "description": "KILOMETRES between generated aircraft. The C++ tool passed this value to a metres API, so its spacing was 1000x smaller than the number written here.",
+      "default": 10,
+      "exclusiveMinimum": 0
+    },
+    "spacingBearing": {
+      "type": "number",
+      "description": "True bearing the generated aircraft are spread along.",
+      "default": 180,
+      "minimum": 0,
+      "maximum": 360
+    },
+    "groups": {
+      "type": "array",
+      "description": "The C++ group generator. Flight plans are taken from the routes file round robin, not at random, so a scenario flies the same traffic every run.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "integer", "minimum": 0 },
+          "type": { "type": "string", "enum": ["departure", "arrival"] },
+          "callsignPrefix": { "type": "string" },
+          "callsignStart": { "type": "integer", "default": 100 },
+          "altitude": { "$ref": "#/$defs/altitudeFeet" },
+          "groundspeed": { "$ref": "#/$defs/groundSpeedKt" },
+          "heading": { "type": "number", "minimum": 0, "maximum": 360 },
+          "squawk": { "$ref": "#/$defs/squawk" },
+          "broadcastFlightplan": { "type": "boolean", "default": true },
+          "aircraftType": { "type": "string" }
+        },
+        "required": ["count", "type", "callsignPrefix"]
+      }
+    },
+    "aircraft": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/aircraft" }
+    },
+    "datalink": { "$ref": "#/$defs/datalink" },
+    "airportAltitude": {
+      "type": "number",
+      "description": "Field elevation in feet, the sweatbox AIRPORT_ALT record. The velocity packets report AGL against it when an aircraft carries no fieldElevation of its own."
+    },
+    "airportElevationFeet": {
+      "type": "number",
+      "description": "Accepted spelling of airportAltitude."
+    },
+    "metar": {
+      "description": "Replayed verbatim; there is no weather model. A sweatbox file may carry several METAR records.",
+      "anyOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" } }
+      ]
+    },
+    "ils": {
+      "type": "array",
+      "description": "The sweatbox ILS<rwy> records, at most four. Either a heading or a far-end point the heading is derived from.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "runway": { "type": "string" },
+          "thresholdLat": { "type": "number", "minimum": -90, "maximum": 90 },
+          "thresholdLon": { "type": "number", "minimum": -180, "maximum": 180 },
+          "heading": { "type": "number", "minimum": 0, "maximum": 360 },
+          "farEndLat": { "type": "number", "minimum": -90, "maximum": 90 },
+          "farEndLon": { "type": "number", "minimum": -180, "maximum": 180 }
+        },
+        "required": ["runway", "thresholdLat", "thresholdLon"]
+      }
+    },
+    "holding": {
+      "$ref": "#/$defs/holdings"
+    },
+    "holdings": {
+      "$ref": "#/$defs/holdings"
+    },
+    "controllers": {
+      "type": "array",
+      "description": "Parsed, recorded and ignored. The injector logs no controller in; the NeoRadar user is the only one.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "callsign": { "type": "string" },
+          "frequency": { "type": "string" }
+        },
+        "required": ["callsign", "frequency"]
+      }
+    },
+    "namedRoutes": {
+      "type": "array",
+      "description": "The sweatbox ROUTE records. Every point is resolved against the package like any other.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "points": { "$ref": "#/$defs/routePoints" }
+        },
+        "required": ["name", "points"]
+      }
+    },
+    "performance": {
+      "type": "array",
+      "description": "The sweatbox PERFAC/PERFLINE tables, keyed by aircraft type. Overrides the shipped AircraftPerformance.txt for that type.",
+      "items": { "$ref": "#/$defs/performance" }
+    }
+  },
+  "$defs": {
+    "datalink": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The aircraft half of a Hoppie exchange. At the top level it is the scenario-wide default; on an aircraft it overrides that per field. The injector uses its OWN logon code, from --hoppie-logon, injector.local.json or NEORADAR_INJECTOR_HOPPIE_LOGON, and never a code written into a scenario.",
+      "properties": {
+        "station": {
+          "type": "string",
+          "description": "The controller Hoppie station callsign a request and a reply are addressed to, for example EGLL_DEL. Required once any other datalink field is set. It must not be an injected callsign: a poll is destructive per callsign."
+        },
+        "requestAtSeconds": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Sim seconds into the run at which the clearance request goes out."
+        },
+        "requestPdcAtSeconds": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Accepted spelling of requestAtSeconds."
+        },
+        "requestText": {
+          "type": "string",
+          "description": "The request wording. Default REQUEST PREDEP CLEARANCE <origin> TO <destination> STAND ---, which carries the PREDEP keyword NeoRadar classifies on."
+        },
+        "requestType": {
+          "type": "string",
+          "enum": ["telex", "cpdlc"],
+          "default": "telex",
+          "description": "How the request is sent. A real pilot client files a PDC request as a telex; NeoRadar classifies both the same way."
+        },
+        "replyWith": {
+          "type": "string",
+          "enum": ["WILCO", "UNABLE", "STANDBY", "ROGER", "ACCEPT", "none"],
+          "default": "WILCO",
+          "description": "The keyword the downlink carries once the uplink arrives. none never answers."
+        },
+        "replyDelaySeconds": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Sim seconds between the uplink and the reply. Absent means the aircraft own reaction delay is drawn, 12 to 17 s unless delaySeconds says otherwise."
+        },
+        "pollIntervalSeconds": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Sim seconds between polls while a request is outstanding, overriding the run default of 20."
+        },
+        "instructionsAsDatalink": {
+          "type": "boolean",
+          "default": false,
+          "description": "An INSTRUCTION line whose text carries a PDC keyword also goes out as a datalink request."
+        },
+        "freeText": { "$ref": "#/$defs/datalinkFreeText" },
+        "telex": { "$ref": "#/$defs/datalinkFreeText" },
+        "logon": {
+          "type": "string",
+          "description": "Refused by the validator: a logon code is a secret and belongs in the credential chain, not in a scenario file."
+        }
+      }
+    },
+    "datalinkFreeText": {
+      "type": "array",
+      "description": "Free-text telexes at scripted sim times. An omitted recipient is the aircraft own station.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "atSeconds": { "type": "number", "minimum": 0 },
+          "to": { "type": "string" },
+          "text": { "type": "string" }
+        },
+        "required": ["atSeconds", "text"]
+      }
+    },
+    "altitudeFeet": {
+      "type": "number",
+      "description": "True altitude in feet. The validator rejects anything outside this range.",
+      "minimum": -2000,
+      "maximum": 80000
+    },
+    "groundSpeedKt": {
+      "type": "number",
+      "description": "Knots. The validator rejects anything outside this range; a sweatbox @ record often writes 0 for airborne traffic, which starts it at its profile speed.",
+      "minimum": 0,
+      "maximum": 1000
+    },
+    "squawk": {
+      "type": "string",
+      "pattern": "^[0-7]{4}$",
+      "description": "Four octal digits. 0000 renders as a vehicle rather than an aircraft."
+    },
+    "holdings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "fix": { "type": "string" },
+          "inboundCourse": { "type": "number", "minimum": 0, "maximum": 360 },
+          "turnDirection": {
+            "type": "integer",
+            "enum": [1, -1],
+            "description": "1 right turns, -1 left.",
+            "default": 1
+          }
+        },
+        "required": ["fix", "inboundCourse"]
+      }
+    },
+    "routePoints": {
+      "type": "array",
+      "description": "A string is a bare name resolved against the package. An object may carry an explicit position instead, a per-point altitude, or an approach runway, which is the sweatbox trailing ILS<rwy> token and is never looked up.",
+      "items": {
+        "anyOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+              "lon": { "type": "number", "minimum": -180, "maximum": 180 },
+              "altitude": { "type": "number", "description": "Feet." },
+              "approachRunway": { "type": "string" }
+            },
+            "required": ["name"]
+          }
+        ]
+      }
+    },
+    "mach": {
+      "type": "number",
+      "description": "A fraction of the speed of sound. A sweatbox PERFLINE writes hundredths (078 is 0.78) and the parser normalises them; 0 means the row is an IAS row. The validator rejects 1 or more.",
+      "minimum": 0,
+      "exclusiveMaximum": 1
+    },
+    "performance": {
+      "type": "object",
+      "properties": {
+        "aircraftType": { "type": "string" },
+        "lines": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Rows ascending by flight level. A row applies from its own level up to the next.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "flightLevel": { "type": "integer", "minimum": 0 },
+              "iasClimb": { "type": "integer", "minimum": 0 },
+              "iasCruise": { "type": "integer", "minimum": 0 },
+              "iasDescent": { "type": "integer", "minimum": 0 },
+              "machClimb": { "$ref": "#/$defs/mach" },
+              "machCruise": { "$ref": "#/$defs/mach" },
+              "machDescent": { "$ref": "#/$defs/mach" },
+              "climbFpm": { "type": "integer", "minimum": 0 },
+              "descentFpm": { "type": "integer", "minimum": 0 }
+            },
+            "required": [
+              "flightLevel", "iasClimb", "iasCruise", "iasDescent",
+              "machClimb", "machCruise", "machDescent", "climbFpm", "descentFpm"
+            ]
+          }
+        }
+      },
+      "required": ["aircraftType"]
+    },
+    "flightPlan": {
+      "type": "object",
+      "description": "The 17-token $FP shape verbatim, because that is what goes on the wire and what NeoRadar parses back out. Every field is a string.",
+      "properties": {
+        "flightType": { "type": "string" },
+        "aircraftType": { "type": "string" },
+        "cruiseTAS": { "type": "string" },
+        "departure": { "type": "string" },
+        "arrival": { "type": "string" },
+        "departureTimeEstimated": { "type": "string" },
+        "departureTimeActual": { "type": "string" },
+        "cruiseAltitude": { "type": "string", "description": "Feet. A sweatbox FLxxx is normalised to feet on read." },
+        "enrouteHours": { "type": "string" },
+        "enrouteMinutes": { "type": "string" },
+        "fuelAvailableHours": { "type": "string" },
+        "fuelAvailableMinutes": { "type": "string" },
+        "alternateAirport": { "type": "string" },
+        "remarks": { "type": "string" },
+        "route": { "type": "string" }
+      },
+      "required": [
+        "flightType", "aircraftType", "cruiseTAS", "departure", "arrival",
+        "departureTimeEstimated", "departureTimeActual", "cruiseAltitude",
+        "enrouteHours", "enrouteMinutes", "fuelAvailableHours", "fuelAvailableMinutes",
+        "alternateAirport", "remarks", "route"
+      ]
+    },
+    "delay": {
+      "description": "Seconds. A bare number is a fixed delay; the object form is a range the aircraft draws from. Omitting it is not a default of zero: a sweatbox block with no DELAY record gets 12 to 17 seconds on read.",
+      "anyOf": [
+        { "type": "number", "minimum": 0 },
+        {
+          "type": "object",
+          "properties": {
+            "min": { "type": "number", "minimum": 0 },
+            "max": { "type": "number", "minimum": 0 }
+          },
+          "required": ["min", "max"]
+        }
+      ]
+    },
+    "instructions": {
+      "type": "array",
+      "description": "The sweatbox INSTRUCTION records: a scripted pilot request sent as a #TM at a sim-time offset.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "atSeconds": { "type": "number", "minimum": 0 },
+          "text": { "type": "string" }
+        },
+        "required": ["atSeconds", "text"]
+      }
+    },
+    "aircraft": {
+      "type": "object",
+      "properties": {
+        "callsign": { "type": "string" },
+        "squawk": { "$ref": "#/$defs/squawk" },
+        "transponderMode": {
+          "type": "string",
+          "enum": ["N", "S", "Y"],
+          "description": "Field 0 of the legacy @ packet.",
+          "default": "N"
+        },
+        "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+        "lon": { "type": "number", "minimum": -180, "maximum": 180 },
+        "altitude": { "$ref": "#/$defs/altitudeFeet" },
+        "groundspeed": { "$ref": "#/$defs/groundSpeedKt" },
+        "heading": { "type": "number", "minimum": 0, "maximum": 360 },
+        "pitch": { "type": "number" },
+        "bank": { "type": "number" },
+        "fieldElevation": {
+          "type": "number",
+          "description": "Ground elevation beneath this aircraft, in feet. The velocity packets report AGL against it."
+        },
+        "aircraftType": { "type": "string" },
+        "broadcastFlightplan": { "type": "boolean" },
+        "flightPlan": { "$ref": "#/$defs/flightPlan" },
+        "route": { "$ref": "#/$defs/routePoints" },
+        "startAtSeconds": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Seconds from scenario start before this aircraft appears. The sweatbox START record is minutes and is converted on read."
+        },
+        "startAfterSeconds": { "type": "number", "minimum": 0, "description": "Accepted spelling of startAtSeconds." },
+        "delaySeconds": { "$ref": "#/$defs/delay" },
+        "reactionDelaySeconds": { "$ref": "#/$defs/delay" },
+        "requestedAltitude": {
+          "description": "The sweatbox REQALT record. A bare number is feet from the start; the object form names the point the request applies at.",
+          "anyOf": [
+            { "type": "number" },
+            {
+              "type": "object",
+              "properties": {
+                "point": { "type": "string" },
+                "feet": { "type": "number" }
+              },
+              "required": ["feet"]
+            }
+          ]
+        },
+        "approach": {
+          "type": "object",
+          "description": "The runway of a trailing ILS<rwy> token on the route. It must have a matching entry in 'ils'.",
+          "properties": {
+            "runway": { "type": "string" }
+          },
+          "required": ["runway"]
+        },
+        "simData": {
+          "type": "object",
+          "description": "The sweatbox SIMDATA record. Only maxTaxiSpeedKt and groundAltitudeFeet feed the model.",
+          "properties": {
+            "aircraftType": { "type": "string" },
+            "livery": { "type": "string" },
+            "maxTaxiSpeedKt": { "type": "number", "minimum": 0 },
+            "taxiwayUsage": { "type": "integer" },
+            "extent": { "type": "number" },
+            "groundAltitudeFeet": { "type": "number" }
+          }
+        },
+        "pseudoPilot": { "type": "string", "description": "Recorded and ignored; one process owns every aircraft." },
+        "initialPseudoPilot": { "type": "string", "description": "Recorded and ignored." },
+        "iasVariation": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 20,
+          "description": "Per-aircraft speed offset in knots, drawn once per callsign and fixed for the run. The validator rejects anything above 20, as the EuroScope manual states."
+        },
+        "requests": { "$ref": "#/$defs/instructions" },
+        "instructions": { "$ref": "#/$defs/instructions" },
+        "performance": { "$ref": "#/$defs/performance" },
+        "datalink": { "$ref": "#/$defs/datalink" }
+      },
+      "required": ["callsign", "lat", "lon"]
+    }
+  }
+}
