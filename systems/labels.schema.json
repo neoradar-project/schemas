@@ -223,7 +223,7 @@
                     {
                       "type": "string",
                       "const": "datalinkStatus",
-                      "description": "The datalink status of the aircraft."
+                      "description": "Datalink state code: 0 none, 1 sent, 2 acknowledged, 3 rejected, 4 unhandled message received, 5 request, 6 request with standby."
                     },
                     {
                       "type": "string",
