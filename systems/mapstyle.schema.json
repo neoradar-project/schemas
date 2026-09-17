@@ -812,6 +812,11 @@
               }
             },
             "additionalProperties": false
+          },
+          "geodesic": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether a long oblique segment is drawn as the great circle between its ends instead of the straight Mercator chord. Default true. Segments under 20 km and segments whose ends share a latitude (a parallel) are always straight. Overridable per feature with a top-level geodesic property. The server projects sector volumes with the same rule."
           }
         },
         "additionalProperties": false
