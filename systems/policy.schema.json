@@ -1,18 +1,127 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "NeoRadar system policy",
-  "description": "systems/<system>/policy.json: the per-system behaviour policy. Absent means every default, which is the client's existing behaviour. Each domain adds its own section here; a section absent means that domain keeps its defaults for the selected profile.",
+  "description": "systems/<system>/policy.json: the per-system behaviour policy. Absent means every default, which is the client's existing behaviour. Each domain adds its own section here; every key is optional and documented by what it does, and an absent key keeps the existing behaviour.",
   "type": "object",
   "properties": {
     "$schema": {
       "type": "string"
     },
-    "profile": {
-      "type": "string",
-      "enum": ["euroscope", "eurocontrol", "topsky", "uk"],
-      "default": "euroscope",
-      "description": "The named trait bundle every section resolves its defaults from. euroscope is the client's existing behaviour; eurocontrol, topsky and uk take effect as each domain's section lands. An unknown name is a load error and the system loads on defaults."
+    "correlation": {
+      "type": "object",
+      "description": "How this system decides a track is identified. Every key is optional; an unknown enum value or a malformed code is a load error and the system loads on defaults.",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["always", "assignedCode", "modeS", "assignedCodeOrModeS"],
+          "default": "always",
+          "description": "Which identification methods this system honours. always correlates every target, which is the existing behaviour."
+        },
+        "assignedCode": {
+          "type": "object",
+          "properties": {
+            "requireDiscrete": {
+              "type": "boolean",
+              "description": "A conspicuity, special or emergency code never identifies, even when it is the assigned code."
+            },
+            "acceptPilotSquawk": {
+              "type": "boolean",
+              "description": "When nothing is assigned, a discrete transmitted code is adopted as the assigned code."
+            },
+            "doNotCorrelate": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/squawkCodeOrRange" },
+              "description": "Codes that never identify, as literals (\"7010\") or inclusive ranges (\"7001-7007\")."
+            },
+            "conformance": {
+              "type": "object",
+              "properties": {
+                "maxDistanceFromRouteNm": {
+                  "type": ["number", "null"],
+                  "description": "Refuse an assigned-code correlation when the target is further than this from the filed route. Skipped when no route geometry is available."
+                },
+                "minGroundSpeedKt": {
+                  "type": ["integer", "null"],
+                  "description": "Apply the conformance gate only at or above this ground speed."
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "modeS": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "correlateOn": {
+              "type": "string",
+              "enum": ["anyCode", "conspicuityOnly"],
+              "description": "anyCode identifies a Mode S aircraft whatever it squawks; conspicuityOnly requires 1000."
+            },
+            "unknownEquipment": {
+              "type": "string",
+              "enum": ["assumeCapable", "assumeNotCapable", "byAircraftClass"],
+              "description": "What an equipment string that says nothing about Mode S means. byAircraftClass asks the server, and counts as not capable until it answers."
+            }
+          },
+          "additionalProperties": false
+        },
+        "decorrelateOnCodeChange": {
+          "type": "boolean",
+          "description": "A code-correlated track drops to uncorrelated when it changes to a code that is not the assigned or an emergency code."
+        },
+        "manualDecorrelationIsSticky": {
+          "type": "boolean"
+        },
+        "duplicates": {
+          "type": "object",
+          "properties": {
+            "blockAutoCorrelation": { "type": "boolean" },
+            "scope": {
+              "type": "string",
+              "enum": ["local", "network"],
+              "description": "network needs the server; without it the check degrades to local."
+            }
+          },
+          "additionalProperties": false
+        },
+        "coasting": {
+          "type": "object",
+          "properties": {
+            "afterSeconds": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Position age after which the track coasts. 0 disables coasting."
+            }
+          },
+          "additionalProperties": false
+        },
+        "squawkClasses": {
+          "type": "object",
+          "properties": {
+            "special": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/squawkCodeOrRange" },
+              "description": "Special purpose codes, in addition to the emergency codes."
+            },
+            "conspicuity": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/squawkCodeOrRange" },
+              "description": "Conspicuity codes, in addition to 1000, 2000, 7000, 7010, 1200 and 1202."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "definitions": {
+    "squawkCodeOrRange": {
+      "type": "string",
+      "pattern": "^[0-7]{4}(-[0-7]{4})?$"
+    }
+  }
 }
