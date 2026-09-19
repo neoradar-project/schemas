@@ -353,6 +353,16 @@
                           },
                           {
                             "type": "string",
+                            "const": "sectorEntryIsAdvanced",
+                            "description": "The flight has been announced to us ahead of the entry boundary, so it belongs in the inbound list. Not the Notified attention state, which is geometric proximity."
+                          },
+                          {
+                            "type": "string",
+                            "const": "sectorExitIsAdvanced",
+                            "description": "The flight has been announced to the receiving sector ahead of the exit boundary."
+                          },
+                          {
+                            "type": "string",
                             "const": "assignedDirect",
                             "description": "The assigned direct waypoint identifier."
                           },

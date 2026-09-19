@@ -120,6 +120,26 @@
       "type": "object",
       "description": "How this system runs the coordination dialogue at a sector boundary. Absent means today's behaviour, which is that every level at a boundary is either the one the coordination table states or one a controller proposed by hand, and nothing is ever agreed without a dialogue.",
       "properties": {
+        "notification": {
+          "type": "object",
+          "description": "Advance boundary information: announcing a flight to the sector it is coming to, ahead of anyone coordinating it, which is what puts it in that controller's inbound list before it is touched. Absent means no notification tier at all, which is the existing behaviour.",
+          "properties": {
+            "leadMinutesBeforeCoordinationPoint": {
+              "type": ["integer", "null"],
+              "minimum": 0,
+              "description": "How far ahead of the coordination point a flight is announced to the receiving sector. The European regional default is 15. Absent means a flight is never announced ahead of the boundary."
+            },
+            "perPoint": {
+              "type": "object",
+              "description": "A different lead time at named coordination points, for a boundary that needs more or less warning than the rest. Keyed by fix name, matched without regard to case; naming one fix twice is a load error.",
+              "additionalProperties": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "additionalProperties": false
+        },
         "filter": {
           "type": "object",
           "description": "The standard versus non-standard filter. A coordination whose level matches the standing agreement and which is made in good time before the coordination point is already agreed, and needs no dialogue; anything else raises one.",
