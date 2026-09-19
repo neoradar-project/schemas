@@ -330,6 +330,26 @@
                           },
                           {
                             "type": "string",
+                            "const": "sectorEntryCoordinationState",
+                            "description": "Where the boundary INTO your airspace sits in the coordination lifecycle: uncoordinated, coordinated, proposed, counterProposed or revisionProposed."
+                          },
+                          {
+                            "type": "string",
+                            "const": "sectorExitCoordinationState",
+                            "description": "Where the boundary OUT of your airspace sits in the coordination lifecycle: uncoordinated, coordinated, proposed, counterProposed or revisionProposed."
+                          },
+                          {
+                            "type": "string",
+                            "const": "sectorEntryIsCoordinated",
+                            "description": "The entry boundary is agreed, whether by the standing agreement or by a negotiation."
+                          },
+                          {
+                            "type": "string",
+                            "const": "sectorExitIsCoordinated",
+                            "description": "The exit boundary is agreed, whether by the standing agreement or by a negotiation."
+                          },
+                          {
+                            "type": "string",
                             "const": "assignedDirect",
                             "description": "The assigned direct waypoint identifier."
                           },
