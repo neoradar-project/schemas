@@ -390,6 +390,16 @@
                           },
                           {
                             "type": "string",
+                            "const": "hasOnFrequencyRequest",
+                            "description": "Another controller has asked for this flight on their frequency."
+                          },
+                          {
+                            "type": "string",
+                            "const": "onFrequencyRequestedBy",
+                            "description": "Callsign of the controller asking for this flight on their frequency."
+                          },
+                          {
+                            "type": "string",
                             "const": "assignedDirect",
                             "description": "The assigned direct waypoint identifier."
                           },
