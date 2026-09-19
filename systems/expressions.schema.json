@@ -320,6 +320,16 @@
                           },
                           {
                             "type": "string",
+                            "const": "gndFilterOn",
+                            "description": "The active profile's GND filter toggle is on. Reads the main view's profile, as transitionAltitude does."
+                          },
+                          {
+                            "type": "string",
+                            "const": "primFilterOn",
+                            "description": "The active profile's PRIM filter toggle is on. Reads the main view's profile, as transitionAltitude does."
+                          },
+                          {
+                            "type": "string",
                             "const": "assignedDirect",
                             "description": "The assigned direct waypoint identifier."
                           },
