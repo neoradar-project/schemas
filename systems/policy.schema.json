@@ -140,6 +140,18 @@
           },
           "additionalProperties": false
         },
+        "release": {
+          "type": "object",
+          "description": "Release: letting the controller who takes the flight next turn, climb or descend it before the transfer of control point without asking. Absent means this system does no releases at all, which is the existing behaviour.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether a controller may release a flight on this system. The kinds are always turn, climb and descent, each optionally bounded by a level."
+            }
+          },
+          "additionalProperties": false
+        },
         "filter": {
           "type": "object",
           "description": "The standard versus non-standard filter. A coordination whose level matches the standing agreement and which is made in good time before the coordination point is already agreed, and needs no dialogue; anything else raises one.",

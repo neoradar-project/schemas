@@ -360,6 +360,36 @@
                           },
                           {
                             "type": "string",
+                            "const": "isReleased",
+                            "description": "Anything at all has been released to the controller taking this flight next."
+                          },
+                          {
+                            "type": "string",
+                            "const": "releaseTurn",
+                            "description": "The next controller may turn the aircraft before the transfer of control point."
+                          },
+                          {
+                            "type": "string",
+                            "const": "releaseClimb",
+                            "description": "The next controller may climb the aircraft before the transfer of control point."
+                          },
+                          {
+                            "type": "string",
+                            "const": "releaseDescent",
+                            "description": "The next controller may descend the aircraft before the transfer of control point."
+                          },
+                          {
+                            "type": "string",
+                            "const": "releaseClimbRestriction",
+                            "description": "Level the released climb is bounded by (ft); blank when the climb is unrestricted or not released."
+                          },
+                          {
+                            "type": "string",
+                            "const": "releaseDescentRestriction",
+                            "description": "Level the released descent is bounded by (ft); blank when the descent is unrestricted or not released."
+                          },
+                          {
+                            "type": "string",
                             "const": "assignedDirect",
                             "description": "The assigned direct waypoint identifier."
                           },
