@@ -28,6 +28,8 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `systems/<id>/targets.{json,yaml}` | `@schemas/systems/targets.schema.json` | **none** | `@client/src/NeoRadar.Core/Package/TargetConfig.cs` | `SystemConfigWriter.WriteTargets` |
 | `systems/<id>/labels.{json,yaml}` | `@schemas/systems/labels.schema.json` | **none** | `Package/LabelsConfig.cs` | `SystemConfigWriter.WriteLabels` |
 | `systems/<id>/mapstyle.{json,yaml}` | `@schemas/systems/mapstyle.schema.json` | **none** | `Package/MapStyleParser.cs` (hand-written) | `SystemConfigWriter.WriteMapStyle` via `MapStyleSerializer` |
+| `systems/<id>/policy.json` | `@schemas/systems/policy.schema.json` | **none** | `Package/SystemPolicy.cs` plus the owning module's section type | none |
+| `systems/shapes.{json,yaml}` | `@schemas/systems/shapes.schema.json` | **none** | `Package/ShapesConfig.cs` | `ShapesConfigWriter.Write` |
 | `systems/expressions.{json,yaml}` | `@schemas/systems/expressions.schema.json` | **none** | `Package/ExpressionsConfig.cs` | `ExpressionsConfigWriter.Write` |
 | `systems/lists.{json,yaml}` | `@schemas/systems/lists.schema.json` | **none** | `Package/ListsConfig.cs` | `ListsConfigWriter.Write` |
 | `manifest.json` | `@schemas/package/manifest.schema.json` | `@cli/src/commands/init-package.ts:129-159`, `@cli/src/commands/indexer.ts:167-200` | `Package/PackageManifest.cs` | none (manifest has no section) |
@@ -35,6 +37,8 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `datasets/atc-data.json` | none | `@cli/src/commands/converter/atc-data-parser.ts:193` | `Package/AtcData.cs` | none |
 | `datasets/nse.json` | none | `@cli/src/helper/nse.ts` | `Package/EseDataset.cs` | none |
 | `server-dataset.json` | none | `@cli/src/helper/server-dataset.ts` | not read by the client | none |
+
+`policy.json` is the one systems config with no writer at all: nothing in the Configurator edits it yet, so the §4 erase-on-save hazard does not apply to it and the round-trip test in §8 is the schema drift case instead. Its sections are owned by the modules that consume them (`Correlation/CorrelationPolicySection.cs` is the model), not by `Package/`, so a new section is a property on `SystemPolicy` plus a section type and a `Resolve` beside the module that reads it.
 
 **The `systems/*` configs have no CLI leg.** `@cli/src/commands/init-package.ts:18-75` downloads
 the whole starter tree from the `neoradar-project/base-package` release and unzips it; the CLI
