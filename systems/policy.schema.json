@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeoRadar system policy",
+  "description": "systems/<system>/policy.json: the per-system behaviour policy. Absent means every default, which is the client's existing behaviour. Each domain adds its own section here; a section absent means that domain keeps its defaults for the selected profile.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "profile": {
+      "type": "string",
+      "enum": ["euroscope", "eurocontrol", "topsky", "uk"],
+      "default": "euroscope",
+      "description": "The named trait bundle every section resolves its defaults from. euroscope is the client's existing behaviour; eurocontrol, topsky and uk take effect as each domain's section lands. An unknown name is a load error and the system loads on defaults."
+    }
+  },
+  "additionalProperties": false
+}
