@@ -1208,6 +1208,16 @@
                     },
                     {
                       "type": "string",
+                      "const": "correlateTarget",
+                      "description": "Correlates the target by hand; sticky for the session."
+                    },
+                    {
+                      "type": "string",
+                      "const": "decorrelateTarget",
+                      "description": "Decorrelates the target by hand; sticky until correlated again."
+                    },
+                    {
+                      "type": "string",
                       "const": "cancelHandoff",
                       "description": "Cancels an outbound handoff of the aircraft."
                     },
