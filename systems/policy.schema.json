@@ -115,6 +115,60 @@
         }
       },
       "additionalProperties": false
+    },
+    "coordination": {
+      "type": "object",
+      "description": "How this system runs the coordination dialogue at a sector boundary. Absent means today's behaviour, which is that every level at a boundary is either the one the coordination table states or one a controller proposed by hand, and nothing is ever agreed without a dialogue.",
+      "properties": {
+        "filter": {
+          "type": "object",
+          "description": "The standard versus non-standard filter. A coordination whose level matches the standing agreement and which is made in good time before the coordination point is already agreed, and needs no dialogue; anything else raises one.",
+          "properties": {
+            "acceptanceImplied": {
+              "type": "boolean",
+              "default": false,
+              "description": "Treat a standard coordination as agreed without a proposal, which is what a standing agreement is: a written agreement applied automatically, with no exchange between the two controllers. False keeps every change a dialogue, which is the existing behaviour."
+            },
+            "standardLevels": {
+              "type": "object",
+              "description": "The level the standing agreement states at a coordination point, overriding whatever the sector file's coordination table carries there. Keyed by fix name, matched without regard to case; naming one fix twice is a load error.",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "climbFt": {
+                    "type": ["integer", "null"],
+                    "description": "The agreed level for a flight climbing through the point. Null means the agreement says nothing about a climbing flight."
+                  },
+                  "descendFt": {
+                    "type": ["integer", "null"],
+                    "description": "The agreed level for a flight descending through the point. Null means the agreement says nothing about a descending flight."
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "nonStandardAfter": {
+              "type": "object",
+              "description": "How late a coordination may be made and still count as standard. With both keys absent, lateness alone never makes one non-standard.",
+              "properties": {
+                "minutesBeforeCoordinationPoint": {
+                  "type": ["integer", "null"],
+                  "minimum": 0,
+                  "description": "Inside this many minutes of the coordination point, any coordination is non-standard and raises a dialogue however well its level matches."
+                },
+                "distanceNm": {
+                  "type": ["number", "null"],
+                  "minimum": 0,
+                  "description": "Inside this distance from the coordination point, any coordination is non-standard. Applied alongside the time limit, whichever is reached first."
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": false,
