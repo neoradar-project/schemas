@@ -142,11 +142,28 @@
                           "currentController",
                           "nextSector",
                           "nextController",
+                          "nextControllerIsManual",
+                          "correlationState",
+                          "isCorrelated",
+                          "identificationSource",
+                          "squawkClass",
+                          "squawkMatchesAssigned",
+                          "isDuplicateSquawk",
+                          "duplicateSquawkScope",
+                          "assignedSquawkConflict",
+                          "surveillanceCapability",
+                          "equipmentGrammar",
+                          "trackNumber",
+                          "isCoasting",
+                          "positionAgeMs",
                           "sectorExitPoint",
                           "sectorExitLevel",
+                          "sectorExitLevelSource",
                           "sectorEntryLevel",
+                          "sectorEntryLevelSource",
                           "sectorExitLevelPredicted",
                           "sectorExitTime",
+                          "minutesToSectorExit",
                           "sectorEntryPoint",
                           "sectorEntryTime",
                           "firExitPoint",
@@ -388,6 +405,71 @@
                               "type": "string",
                               "const": "isLevel",
                               "description": "Vertical speed within +/-100 ft/min."
+                            },
+                            {
+                              "type": "string",
+                              "const": "correlationState",
+                              "description": "Correlation state: 0 primary only, 1 uncorrelated, 2 correlated, 3 coasting"
+                            },
+                            {
+                              "type": "string",
+                              "const": "isCorrelated",
+                              "description": "The presentation is entitled to the callsign"
+                            },
+                            {
+                              "type": "string",
+                              "const": "identificationSource",
+                              "description": "How the identity was established: 0 none, 1 assigned code, 2 Mode S aircraft identification, 3 manual, 4 always"
+                            },
+                            {
+                              "type": "string",
+                              "const": "squawkClass",
+                              "description": "Transmitted code class: 0 invalid, 1 discrete, 2 conspicuity, 3 emergency, 4 special purpose"
+                            },
+                            {
+                              "type": "string",
+                              "const": "squawkMatchesAssigned",
+                              "description": "The transmitted code equals the assigned code"
+                            },
+                            {
+                              "type": "string",
+                              "const": "isDuplicateSquawk",
+                              "description": "Another aircraft transmits the same code"
+                            },
+                            {
+                              "type": "string",
+                              "const": "duplicateSquawkScope",
+                              "description": "Where the duplicate was seen: 0 none, 1 this client, 2 network"
+                            },
+                            {
+                              "type": "string",
+                              "const": "assignedSquawkConflict",
+                              "description": "The assigned code is assigned to another flight too"
+                            },
+                            {
+                              "type": "string",
+                              "const": "surveillanceCapability",
+                              "description": "What the filed equipment says the transponder can do: 0 none, 1 Mode A, 2 Mode C, 3 Mode S, 4 Mode S with ADS-B, 5 unknown"
+                            },
+                            {
+                              "type": "string",
+                              "const": "equipmentGrammar",
+                              "description": "Which grammar the filed equipment string was read in: 0 unknown, 1 ICAO, 2 FAA"
+                            },
+                            {
+                              "type": "string",
+                              "const": "trackNumber",
+                              "description": "Session track number, minted on first sight"
+                            },
+                            {
+                              "type": "string",
+                              "const": "isCoasting",
+                              "description": "The position is older than the system's coasting window"
+                            },
+                            {
+                              "type": "string",
+                              "const": "positionAgeMs",
+                              "description": "Milliseconds since the last position report"
                             },
                             {
                               "type": "string",
@@ -1274,13 +1356,15 @@
               "bodyOpacity": {
                 "type": "number"
               },
-              "headerBlur": {
-                "type": "boolean",
-                "default": false
-              },
-              "bodyBlur": {
-                "type": "boolean",
-                "default": false
+              "backdrop": {
+                "type": "string",
+                "enum": [
+                  "opaque",
+                  "transparent",
+                  "blur"
+                ],
+                "default": "opaque",
+                "description": "What sits behind the list. 'transparent' lets the radar show through on every platform; 'blur' asks for a frosted backdrop and falls back to 'transparent' where the platform has none (macOS, Linux). Omitted, any headerOpacity or bodyOpacity below 1 still means 'transparent'."
               },
               "rowColor": {
                 "anyOf": [
