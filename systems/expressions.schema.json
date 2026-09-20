@@ -156,6 +156,8 @@
                           "positionAgeMs",
                           "zoneTags",
                           "zoneCount",
+                          "surfaceOwnershipState",
+                          "surfaceResponsibleController",
                           "sectorExitPoint",
                           "sectorExitLevel",
                           "sectorExitLevelSource",
@@ -575,6 +577,16 @@
                               "type": "string",
                               "const": "zoneCount",
                               "description": "How many package zones contain the target."
+                            },
+                            {
+                              "type": "string",
+                              "const": "surfaceOwnershipState",
+                              "description": "SPEC-171's five ownership states for a mobile on the surface: 0 non-concerned, 1 pending, 2 transferred in, 3 assumed, 4 transferred out. Derived from the attention state and the ownership fields."
+                            },
+                            {
+                              "type": "string",
+                              "const": "surfaceResponsibleController",
+                              "description": "Callsign of the position responsible for the mobile, SPEC-171's responsible Controller; blank when nobody holds it."
                             },
                             {
                               "type": "string",

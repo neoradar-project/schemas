@@ -274,6 +274,18 @@
       },
       "additionalProperties": false
     },
+    "surface": {
+      "type": "object",
+      "description": "The surface: what a ground position does on its own. The five SPEC-171 ownership states are always computed and read through surfaceOwnershipState and surfaceResponsibleController; this section switches on the behaviour around them. Absent means every default.",
+      "properties": {
+        "autoAssumeOnClearance": {
+          "type": "boolean",
+          "default": false,
+          "description": "EUROCONTROL ITWP Baseline HMI 4.3.17: a push, taxi, line-up or take-off clearance issued to a mobile nobody holds assumes it, so the ground position never assumes as a separate action. Only a ground status THIS controller sets counts; another controller's change never assumes anything here, and a mobile somebody already holds is left alone."
+        }
+      },
+      "additionalProperties": false
+    },
     "squawk": {
       "type": "object",
       "description": "The squawk provider chain: the package's priority per provider name, providers it disables, the reserved codes no provider may hand out, the circuit codes, and a first-party HTTP allocator. A provider the package does not name keeps what it declared.",
