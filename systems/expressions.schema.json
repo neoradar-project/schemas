@@ -154,6 +154,8 @@
                           "trackNumber",
                           "isCoasting",
                           "positionAgeMs",
+                          "isInCoverage",
+                          "radarCoverage",
                           "zoneTags",
                           "zoneCount",
                           "surfaceOwnershipState",
@@ -567,6 +569,16 @@
                               "type": "string",
                               "const": "positionAgeMs",
                               "description": "Milliseconds since the last position report"
+                            },
+                            {
+                              "type": "string",
+                              "const": "isInCoverage",
+                              "description": "Some radar station of the package's radars dataset sees the position. Always 1 without a dataset; a 0 target draws nothing at all."
+                            },
+                            {
+                              "type": "string",
+                              "const": "radarCoverage",
+                              "description": "Which sensor kinds see the position, as summed flags: 1 primary, 2 secondary, 4 Mode S. 7 without a dataset."
                             },
                             {
                               "type": "string",

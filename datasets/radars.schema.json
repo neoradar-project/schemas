@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeoRadar radars dataset",
+  "description": "datasets/radars.json: the radar stations whose coverage the client simulates, in the shape of EuroScope's ESE RADAR2 line. Each station carries up to three sensors, primary, secondary and Mode S, each with a range, an antenna altitude and a cone-of-silence slope. A target is seen by a sensor when it is within the range and not inside the cone above the antenna, that is when its height above the antenna is at most the slope times its distance. Out of every sensor's coverage a target draws nothing at all; inside primary coverage only it reads PrimaryOnly whatever its transponder does; without Mode S coverage there is no Mode S identification. Absent file means no simulation: every sensor sees everything, which is the existing behaviour. Per package, never global.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["stations"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "stations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/station" }
+    }
+  },
+  "$defs": {
+    "sensor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rangeNm", "antennaAltitudeFt"],
+      "properties": {
+        "rangeNm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Horizontal range in nautical miles."
+        },
+        "antennaAltitudeFt": {
+          "type": "number",
+          "description": "Antenna altitude in feet, the apex of the cone of silence."
+        },
+        "coneSlopeFtPerNm": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0,
+          "description": "Cone of silence: a target more than this many feet above the antenna per nautical mile of distance is not seen. EuroScope's files carry 3100. 0 or absent means no cone."
+        }
+      }
+    },
+    "station": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "latitude", "longitude"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "latitude": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90,
+          "description": "WGS84 degrees, north positive. Unlike the package GeoJSON these are degrees, as the ESE line has them."
+        },
+        "longitude": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180,
+          "description": "WGS84 degrees, east positive."
+        },
+        "primary": { "$ref": "#/$defs/sensor" },
+        "secondary": { "$ref": "#/$defs/sensor" },
+        "modeS": { "$ref": "#/$defs/sensor" }
+      }
+    }
+  }
+}
