@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeoRadar zones dataset",
+  "description": "datasets/zones.geojson: tagged polygons the client tests every aircraft against on each position batch. A zone carries one or more free-text tags; the client never enumerates them, it only publishes which tags contain each target as the zoneTags expression (the matching tags, distinct, sorted, space-separated) and how many zones do as zoneCount. Stand areas, runway strips, aprons, de-icing pads and works areas are all just tags a package chooses. Coordinates are EPSG:3857 metres like every other GeoJSON in datasets/, so the same file can also be listed in the manifest's mapLayers and drawn; a file whose coordinates all fit inside longitude/latitude degree ranges is refused as WGS84 rather than loaded in the wrong place. Absent file means no zones: zoneTags is empty and zoneCount is 0 for every target.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "features"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "const": "FeatureCollection"
+    },
+    "name": {
+      "type": "string",
+      "description": "Free text; GIS exporters write the layer name here."
+    },
+    "crs": {
+      "type": "object",
+      "description": "Tolerated for GIS exporters that write one. Ignored by the client: the coordinates are always EPSG:3857."
+    },
+    "bbox": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 4,
+      "maxItems": 6
+    },
+    "features": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/zone" }
+    }
+  },
+  "$defs": {
+    "position": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "type": "number" },
+      "description": "[x, y] in EPSG:3857 metres. A third element is tolerated and ignored."
+    },
+    "ring": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "$ref": "#/$defs/position" },
+      "description": "A closed linear ring: first and last position equal, at least four positions."
+    },
+    "geometry": {
+      "type": "object",
+      "required": ["type", "coordinates"],
+      "oneOf": [
+        {
+          "properties": {
+            "type": { "type": "string", "const": "Polygon" },
+            "coordinates": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/ring" },
+              "description": "The outer ring first, then any holes."
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": { "type": "string", "const": "MultiPolygon" },
+            "coordinates": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "$ref": "#/$defs/ring" }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "zone": {
+      "type": "object",
+      "required": ["type", "geometry", "properties"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "Feature"
+        },
+        "id": {
+          "type": ["string", "number"],
+          "description": "GeoJSON feature id. The client reads properties.id and falls back to this."
+        },
+        "bbox": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 4,
+          "maxItems": 6
+        },
+        "geometry": { "$ref": "#/$defs/geometry" },
+        "properties": {
+          "type": "object",
+          "required": ["tags"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Names the zone in the .dev zone-info report and in the load log. Absent falls back to the feature id, then to the feature's index in the file."
+            },
+            "tags": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_][A-Za-z0-9_\\-.]*$",
+                "description": "One tag: letters, digits, underscore, hyphen and dot, no spaces. The package owns the vocabulary; the client compares it case-sensitively and never interprets it. contains is a substring test on the space-joined list, so a tag that is a prefix of another (stand and stand-remote) matches both; choose tags that are not substrings of one another, or test a single-tag zone with ==."
+              },
+              "description": "Every tag this zone contributes to a target inside it. A target inside several zones reads the union."
+            },
+            "floor": {
+              "type": "integer",
+              "description": "Lowest pressure altitude in feet the zone applies at, inclusive. Absent means the surface. A below-surface report at high QNH is clamped onto the surface, as for a sector volume, so a surface zone never loses an aircraft on the ground."
+            },
+            "ceiling": {
+              "type": "integer",
+              "description": "Highest pressure altitude in feet the zone applies at, inclusive. Absent means no upper bound."
+            }
+          },
+          "additionalProperties": true,
+          "description": "additionalProperties is open on purpose: a zones file listed in mapLayers carries its layer styling here too."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

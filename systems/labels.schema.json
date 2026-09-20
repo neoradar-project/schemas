@@ -138,6 +138,8 @@
                     "trackNumber",
                     "isCoasting",
                     "positionAgeMs",
+                    "zoneTags",
+                    "zoneCount",
                     "sectorExitPoint",
                     "sectorExitLevel",
                     "sectorExitLevelSource",
@@ -547,6 +549,16 @@
                       "type": "string",
                       "const": "positionAgeMs",
                       "description": "Milliseconds since the last position report"
+                    },
+                    {
+                      "type": "string",
+                      "const": "zoneTags",
+                      "description": "The tags of every package zone containing the target: distinct, sorted, space-separated; empty outside every zone. Test with contains."
+                    },
+                    {
+                      "type": "string",
+                      "const": "zoneCount",
+                      "description": "How many package zones contain the target."
                     },
                     {
                       "type": "string",
