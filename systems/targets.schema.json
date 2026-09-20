@@ -878,6 +878,21 @@
                       },
                       {
                         "type": "string",
+                        "const": "releaseMenu",
+                        "description": "Opens the release list: what the controller taking this flight next may do before the transfer of control point (turn, climb, descent, each optionally bounded by a level). Only for a flight you hold, and only on a system whose policy.json enables releases."
+                      },
+                      {
+                        "type": "string",
+                        "const": "requestOnFrequency",
+                        "description": "Asks whoever has this flight to put it on your frequency, as an OLDI ROF. No popup; a toast says whether it went."
+                      },
+                      {
+                        "type": "string",
+                        "const": "nextSectorMenu",
+                        "description": "Opens the next-sector list for a flight you hold whose exit is through a sector's floor or ceiling, where the exit level alone cannot say which sector takes it. Names the sector; the server re-sequences on it. On a lateral exit a toast says the geometry decides."
+                      },
+                      {
+                        "type": "string",
                         "const": "quickLook",
                         "description": "Toggles a quick-look pin on this aircraft for the radar view that was clicked: while pinned it is shown regardless of the view's upper and lower altitude filters (the GND, PRIM and VFR filters still apply). Click again to unpin. Per view, never saved."
                       },

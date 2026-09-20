@@ -140,6 +140,7 @@
                           "nextSector",
                           "nextController",
                           "nextControllerIsManual",
+                          "nextSectorIsManual",
                           "correlationState",
                           "isCorrelated",
                           "identificationSource",
