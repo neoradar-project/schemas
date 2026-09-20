@@ -52,7 +52,7 @@ Straight from `lockstepPairs` in the registry, and these are hard pairs, not con
 @server/internal/contract/vocabulary.json   ↔  @client/tests/NeoRadar.Core.Tests/ServerLink/vocabulary.json
 ```
 
-The 33 vector files are byte-identical LF on both sides, and `diff -r` between the two directories must report only `vectors.sha256` (client-side only). The vocabulary copy sits outside `Vectors/`, so that `diff -r` never sees it; check it with its own `diff`. A one-sided edit is a contract break.
+The 29 vector files are byte-identical LF on both sides, and `diff -r` between the two directories must report only `vectors.sha256` (client-side only). The vocabulary copy sits outside `Vectors/`, so that `diff -r` never sees it; check it with its own `diff`. A one-sided edit is a contract break.
 
 Third copy to remember, NOT in `lockstepPairs`: `@hub/src/lib/panel/types.ts` hand-mirrors the panel wire in TypeScript. It is a real third transcription of some lane-A types — `contract.AirportConfig` is reused by `@server/internal/api/admin.go`, so `AirportConfig` exists in Go, in C# as `AirportConfigDto`, and in TS as `AirportConfig`. Identifier names differ across all three; **the JSON key is the contract.**
 
@@ -67,7 +67,7 @@ Third copy to remember, NOT in `lockstepPairs`: `@hub/src/lib/panel/types.ts` ha
    `go test ./internal/contract -run TestVocabularyManifestIsCurrent -update-vocabulary`
    `TestVocabularyManifestIsCurrent` fails the build while `vocabulary.json` is stale.
 3. **`@client`** — mirror the DTO, register **every** new type on `ServerContractJsonContext` (source-gen only, no reflection fallback), dispatch or send it, copy the vector in **identical bytes**, add the C# assertion. Full procedure and the traps are in the `serverlink-wire-change` skill; do not improvise the client half from this file.
-4. **`@client`** — copy the regenerated `@server/internal/contract/vocabulary.json` byte for byte to `@client/tests/NeoRadar.Core.Tests/ServerLink/vocabulary.json`, then refresh the hash manifest: `pwsh .github/scripts/check-golden-vectors.ps1 -Update`, then re-run it with no switch. The manifest hashes the 33 vectors plus a 34th line for `../vocabulary.json`, so a mirrored copy without `-Update` fails the gate.
+4. **`@client`** — copy the regenerated `@server/internal/contract/vocabulary.json` byte for byte to `@client/tests/NeoRadar.Core.Tests/ServerLink/vocabulary.json`, then refresh the hash manifest: `pwsh .github/scripts/check-golden-vectors.ps1 -Update`, then re-run it with no switch. The manifest hashes the 29 vectors plus a 30th line for `../vocabulary.json`, so a mirrored copy without `-Update` fails the gate.
 5. **`@hub`** — only if the type also appears on a `/v1/panel` route. Update `@hub/src/lib/panel/types.ts` and whatever renders it.
 6. Run `WireVocabularyManifestTests` on the client. It reads the committed copy and checks the contract version, features, frame types, declared error codes, enum members and enum openness against the C# side, so no part of this is by eye. Only `CommittedManifest_IsByteIdenticalToTheServerRepoCopy` may skip, and only when `@server` does not resolve.
 
