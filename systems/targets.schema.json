@@ -596,6 +596,12 @@
                       "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor"
                     }
                   },
+                  "primaryPlotStyle": {
+                    "type": "string",
+                    "enum": ["sprite", "polygon"],
+                    "default": "sprite",
+                    "description": "How the raw video is drawn. sprite is the atlas blob scaled to the wingspan, which absent also means. polygon is vSMR's outline: twelve points from the aircraft's span, length and main gear width, taken from the server's aircraft-dimensions answer when it knows the type and otherwise from primaryPlotWingspan with vSMR's wake-category proportions; jittered per reroll like the blob, drawn in primaryPlotColor under the plot symbol. Only a variant with primaryPlotColor draws either."
+                  },
                   "primaryPlotWingspan": {
                     "type": "number",
                     "exclusiveMinimum": 0,
