@@ -159,7 +159,7 @@
             "enabled": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a controller may point a flight out on this system. It goes as an OLDI PNT to a controller who has advertised OLDI."
+              "description": "Whether a controller may point a flight out on this system. It goes as an OLDI PNT to a controller who has advertised OLDI and as the legacy #PC CCP:PT point-out to anyone else."
             },
             "holdMinutes": {
               "type": "integer",

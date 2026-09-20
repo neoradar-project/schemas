@@ -1215,7 +1215,7 @@
                       {
                         "type": "string",
                         "const": "pointOutMenu",
-                        "description": "Opens the point-out list for a flight you hold: every other controller online who has advertised OLDI. Sends an OLDI PNT, which has no body and no reply; the receiving screen shows it for the policy's hold time. Only on a system whose policy.json enables point-outs."
+                        "description": "Opens the point-out list for a flight you hold: every other controller online. Sends an OLDI PNT to a controller who has advertised OLDI and the legacy #PC CCP:PT point-out to anyone else; neither has a reply, and the receiving screen shows it for the policy's hold time. Only on a system whose policy.json enables point-outs."
                       },
                       {
                         "type": "string",
