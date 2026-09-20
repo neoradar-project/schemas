@@ -13,7 +13,12 @@
       "properties": {
         "mode": {
           "type": "string",
-          "enum": ["always", "assignedCode", "modeS", "assignedCodeOrModeS"],
+          "enum": [
+            "always",
+            "assignedCode",
+            "modeS",
+            "assignedCodeOrModeS"
+          ],
           "default": "always",
           "description": "Which identification methods this system honours. always correlates every target, which is the existing behaviour."
         },
@@ -30,18 +35,26 @@
             },
             "doNotCorrelate": {
               "type": "array",
-              "items": { "$ref": "#/definitions/squawkCodeOrRange" },
+              "items": {
+                "$ref": "#/definitions/squawkCodeOrRange"
+              },
               "description": "Codes that never identify, as literals (\"7010\") or inclusive ranges (\"7001-7007\")."
             },
             "conformance": {
               "type": "object",
               "properties": {
                 "maxDistanceFromRouteNm": {
-                  "type": ["number", "null"],
+                  "type": [
+                    "number",
+                    "null"
+                  ],
                   "description": "Refuse an assigned-code correlation when the target is further than this from the filed route. Skipped when no route geometry is available."
                 },
                 "minGroundSpeedKt": {
-                  "type": ["integer", "null"],
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
                   "description": "Apply the conformance gate only at or above this ground speed."
                 }
               },
@@ -53,15 +66,24 @@
         "modeS": {
           "type": "object",
           "properties": {
-            "enabled": { "type": "boolean" },
+            "enabled": {
+              "type": "boolean"
+            },
             "correlateOn": {
               "type": "string",
-              "enum": ["anyCode", "conspicuityOnly"],
+              "enum": [
+                "anyCode",
+                "conspicuityOnly"
+              ],
               "description": "anyCode identifies a Mode S aircraft whatever it squawks; conspicuityOnly requires 1000."
             },
             "unknownEquipment": {
               "type": "string",
-              "enum": ["assumeCapable", "assumeNotCapable", "byAircraftClass"],
+              "enum": [
+                "assumeCapable",
+                "assumeNotCapable",
+                "byAircraftClass"
+              ],
               "description": "What an equipment string that says nothing about Mode S means. byAircraftClass asks the server, and counts as not capable until it answers."
             }
           },
@@ -77,10 +99,15 @@
         "duplicates": {
           "type": "object",
           "properties": {
-            "blockAutoCorrelation": { "type": "boolean" },
+            "blockAutoCorrelation": {
+              "type": "boolean"
+            },
             "scope": {
               "type": "string",
-              "enum": ["local", "network"],
+              "enum": [
+                "local",
+                "network"
+              ],
               "description": "network needs the server; without it the check degrades to local."
             }
           },
@@ -102,12 +129,16 @@
           "properties": {
             "special": {
               "type": "array",
-              "items": { "$ref": "#/definitions/squawkCodeOrRange" },
+              "items": {
+                "$ref": "#/definitions/squawkCodeOrRange"
+              },
               "description": "Special purpose codes, in addition to the emergency codes."
             },
             "conspicuity": {
               "type": "array",
-              "items": { "$ref": "#/definitions/squawkCodeOrRange" },
+              "items": {
+                "$ref": "#/definitions/squawkCodeOrRange"
+              },
               "description": "Conspicuity codes, in addition to 1000, 2000, 7000, 7010, 1200 and 1202."
             }
           },
@@ -125,7 +156,10 @@
           "description": "Advance boundary information: announcing a flight to the sector it is coming to, ahead of anyone coordinating it, which is what puts it in that controller's inbound list before it is touched. Absent means no notification tier at all, which is the existing behaviour.",
           "properties": {
             "leadMinutesBeforeCoordinationPoint": {
-              "type": ["integer", "null"],
+              "type": [
+                "integer",
+                "null"
+              ],
               "minimum": 0,
               "description": "How far ahead of the coordination point a flight is announced to the receiving sector. The European regional default is 15. Absent means a flight is never announced ahead of the boundary."
             },
@@ -138,7 +172,10 @@
               }
             },
             "preDepartureLeadMinutes": {
-              "type": ["integer", "null"],
+              "type": [
+                "integer",
+                "null"
+              ],
               "minimum": 0,
               "description": "The pre-departure half of the tier: a flight on the ground at an airport one of your sectors is active for is announced this many minutes before its filed off-block time, until it is airborne, so it is in the departure list before it moves. Read through isAnnouncedDeparture. Absent means no departure is announced ahead of off-block."
             }
@@ -191,11 +228,17 @@
                 "type": "object",
                 "properties": {
                   "climbFt": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "The agreed level for a flight climbing through the point. Null means the agreement says nothing about a climbing flight."
                   },
                   "descendFt": {
-                    "type": ["integer", "null"],
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
                     "description": "The agreed level for a flight descending through the point. Null means the agreement says nothing about a descending flight."
                   }
                 },
@@ -207,12 +250,18 @@
               "description": "How late a coordination may be made and still count as standard. With both keys absent, lateness alone never makes one non-standard.",
               "properties": {
                 "minutesBeforeCoordinationPoint": {
-                  "type": ["integer", "null"],
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
                   "minimum": 0,
                   "description": "Inside this many minutes of the coordination point, any coordination is non-standard and raises a dialogue however well its level matches."
                 },
                 "distanceNm": {
-                  "type": ["number", "null"],
+                  "type": [
+                    "number",
+                    "null"
+                  ],
                   "minimum": 0,
                   "description": "Inside this distance from the coordination point, any coordination is non-standard. Applied alongside the time limit, whichever is reached first."
                 }
@@ -220,6 +269,81 @@
               "additionalProperties": false
             }
           },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "squawk": {
+      "type": "object",
+      "description": "The squawk provider chain: the package's priority per provider name, providers it disables, the reserved codes no provider may hand out, the circuit codes, and a first-party HTTP allocator. A provider the package does not name keeps what it declared.",
+      "properties": {
+        "providers": {
+          "type": "object",
+          "description": "Keyed by provider name as the provider declares it (Generic, Server, the HTTP allocator's name, a plugin's). Omission keeps the provider; disabling is explicit.",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean",
+                "description": "False removes the provider from the chain, logged with the system that did it."
+              },
+              "priority": {
+                "type": "integer",
+                "description": "Replaces the provider's declared priority for ranking. Higher wins."
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "reserved": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/squawkCodeOrRange"
+          },
+          "description": "Codes never assigned whoever proposes them, in addition to 0000, 7500, 7600 and 7700."
+        },
+        "circuit": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/squawkCodeOrRange"
+          },
+          "description": "Codes reserved for circuit traffic."
+        },
+        "http": {
+          "type": "object",
+          "description": "A first-party HTTP allocator: one POST per request carrying callsign, origin, destination, flightRule, aircraftType, cruiseLevelFt and circuit; one JSON object back carrying the code.",
+          "properties": {
+            "endpoint": {
+              "type": "string",
+              "format": "uri",
+              "description": "Absolute http or https URL."
+            },
+            "name": {
+              "type": "string",
+              "description": "Provider name in the chain. Default Http."
+            },
+            "priority": {
+              "type": "integer",
+              "description": "Declared priority. Default 50: above the server, below a plugin's 100."
+            },
+            "timeoutSeconds": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Default 5."
+            },
+            "codeProperty": {
+              "type": "string",
+              "description": "The response property carrying the code. Default code."
+            },
+            "apiKeyEnvironmentVariable": {
+              "type": "string",
+              "description": "Environment variable holding the API key, sent as a bearer token. The key never lives in the package."
+            }
+          },
+          "required": [
+            "endpoint"
+          ],
           "additionalProperties": false
         }
       },
