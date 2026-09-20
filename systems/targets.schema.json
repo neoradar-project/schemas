@@ -738,13 +738,8 @@
                       },
                       {
                         "type": "string",
-                        "const": "correlateTarget",
-                        "description": "Correlates the target by hand; sticky for the session."
-                      },
-                      {
-                        "type": "string",
                         "const": "decorrelateTarget",
-                        "description": "Decorrelates the target by hand; sticky until correlated again."
+                        "description": "Decorrelates the target by hand; sticky until correlated again. There is no correlateTarget: correlating names a flight plan, which the callsignMenu asks for."
                       },
                       {
                         "type": "string",
