@@ -893,6 +893,11 @@
                       },
                       {
                         "type": "string",
+                        "const": "pointOutMenu",
+                        "description": "Opens the point-out list for a flight you hold: every other controller online who has advertised OLDI. Sends an OLDI PNT, which has no body and no reply; the receiving screen shows it for the policy's hold time. Only on a system whose policy.json enables point-outs."
+                      },
+                      {
+                        "type": "string",
                         "const": "quickLook",
                         "description": "Toggles a quick-look pin on this aircraft for the radar view that was clicked: while pinned it is shown regardless of the view's upper and lower altitude filters (the GND, PRIM and VFR filters still apply). Click again to unpin. Per view, never saved."
                       },

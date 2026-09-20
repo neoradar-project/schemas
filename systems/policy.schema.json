@@ -152,6 +152,24 @@
           },
           "additionalProperties": false
         },
+        "pointOut": {
+          "type": "object",
+          "description": "Point-out: the controller working a flight drawing another controller's attention to it, with nothing asked in return. Absent means this system does no point-outs, which is the existing behaviour and leaves a plugin's prenotes alone.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether a controller may point a flight out on this system. It goes as an OLDI PNT to a controller who has advertised OLDI."
+            },
+            "holdMinutes": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 5,
+              "description": "How long a point-out stays on the receiving controller's screen. Nothing on the wire ends it, so time does; zero is a load error."
+            }
+          },
+          "additionalProperties": false
+        },
         "filter": {
           "type": "object",
           "description": "The standard versus non-standard filter. A coordination whose level matches the standing agreement and which is made in good time before the coordination point is already agreed, and needs no dialogue; anything else raises one.",

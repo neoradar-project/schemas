@@ -385,6 +385,16 @@
                     },
                     {
                       "type": "string",
+                      "const": "isPointedOut",
+                      "description": "Another controller has pointed this flight out to you and the point-out has not lapsed (1 or 0)."
+                    },
+                    {
+                      "type": "string",
+                      "const": "pointedOutBy",
+                      "description": "Callsign of the controller who pointed this flight out to you."
+                    },
+                    {
+                      "type": "string",
                       "const": "assignedDirect",
                       "description": "The assigned direct waypoint identifier."
                     },
@@ -1036,6 +1046,11 @@
               "type": "string",
               "const": "nextSectorMenu",
               "description": "Opens the next-sector list for a flight you hold whose exit is through a sector's floor or ceiling, where the exit level alone cannot say which sector takes it. Names the sector; the server re-sequences on it. On a lateral exit a toast says the geometry decides."
+            },
+            {
+              "type": "string",
+              "const": "pointOutMenu",
+              "description": "Opens the point-out list for a flight you hold: every other controller online who has advertised OLDI. Sends an OLDI PNT, which has no body and no reply; the receiving screen shows it for the policy's hold time. Only on a system whose policy.json enables point-outs."
             },
             {
               "type": "string",

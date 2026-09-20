@@ -401,6 +401,16 @@
                           },
                           {
                             "type": "string",
+                            "const": "isPointedOut",
+                            "description": "Another controller has pointed this flight out to you and the point-out has not lapsed (1 or 0)."
+                          },
+                          {
+                            "type": "string",
+                            "const": "pointedOutBy",
+                            "description": "Callsign of the controller who pointed this flight out to you."
+                          },
+                          {
+                            "type": "string",
                             "const": "assignedDirect",
                             "description": "The assigned direct waypoint identifier."
                           },
