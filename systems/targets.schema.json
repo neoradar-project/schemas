@@ -904,6 +904,11 @@
                       },
                       {
                         "type": "string",
+                        "const": "tagTogglesMenu",
+                        "description": "Opens the runtime tag content toggles for the radar view that was clicked: one row per toggleGroup the view's system declares, ticked while shown. Saved in the view's profile. No ownership or connection gate."
+                      },
+                      {
+                        "type": "string",
                         "description": "A plugin action id, in the form plugin:{pluginId}:{actionName}."
                       }
                     ],

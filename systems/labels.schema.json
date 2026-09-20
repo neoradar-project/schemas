@@ -826,6 +826,11 @@
           "default": 0,
           "description": "Edge hardness. 0 keeps the rasteriser's own antialiasing, 1 gives a near-binary edge. A negative textWeight with some sharpness gives a thin, crisp look."
         },
+        "toggleGroup": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Names the runtime toggle this item belongs to. The package chooses the names and the tagTogglesMenu click action lists them for the view that was clicked, ticked while shown; a hidden group's items render blank on that view, and the choice is saved in the view's profile like an ASR setting. Absent means the item is always shown."
+        },
         "fontWeight": {
           "anyOf": [
             {
@@ -1073,6 +1078,11 @@
               "type": "string",
               "const": "quickLook",
               "description": "Toggles a quick-look pin on this aircraft for the radar view that was clicked: while pinned it is shown regardless of the view's upper and lower altitude filters (the GND, PRIM and VFR filters still apply). Click again to unpin. Per view, never saved."
+            },
+            {
+              "type": "string",
+              "const": "tagTogglesMenu",
+              "description": "Opens the runtime tag content toggles for the radar view that was clicked: one row per toggleGroup the view's system declares, ticked while shown. A click hides or shows that group's items on this view and is saved in the view's profile. No ownership or connection gate."
             },
             {
               "type": "string",

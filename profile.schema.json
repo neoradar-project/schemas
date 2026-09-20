@@ -84,6 +84,12 @@
         "disableAntiAliasing": {
           "type": "boolean",
           "description": "Hard-threshold every line at its half-width instead of ramping coverage. Covers map geometry, speed vectors, route legs, tag leaders, measurers and vector symbols; text, point symbols and tag corners keep their own anti-aliasing."
+        },
+        "hiddenTagGroups": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true,
+          "description": "labels.json toggleGroup names this view has blanked through the tagTogglesMenu click action, the vSMR fork's ASR tag toggles. Absent or empty shows every item."
         }
       },
       "additionalProperties": false

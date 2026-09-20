@@ -1241,6 +1241,11 @@
                       },
                       {
                         "type": "string",
+                        "const": "tagTogglesMenu",
+                        "description": "Opens the runtime tag content toggles for the radar view that was clicked: one row per toggleGroup the view's system declares, ticked while shown. Saved in the view's profile. No ownership or connection gate."
+                      },
+                      {
+                        "type": "string",
                         "const": "fpDialogCreateShort",
                         "description": "Opens the short flight plan create dialog."
                       },
@@ -1421,6 +1426,11 @@
                   "maximum": 1,
                   "default": 0,
                   "description": "Edge hardness. 0 keeps the rasteriser's own antialiasing, 1 gives a near-binary edge. A negative textWeight with some sharpness gives a thin, crisp look."
+                },
+                "toggleGroup": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Names the runtime toggle this item belongs to; see labels.schema.json. A list column ignores it, the toggles blank radar tags only."
                 }
               },
               "required": [
