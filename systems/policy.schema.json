@@ -136,6 +136,11 @@
                 "type": "integer",
                 "minimum": 0
               }
+            },
+            "preDepartureLeadMinutes": {
+              "type": ["integer", "null"],
+              "minimum": 0,
+              "description": "The pre-departure half of the tier: a flight on the ground at an airport one of your sectors is active for is announced this many minutes before its filed off-block time, until it is airborne, so it is in the departure list before it moves. Read through isAnnouncedDeparture. Absent means no departure is announced ahead of off-block."
             }
           },
           "additionalProperties": false

@@ -414,6 +414,11 @@
                           },
                           {
                             "type": "string",
+                            "const": "isAnnouncedDeparture",
+                            "description": "A departure from an airport you serve, on the ground inside the lead time before its off-block (1 or 0). Needs notification.preDepartureLeadMinutes in policy.json."
+                          },
+                          {
+                            "type": "string",
                             "const": "assignedDirect",
                             "description": "The assigned direct waypoint identifier."
                           },
