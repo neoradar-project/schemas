@@ -1535,6 +1535,11 @@
           "minimum": 0,
           "maximum": 1000,
           "description": "Longest distance in logical pixels from the aircraft to the tag centre. Absent leaves the drag unbounded."
+        },
+        "autoDeconflict": {
+          "type": "boolean",
+          "default": false,
+          "description": "Runs the label deconfliction sweep on this section's tags, every two seconds on the render thread: a tag overlapping another tag or sitting on another aircraft's symbol is moved round its own aircraft to the stepDegrees lattice position that clears the most, keeping its leader length within minLeaderLength and maxLeaderLength, and moving only when it gains more clearance than the move costs. A tag the controller dragged or rotated is pinned for the session and only ever avoided; so is the hovered tag. Tags of a section that does not opt in are obstacles, never moved."
         }
       }
     },
