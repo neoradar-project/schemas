@@ -997,6 +997,10 @@
           ],
           "description": "Color of the item (in RGBA), can also be an expression rule."
         },
+        "applyWhen": {
+          "$ref": "#/$defs/applyWhen",
+          "description": "Shows the item only while this condition holds, the same expression shape as a variant's applyWhen; otherwise the cell is empty and a row with no shown item collapses. A condition the parser cannot read never holds and hides the item, as a variant's does. NOVA's flashing ALERT line is a text item with [\"==\", \"rimcasStage\", \"2\"] on every label."
+        },
         "blinkColor": {
           "anyOf": [
             {
