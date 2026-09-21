@@ -361,6 +361,11 @@
               "minimum": 0,
               "default": 0,
               "description": "Ground metres the navdata rectangle extends beyond each pavement end."
+            },
+            "restrictedZoneTag": {
+              "type": "string",
+              "default": "restricted",
+              "description": "The zones.geojson tag marking a restricted area: any mobile inside one is a Stage Two (rules.restrictedArea). Empty turns the scenario off."
             }
           },
           "additionalProperties": false
@@ -380,6 +385,13 @@
               "minimum": 0,
               "default": 200,
               "description": "An airborne mobile climbing faster than this over the strip is an overflight."
+            },
+            "oppositeDirectionDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 90,
+              "default": 30,
+              "description": "Two moving occupants whose headings are within this of opposite, and closing, are head-on (rules.oppositeDirection)."
             }
           },
           "additionalProperties": false
@@ -470,6 +482,16 @@
               "type": "boolean",
               "default": true,
               "description": "Any mobile on, or approaching within stageOneS, a runway the controller closed (.dev rimcas-close) is a Stage Two."
+            },
+            "oppositeDirection": {
+              "type": "boolean",
+              "default": true,
+              "description": "Two moving occupants head-on along one strip are a Stage Two with their own reason, ahead of the general two-on-the-runway rule."
+            },
+            "restrictedArea": {
+              "type": "boolean",
+              "default": true,
+              "description": "A mobile inside a zone tagged strip.restrictedZoneTag is a Stage Two."
             }
           },
           "additionalProperties": false
@@ -491,9 +513,41 @@
             "stageTwo": {
               "type": "string",
               "description": "Played when a mobile first reaches Stage Two."
+            },
+            "stageTwoRepeatS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "description": "While any Stage Two stands, the stageTwo sound plays again every this many seconds; 0 plays it once per escalation, as vSMR did. NOVA keeps sounding."
             }
           },
           "additionalProperties": false
+        },
+        "runways": {
+          "type": "object",
+          "description": "What each runway is monitored for, keyed \"EGLL 09L/27R\" or \"EGLL/09L\" (either designator names the pair). A runway with no entry gets unlistedRunways. Both flags off and the runway is not monitored at all.",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "arrivals": {
+                "type": "boolean",
+                "default": true,
+                "description": "Predict arrivals to this runway and run the arrival scenarios."
+              },
+              "occupancy": {
+                "type": "boolean",
+                "default": true,
+                "description": "Track who is on this runway and run the occupancy scenarios."
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "unlistedRunways": {
+          "type": "string",
+          "enum": ["monitor", "ignore"],
+          "default": "monitor",
+          "description": "What an active runway with no runways entry gets: monitored for everything, or ignored."
         }
       },
       "additionalProperties": false

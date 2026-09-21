@@ -623,7 +623,7 @@
                             {
                               "type": "string",
                               "const": "rimcasReason",
-                              "description": "Why the RIMCAS stage: 0 none, 1 two on the runway, 2 two on the runway and closing, 3 arrival approaching an occupied runway, 4 arrival imminent on an occupied runway, 5 closed runway."
+                              "description": "Why the RIMCAS stage: 0 none, 1 two on the runway, 2 two on the runway and closing, 3 arrival approaching an occupied runway, 4 arrival imminent on an occupied runway, 5 closed runway, 6 opposite direction (two moving head-on), 7 restricted area (inside a zone tagged strip.restrictedZoneTag; rimcasRunway is blank)."
                             },
                             {
                               "type": "string",
