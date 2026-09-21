@@ -327,6 +327,177 @@
       },
       "additionalProperties": false
     },
+    "runwayMonitoring": {
+      "type": "object",
+      "description": "Runway monitoring, the NOVA 9000 RIMCAS scenarios the data supports. Absent means off. Present, even empty, turns it on with every default: strips from the package's runway zones (tags runway and rwy-09L-27R, LVP twin lvp) else a rectangle from the navdata ends and width, the landing threshold from the navdata end plus displaced threshold. Core publishes rimcasStage, rimcasReason, rimcasRunway, rimcasTimeToRunway, rimcasCountdown and rimcasLowVisibility; the package colours Stage One, flashes Stage Two and lists the Impending Arrival Window. A number that would make the net lie is a load error naming the key.",
+      "properties": {
+        "strip": {
+          "type": "object",
+          "description": "Where the monitored area comes from and how far it reaches.",
+          "properties": {
+            "zoneTag": {
+              "type": "string",
+              "default": "runway",
+              "description": "The zones.geojson tag marking a runway strip zone; the zone must also carry the pair tag (runwayTagPrefix plus 09L-27R, either order)."
+            },
+            "lvpZoneTag": {
+              "type": "string",
+              "default": "lvp",
+              "description": "The tag marking the low-visibility twin of a runway zone, used while LVP are in force."
+            },
+            "runwayTagPrefix": {
+              "type": "string",
+              "default": "rwy-",
+              "description": "The prefix of the pair tag on a runway zone."
+            },
+            "sideMarginM": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0,
+              "description": "Ground metres added each side of the navdata rectangle beyond the runway's half width. Only the navdata fallback uses it; a zone is drawn where the author drew it."
+            },
+            "endMarginM": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0,
+              "description": "Ground metres the navdata rectangle extends beyond each pavement end."
+            }
+          },
+          "additionalProperties": false
+        },
+        "occupancy": {
+          "type": "object",
+          "description": "A mobile inside the area is on the runway unless it is flying over it.",
+          "properties": {
+            "maxGroundSpeedKts": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 160,
+              "description": "An airborne mobile faster than this over the strip is an overflight, not an occupant (vSMR used 160)."
+            },
+            "maxClimbFpm": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 200,
+              "description": "An airborne mobile climbing faster than this over the strip is an overflight."
+            }
+          },
+          "additionalProperties": false
+        },
+        "arrival": {
+          "type": "object",
+          "description": "The arrival prediction and its two windows.",
+          "properties": {
+            "lookaheadS": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 300,
+              "description": "How far ahead along the track an approach is searched for, seconds. Must reach stageOneS."
+            },
+            "alignmentDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 90,
+              "default": 3,
+              "description": "How far off a runway end's approach bearing a track may be and still count as aligned."
+            },
+            "minGroundSpeedKts": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 50,
+              "description": "Slower than this and an airborne mobile is not flying an approach."
+            },
+            "maxAglFt": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 3000,
+              "description": "Higher than this above the field and a mobile is not on an approach yet."
+            },
+            "countdownS": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "default": [60, 45, 30, 15],
+              "description": "The Impending Arrival Window rows, seconds from the strip, largest first and strictly descending. An approach beyond the first row plus fifteen seconds is not listed."
+            },
+            "countdownLvpS": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "default": [120, 90, 60, 30],
+              "description": "The rows while low visibility procedures are in force."
+            },
+            "stageOneS": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 45,
+              "description": "An arrival this close to a strip with an occupant is a Stage One for both."
+            },
+            "stageTwoS": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 20,
+              "description": "An arrival this close to a strip with an occupant is a Stage Two for both. Must be below stageOneS."
+            },
+            "stageTwoLvpS": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 30,
+              "description": "stageTwoS while low visibility procedures are in force. Must be below stageOneS."
+            }
+          },
+          "additionalProperties": false
+        },
+        "rules": {
+          "type": "object",
+          "description": "Which scenarios run; each is its own switch so a package imitating another A-SMGCS takes a subset.",
+          "properties": {
+            "occupants": {
+              "type": "boolean",
+              "default": true,
+              "description": "Two or more mobiles on one strip: departure, line-up, crossing and opposite direction. Stage One, or Stage Two for a mobile faster than stageTwoSpeedKts and closing on another and for the one it closes on."
+            },
+            "arrivalVsOccupant": {
+              "type": "boolean",
+              "default": true,
+              "description": "An approaching arrival against a mobile on the strip, through the two windows."
+            },
+            "closedRunway": {
+              "type": "boolean",
+              "default": true,
+              "description": "Any mobile on, or approaching within stageOneS, a runway the controller closed (.dev rimcas-close) is a Stage Two."
+            }
+          },
+          "additionalProperties": false
+        },
+        "stageTwoSpeedKts": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 40,
+          "description": "vSMR's rule: an occupant faster than this and closing on another occupant is a Stage Two; slower is a Stage One."
+        },
+        "sounds": {
+          "type": "object",
+          "description": "Sound ids from the package's sounds folder, played once per escalation; absent plays nothing.",
+          "properties": {
+            "stageOne": {
+              "type": "string",
+              "description": "Played when a mobile first reaches Stage One."
+            },
+            "stageTwo": {
+              "type": "string",
+              "description": "Played when a mobile first reaches Stage Two."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "squawk": {
       "type": "object",
       "description": "The squawk provider chain: the package's priority per provider name, providers it disables, the reserved codes no provider may hand out, the circuit codes, and a first-party HTTP allocator. A provider the package does not name keeps what it declared.",

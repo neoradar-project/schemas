@@ -145,6 +145,12 @@
                     "surfaceOwnershipState",
                     "surfaceResponsibleController",
                     "surfaceMovementPhase",
+                    "rimcasStage",
+                    "rimcasReason",
+                    "rimcasRunway",
+                    "rimcasTimeToRunway",
+                    "rimcasCountdown",
+                    "rimcasLowVisibility",
                     "sectorExitPoint",
                     "sectorExitLevel",
                     "sectorExitLevelSource",
@@ -589,6 +595,36 @@
                       "type": "string",
                       "const": "surfaceMovementPhase",
                       "description": "Where the mobile is in its movement, from the zones, speed, ground flag and height: 0 unknown, 1 on stand, 2 pushback, 3 taxiing, 4 holding, 5 on runway, 6 taking off, 7 departed, 8 airborne, 9 approaching, 10 landed. Thresholds and zone tags are policy.json surface.movement."
+                    },
+                    {
+                      "type": "string",
+                      "const": "rimcasStage",
+                      "description": "Runway incursion alert stage from runway monitoring: 0 none, 1 Stage One (a caution; colour the label background), 2 Stage Two (the flashing alert). 0 for every mobile while policy.json runwayMonitoring is absent."
+                    },
+                    {
+                      "type": "string",
+                      "const": "rimcasReason",
+                      "description": "Why the RIMCAS stage: 0 none, 1 two on the runway, 2 two on the runway and closing, 3 arrival approaching an occupied runway, 4 arrival imminent on an occupied runway, 5 closed runway."
+                    },
+                    {
+                      "type": "string",
+                      "const": "rimcasRunway",
+                      "description": "The monitored runway the mobile is on or approaching, as airport and pair (EGLL 09L/27R); blank for none."
+                    },
+                    {
+                      "type": "string",
+                      "const": "rimcasTimeToRunway",
+                      "description": "Seconds until an approaching mobile reaches the runway strip; -1 for a mobile not approaching one."
+                    },
+                    {
+                      "type": "string",
+                      "const": "rimcasCountdown",
+                      "description": "The Impending Arrival Window row the approach sits in, one of runwayMonitoring.arrival.countdownS (the LVP set in low visibility); -1 for none. Group a list by it for the window."
+                    },
+                    {
+                      "type": "string",
+                      "const": "rimcasLowVisibility",
+                      "description": "1 while low visibility procedures are in force for runway monitoring, else 0."
                     },
                     {
                       "type": "string",
