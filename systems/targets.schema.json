@@ -631,6 +631,96 @@
                     "default": 0,
                     "description": "Milliseconds between reshapes of a STATIONARY aircraft's blob. 0 reshapes only on movement, so traffic on stand holds one shape."
                   },
+                  "primaryPlotSynthesis": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "description": "Shape of a primaryPlotStyle simulated return. Every key is optional and defaults to the NOVA 9000 look tuned against a Gatwick SMR picture: a lump filling about 0.58 of its own box, shoulders where the wings are, one dropout and one detached speck per return. Fractions are of the aircraft's own span or length, so one block reads the same on a Cessna and an A380. A value outside its range is clamped and logged once per variant; the block is ignored by the sprite and polygon styles.",
+                    "properties": {
+                      "cellsAlongLength": {
+                        "type": "number",
+                        "minimum": 4,
+                        "maximum": 64,
+                        "default": 16,
+                        "description": "Grid cells nose to tail. The cell edge in pixels follows the aircraft's length on screen, never under one pixel; the atlas frames step on sixteen."
+                      },
+                      "bodyFraction": {
+                        "type": "number",
+                        "minimum": 0.05,
+                        "maximum": 1,
+                        "default": 0.44,
+                        "description": "Fuselage smear width as a fraction of the span. The atlas cross is 0.38; a real return is nearer half."
+                      },
+                      "wingSpanFraction": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0.85,
+                        "description": "Wing smear reach as a fraction of the span."
+                      },
+                      "wingChordFraction": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0.34,
+                        "description": "Wing smear depth along the aircraft as a fraction of the length."
+                      },
+                      "wingPositionFromNose": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0.42,
+                        "description": "Where the wing smear is centred, as a fraction of the length back from the nose."
+                      },
+                      "tailFraction": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0.4,
+                        "description": "Tailplane smear reach as a fraction of the span. 0 draws no tail."
+                      },
+                      "swell": {
+                        "type": "number",
+                        "minimum": -0.5,
+                        "maximum": 0.5,
+                        "default": 0.05,
+                        "description": "Fattens (positive) or thins (negative) the whole silhouette, in units of the half extent, so body and wings merge into one lump the way a real return does."
+                      },
+                      "smear": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1.5,
+                        "default": 0.55,
+                        "description": "Amplitude of the slow wobble along the boundary: the lumpiness of the edge."
+                      },
+                      "grain": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "default": 0.08,
+                        "description": "Amplitude of the per-cell noise on the boundary: the crumbliness of the edge."
+                      },
+                      "dropoutsPerReturn": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 50,
+                        "default": 1,
+                        "description": "Interior cells knocked out, on average, per return. Spread over the cells the return is expected to fill, so a small return loses proportionally as many as a large one."
+                      },
+                      "specksPerReturn": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 50,
+                        "default": 1,
+                        "description": "Detached cells lit one to two cells outside the boundary, on average, per return."
+                      },
+                      "edge": {
+                        "type": "string",
+                        "enum": ["cells", "soft"],
+                        "default": "cells",
+                        "description": "cells decides every grid cell wholly on or off, as the primary-symbols atlas frames are. soft antialiases the boundary across a cell, as a real SMR video return is drawn; the noise stays per cell so the edge is still lumpy."
+                      }
+                    }
+                  },
                   "hoverShape": {
                     "type": "string",
                     "description": "Vector symbol from systems/shapes.json drawn at the target position while the pointer is over the aircraft or its tag, as a grab affordance. The shape's own rotateWithHeading decides whether it turns with the aircraft."
