@@ -603,9 +603,11 @@
               "description": "How the raw video history trail is laid along the track. dots draws one return per history sample in the matching primaryHistoryTrailColor, as vSMR did. afterglow fills each gap between samples with more returns, in the older sample's colour, until successive returns overlap by a third of the aircraft's length, so the trail behind a moving target is the contiguous smear an SMR's video persistence leaves rather than a row of dots. Space the samples with historyTrailsSkipSteps; the number of returns per sample is the aircraft's, not a knob."
             },
             "primaryHistoryTrailScale": {
-              "type": "array",
-              "items": { "type": "number", "minimum": 0.05, "maximum": 2 },
-              "description": "Per history sample, oldest last, the fraction of the aircraft's span and length that sample's returns draw at, for the sprite and simulated trails alike and for both trail styles. Shorter than primaryHistoryTrailColor repeats the last value; absent is 1, the previous behaviour. A real afterglow fades its weak edges first, so the trail is thinner than the live return and thins with age: on the Gatwick NOVA 9000 picture the afterglow is 0.5 to 0.7 of the return's width and carries about half its ink per metre, which [0.7, 0.6, 0.5] reproduces. A value outside the range is clamped and logged once per variant."
+              "type": "number",
+              "minimum": 0.05,
+              "maximum": 2,
+              "default": 1,
+              "description": "The fraction of the aircraft's span and length every raw video trail return draws at, for the sprite and simulated trails alike and for both trail styles. Absent is 1, the previous behaviour. A real afterglow is a uniform band thinner than the live return, not a taper: on the Gatwick NOVA 9000 picture it runs 0.5 to 0.7 of the return's width along its whole length, which 0.6 reproduces. A value outside the range is clamped and logged once per variant."
             },
                   "primaryPlotStyle": {
                     "type": "string",
