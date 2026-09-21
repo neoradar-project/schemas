@@ -596,6 +596,12 @@
                       "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor"
                     }
                   },
+            "primaryHistoryTrailStyle": {
+              "type": "string",
+              "enum": ["dots", "afterglow"],
+              "default": "dots",
+              "description": "How the raw video history trail is laid along the track. dots draws one return per history sample in the matching primaryHistoryTrailColor, as vSMR did. afterglow fills each gap between samples with more returns, in the older sample's colour, until successive returns overlap by a third of the aircraft's length, so the trail behind a moving target is the contiguous smear an SMR's video persistence leaves rather than a row of dots. Space the samples with historyTrailsSkipSteps; the number of returns per sample is the aircraft's, not a knob."
+            },
                   "primaryPlotStyle": {
                     "type": "string",
                     "enum": ["sprite", "simulated", "polygon"],
