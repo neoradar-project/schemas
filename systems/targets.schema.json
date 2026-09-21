@@ -598,9 +598,9 @@
                   },
                   "primaryPlotStyle": {
                     "type": "string",
-                    "enum": ["sprite", "polygon"],
+                    "enum": ["sprite", "simulated", "polygon"],
                     "default": "sprite",
-                    "description": "How the raw video is drawn. sprite (also what absent means) is the atlas blob at the aircraft's footprint: the server's aircraft-dimensions span and length when it knows the type, else primaryPlotWingspan with vSMR's wake-category proportions. polygon is vSMR's outline: twelve points from the aircraft's span, length and main gear width, taken from the server's aircraft-dimensions answer when it knows the type and otherwise from primaryPlotWingspan with vSMR's wake-category proportions; jittered per reroll like the blob, drawn in primaryPlotColor under the plot symbol. Only a variant with primaryPlotColor draws either."
+                    "description": "How the raw video is drawn. sprite (also what absent means) is the atlas blob at the aircraft's footprint: the server's aircraft-dimensions span and length when it knows the type, else primaryPlotWingspan with vSMR's wake-category proportions. simulated synthesises the return on the GPU every frame from the same span and length, in the atlas's style: hard white cells on a grid sixteen cells long, a smeared fuselage with stub wings and a tail, a few dropouts and a stray speck, reshaped on the same reroll rules and drawn in the same primaryPlotColor; nothing is read from the atlas. polygon is vSMR's outline: twelve points from the aircraft's span, length and main gear width, taken from the server's aircraft-dimensions answer when it knows the type and otherwise from primaryPlotWingspan with vSMR's wake-category proportions; jittered per reroll like the blob, drawn in primaryPlotColor under the plot symbol. Only a variant with primaryPlotColor draws either."
                   },
                   "primaryPlotWingspan": {
                     "type": "number",
