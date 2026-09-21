@@ -135,7 +135,7 @@
                     "assignedSquawkConflict",
                     "surveillanceCapability",
                     "equipmentGrammar",
-                    "trackNumber",
+                    "trackId",
                     "isCoasting",
                     "positionAgeMs",
                     "isInCoverage",
@@ -541,8 +541,8 @@
                     },
                     {
                       "type": "string",
-                      "const": "trackNumber",
-                      "description": "Session track number, minted on first sight"
+                      "const": "trackId",
+                      "description": "Six-character id derived from the callsign, the same on every client and session; what an uncorrelated tag shows instead of the callsign"
                     },
                     {
                       "type": "string",
