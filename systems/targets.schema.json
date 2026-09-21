@@ -596,18 +596,12 @@
                       "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor"
                     }
                   },
-            "primaryHistoryTrailStyle": {
-              "type": "string",
-              "enum": ["dots", "afterglow"],
-              "default": "dots",
-              "description": "How the raw video history trail is laid along the track. dots draws one return per history sample in the matching primaryHistoryTrailColor, as vSMR did. afterglow fills each gap between samples with more returns, in the older sample's colour, until successive returns overlap by a third of the aircraft's length, so the trail behind a moving target is the contiguous smear an SMR's video persistence leaves rather than a row of dots. Space the samples with historyTrailsSkipSteps; the number of returns per sample is the aircraft's, not a knob."
-            },
             "primaryHistoryTrailScale": {
               "type": "number",
               "minimum": 0.05,
               "maximum": 2,
               "default": 1,
-              "description": "The fraction of the aircraft's span and length every raw video trail return draws at, for the sprite and simulated trails alike and for both trail styles. Absent is 1, the previous behaviour. A real afterglow is a uniform band thinner than the live return, not a taper: on the Gatwick NOVA 9000 picture it runs 0.5 to 0.7 of the return's width along its whole length, which 0.6 reproduces. A value outside the range is clamped and logged once per variant."
+              "description": "The fraction of the aircraft's span and length a raw video history mark draws at, for the sprite and simulated returns alike. A history mark is the return the aircraft made at that past position (its own reroll, so each mark differs), in the trail colour for its age, one per primaryHistoryTrailColor entry, spaced by historyTrailsSkipSteps. Absent is 1, the previous behaviour. A value outside the range is clamped and logged once per variant."
             },
                   "primaryPlotStyle": {
                     "type": "string",
@@ -731,7 +725,14 @@
                         "enum": ["cells", "soft"],
                         "default": "cells",
                         "description": "cells decides every grid cell wholly on or off, as the primary-symbols atlas frames are. soft antialiases the boundary across a cell, as a real SMR video return is drawn; the noise stays per cell so the edge is still lumpy."
-                      }
+                      },
+          "footprintScale": {
+            "type": "number",
+            "minimum": 0.25,
+            "maximum": 2,
+            "default": 1,
+            "description": "Multiplies the aircraft's span and length before the return is drawn. 1 is life size; the primary-symbols atlas blob the client drew before this style was about 0.75 of the span, so a package that found life size too big authors 0.75. History marks scale with it."
+          }
                     }
                   },
                   "hoverShape": {
