@@ -736,6 +736,41 @@
             }
           },
           "additionalProperties": false
+        },
+        "aiw": {
+          "type": "object",
+          "description": "Airspace infringement warning, evaluated on the client: a correlated track no controller is tracking, inside or about to enter controlled airspace, which is the most common real incident on VATSIM. The sector file carries no airspace class, so controlled airspace is every ACTIVE volume whose sector an online controller works, unless this package draws its own with zones tagged controlledZoneTag, which then replace the volume rule entirely. It raises a warning-severity Aiw naming the airspace. 'Not on frequency' is deliberately not part of the rule: a pilot's tuned frequency is in neither the position stream nor the datafeed, so neither half can evaluate it. Absent is every default below, as an absent safetyNets section is. .dev aiw-info prints the airspace set it used.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "False stops the net evaluating at all. Use safetyNets.show.aiw instead to keep it evaluating and hide it on this system."
+            },
+            "lookaheadS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 30,
+              "description": "How far ahead on the current track the net looks for an entry, TopSky's sampling. 0 monitors containment alone, which a system that dislikes predicted calls wants; the lookahead is also what keeps a track skimming a boundary from flapping, because clearing needs no confirmation."
+            },
+            "confirmCycles": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2,
+              "description": "Cycles inside or entering before the net raises. A cycle is cadenceS, so the default is 10 seconds. Leaving clears at once."
+            },
+            "cadenceS": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 5,
+              "description": "Seconds between evaluations. The net rides the 2 Hz position batch and skips the batches inside this window, so this is also what one confirmation cycle is worth; the default matches how often a pilot client sends a position."
+            },
+            "controlledZoneTag": {
+              "type": "string",
+              "default": "controlled",
+              "description": "A zone tag in datasets/zones.geojson that marks airspace this net monitors. Authoring even one such zone REPLACES the online-volume rule with the zones alone, which is how a vAcc says precisely which CAS it wants watched. Whole tags only, so no spaces. An empty string turns the override off and leaves the volume rule in force."
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
