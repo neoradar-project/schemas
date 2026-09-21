@@ -1008,6 +1008,16 @@
                       },
                       {
                         "type": "string",
+                        "const": "acknowledgeAlert",
+                        "description": "Acknowledge the highest safety net alert on this aircraft: the repeat sound stops and alertAcknowledged reads 1, the colour stays. A change of kind or severity re-arms it. Available to an observer."
+                      },
+                      {
+                        "type": "string",
+                        "const": "muteAlerts",
+                        "description": "Silence safety net sounds for this session, or restore them. Reads back as alertsMuted, so the label can say it is silenced. Available to an observer."
+                      },
+                      {
+                        "type": "string",
                         "const": "tagTogglesMenu",
                         "description": "Opens the runtime tag content toggles for the radar view that was clicked: one row per toggleGroup the view's system declares, ticked while shown. Saved in the view's profile. No ownership or connection gate."
                       },

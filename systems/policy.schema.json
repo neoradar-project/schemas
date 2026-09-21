@@ -552,6 +552,146 @@
       },
       "additionalProperties": false
     },
+    "safetyNets": {
+      "type": "object",
+      "description": "The alert board every safety net wears: the server's nets (BUST, CLAM, RAM, MSAW, APW, AIW, hold intrusion, MTCD, TCT), the client's RIMCAS and the emergency squawk, merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. Numbers a vAcc owns (what each server net triggers on) live in the hub, not here.",
+      "properties": {
+        "show": {
+          "type": "object",
+          "description": "Hides a kind on this system. An unlisted kind is shown, so name only what this system has no use for: a tower hides mtcd and tct, an area system hides rimcas and afdas. Hiding never stops the server evaluating the net; .dev alert-info says which kinds are hidden and which the server advertised.",
+          "propertyNames": {
+            "enum": [
+              "bust",
+              "clam",
+              "ram",
+              "msaw",
+              "apw",
+              "aiw",
+              "holdIntrusion",
+              "mtcd",
+              "tct",
+              "rimcas",
+              "stca",
+              "afdas",
+              "emergency"
+            ]
+          },
+          "additionalProperties": {
+            "type": "boolean"
+          }
+        },
+        "sounds": {
+          "type": "object",
+          "description": "Sound ids in the package's sounds folder, played once when an aircraft's highest alert escalates. Absent plays nothing, which is what a package that authors no sounds gets.",
+          "properties": {
+            "info": {
+              "type": "string",
+              "description": "Played when the highest alert reaches info severity (MTCD, TCT)."
+            },
+            "warning": {
+              "type": "string",
+              "description": "Played when it reaches warning severity (CLAM, RAM, AIW, RIMCAS Stage One)."
+            },
+            "alert": {
+              "type": "string",
+              "description": "Played when it reaches alert severity (MSAW, BUST, RIMCAS Stage Two, an emergency squawk)."
+            },
+            "alertRepeatS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "description": "Seconds between repeats of the alert sound while any unacknowledged alert-severity alert stands anywhere. 0 plays once per escalation, which is the default; NOVA keeps sounding, vSMR sounded once."
+            },
+            "perKind": {
+              "type": "object",
+              "description": "Replaces the severity sound for one kind, so MSAW can have its own tone.",
+              "propertyNames": {
+                "enum": [
+                  "bust",
+                  "clam",
+                  "ram",
+                  "msaw",
+                  "apw",
+                  "aiw",
+                  "holdIntrusion",
+                  "mtcd",
+                  "tct",
+                  "rimcas",
+                  "stca",
+                  "afdas",
+                  "emergency"
+                ]
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "acknowledge": {
+          "type": "object",
+          "description": "What the acknowledgeAlert click action does. The colour always stays: acknowledging says the controller has seen the alert, not that it has gone, and a change of kind or severity re-arms it by itself.",
+          "properties": {
+            "silencesSound": {
+              "type": "boolean",
+              "default": true,
+              "description": "An acknowledged alert stops driving sounds.alertRepeatS."
+            },
+            "expiresS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "description": "Seconds an acknowledgement lasts before the alert re-arms. 0 never lapses."
+            }
+          },
+          "additionalProperties": false
+        },
+        "priority": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "bust",
+              "clam",
+              "ram",
+              "msaw",
+              "apw",
+              "aiw",
+              "holdIntrusion",
+              "mtcd",
+              "tct",
+              "rimcas",
+              "stca",
+              "afdas",
+              "emergency"
+            ]
+          },
+          "uniqueItems": true,
+          "default": [
+            "rimcas",
+            "stca",
+            "msaw",
+            "bust",
+            "apw",
+            "aiw",
+            "ram",
+            "emergency",
+            "clam",
+            "holdIntrusion",
+            "afdas",
+            "tct",
+            "mtcd"
+          ],
+          "description": "Which kind alertKind and alertText report when several stand on one aircraft, highest first. Kinds left out follow the listed ones in the default order, so a partial list cannot hide one. Severity breaks a tie within a kind, then the server's own priority field. Use the per-kind keys instead where a system wants each net placed by hand."
+        },
+        "emergencySquawk": {
+          "type": "boolean",
+          "default": true,
+          "description": "Raises an alert-severity Emergency on any aircraft squawking 7500, 7600 or 7700, with the condition and the code as alertText. Client-side and needs no server."
+        }
+      },
+      "additionalProperties": false
+    },
     "squawk": {
       "type": "object",
       "description": "The squawk provider chain: the package's priority per provider name, providers it disables, the reserved codes no provider may hand out, the circuit codes, and a first-party HTTP allocator. A provider the package does not name keeps what it declared.",

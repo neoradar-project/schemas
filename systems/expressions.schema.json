@@ -167,6 +167,25 @@
                           "rimcasTimeToRunway",
                           "rimcasCountdown",
                           "rimcasLowVisibility",
+                          "alertKind",
+                          "alertSeverity",
+                          "alertText",
+                          "alertOther",
+                          "alertCount",
+                          "alertAcknowledged",
+                          "alertsMuted",
+                          "alertStca",
+                          "alertMsaw",
+                          "alertApw",
+                          "alertAiw",
+                          "alertRam",
+                          "alertClam",
+                          "alertBust",
+                          "alertHold",
+                          "alertTct",
+                          "alertMtcd",
+                          "alertAfdas",
+                          "alertEmergency",
                           "sectorExitPoint",
                           "sectorExitLevel",
                           "sectorExitLevelSource",
@@ -641,6 +660,101 @@
                               "type": "string",
                               "const": "rimcasLowVisibility",
                               "description": "1 while low visibility procedures are in force for runway monitoring, else 0."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertKind",
+                              "description": "The highest-priority safety net alert standing on this aircraft: 0 none, 1 BUST, 2 CLAM, 3 RAM, 4 MSAW, 5 APW, 6 AIW, 7 hold intrusion, 8 MTCD, 9 TCT, 10 RIMCAS, 11 STCA, 12 AFDAS, 13 emergency squawk. The order is policy.json safetyNets.priority."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertSeverity",
+                              "description": "Severity of that alert: 0 none, 1 info, 2 warning, 3 alert. RIMCAS Stage One is a warning and Stage Two an alert, so [\">=\", \"alertSeverity\", \"2\"] on a text item is the flashing ALERT row every net shares."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertText",
+                              "description": "That alert's own text, the server's wording for a server net and the evaluator's for a client one; blank for none."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertOther",
+                              "description": "The second aircraft of a pairwise alert (MTCD, TCT, STCA); blank otherwise."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertCount",
+                              "description": "How many alerts stand on this aircraft, after the system's safetyNets.show filter."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertAcknowledged",
+                              "description": "1 while the controller has acknowledged the highest alert (the acknowledgeAlert action); a change of kind or severity clears it. Gate a blink on it and leave the colour alone."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertsMuted",
+                              "description": "1 while safety net sounds are silenced for this session (the muteAlerts action). The same for every aircraft, so a list header can show it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertStca",
+                              "description": "STCA severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or nothing runs it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertMsaw",
+                              "description": "MSAW severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertApw",
+                              "description": "APW severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertAiw",
+                              "description": "AIW severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertRam",
+                              "description": "RAM severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertClam",
+                              "description": "CLAM severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertBust",
+                              "description": "BUST severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertHold",
+                              "description": "Hold intrusion severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertTct",
+                              "description": "TCT severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertMtcd",
+                              "description": "MTCD severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertAfdas",
+                              "description": "AFDAS severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or nothing runs it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertEmergency",
+                              "description": "3 while this aircraft squawks 7500, 7600 or 7700, else 0. alertText names the condition; policy.json safetyNets.emergencySquawk turns the net off."
                             },
                             {
                               "type": "string",
