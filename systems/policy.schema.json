@@ -554,7 +554,7 @@
     },
     "safetyNets": {
       "type": "object",
-      "description": "The alert board every safety net wears: the server's nets (BUST, CLAM, RAM, MSAW, APW, AIW, hold intrusion, MTCD, TCT), the client's RIMCAS and the emergency squawk, merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. Numbers a vAcc owns (what each server net triggers on) live in the hub, not here.",
+      "description": "The alert board every safety net wears: the server's nets (BUST and CLAM today, MTCD and TCT later), the client's own (RIMCAS, RAM, the emergency squawk), merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. Numbers a vAcc owns (what each server net triggers on) live in the hub, not here.",
       "properties": {
         "show": {
           "type": "object",
@@ -688,6 +688,54 @@
           "type": "boolean",
           "default": true,
           "description": "Raises an alert-severity Emergency on any aircraft squawking 7500, 7600 or 7700, with the condition and the code as alertText. Client-side and needs no server."
+        },
+        "ram": {
+          "type": "object",
+          "description": "Route adherence monitoring, evaluated on the client against the route expansion the server landed on the flight plan, so the numbers are the package's. It measures cross-track distance to the leg the aircraft is flying and raises a warning-severity Ram with the distance as alertText. The server is still the only route expander, so with no server there is no expansion and the net is silent rather than clean; .dev ram-info says which of the two it is. Absent is every default below, as an absent safetyNets section is.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "False stops the net evaluating at all. Use safetyNets.show.ram instead to keep it evaluating and hide it on this system."
+            },
+            "triggerNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 2.5,
+              "description": "Cross-track distance from the leg's centreline that raises the net, TopSky's number. Must be at least clearNm."
+            },
+            "clearNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 2,
+              "description": "Cross-track distance the aircraft must come back inside for the net to clear. Below triggerNm on purpose: the band between the two is the hysteresis that stops an aircraft riding the trigger flapping every cycle."
+            },
+            "confirmCycles": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2,
+              "description": "Cycles beyond triggerNm before the net raises. A cycle is cadenceS, so the default is 40 seconds of sustained deviation. Clearing needs no confirmation."
+            },
+            "cadenceS": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 20,
+              "description": "Seconds between evaluations. The net rides the 2 Hz position batch and skips the batches inside this window, so this is also what one confirmation cycle is worth."
+            },
+            "maxDeviationNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 30,
+              "description": "Beyond this the net says nothing: the flight is not flying that route at all and a permanent alert on it is noise. Must exceed triggerNm."
+            },
+            "directInhibitS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 30,
+              "description": "How long an assigned direct-to the server has not folded into the expansion yet inhibits the net, because the legs still describe the old path. The bound is what stops a direct the server never folds leaving the net silent on that aircraft for the session."
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
