@@ -163,6 +163,7 @@
                           "zoneCount",
                           "surfaceOwnershipState",
                           "surfaceResponsibleController",
+                          "surfaceMovementPhase",
                           "sectorExitPoint",
                           "sectorExitLevel",
                           "sectorExitLevelSource",
@@ -602,6 +603,11 @@
                               "type": "string",
                               "const": "surfaceResponsibleController",
                               "description": "Callsign of the position responsible for the mobile, SPEC-171's responsible Controller; blank when nobody holds it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "surfaceMovementPhase",
+                              "description": "Where the mobile is in its movement, from the zones, speed, ground flag and height: 0 unknown, 1 on stand, 2 pushback, 3 taxiing, 4 holding, 5 on runway, 6 taking off, 7 departed, 8 airborne, 9 approaching, 10 landed. Thresholds and zone tags are policy.json surface.movement."
                             },
                             {
                               "type": "string",

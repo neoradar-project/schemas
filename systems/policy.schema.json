@@ -282,6 +282,47 @@
           "type": "boolean",
           "default": false,
           "description": "EUROCONTROL ITWP Baseline HMI 4.3.17: a push, taxi, line-up or take-off clearance issued to a mobile nobody holds assumes it, so the ground position never assumes as a separate action. Only a ground status THIS controller sets counts; another controller's change never assumes anything here, and a mobile somebody already holds is left alone."
+        },
+        "movement": {
+          "type": "object",
+          "description": "Tunes surfaceMovementPhase, the NOVA 9000 TMERS event list read as states (unknown, on stand, pushback, taxiing, holding, on runway, taking off, departed, airborne, approaching, landed). The phase is always computed, every batch, from the zones holding the mobile, its speed, the ground flag and its height above the field, with the previous phase as memory; this block names the zones and moves the thresholds. Absent means every default, which matches the UK zones and the lhr tag thresholds.",
+          "properties": {
+            "standZoneTag": {
+              "type": "string",
+              "default": "stand",
+              "description": "The zones.geojson tag that marks a stand area, matched as a whole tag. Empty means no zone counts as a stand, so on stand and pushback are never produced."
+            },
+            "runwayZoneTag": {
+              "type": "string",
+              "default": "runway",
+              "description": "The zones.geojson tag that marks a runway strip, matched as a whole tag. Empty means no zone counts as a runway, so on runway, taking off and landed are never produced."
+            },
+            "movingKts": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 3,
+              "description": "Ground speed at or above which a mobile is moving: taxiing rather than holding, pushback rather than on stand."
+            },
+            "rollingKts": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 50,
+              "description": "Ground speed at or above which a mobile on the runway is in a runway movement, taking off or landed, rather than entered, lined up or crossing. Must be above movingKts or the system loads on defaults."
+            },
+            "approachAglFt": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 1000,
+              "description": "Height above the field below which an airborne, descending mobile is approaching."
+            },
+            "departedAglFt": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 1500,
+              "description": "Height above the field below which a mobile airborne off a take-off roll is still departed rather than airborne."
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
