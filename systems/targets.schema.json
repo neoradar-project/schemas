@@ -600,13 +600,13 @@
                     "type": "string",
                     "enum": ["sprite", "polygon"],
                     "default": "sprite",
-                    "description": "How the raw video is drawn. sprite is the atlas blob scaled to the wingspan, which absent also means. polygon is vSMR's outline: twelve points from the aircraft's span, length and main gear width, taken from the server's aircraft-dimensions answer when it knows the type and otherwise from primaryPlotWingspan with vSMR's wake-category proportions; jittered per reroll like the blob, drawn in primaryPlotColor under the plot symbol. Only a variant with primaryPlotColor draws either."
+                    "description": "How the raw video is drawn. sprite (also what absent means) is the atlas blob at the aircraft's footprint: the server's aircraft-dimensions span and length when it knows the type, else primaryPlotWingspan with vSMR's wake-category proportions. polygon is vSMR's outline: twelve points from the aircraft's span, length and main gear width, taken from the server's aircraft-dimensions answer when it knows the type and otherwise from primaryPlotWingspan with vSMR's wake-category proportions; jittered per reroll like the blob, drawn in primaryPlotColor under the plot symbol. Only a variant with primaryPlotColor draws either."
                   },
                   "primaryPlotWingspan": {
                     "type": "number",
                     "exclusiveMinimum": 0,
                     "default": 36,
-                    "description": "Half-span of the raw video blob in metres. The quad is drawn two wingspans across, so the blob inside the texture's padding reads near life size. Ground variants only."
+                    "description": "Span of the raw video blob in metres, used when the server does not know the aircraft type; a known type is drawn at its own span and length. The blob is drawn span wide and, with vSMR's wake-category proportions, length long, then turned onto the heading. Ground variants only."
                   },
                   "primaryPlotWingspanByWakeCategory": {
                     "type": "object",
