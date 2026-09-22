@@ -758,6 +758,11 @@
                             },
                             {
                               "type": "string",
+                              "const": "msaFt",
+                              "description": "The highest minimum safe altitude the package's msaw.geojson surface has under this aircraft, in feet AMSL; 0 where it has none and 0 when the package ships no surface. The MSAW net measures the aircraft against this, and a label can show it, which TopSky cannot. Overlap is resolved highest wins, never by file order."
+                            },
+                            {
+                              "type": "string",
                               "const": "isIdent",
                               "description": "Transponder identing."
                             },

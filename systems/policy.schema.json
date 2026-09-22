@@ -849,6 +849,66 @@
           },
           "additionalProperties": false
         },
+        "msaw": {
+          "type": "object",
+          "description": "Minimum safe altitude warning, evaluated on the client against the package's own datasets/msaw.geojson. Unlike stca this net is ON wherever that file exists: its figures are the vAcc's own published surface rather than a tuning nobody has done, so absent means every default below. WITH NO SURFACE THE NET IS SILENT RATHER THAN CLEAN, and .dev msaw-info says which of the two it is instead of reporting every aircraft above a minimum. Raises an alert-severity Msaw with the minimum as alertText, and publishes the minimum under each aircraft as the msaFt expression whether or not it alerts.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "False stops the net evaluating at all. Use safetyNets.show.msaw instead to keep it evaluating and hide it on this system."
+            },
+            "bufferFt": {
+              "type": "number",
+              "minimum": 0,
+              "default": 100,
+              "description": "HYSTERESIS, not a margin: the trigger is the minimum LESS this and the clear is the minimum PLUS it, because an aircraft cruising at exactly the minimum wobbles either side of it and would otherwise flap. TopSky's UK number."
+            },
+            "lookaheadS": {
+              "type": "number",
+              "minimum": 0,
+              "default": 60,
+              "description": "How far ahead the current vertical rate is projected. Only a DESCENT predicts into the surface; a climb is judged where the aircraft is, so a departure does not alert on the way up."
+            },
+            "cadenceS": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 5,
+              "description": "Seconds between evaluations inside the 2 Hz sweep. Five is how often a pilot client sends a position, so confirmCycles counts independent samples."
+            },
+            "confirmCycles": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2,
+              "description": "Cadence windows the aircraft must stay below the trigger before the net raises. Clearing is immediate."
+            },
+            "inhibitBelowFtOnFinal": {
+              "type": "number",
+              "minimum": 0,
+              "default": 1500,
+              "description": "Inside a monitored runway's corridor and below this height above the threshold, the net says nothing: an aircraft on short final is under every minimum by design. Needs runwayMonitoring for the runway ends; with none there are no corridors and nothing is inhibited."
+            },
+            "corridorRangeNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 15,
+              "description": "How far the approach and departure corridor runs either side of a monitored runway end."
+            },
+            "corridorXteNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 2,
+              "description": "Half width of that corridor either side of the extended centreline."
+            },
+            "flightRules": {
+              "type": "string",
+              "enum": ["all", "ifr", "vfr"],
+              "default": "all",
+              "description": "Which flights the net watches. An unfiled rule satisfies neither ifr nor vfr, so it is out of both."
+            }
+          },
+          "additionalProperties": false
+        },
         "stca": {
           "type": "object",
           "description": "Short term conflict alert, evaluated on the client: a predicted loss of separation between two aircraft inside the lookahead, raised as an alert-severity Stca naming the other aircraft in alertOther. The largest net here, and the one where a naive implementation is worse than none, so unlike every other safetyNets key it is OFF until this section is authored: it wants regions tuned to the airspace first. Its whole budget goes on nuisance suppression rather than sensor noise, because positions here come from the pilot client and are exact. .dev stca-info prints every pair the last cycle looked at and why each was rejected.",
