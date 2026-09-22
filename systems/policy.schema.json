@@ -959,6 +959,99 @@
               "default": "stca-parallel",
               "description": "A zone tag that suppresses a pair when BOTH aircraft are inside it, which is what parallel approaches look like. One inside and one crossing overhead is still a conflict."
             },
+            "finalApproach": {
+              "type": "object",
+              "description": "The final-approach corridor, generated behind EVERY monitored landing end from the runway ends runway monitoring already resolves, so authoring an empty object gets the behaviour at every airport in the package with nothing drawn. Inside a corridor two aircraft landing in trail are flying the approach and the net holds its tongue; every other pair in there is judged against lateralNm instead of the region's own minimum. ABSENT IS OFF, because a corridor silences alerts. IT NEEDS policy.json runwayMonitoring: the geometry comes from those strips, so a system authoring this and no runway monitoring generates nothing, which .dev stca-info says in those words.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False keeps the section as documentation without generating anything."
+                },
+                "rangeNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 10,
+                  "description": "How far back from the threshold the corridor runs."
+                },
+                "xteNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 0.5,
+                  "description": "Half width either side of the extended centreline."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 2.5,
+                  "description": "The lateral minimum inside the corridor, which replaces the region's where it is smaller. It never widens one: a corridor reduces separation on final, it does not tighten the net."
+                },
+                "courseToleranceDeg": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 10,
+                  "description": "How far off the approach course a track may be and still count as flying it. A track crossing the corridor is in it but not on the course, so it is never silenced."
+                }
+              },
+              "additionalProperties": false
+            },
+            "parallel": {
+              "type": "array",
+              "description": "Runway pairs worked at the same time. The package names them because nothing in the data says which runways an aerodrome operates simultaneously. One aircraft in each normal operating zone, each tracking within finalApproach.courseToleranceDeg of its own approach course, is the operation working rather than a conflict. A pair naming a runway no monitored strip carries is reported by .dev stca-info rather than silently matching nothing.",
+              "items": {
+                "type": "object",
+                "required": ["icao", "left", "right"],
+                "additionalProperties": false,
+                "properties": {
+                  "icao": { "type": "string", "description": "The aerodrome both runways belong to." },
+                  "left": { "type": "string", "description": "One runway's landing designator, as the strip carries it." },
+                  "right": { "type": "string", "description": "The other one. Naming the same runway twice is a load error." },
+                  "rangeNm": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "default": 10,
+                    "description": "How far back each operating zone runs from its threshold."
+                  },
+                  "nozNm": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "default": 0.3,
+                    "description": "Half width of each operating zone either side of its centreline."
+                  },
+                  "departure": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "True for a simultaneous DEPARTURE pair rather than an approach pair."
+                  },
+                  "leftCourseT": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMaximum": 360,
+                    "description": "Approach course in degrees true where it differs from the runway's own bearing."
+                  },
+                  "rightCourseT": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMaximum": 360,
+                    "description": "The same for the other runway."
+                  },
+                  "leftApproachAltFt": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "The level assumed for this runway when the clearance is \"cleared for approach\" rather than a number, which is the level-off model's missing case on final."
+                  },
+                  "rightApproachAltFt": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "The same for the other runway."
+                  },
+                  "ntzZoneTag": {
+                    "type": "string",
+                    "description": "A zones.geojson tag for the no transgression zone between the two. This is the one piece of approach geometry that turns the net ON: a track inside it is exactly what simultaneous operations forbid, so NO generated region may silence a pair while either aircraft is in there."
+                  }
+                }
+              }
+            },
             "maxNewAlertsPerCycle": {
               "type": "integer",
               "exclusiveMinimum": 0,
