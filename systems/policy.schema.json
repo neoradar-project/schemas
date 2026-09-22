@@ -548,13 +548,90 @@
           "enum": ["monitor", "ignore"],
           "default": "monitor",
           "description": "What an active runway with no runways entry gets: monitored for everything, or ignored."
+        },
+        "approachFunnel": {
+          "type": "object",
+          "description": "AFDAS, NOVA's approach funnel deviation net, evaluated on the client: an aircraft on final left, right, above or below the funnel to the runway in use, raised as a warning-severity Afdas naming the side and as an alert past twice the tolerance. It rides RIMCAS's own arrival detection, so it judges only an aircraft already lined up with a monitored runway end and reaching its strip. A net of its own: absent means off even with runwayMonitoring authored. The glidepath band needs a threshold elevation, which open-navdata.db carries for most but not all runways; an end without one is judged on the lateral axis alone and .dev afdas-info names it.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "False stops the funnel evaluating. Use safetyNets.show.afdas instead to keep it evaluating and hide it on this system."
+            },
+            "lateralDeg": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 45,
+              "default": 3,
+              "description": "Half angle of the wedge either side of the extended centreline, widening from the threshold. NOVA's number."
+            },
+            "glidepathDeg": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 15,
+              "default": 3,
+              "description": "Nominal glidepath the vertical band is centred on. Override it per end for a steep approach rather than raising it here."
+            },
+            "verticalFt": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 150,
+              "description": "Half depth of the band around the glidepath, in feet."
+            },
+            "fromNm": {
+              "type": "number",
+              "minimum": 0,
+              "default": 2,
+              "description": "Nearest distance from the threshold the funnel judges. Inside it the aircraft is landing and the wedge has narrowed to nothing useful."
+            },
+            "toNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 10,
+              "description": "Furthest distance from the threshold the funnel judges. Must exceed fromNm. Beyond it an aircraft is still being turned onto final, which is the main nuisance this window prevents."
+            },
+            "confirmCycles": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 4,
+              "description": "Sweeps outside the funnel before it raises. The sweep is the 2 Hz position batch, so the default is two seconds. Coming back inside clears at once."
+            },
+            "ends": {
+              "type": "object",
+              "description": "Per runway END overrides, keyed \"EGLC/27\". A steep approach needs its own glidepath; anything the entry does not name inherits the section's value.",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "glidepathDeg": {
+                    "type": "number",
+                    "minimum": 0.5,
+                    "maximum": 15,
+                    "description": "This end's nominal glidepath, for example 5.5 at London City."
+                  },
+                  "lateralDeg": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 45,
+                    "description": "This end's lateral half angle."
+                  },
+                  "verticalFt": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "description": "This end's vertical half depth."
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
     },
     "safetyNets": {
       "type": "object",
-      "description": "The alert board every safety net wears: the server's nets (BUST and CLAM today, MTCD and TCT later), the client's own (RIMCAS, RAM, the emergency squawk), merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. Numbers a vAcc owns (what each server net triggers on) live in the hub, not here.",
+      "description": "The alert board every safety net wears: the server's nets (BUST and CLAM today, MTCD and TCT later), the client's own (RIMCAS, RAM, AIW, AFDAS, the emergency squawk), merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. Numbers a vAcc owns (what each server net triggers on) live in the hub, not here.",
       "properties": {
         "show": {
           "type": "object",
