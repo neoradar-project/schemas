@@ -631,7 +631,7 @@
     },
     "safetyNets": {
       "type": "object",
-      "description": "The alert board every safety net wears: the server's nets (BUST and CLAM today, MTCD and TCT later), the client's own (RIMCAS, RAM, AIW, AFDAS, the emergency squawk), merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. Numbers a vAcc owns (what each server net triggers on) live in the hub, not here.",
+      "description": "The alert board every safety net wears: the server's nets (BUST and CLAM today, MTCD and TCT later), the client's own (RIMCAS, RAM, AIW, AFDAS, STCA, the emergency squawk), merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. Numbers a vAcc owns (what each server net triggers on) live in the hub, not here.",
       "properties": {
         "show": {
           "type": "object",
@@ -810,6 +810,120 @@
               "minimum": 0,
               "default": 30,
               "description": "How long an assigned direct-to the server has not folded into the expansion yet inhibits the net, because the legs still describe the old path. The bound is what stops a direct the server never folds leaving the net silent on that aircraft for the session."
+            }
+          },
+          "additionalProperties": false
+        },
+        "stca": {
+          "type": "object",
+          "description": "Short term conflict alert, evaluated on the client: a predicted loss of separation between two aircraft inside the lookahead, raised as an alert-severity Stca naming the other aircraft in alertOther. The largest net here, and the one where a naive implementation is worse than none, so unlike every other safetyNets key it is OFF until this section is authored: it wants regions tuned to the airspace first. Its whole budget goes on nuisance suppression rather than sensor noise, because positions here come from the pilot client and are exact. .dev stca-info prints every pair the last cycle looked at and why each was rejected.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "False stops the net evaluating. Use safetyNets.show.stca instead to keep it evaluating and hide it on this system."
+            },
+            "lookaheadS": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 90,
+              "description": "How far ahead a conflict is predicted. Longer sees more and cries wolf more; 90 seconds is the tactical horizon STCA is for, and TCT is the five minute tool."
+            },
+            "sampleS": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 2,
+              "description": "Step of the sampled path, which is taken when either track is turning or levelling off inside the window. Two straight tracks use a closed form and never sample."
+            },
+            "levelOffAtCfl": {
+              "type": "boolean",
+              "default": true,
+              "description": "Assume an aircraft stops climbing or descending at its cleared level, which is the largest single nuisance reduction available. Its blind spot is the aircraft that does not stop, so the net carries its own per-aircraft guard: a track that has transited its cleared level by more than 300 ft and is still going keeps the observed rate whatever this says. False turns the assumption off for every aircraft; nothing can pin it on past the guard."
+            },
+            "confirmS": {
+              "type": "number",
+              "minimum": 0,
+              "default": 2,
+              "description": "Seconds a conflict must hold before it is raised. Seconds rather than cycles on purpose: the sweep is 2 Hz and many pilot clients send a position every five, so two consecutive cycles can be one sample seen twice."
+            },
+            "clearS": {
+              "type": "number",
+              "minimum": 0,
+              "default": 2,
+              "description": "Seconds a raised pair must stay clear before it is dropped, so a single missed position report does not flash the alert off and on."
+            },
+            "scope": {
+              "type": "string",
+              "enum": ["ownedOrConcerned", "allVisible"],
+              "default": "ownedOrConcerned",
+              "description": "Who is shown a pair. ownedOrConcerned raises when at least one of the two is ours by the attention tiers the containment sweep already computes, which is what keeps an ACC controller from seeing constant conflicts between aircraft nobody is working. allVisible iterates everything and costs about ten times as many pair tests."
+            },
+            "turnRateThresholdDegS": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 1.5,
+              "description": "Above this a track is turning and its pairs take the sampled path. A track whose rate cannot be known at all is always sampled, with its lateral minimum widened."
+            },
+            "defaultRegion": {
+              "type": "object",
+              "description": "The separation minima anywhere no region rule matches. En-route values by default.",
+              "properties": {
+                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 5 },
+                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 1000 }
+              },
+              "additionalProperties": false
+            },
+            "regions": {
+              "type": "array",
+              "description": "Per-airspace minima. A Volume carries no tags, so a rule selects on sector id globs, a zones.geojson tag, an altitude band, or any combination; every selector it names must hold. A rule OVERRIDES the default on the axes it names and leaves the others alone, and where several rules match one track the most conservative of each axis wins. Two aircraft in different regions take the most conservative of the two, so a tighter TMA region can never silence a conflict the en-route region beside it would have raised.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "sectorIds": {
+                    "type": "array",
+                    "items": { "type": "string", "minLength": 1 },
+                    "description": "Sector id globs, for example EGTT_LTC*. A trailing star is the only wildcard. This is the one selector that costs a volume resolve per track; a package using only zoneTag and aboveFl pays nothing."
+                  },
+                  "zoneTag": {
+                    "type": "string",
+                    "description": "A tag on a zones.geojson polygon the package draws for the purpose."
+                  },
+                  "aboveFl": {
+                    "type": "integer",
+                    "description": "Applies at or above this flight level, for example 410 for the 2000 ft band."
+                  },
+                  "lateralNm": { "type": "number", "exclusiveMinimum": 0 },
+                  "verticalFt": { "type": "number", "exclusiveMinimum": 0 }
+                },
+                "additionalProperties": false
+              }
+            },
+            "buffers": {
+              "type": "object",
+              "description": "The uncertainty allowance, added on top of the minima and growing with time. Deterministic rather than a probability of loss, which nobody here would ever calibrate. Note that the buffer is why an aircraft levelling off EXACTLY at the vertical minimum still reads as a conflict.",
+              "properties": {
+                "lateralNm": { "type": "number", "minimum": 0, "default": 0.2 },
+                "lateralNmPerMin": { "type": "number", "minimum": 0, "default": 0.3 },
+                "verticalFt": { "type": "number", "minimum": 0, "default": 100 },
+                "verticalFtPerMin": { "type": "number", "minimum": 0, "default": 200 }
+              },
+              "additionalProperties": false
+            },
+            "exclusionZoneTag": {
+              "type": "string",
+              "default": "stca-exclude",
+              "description": "A zone tag that takes a track out of the pair loop entirely, for airspace where converging traffic is the procedure. Whole tags only, so no spaces."
+            },
+            "parallelApproachZoneTag": {
+              "type": "string",
+              "default": "stca-parallel",
+              "description": "A zone tag that suppresses a pair when BOTH aircraft are inside it, which is what parallel approaches look like. One inside and one crossing overhead is still a conflict."
+            },
+            "maxNewAlertsPerCycle": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 5,
+              "description": "How many NEW alerts one cycle may raise, so an event peak cannot produce a wall of them at once. The rest are DEFERRED to the next cycle in order of time to loss, never dropped: a dropped alert is a silent blindness."
             }
           },
           "additionalProperties": false
