@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeoRadar runway-derived STCA regions",
+  "description": "datasets/stca-runways.json: the per-runway conflict-alert regions a vAcc has tuned by hand, which override the ones the client generates from the runway ends it already knows. Written by `neoradar-cli topsky-convert` (and by `convert` when the package environment has a topsky/ folder) out of the vAcc's own TopSkySTCA.txt, and written at all only when that file exists. Without the file the client still generates both kinds of region from policy.json safetyNets.stca.finalApproach and .parallel, so this dataset is the exception rather than the source: it is where a vAcc says one airport is not like the others. Coordinates, where a record carries any, are EPSG:3857 metres like every other dataset. Absent file means the generated regions alone, which is the normal case.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["finalApproaches", "parallelOperations"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "name": {
+      "type": "string",
+      "description": "Free text; the converter names the file it came from."
+    },
+    "finalApproaches": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finalApproach" },
+      "description": "One per monitored runway end. Inside the corridor, an alert between two aircraft is inhibited only when ALL of: both are planned to land that runway, both are inside it, both track within ten degrees of the approach course, the nearer aircraft is not a heavy, a super or a B757, and the further one is the same wake category or heavier. Anything else alerts as usual, so the corridor narrows the net rather than switching it off."
+    },
+    "parallelOperations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/parallelOperation" },
+      "description": "One per pair of runways worked simultaneously. An alert is inhibited when one aircraft is in each normal operating zone and both track within ten degrees of their own approach courses; for a departure pair the ten degrees applies only towards the other runway."
+    }
+  },
+  "$defs": {
+    "position": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "type": "number" },
+      "description": "[x, y] in EPSG:3857 metres."
+    },
+    "ring": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "$ref": "#/$defs/position" },
+      "description": "A closed linear ring: first and last position equal, at least four positions."
+    },
+    "polygon": {
+      "type": "object",
+      "required": ["type", "coordinates"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "const": "Polygon" },
+        "coordinates": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/ring" }
+        }
+      }
+    },
+    "finalApproach": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["icao", "runway", "rangeNm", "xteNm"],
+      "properties": {
+        "icao": { "type": "string", "description": "Aerodrome the runway belongs to." },
+        "runway": { "type": "string", "description": "Runway designator, such as 27L." },
+        "rangeNm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 10,
+          "description": "How far back from the threshold the corridor runs, in nautical miles."
+        },
+        "xteNm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 0.5,
+          "description": "Half width of the corridor either side of the extended centreline, in nautical miles."
+        },
+        "end": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y"],
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" }
+          },
+          "description": "The threshold in EPSG:3857 metres, where the vAcc gave one. Absent uses the runway end the client's own strip resolver knows, which is the usual case."
+        },
+        "courseT": {
+          "type": "number",
+          "minimum": 0,
+          "exclusiveMaximum": 360,
+          "description": "Approach course in degrees true, where the vAcc gave one. Absent uses the runway's own bearing."
+        }
+      }
+    },
+    "parallelRunway": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runway"],
+      "properties": {
+        "runway": { "type": "string" },
+        "approachAltFt": {
+          "type": "number",
+          "description": "The level assumed for this runway when the clearance is \"cleared for approach\" rather than a number, which is the vertical model's missing case on final."
+        },
+        "courseT": {
+          "type": "number",
+          "minimum": 0,
+          "exclusiveMaximum": 360,
+          "description": "Approach course in degrees true where it differs from the runway's own bearing."
+        },
+        "noz": {
+          "$ref": "#/$defs/polygon",
+          "description": "This runway's normal operating zone, where the vAcc has drawn one. Absent builds it from rangeNm and the two widths."
+        }
+      }
+    },
+    "parallelOperation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["icao", "left", "right", "rangeNm", "widthInNm", "widthOutNm", "departure"],
+      "properties": {
+        "icao": { "type": "string" },
+        "left": { "$ref": "#/$defs/parallelRunway" },
+        "right": { "$ref": "#/$defs/parallelRunway" },
+        "rangeNm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 10,
+          "description": "How far the two operating zones run, in nautical miles."
+        },
+        "widthInNm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 0.3,
+          "description": "Half width of each zone at the threshold end, in nautical miles."
+        },
+        "widthOutNm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 0.3,
+          "description": "Half width at the far end, so a zone may splay."
+        },
+        "departure": {
+          "type": "boolean",
+          "default": false,
+          "description": "True for a simultaneous DEPARTURE pair, where the ten-degree track limit applies only towards the other runway rather than both ways."
+        },
+        "ntz": {
+          "$ref": "#/$defs/polygon",
+          "description": "The no transgression zone between the two. This one EXTENDS alerting rather than inhibiting it: inside it the net raises below the limits it otherwise honours, because a track there is exactly what simultaneous operations forbid."
+        }
+      }
+    }
+  }
+}

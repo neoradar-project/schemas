@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeoRadar minimum safe altitude surface",
+  "description": "datasets/msaw.geojson: the minimum safe altitude of every point the vAcc has authored one for, which is what the client's MSAW net measures an aircraft against. Written by `neoradar-cli topsky-convert` (and by `convert` when the package environment has a topsky/ folder) out of the vAcc's own TopSkyMSAW.txt, so the two clients read one surface and the file is never hand-edited. Three layers usually overlap: the per-airport surveillance minimum altitude areas, a grid of area minimum altitudes from the AIP, and a floor over each FIR. Coordinates are EPSG:3857 metres like every other GeoJSON in datasets/, so the same file can be listed in the manifest's mapLayers and drawn as a debugging layer; a file whose coordinates all fit inside longitude/latitude degree ranges is refused as WGS84 rather than loaded in the wrong place. OVERLAP IS RESOLVED HIGHEST WINS, not by file order: TopSky takes the first containing record and its own authors record what that costs, so the conservative answer needs no ordering discipline and lets the FIR floor and the grid sit under the airport sectors without anyone sequencing them. Absent file means no MSAW: the net is inactive and .dev msaw-info says so.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "features"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "const": "FeatureCollection"
+    },
+    "name": {
+      "type": "string",
+      "description": "Free text; the converter names the file it came from."
+    },
+    "crs": {
+      "type": "object",
+      "description": "Tolerated for GIS exporters that write one. Ignored by the client: the coordinates are always EPSG:3857."
+    },
+    "bbox": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 4,
+      "maxItems": 6
+    },
+    "features": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/cell" }
+    }
+  },
+  "$defs": {
+    "position": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "type": "number" },
+      "description": "[x, y] in EPSG:3857 metres. A third element is tolerated and ignored."
+    },
+    "ring": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "$ref": "#/$defs/position" },
+      "description": "A closed linear ring: first and last position equal, at least four positions. A circle or a sector from the source file arrives here already densified."
+    },
+    "geometry": {
+      "type": "object",
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "type": "string", "const": "Polygon" },
+        "coordinates": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/ring" },
+          "description": "The outer ring first, then any holes."
+        }
+      }
+    },
+    "cell": {
+      "type": "object",
+      "required": ["type", "geometry", "properties"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "const": "Feature" },
+        "id": { "type": ["string", "number"] },
+        "bbox": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 4,
+          "maxItems": 6
+        },
+        "geometry": { "$ref": "#/$defs/geometry" },
+        "properties": {
+          "type": "object",
+          "required": ["msaFt"],
+          "additionalProperties": true,
+          "description": "additionalProperties is open on purpose: a surface listed in mapLayers carries its layer styling here too.",
+          "properties": {
+            "msaFt": {
+              "type": "integer",
+              "description": "Minimum safe altitude over this polygon, in feet AMSL. The MSAW net triggers below this minus safetyNets.msaw.bufferFt and clears above it plus the buffer, because an aircraft cruising at exactly the minimum wobbles. The converter warns on anything under 300 ft, which is what a dropped zero looks like."
+            },
+            "source": {
+              "type": "string",
+              "enum": ["smaa", "grid", "floor"],
+              "description": "Which layer this polygon belongs to, for the explainer only; it is NOT a precedence. smaa is a per-airport surveillance minimum altitude area, grid a cell of the AIP's area minimum altitude grid, floor a whole-FIR or whole-region minimum. The converter calls a polygon spanning a degree or more a floor."
+            },
+            "order": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "The record's position in the source file. Kept so .dev msaw-info can say which polygon TopSky's first-match-wins rule would have chosen, where the client takes the highest. Never used to resolve an overlap."
+            },
+            "label": {
+              "type": "string",
+              "description": "The nearest preceding comment in the source file, which is the only description these records have: the UK author writes the altitude band or the runway there (\"Runway 15\"). Free text, shown by the explainer."
+            },
+            "runway": {
+              "type": "string",
+              "description": "The runway this area belongs to, where the vAcc has said. Not written by the converter, because the source file does not carry it; a package may add it by hand and the client may one day gate on the runway in use. Highest-wins is correct for both directions meanwhile."
+            }
+          }
+        }
+      }
+    }
+  }
+}

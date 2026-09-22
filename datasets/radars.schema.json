@@ -28,6 +28,57 @@
     }
   },
   "$defs": {
+    "rawVideo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["beamwidthDeg", "pulseWidthUs", "maxAngleDeg", "positions"],
+      "description": "What SIZES a synthesised primary return at this station, as against the sensors above, which decide whether one is seen at all. Written by `neoradar-cli topsky-convert` out of the vAcc's own TopSkyRadars.txt and merged onto the station by name, then by position within 500 m. The client picks the FIRST station whose positions prefix matches the view's login callsign, exactly as TopSky does, and a view matching no station draws the return life size with the explainer saying why. Absent block means today's behaviour: the return is the size of the aircraft.",
+      "properties": {
+        "beamwidthDeg": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 1.5,
+          "description": "Half-power beamwidth in degrees. A target is drawn twice this wide in azimuth, so the return grows with range: an aircraft 20 NM from a 1.25 degree head smears about 0.87 NM across, which is why an en-route raw video picture shows arcs rather than aeroplanes."
+        },
+        "pulseWidthUs": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 1.0,
+          "description": "Transmitted pulse width in microseconds. A target is drawn 0.08 NM deep in range per microsecond, and that depth does NOT grow with range."
+        },
+        "maxAngleDeg": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 90,
+          "default": 90,
+          "description": "Elevation above which the head sees nothing: the cone of silence over the antenna."
+        },
+        "positions": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Login callsign prefixes this station serves, matched from the start of the callsign. One station per login, first match in file order wins, so order the stations from the most specific prefix to the least."
+        },
+        "antennaAltitudeFt": {
+          "type": "number",
+          "description": "Antenna altitude AMSL in feet. The ESE sensors carry their own; this is what a station present only in the TopSky file has."
+        },
+        "minRangeNm": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Inside this range nothing is detected."
+        },
+        "maxRangeNm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Outside this range nothing is detected. The ESE sensors carry their own ranges and those decide coverage; this one is the TopSky file's own figure, kept so the two can be compared."
+        },
+        "ceilingFt": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Maximum detection altitude in feet."
+        }
+      }
+    },
     "sensor": {
       "type": "object",
       "additionalProperties": false,
@@ -86,6 +137,9 @@
         },
         "modeS": {
           "$ref": "#/$defs/sensor"
+        },
+        "rawVideo": {
+          "$ref": "#/$defs/rawVideo"
         }
       }
     },

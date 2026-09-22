@@ -1,0 +1,289 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeoRadar segregated and restricted areas",
+  "description": "datasets/areas.geojson: the danger, restricted, prohibited, temporary segregated and reserved areas a vAcc's proximity nets probe, with the level band and the activation rules of each. Written by `neoradar-cli topsky-convert` (and by `convert` when the package environment has a topsky/ folder) out of the vAcc's own TopSkyAreas.txt, so the two clients read one set and the file is never hand-edited. GEOMETRY AND LIMITS TRAVEL IN THE PACKAGE, ACTIVATION IS LIVE: an area's shape and levels change with the AIP cycle like every runway and sector line the package already carries, while whether it is active today comes from the public airspace use plan feed the package names in policy.json safetyNets.apw.aup and the controller may override. Coordinates are EPSG:3857 metres like every other GeoJSON in datasets/, so the same file can be listed in the manifest's mapLayers and drawn as the danger-area outlines it is; a file whose coordinates all fit inside longitude/latitude degree ranges is refused as WGS84. Absent file means no APW and no SAP, and the explainers say so.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "features"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "type": { "type": "string", "const": "FeatureCollection" },
+    "name": {
+      "type": "string",
+      "description": "Free text; the converter names the file it came from."
+    },
+    "crs": {
+      "type": "object",
+      "description": "Tolerated for GIS exporters that write one. Ignored by the client: the coordinates are always EPSG:3857."
+    },
+    "bbox": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 4,
+      "maxItems": 6
+    },
+    "features": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/area" }
+    }
+  },
+  "$defs": {
+    "position": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "type": "number" },
+      "description": "[x, y] in EPSG:3857 metres. A third element is tolerated and ignored."
+    },
+    "ring": {
+      "type": "array",
+      "minItems": 4,
+      "items": { "$ref": "#/$defs/position" },
+      "description": "A closed linear ring: first and last position equal, at least four positions. A circle from the source file arrives here already densified, and its exact centre and radius ride on properties.circle."
+    },
+    "geometry": {
+      "type": "object",
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "type": "string", "const": "Polygon" },
+        "coordinates": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/ring" }
+        }
+      }
+    },
+    "buffer": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "number" },
+      "description": "[above the separation level, below it IFR, below it VFR]. Overrides the policy's global buffers for this area alone, which is how a vAcc widens the margin around one danger area without widening every one."
+    },
+    "activation": {
+      "description": "One rule. An area is active when ANY of its rules says so, and an area with no rule at all is inactive until a controller activates it by hand.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": { "type": "string", "const": "always" }
+          },
+          "description": "Permanently active. Nothing else is consulted."
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "from", "to", "days", "start", "end", "zone"],
+          "properties": {
+            "kind": { "type": "string", "const": "schedule" },
+            "from": {
+              "type": "string",
+              "pattern": "^(\\d{4}|\\d{6})$",
+              "description": "First day of the period: MMDD for a rule that repeats every year, YYMMDD for a one-off one."
+            },
+            "to": {
+              "type": "string",
+              "pattern": "^(\\d{4}|\\d{6})$",
+              "description": "Last day of the period, same two forms. A period whose end is before its start wraps through the new year."
+            },
+            "days": {
+              "type": "string",
+              "pattern": "^[0-7]+$",
+              "description": "Weekday digits, 1 Monday to 7 Sunday, in any order; \"0\" alone means continuous from the first day of the period to the last, ignoring weekdays."
+            },
+            "start": {
+              "type": "string",
+              "pattern": "^([01]\\d|2[0-4]):[0-5]\\d$",
+              "description": "Start time of day in the rule's own zone."
+            },
+            "end": {
+              "type": "string",
+              "pattern": "^([01]\\d|2[0-4]):[0-5]\\d$",
+              "description": "End time of day in the rule's own zone. An end before the start runs into the next day."
+            },
+            "zone": {
+              "type": "string",
+              "description": "IANA zone the times are in, or \"UTC\". A source file that splits one schedule into a winter and a summer range at the daylight-saving dates is FOLDED into a single rule in the vAcc's local zone, which is what removes the yearly edit those files need; the fold is only applied when every split range agrees once converted, so a mis-named zone leaves the ranges as the UTC the file wrote and warns."
+            },
+            "lowerFt": {
+              "type": "number",
+              "description": "Narrows the area's own lowerFt while this rule is what activates it, in FEET. Absent uses the area's."
+            },
+            "upperFt": {
+              "type": "number",
+              "description": "Narrows the area's own upperFt the same way, in FEET."
+            },
+            "userText": {
+              "type": "string",
+              "description": "Free text this rule shows in place of the area's own while it is active."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "ref"],
+          "properties": {
+            "kind": { "type": "string", "const": "aup" },
+            "ref": {
+              "type": "string",
+              "description": "The name to match in the airspace use plan feed, which is usually the area's own name. The feed's record may narrow the area's levels for that day's activation."
+            }
+          },
+          "description": "Active while the live airspace use plan feed carries a current record of this name. The feed is the package's to name in policy.json and the controller's to override; nothing here is compiled in."
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "icao", "text"],
+          "properties": {
+            "kind": { "type": "string", "const": "notam" },
+            "icao": { "type": "string" },
+            "text": { "type": "string" }
+          },
+          "description": "Active while a current NOTAM from this ICAO contains this text. Carried through for a vAcc that authors it; nothing evaluates it until a NOTAM source exists, and .dev area-info says so rather than reporting the area inactive."
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": { "type": "string", "const": "runways" },
+            "arr": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Active while any of these runways is in use for arrivals. An empty list is no condition, never a condition nothing satisfies."
+            },
+            "notArr": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Inactive while any of these is in use for arrivals."
+            },
+            "dep": { "type": "array", "items": { "type": "string" } },
+            "notDep": { "type": "array", "items": { "type": "string" } }
+          },
+          "description": "Active for a runway configuration, which is how a noise-abatement or approach-dependent area follows the runway in use."
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": {
+            "kind": { "type": "string", "const": "position" },
+            "yours": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Active while the local controller works one of these positions."
+            },
+            "notYours": { "type": "array", "items": { "type": "string" } },
+            "online": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Active while one of these positions is online, whoever works it."
+            },
+            "notOnline": { "type": "array", "items": { "type": "string" } }
+          },
+          "description": "Active by who is on position. An empty list is no condition."
+        }
+      ]
+    },
+    "area": {
+      "type": "object",
+      "required": ["type", "geometry", "properties"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "const": "Feature" },
+        "id": { "type": ["string", "number"] },
+        "bbox": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 4,
+          "maxItems": 6
+        },
+        "geometry": { "$ref": "#/$defs/geometry" },
+        "properties": {
+          "type": "object",
+          "required": ["name", "kind", "lowerFt", "upperFt", "activation"],
+          "additionalProperties": true,
+          "description": "additionalProperties is open on purpose: an areas file listed in mapLayers carries its layer styling here too.",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "The area's name, which is what the alert text prints and what an aup rule matches on."
+            },
+            "kind": {
+              "type": "string",
+              "enum": ["tsa", "stcaInhibit", "mtcdInhibit", "clamRamInhibit"],
+              "description": "What the area is for. tsa is a segregated or restricted area the proximity and route probes watch; the other three switch one net off inside themselves rather than raising anything, and a clamRamInhibit area is always active."
+            },
+            "category": {
+              "type": "string",
+              "description": "The vAcc's own grouping (DANGER, TRA, MTA, AARA and so on). policy.json safetyNets.apw.categories names which categories the proximity net watches, so a category nobody lists is drawn and never alerts."
+            },
+            "lowerFt": {
+              "type": "number",
+              "description": "Lowest level the area occupies, in FEET (the source file writes hundreds; the converter multiplies out). Absent in the source means 0."
+            },
+            "upperFt": {
+              "type": "number",
+              "description": "Highest level the area occupies, in FEET. Absent in the source means 999999, which is the whole column."
+            },
+            "elevationMinFt": {
+              "type": "number",
+              "description": "Lowest ground elevation under the area, in feet, where the vAcc has given one. It is what turns an AGL limit arriving by notice into a level."
+            },
+            "elevationMaxFt": {
+              "type": "number",
+              "description": "Highest ground elevation under the area, in feet."
+            },
+            "circle": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["x", "y", "radiusM"],
+              "properties": {
+                "x": { "type": "number" },
+                "y": { "type": "number" },
+                "radiusM": { "type": "number", "exclusiveMinimum": 0 }
+              },
+              "description": "Present when the source gave a circle rather than a ring. The client tests THIS rather than the densified polygon, which is what the source file's own containment does; the polygon is then only the drawing."
+            },
+            "label": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["x", "y", "text"],
+              "properties": {
+                "x": { "type": "number" },
+                "y": { "type": "number" },
+                "text": { "type": "string" }
+              },
+              "description": "Where the area's name is drawn on the map and what it says, in EPSG:3857 metres. Independent of the polygon's centroid, because a long thin danger area labels badly at its middle."
+            },
+            "userText": {
+              "type": "string",
+              "description": "Free text the area shows by default, which an activation rule may replace while it is what activates the area."
+            },
+            "inhibits": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "enum": ["msaw", "aiw", "apw", "sap", "clamRam"]
+              },
+              "description": "Nets that are switched OFF for an aircraft inside this area while it is active. The general form of an exclusion zone: a package draws one area and every listed net honours it at its eligibility stage."
+            },
+            "apwBufferLatNm": { "$ref": "#/$defs/buffer" },
+            "apwBufferVertFt": { "$ref": "#/$defs/buffer" },
+            "sapBufferLatNm": { "$ref": "#/$defs/buffer" },
+            "sapBufferVertFt": { "$ref": "#/$defs/buffer" },
+            "activation": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/activation" },
+              "description": "Every rule that can activate this area, OR-ed. An empty array is an area that stays inactive until a controller activates it, which is what a reserved area with no published schedule looks like."
+            }
+          }
+        }
+      }
+    }
+  }
+}
