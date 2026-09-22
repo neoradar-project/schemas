@@ -766,6 +766,41 @@
           "default": true,
           "description": "Raises an alert-severity Emergency on any aircraft squawking 7500, 7600 or 7700, with the condition and the code as alertText. Client-side and needs no server."
         },
+        "bypassFilters": {
+          "type": "object",
+          "description": "An alerted track is drawn whatever the view's filters say, which is TopSky's rule and the one safety matter in the presentation: an aircraft in conflict below the lower altitude filter is otherwise invisible. On by default, and it beats every filter including GND, PRIM and VFR, not just the altitude band. An emergency code (7500, 7600, 7700) always bypasses while this is on, whether or not emergencySquawk raised a net. .dev alert-info says when the bypass is what put the aircraft on screen.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "False lets the view filters hide an alerted track. Turn it off knowing what that costs."
+            },
+            "minSeverity": {
+              "type": "string",
+              "enum": ["info", "warning", "alert"],
+              "default": "warning",
+              "description": "The lowest severity that lifts a track out of the filters. warning covers RAM, AIW and RIMCAS Stage One; alert restricts it to STCA, MSAW, BUST, RIMCAS Stage Two and the emergency squawk; info includes the planning nets, which is usually too much."
+            }
+          },
+          "additionalProperties": false
+        },
+        "exclude": {
+          "type": "object",
+          "description": "Aircraft NO client-side net looks at: STCA, RAM, AIW and AFDAS all skip them at their eligibility stage, and the duplicate-code detector in Correlation stops calling a listed code duplicated (TopSky's Airspace_No_DUPE_Codes). The emergency squawk net is never excluded. A controller's per-aircraft twin of this is the inhibitAlerts click action. Note that excluding the conspicuity codes silences AIW on exactly the traffic AIW exists to watch, the untracked VFR under a TMA, so list them only when that is what the vAcc wants.",
+          "properties": {
+            "callsigns": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "description": "Callsign patterns, TopSky's wildcard: * stands for any run of characters, anywhere, and the match is whole and case insensitive (\"GLID*\", \"*TEST\", \"BAW123\"). A bare \"*\" is refused, because it would take every aircraft out of every net."
+            },
+            "squawks": {
+              "type": "array",
+              "items": { "type": "string", "pattern": "^[0-7]{1,4}$" },
+              "description": "Octal SSR code prefixes, TopSky's form: \"20\" is 2000 to 2077, \"7000\" is that code alone. One to four octal digits; anything else is a load error naming the entry."
+            }
+          },
+          "additionalProperties": false
+        },
         "ram": {
           "type": "object",
           "description": "Route adherence monitoring, evaluated on the client against the route expansion the server landed on the flight plan, so the numbers are the package's. It measures cross-track distance to the leg the aircraft is flying and raises a warning-severity Ram with the distance as alertText. The server is still the only route expander, so with no server there is no expansion and the net is silent rather than clean; .dev ram-info says which of the two it is. Absent is every default below, as an absent safetyNets section is.",
@@ -857,6 +892,11 @@
               "enum": ["ownedOrConcerned", "allVisible"],
               "default": "ownedOrConcerned",
               "description": "Who is shown a pair. ownedOrConcerned raises when at least one of the two is ours by the attention tiers the containment sweep already computes, which is what keeps an ACC controller from seeing constant conflicts between aircraft nobody is working. allVisible iterates everything and costs about ten times as many pair tests."
+            },
+            "soundScope": {
+              "type": "string",
+              "enum": ["ownedOrConcerned", "allVisible"],
+              "description": "Who HEARS a pair, TopSky's separate STCA alert sound scope. Absent is the same as scope, and it can only narrow it: a pair outside scope never reaches the alert board at all, so allVisible here with ownedOrConcerned above is refused as silencing nothing. A pair outside the sound scope still shows, still colours and still lands in the alert list; only the sound is held."
             },
             "turnRateThresholdDegS": {
               "type": "number",

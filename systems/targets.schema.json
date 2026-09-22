@@ -1018,6 +1018,11 @@
                       },
                       {
                         "type": "string",
+                        "const": "inhibitAlerts",
+                        "description": "Take this aircraft out of every client-side safety net until it is clicked again, or restore it: STCA, RAM, AIW and AFDAS all skip it, the emergency squawk net never does. The controller's per-aircraft twin of policy.json safetyNets.exclude; it never turns a net off for anyone else. Available to an observer."
+                      },
+                      {
+                        "type": "string",
                         "const": "tagTogglesMenu",
                         "description": "Opens the runtime tag content toggles for the radar view that was clicked: one row per toggleGroup the view's system declares, ticked while shown. Saved in the view's profile. No ownership or connection gate."
                       },
