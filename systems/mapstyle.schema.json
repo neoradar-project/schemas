@@ -520,6 +520,25 @@
       },
       "additionalProperties": false
     },
+    "stcaPairLine": {
+      "type": "object",
+      "description": "A line joining the two aircraft of a short term conflict alert while it stands, drawn under the target symbols. Absent draws none; an empty object draws a solid red line one logical pixel wide. It follows the alert board, so safetyNets.show hiding stca removes it, and it draws only between two aircraft this view draws a symbol for. TopSky has no such line.",
+      "properties": {
+        "color": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a). Red when absent."
+        },
+        "lineWidth": {
+          "type": "number",
+          "description": "Line width in logical pixels, 1 when absent."
+        },
+        "dashArray": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/dashArray",
+          "description": "Dash and gap in logical pixels, e.g. [6, 4]. Absent is solid."
+        }
+      },
+      "additionalProperties": false
+    },
     "distanceMeasurementTool": {
       "type": "object",
       "properties": {

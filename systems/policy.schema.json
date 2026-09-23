@@ -784,6 +784,31 @@
           },
           "additionalProperties": false
         },
+        "alertVector": {
+          "type": "object",
+          "description": "The prediction line an alerted airborne aircraft is forced to carry, TopSky's one-minute line. It is drawn only where the view's profile draws no speed vector at all, in the time style, in the colour the drawn target variant's speedVectorColor gives; a profile already showing a vector keeps its own length. On by default. A variant keyed on alertSeverity is how the symbol, the history dots and this line change colour; nothing here is a colour.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "False leaves an alerted aircraft with the profile's own vector, or none."
+            },
+            "minutes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10,
+              "default": 1,
+              "description": "Whole minutes of track, one tick per minute as the profile's time vector is drawn. To draw none, set enabled false."
+            },
+            "minSeverity": {
+              "type": "string",
+              "enum": ["info", "warning", "alert"],
+              "default": "warning",
+              "description": "The lowest severity of the aircraft's TOP alert that forces the line. warning covers RAM, AIW and RIMCAS Stage One; alert restricts it to STCA, MSAW, BUST, RIMCAS Stage Two and the emergency squawk. A ground aircraft never draws a vector, whatever its alert."
+            }
+          },
+          "additionalProperties": false
+        },
         "exclude": {
           "type": "object",
           "description": "Aircraft NO client-side net looks at: STCA, RAM, AIW and AFDAS all skip them at their eligibility stage, and the duplicate-code detector in Correlation stops calling a listed code duplicated (TopSky's Airspace_No_DUPE_Codes). The emergency squawk net is never excluded. A controller's per-aircraft twin of this is the inhibitAlerts click action. Note that excluding the conspicuity codes silences AIW on exactly the traffic AIW exists to watch, the untracked VFR under a TMA, so list them only when that is what the vAcc wants.",
