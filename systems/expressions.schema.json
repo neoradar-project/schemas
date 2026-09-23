@@ -763,6 +763,11 @@
                             },
                             {
                               "type": "string",
+                              "const": "manualAlert",
+                              "description": "The controller-set manual alert on this aircraft, TopSky's three: 0 none, 1 missed approach, 2 inbound estimate, 3 irregular. Set with the toggleManualAlert click actions and shared with every controller over the scratchpad (/MISAP/, /INBEST/, /IRREG/, cleared by /MACLR/), so it travels with the flight; a package maps the code to its own words, usually on label line 0."
+                            },
+                            {
+                              "type": "string",
                               "const": "isIdent",
                               "description": "Transponder identing."
                             },
