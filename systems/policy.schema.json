@@ -708,7 +708,7 @@
         },
         "acknowledge": {
           "type": "object",
-          "description": "What the acknowledgeAlert click action does. The colour always stays: acknowledging says the controller has seen the alert, not that it has gone, and a change of kind or severity re-arms it by itself.",
+          "description": "What the acknowledgeAlert click action does. The colour always stays: acknowledging says the controller has seen the alert, not that it has gone, and a change of kind or severity re-arms it by itself. A pairwise alert also re-arms for good when the other aircraft changes or its predicted separation closes (rearmOnCpaDecreaseNm).",
           "properties": {
             "silencesSound": {
               "type": "boolean",
@@ -720,6 +720,12 @@
               "minimum": 0,
               "default": 0,
               "description": "Seconds an acknowledgement lasts before the alert re-arms. 0 never lapses."
+            },
+            "rearmOnCpaDecreaseNm": {
+              "type": "number",
+              "minimum": 0,
+              "default": 1,
+              "description": "Nautical miles a pairwise alert's predicted closest lateral distance must shrink after the click before the acknowledgement is spent, TopSky's de-acknowledge on a separation decrease: an STCA acknowledged at 2.8 NM that closes to 1.8 NM sounds and asks again, and opening back out does not re-acknowledge it. 0 turns the rule off; a new other aircraft re-arms either way. Only STCA carries a predicted distance today; a server net's pairwise alert keeps the kind-and-severity rule."
             }
           },
           "additionalProperties": false
