@@ -58,6 +58,28 @@ only: types, ranges, enums and descriptions carry intent no C# property expresse
 these schemas stay hand-written rather than generated. `mapstyle.schema.json` has no case because
 `MapStyleParser` reads it by hand with nothing to reflect over; it needs eyes.
 
+## The expression catalogue mirror
+
+`@client`'s `ExpressionCatalog` (`Utils/Expressions/ExpressionCatalog.cs`, exactly 188 `Add(...)`
+entries) is THE whitelist for a tag `itemName`, a list column and an `&ref`. Every key is mirrored
+THREE times here, as a `const` or `enum` member in `expressions.schema.json`, `labels.schema.json`
+and `lists.schema.json`, and `SystemsSchemaDriftTests` does not check enums, so a key added to the
+catalogue and not to all three files is invisible to authors and to CI alike. Check by set
+difference, not by eye: collect every `enum` member and `const` string in each file and subtract the
+catalogue's `Add("...")` names; the result must be empty in all three. The 2026-09 coordination
+work added `sectorIndicator`, `minutesToSectorExit`, `nextControllerIsManual`, `sectorEntryLevel`,
+`sectorExitLevel`, `sectorEntryLevelSource`, `sectorExitLevelSource`, `coordinatedLevel` and
+`temporaryAltitude` this way; all three files list all 188 today.
+
+## What has no schema
+
+`datasets/atc-data.json` and `server-dataset.json` have none. The per-volume
+`departureAirports` / `arrivalAirports` / `guests` filters and the per-border-line
+`displaySectorLines` rules that `@cli` now emits are described only by
+`@cli/src/definitions/package-atc-data.ts` and consumed by `@client/Package/AtcData.cs` and
+`@server/internal/importvacc`. Adding a schema for them is a widening; wiring `@cli` to validate
+against it is the open loop noted in `@cli`'s CLAUDE.md.
+
 **Authors validate against raw `main`, not your branch.** A schema sitting correct on a feature
 branch is invisible to every sector file until it merges, and the symptom is "the client accepts
 this but my editor says it is invalid".
