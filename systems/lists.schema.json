@@ -1319,6 +1319,14 @@
                   ],
                   "description": "Background color of the item (in RGBA), can also be an expression rule."
                 },
+                "padding": {
+                  "description": "Radar-label only: room between a tag item's text and the edge of its background. A list cell lays out through the list's own column width, so this does nothing here.",
+                  "oneOf": [
+                    { "type": "number", "minimum": 0, "maximum": 50 },
+                    { "type": "array", "items": { "type": "number", "minimum": 0, "maximum": 50 }, "minItems": 2, "maxItems": 2 },
+                    { "type": "array", "items": { "type": "number", "minimum": 0, "maximum": 50 }, "minItems": 4, "maxItems": 4 }
+                  ]
+                },
                 "separatorBefore": {
                   "type": "boolean",
                   "default": true,
@@ -1447,6 +1455,11 @@
                         "type": "string",
                         "const": "inhibitAlerts",
                         "description": "Take this aircraft out of every client-side safety net until it is clicked again, or restore it: STCA, RAM, AIW and AFDAS all skip it, the emergency squawk net never does. The controller's per-aircraft twin of policy.json safetyNets.exclude; it never turns a net off for anyone else. Available to an observer."
+                      },
+                      {
+                        "type": "string",
+                        "const": "showTctLegs",
+                        "description": "Show or hide this aircraft's TCT legs for the session: both predicted paths of its earliest tactical conflict to the closest point, in mapstyle tctLeg colours, with the minimum and the time to it on the other aircraft's leg. While shown, the pair's speed vectors and route legs hide unless either has an STCA. Available to an observer."
                       },
                       {
                         "type": "string",

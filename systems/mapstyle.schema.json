@@ -539,6 +539,131 @@
       },
       "additionalProperties": false
     },
+    "flightPlanSeparationTool": {
+      "type": "object",
+      "description": "FPLSEP, TopSky's predicted minimum separation along the planned routes: a line from each aircraft to where it will be at the minimum, and the minimum and the time to it beside them. Absent, and every key absent, draws in TopSky's FPLSEP orange (255, 170, 46) so the tool is told apart from RADARSEP, which takes the distanceMeasurementTool colours.",
+      "properties": {
+        "lineColour": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a). FPLSEP orange when absent."
+        },
+        "textColour": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "The label's colour, the line colour when absent."
+        },
+        "lineWidth": {
+          "type": "number",
+          "description": "Line width in logical pixels, 1 when absent."
+        }
+      },
+      "additionalProperties": false
+    },
+    "tctLeg": {
+      "type": "object",
+      "description": "The TCT legs: both predicted paths to the closest point, plain to the conflict start and embellished beyond, and a label on the other aircraft's leg placed and filled as TopSky's TCT_Label_* settings. Absent draws TopSky's colours and layout.",
+      "properties": {
+        "colour": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "Up to the conflict start. TopSky's (220, 214, 20) when absent."
+        },
+        "embellishedColour": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "From the conflict start to the closest point. TopSky's (254, 102, 39) when absent."
+        },
+        "labelColour": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "The minimum and the time to it. TopSky's (220, 214, 20) when absent."
+        },
+        "lineWidth": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Line width in logical pixels, 2 when absent."
+        },
+        "embellished": {
+          "type": "boolean",
+          "default": true,
+          "description": "Draw the conflict part of the leg in embellishedColour, TopSky's TCT_Leg_Embellished."
+        },
+        "labelAnchor": {
+          "enum": [
+            "start",
+            "closest"
+          ],
+          "default": "start",
+          "description": "Where on the other aircraft's leg the label hangs: the start of the conflict (TopSky's default) or the closest point."
+        },
+        "labelAngleDeg": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 359,
+          "default": 135,
+          "description": "Direction of the label from the anchor, degrees clockwise from the leg's direction there, TopSky's TCT_Label_Pos_Angle."
+        },
+        "labelDistancePx": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 30,
+          "description": "Distance of the label's centre from the anchor, TopSky's TCT_Label_Pos_Distance."
+        },
+        "labelData": {
+          "enum": [
+            "closest",
+            "start"
+          ],
+          "default": "closest",
+          "description": "Which point the distance and time describe, TopSky's TCT_Label_Data_Ref."
+        },
+        "labelDistance": {
+          "enum": [
+            "before",
+            "after",
+            "off"
+          ],
+          "default": "before",
+          "description": "The distance's place beside the time, TopSky's TCT_Label_Distance."
+        },
+        "labelTime": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the time, TopSky's TCT_Label_Time."
+        },
+        "fontSize": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 12,
+          "description": "Label font size."
+        }
+      },
+      "additionalProperties": false
+    },
+    "blindSpot": {
+      "type": "object",
+      "description": "The Blind Spot bars in the CFL, heading and direct-to menus. A colour named here wins over the theme's Action.BlindSpot token for this system; absent uses the theme (TopSky's values).",
+      "properties": {
+        "conflictColour": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "A conflict starting within the window."
+        },
+        "crossedLevelColour": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "Clear, but a conflicting level lies between it and the present one."
+        },
+        "noConflictColour": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "Clear."
+        },
+        "unknownColour": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "The probe could not judge it."
+        },
+        "agedColour": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "Every bar once the probe is older than blindSpot.agedS."
+        }
+      },
+      "additionalProperties": false
+    },
     "distanceMeasurementTool": {
       "type": "object",
       "properties": {

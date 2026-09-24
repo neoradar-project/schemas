@@ -392,6 +392,18 @@
               "maximum": 90,
               "default": 30,
               "description": "Two moving occupants whose headings are within this of opposite, and closing, are head-on (rules.oppositeDirection)."
+            },
+            "movingKts": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 5,
+              "description": "Below this an occupant is standing: lined up, holding or stopped crossing. Under pairs notBehind, two occupants conflict (rules.occupants) only when one moving has the other AHEAD of it, EUROCONTROL-SPEC-171's 'not behind', so a conditional line-up behind a departure's roll is no conflict."
+            },
+            "pairs": {
+              "type": "string",
+              "enum": ["notBehind", "any"],
+              "default": "notBehind",
+              "description": "When two occupants of one strip conflict. notBehind is EUROCONTROL-SPEC-171 App A. any is vSMR's and the NOVA 9000's multiple-occupancy rule: any two on one runway are Stage One whatever their geometry, and Stage Two still needs one faster than stageTwoSpeedKts closing on another."
             }
           },
           "additionalProperties": false
@@ -412,6 +424,13 @@
               "maximum": 90,
               "default": 3,
               "description": "How far off a runway end's approach bearing a track may be and still count as aligned."
+            },
+            "heldAlignmentDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 90,
+              "default": 15,
+              "description": "An aircraft already approaching stays one within this of the approach bearing, timed on its straight distance to the strip if its track misses it: one sample a few degrees off on short final must not drop a live alert."
             },
             "minGroundSpeedKts": {
               "type": "integer",
@@ -876,6 +895,18 @@
               "minimum": 0,
               "default": 30,
               "description": "How long an assigned direct-to the server has not folded into the expansion yet inhibits the net, because the legs still describe the old path. The bound is what stops a direct the server never folds leaving the net silent on that aircraft for the session."
+            },
+            "inhibitNearDepartureNm": {
+              "type": "number",
+              "minimum": 0,
+              "default": 30,
+              "description": "Within this distance of the route's first point, the origin, the net says nothing: departures are vectored off the filed route whether or not the controller keyed the heading. TopSky's 30 NM. 0 turns the inhibit off."
+            },
+            "inhibitNearDestinationNm": {
+              "type": "number",
+              "minimum": 0,
+              "default": 30,
+              "description": "Within this distance of the route's last point, the destination, the net says nothing, for the same reason on arrival. TopSky's 30 NM. 0 turns the inhibit off."
             }
           },
           "additionalProperties": false
@@ -936,6 +967,17 @@
               "enum": ["all", "ifr", "vfr"],
               "default": "all",
               "description": "Which flights the net watches. An unfiled rule satisfies neither ifr nor vfr, so it is out of both."
+            },
+            "uncontrolled": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether a track no controller holds is judged. Off, as TopSky's MSAW_Uncontrolled: the surface is a controller's vectoring minimum, and a VFR flight under the TMA is below it all day."
+            },
+            "bufferVfrFt": {
+              "type": "number",
+              "minimum": 0,
+              "default": 300,
+              "description": "bufferFt for VFR flights, TopSky's MSAW_Buffer_VFR."
             }
           },
           "additionalProperties": false
@@ -1148,6 +1190,105 @@
               "exclusiveMinimum": 0,
               "default": 5,
               "description": "How many NEW alerts one cycle may raise, so an event peak cannot produce a wall of them at once. The rest are DEFERRED to the next cycle in order of time to loss, never dropped: a dropped alert is a silent blindness."
+            },
+            "floorFt": {
+              "type": "number",
+              "default": 1000,
+              "description": "No track below this pressure altitude takes part, TopSky's STCA_Floor: aerodrome traffic converging on a runway is the procedure, and the final approach corridors and runway monitoring watch it there."
+            },
+            "maxTrackAgeS": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 15,
+              "description": "A track whose last position report is older than this takes no part, TopSky's STCA_Max_Track_Age: a frozen position predicts a conflict that is not there."
+            },
+            "vfrPairs": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether a pair of two VFR flights alerts, TopSky's STCA_VFR. Off: VFR traffic separates itself."
+            },
+            "uncontrolledPairs": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether a pair neither of which any controller tracks alerts, TopSky's STCA_Uncontrolled. Off."
+            },
+            "sourceStates": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "kUnconcerned",
+                  "kNotified",
+                  "kIncomingTransfer",
+                  "kAssumed",
+                  "kOutgoingTransfer",
+                  "kIntruder",
+                  "kConcerned"
+                ]
+              },
+              "description": "The attention states a source may be in, in place of scope; soundScope absent then sounds for every source."
+            },
+            "targetStates": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "kUnconcerned",
+                  "kNotified",
+                  "kIncomingTransfer",
+                  "kAssumed",
+                  "kOutgoingTransfer",
+                  "kIntruder",
+                  "kConcerned"
+                ]
+              },
+              "description": "The attention states the other aircraft of a pair may be in. Absent is every state."
+            },
+            "regionOverlap": {
+              "enum": [
+                "mostConservative",
+                "firstInFile"
+              ],
+              "default": "mostConservative",
+              "description": "How the regions matching one track combine: mostConservative takes the widest minimum (and the earliest alert time) of every matching region, firstInFile the first matching region that names each setting, as TopSky reads its areas file. With mostConservative a tighter region can never narrow a wider one it sits inside."
+            },
+            "cflLeave": {
+              "type": "object",
+              "description": "The Blind Spots study's most efficient barrier (PB5): a level aircraft whose cleared level differs by more than atLevelFt may start towards it any time within leaveLevelS at minFpm to maxFpm, so STCA judges the pair on that band before the crew moves. Off unless authored.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False switches it off."
+                },
+                "leaveLevelS": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 60,
+                  "description": "Latest the level change may start."
+                },
+                "minFpm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 500,
+                  "description": "Slowest rate of the change."
+                },
+                "maxFpm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 4000,
+                  "description": "Fastest rate of the change."
+                },
+                "atLevelFt": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 200,
+                  "description": "Within this of the cleared level the aircraft is already there."
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
@@ -1183,9 +1324,1105 @@
               "type": "string",
               "default": "controlled",
               "description": "A zone tag in datasets/zones.geojson that marks airspace this net monitors. Authoring even one such zone REPLACES the online-volume rule with the zones alone, which is how a vAcc says precisely which CAS it wants watched. Whole tags only, so no spaces. An empty string turns the override off and leaves the volume rule in force."
+            },
+            "flightRules": {
+              "type": "string",
+              "enum": ["all", "ifr", "vfr"],
+              "default": "all",
+              "description": "Which flights the net watches, TopSky's AIW_FlightRules. vfr watches VFR and unfiled traffic, which is the UK NODE setup: an IFR flight in controlled airspace is on a clearance by definition."
+            },
+            "floorFt": {
+              "type": "integer",
+              "description": "No alert below this pressure altitude, TopSky's AIW_Floor (1000 in TopSky). Absent is no floor."
+            },
+            "scope": {
+              "type": "string",
+              "enum": ["all", "own"],
+              "default": "all",
+              "description": "Whose airspace is watched, TopSky's AIW_Type. own watches only the volumes this controller, or a position it observes, works; ignored when the package draws controlled zones, which name nobody."
             }
           },
           "additionalProperties": false
+        },
+        "tct": {
+          "type": "object",
+          "description": "Tactical controller tool, evaluated on the client: TopSky's TCT, a five minute conflict probe built on STCA's pipeline. Laterally it follows an assigned heading after a modelled turn (then the ground track once the turn is complete), else the expanded route while the aircraft conforms to it, else the present ground track; vertically a band of rates towards the cleared level, never one line. A conflict starting within imminentS shows at once, one starting within warningS once confirmChecks of the last historyChecks checks found it; severity, wording, sound and the STCA yield are all keys here and in safetyNets.kinds.tct. regions are TopSky's TCT areas: each may override any setting, inhibit TCT, or with regionsOnly be the only places it runs. blindSpot is the menu probe built on it. OFF unless this section is authored, as STCA is. Every default is TopSky's. .dev tct-info prints the branch and band of an aircraft and every pair the last check looked at.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "False stops the net evaluating. Use safetyNets.show.tct instead to keep it evaluating and hide it on this system."
+            },
+            "lookaheadS": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 600,
+              "default": 300,
+              "description": "How far ahead each trajectory is predicted, TopSky's 300 s. The TCT simulations ran eight minutes, so 600 is the cap. A conflict starting after warningS never shows, but the probe runs on so its closest point and end are known."
+            },
+            "stepS": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 5,
+              "description": "Sample step of both predictions; must divide lookaheadS. The closest point inside a conflict is solved between samples, so a coarser step costs only the start time's resolution."
+            },
+            "cadenceS": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 5,
+              "description": "Seconds between checks, inside the 2 Hz position batch."
+            },
+            "imminentS": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 180,
+              "description": "A conflict starting within this shows at once, at severity 2."
+            },
+            "warningS": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 240,
+              "description": "A conflict starting between imminentS and this shows at severity 1 once confirmed. Must not exceed lookaheadS."
+            },
+            "confirmChecks": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 2,
+              "description": "TopSky's TCT_ConflictCount: how many of the last historyChecks checks must have found a warning-band conflict. A check counts only when one of the pair has a new position report since the last, because a check on the same two reports is one sample seen twice."
+            },
+            "historyChecks": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 16,
+              "default": 3,
+              "description": "TopSky's TCT_CycleCount."
+            },
+            "clearChecks": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 2,
+              "description": "Counting checks without a conflict that clear a raised pair. A pair past its closest point and opening clears at once."
+            },
+            "shortConflictS": {
+              "type": "number",
+              "minimum": 0,
+              "default": 45,
+              "description": "The look-ahead study's hold: a warning-band conflict predicted to last under this many seconds AND never closer than shortConflictMarginNm inside the closing minimum waits for imminent. 0 switches it off."
+            },
+            "shortConflictMarginNm": {
+              "type": "number",
+              "minimum": 0,
+              "default": 1.0,
+              "description": "How far inside the closing minimum a short conflict may come and still be held: the study scopes the hold to the boundary (4 to 5 nm with a 5 nm minimum). A fast head-on pass on the centreline is never held."
+            },
+            "lateralNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 5.0,
+              "description": "The lateral minimum while the pair is closing."
+            },
+            "lateralDivergingNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 4.0,
+              "description": "The lateral minimum while the pair is opening. Must not exceed lateralNm."
+            },
+            "verticalFt": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 750,
+              "description": "The gap between the two vertical bands under which an instant is in conflict."
+            },
+            "verticalUpperFt": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 1500,
+              "description": "The same where both bands are at or above FL410."
+            },
+            "verticalUpperFromFl": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 410,
+              "description": "Where the upper vertical minimum starts: a pair both of whose bands are at or above this flight level takes verticalUpperFt."
+            },
+            "regions": {
+              "type": "array",
+              "description": "Per-airspace minima in STCA's grammar, read by the same resolver so the two nets never disagree about which region a point is in. A rule overrides the minima it names; a rule naming lateralNm alone narrows the opening minimum to it. Where several match, the most conservative of each axis wins, and a pair takes the most conservative of its two aircraft.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "sectorIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "description": "Sector id globs, for example EGTT_LTC*. A trailing star is the only wildcard."
+                  },
+                  "zoneTag": {
+                    "type": "string",
+                    "description": "A tag on a zones.geojson polygon."
+                  },
+                  "aboveFl": {
+                    "type": "integer",
+                    "description": "Applies at or above this flight level."
+                  },
+                  "lateralNm": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "lateralDivergingNm": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "verticalFt": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "inhibit": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "TopSky's NoTCT: TCT does not look at an aircraft inside this area. The first matching area naming inhibit decides."
+                  },
+                  "verticalUpperFt": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "description": "This area's vertical minimum above verticalUpperFromFl."
+                  },
+                  "warningS": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "This area's warning time, TopSky's TCTA_Alert_Times."
+                  },
+                  "imminentS": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "This area's imminent time."
+                  },
+                  "heading": {
+                    "type": "object",
+                    "description": "An assigned heading, TopSky's TCT_AHDG_*. Believed while the track is within toleranceDeg of it, or until maxTurnS after the clearance; after that it is disbelieved and the route and ground track rules apply. The heading is taken as a track, with no wind and no magnetic variation.",
+                    "properties": {
+                      "reactionS": {
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 10,
+                        "description": "Seconds after the clearance on the present track before the turn starts."
+                      },
+                      "turnRateDegS": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "default": 1.2,
+                        "description": "The modelled turn rate onto the heading, the short way round."
+                      },
+                      "toleranceDeg": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "maximum": 180,
+                        "default": 20
+                      },
+                      "maxTurnS": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "default": 60
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "route": {
+                    "type": "object",
+                    "description": "Conformance to the expanded route, TopSky's TCT_Track_Tolerance and TCT_Waypoint_Turn_Radius. A conforming aircraft is flown waypoint to waypoint from the leg the route classifier picks, a direct-to already folded in, at the measured ground speed and with no turn radius.",
+                    "properties": {
+                      "toleranceDeg": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "maximum": 180,
+                        "default": 10,
+                        "description": "The track against the bearing to the next waypoint."
+                      },
+                      "toleranceNearWaypointDeg": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "maximum": 180,
+                        "default": 45,
+                        "description": "The wider tolerance inside waypointRadiusNm of the previous or next waypoint."
+                      },
+                      "waypointRadiusNm": {
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 4
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "vertical": {
+                    "type": "object",
+                    "description": "The vertical band, TopSky's TCT_BS_* and TCTA_VS_*. At the cleared level, or level with none, the band is the current level. Level with a different cleared level it may start the change any time within leaveLevelS at any rate from minFpm to maxFpm. Climbing or descending it runs from (1 - minRatio) to (1 + maxRatio) times the measured rate, the top being maxFpm under thresholdFpm. It stops at the cleared level (a cleared ILS or visual approach is no level), else at the coordinated exit level, else the filed cruise level, the chain sectorExitLevel reads; with none it is unbounded and the explainer marks it assumed.",
+                    "properties": {
+                      "atLevelFt": {
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 200,
+                        "description": "Within this of the cleared level is at it: CAP 493's at a level."
+                      },
+                      "levelFpm": {
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 100,
+                        "description": "Under this vertical rate the aircraft is read as level."
+                      },
+                      "leaveLevelS": {
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 60
+                      },
+                      "minFpm": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "default": 500
+                      },
+                      "maxFpm": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "default": 4000
+                      },
+                      "minRatio": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMaximum": 1,
+                        "default": 0.5
+                      },
+                      "maxRatio": {
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 0.5
+                      },
+                      "thresholdFpm": {
+                        "type": "number",
+                        "minimum": 0,
+                        "default": 1000
+                      },
+                      "climb": {
+                        "type": "object",
+                        "properties": {
+                          "minFpm": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "description": "Slowest rate, ft/min."
+                          },
+                          "maxFpm": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "description": "Fastest rate, ft/min."
+                          },
+                          "thresholdFpm": {
+                            "type": "number",
+                            "minimum": 0,
+                            "description": "Below this measured rate the top of the band is maxFpm."
+                          }
+                        },
+                        "additionalProperties": false,
+                        "description": "TopSky's TCTA_VS_Climb: overrides minFpm, maxFpm and thresholdFpm for a climb."
+                      },
+                      "descent": {
+                        "type": "object",
+                        "properties": {
+                          "minFpm": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "description": "Slowest rate, ft/min."
+                          },
+                          "maxFpm": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "description": "Fastest rate, ft/min."
+                          },
+                          "thresholdFpm": {
+                            "type": "number",
+                            "minimum": 0,
+                            "description": "Below this measured rate the top of the band is maxFpm."
+                          }
+                        },
+                        "additionalProperties": false,
+                        "description": "TopSky's TCTA_VS_Descent: overrides minFpm, maxFpm and thresholdFpm for a descent."
+                      },
+                      "boundPreference": {
+                        "enum": [
+                          "cleared",
+                          "exit"
+                        ],
+                        "default": "cleared",
+                        "description": "Which level the band stops at first when both exist: the cleared level, or the coordinated exit level (TopSky's TCT_Use_CFL_For_Coordinated off)."
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "blindSpot": {
+                    "type": "object",
+                    "description": "The Blind Spot values this area overrides, TopSky's BS_* fields on its TCTA lines.",
+                    "properties": {
+                      "lateralNm": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "description": "Blind Spot closing minimum here."
+                      },
+                      "lateralDivergingNm": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "description": "Blind Spot opening minimum here."
+                      },
+                      "verticalFt": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "description": "Blind Spot vertical minimum here."
+                      },
+                      "verticalUpperFt": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "description": "Blind Spot upper vertical minimum here."
+                      },
+                      "windowS": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "maximum": 600,
+                        "description": "Blind Spot window here, TopSky's BS_Warn."
+                      },
+                      "vertical": {
+                        "type": "object",
+                        "description": "The vertical band, TopSky's TCT_BS_* and TCTA_VS_*. At the cleared level, or level with none, the band is the current level. Level with a different cleared level it may start the change any time within leaveLevelS at any rate from minFpm to maxFpm. Climbing or descending it runs from (1 - minRatio) to (1 + maxRatio) times the measured rate, the top being maxFpm under thresholdFpm. It stops at the cleared level (a cleared ILS or visual approach is no level), else at the coordinated exit level, else the filed cruise level, the chain sectorExitLevel reads; with none it is unbounded and the explainer marks it assumed.",
+                        "properties": {
+                          "atLevelFt": {
+                            "type": "number",
+                            "minimum": 0,
+                            "default": 200,
+                            "description": "Within this of the cleared level is at it: CAP 493's at a level."
+                          },
+                          "levelFpm": {
+                            "type": "number",
+                            "minimum": 0,
+                            "default": 100,
+                            "description": "Under this vertical rate the aircraft is read as level."
+                          },
+                          "leaveLevelS": {
+                            "type": "number",
+                            "minimum": 0,
+                            "default": 60
+                          },
+                          "minFpm": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "default": 500
+                          },
+                          "maxFpm": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "default": 4000
+                          },
+                          "minRatio": {
+                            "type": "number",
+                            "minimum": 0,
+                            "exclusiveMaximum": 1,
+                            "default": 0.5
+                          },
+                          "maxRatio": {
+                            "type": "number",
+                            "minimum": 0,
+                            "default": 0.5
+                          },
+                          "thresholdFpm": {
+                            "type": "number",
+                            "minimum": 0,
+                            "default": 1000
+                          },
+                          "climb": {
+                            "type": "object",
+                            "properties": {
+                              "minFpm": {
+                                "type": "number",
+                                "exclusiveMinimum": 0,
+                                "description": "Slowest rate, ft/min."
+                              },
+                              "maxFpm": {
+                                "type": "number",
+                                "exclusiveMinimum": 0,
+                                "description": "Fastest rate, ft/min."
+                              },
+                              "thresholdFpm": {
+                                "type": "number",
+                                "minimum": 0,
+                                "description": "Below this measured rate the top of the band is maxFpm."
+                              }
+                            },
+                            "additionalProperties": false,
+                            "description": "TopSky's TCTA_VS_Climb: overrides minFpm, maxFpm and thresholdFpm for a climb."
+                          },
+                          "descent": {
+                            "type": "object",
+                            "properties": {
+                              "minFpm": {
+                                "type": "number",
+                                "exclusiveMinimum": 0,
+                                "description": "Slowest rate, ft/min."
+                              },
+                              "maxFpm": {
+                                "type": "number",
+                                "exclusiveMinimum": 0,
+                                "description": "Fastest rate, ft/min."
+                              },
+                              "thresholdFpm": {
+                                "type": "number",
+                                "minimum": 0,
+                                "description": "Below this measured rate the top of the band is maxFpm."
+                              }
+                            },
+                            "additionalProperties": false,
+                            "description": "TopSky's TCTA_VS_Descent: overrides minFpm, maxFpm and thresholdFpm for a descent."
+                          },
+                          "boundPreference": {
+                            "enum": [
+                              "cleared",
+                              "exit"
+                            ],
+                            "default": "cleared",
+                            "description": "Which level the band stops at first when both exist: the cleared level, or the coordinated exit level (TopSky's TCT_Use_CFL_For_Coordinated off)."
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "additionalProperties": false,
+                "description": "One TCT area, TopSky's TCTA: a sector id glob list, a zone tag and/or aboveFl select it, and it overrides any of the settings it names. The minima and alert times combine per regionOverlap; every other setting is the first matching area's that names it."
+              }
+            },
+            "regionOverlap": {
+              "enum": [
+                "mostConservative",
+                "firstInFile"
+              ],
+              "default": "mostConservative",
+              "description": "How the regions matching one track combine: mostConservative takes the widest minimum (and the earliest alert time) of every matching region, firstInFile the first matching region that names each setting, as TopSky reads its areas file. With mostConservative a tighter region can never narrow a wider one it sits inside."
+            },
+            "regionsOnly": {
+              "type": "boolean",
+              "default": false,
+              "description": "TopSky: with any TCT area defined, TCT runs only inside the areas. True needs at least one region."
+            },
+            "floorFt": {
+              "type": "number",
+              "minimum": 0,
+              "default": 1000,
+              "description": "TopSky's TCT_Floor: no track below this pressure altitude takes part."
+            },
+            "minSpeedKts": {
+              "type": "number",
+              "minimum": 0,
+              "default": 40,
+              "description": "TopSky's TCT_Min_Speed."
+            },
+            "vfrPairs": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether a pair of two VFR flights is probed: TopSky's TCT_Inhibit_VFR, on, so false."
+            },
+            "uncontrolledPairs": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether a pair nobody controls is probed: TCT_Inhibit_Uncontrolled, on, so false."
+            },
+            "uncorrelatedPairs": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether a pair of two uncorrelated tracks alerts: TopSky's TCT_Inhibit_Uncorrelated, off. An uncorrelated track against a correlated aircraft always pairs."
+            },
+            "exclusionZoneTag": {
+              "type": "string",
+              "default": "",
+              "description": "A zones.geojson tag inside which TCT does not look at an aircraft, as STCA's exclusionZoneTag. Empty is none."
+            },
+            "scope": {
+              "type": "string",
+              "enum": [
+                "ownedOrConcerned",
+                "allVisible"
+              ],
+              "default": "ownedOrConcerned",
+              "description": "Who is a source (TopSky's TCT_Min_State_Source): ownedOrConcerned or allVisible. Author sourceStates instead for finer control, never both."
+            },
+            "sourceStates": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "kUnconcerned",
+                  "kNotified",
+                  "kIncomingTransfer",
+                  "kAssumed",
+                  "kOutgoingTransfer",
+                  "kIntruder",
+                  "kConcerned"
+                ]
+              },
+              "description": "The attention states a source may be in, TopSky's TCT_Min_State_Source as a list. In place of scope."
+            },
+            "targetStates": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "kUnconcerned",
+                  "kNotified",
+                  "kIncomingTransfer",
+                  "kAssumed",
+                  "kOutgoingTransfer",
+                  "kIntruder",
+                  "kConcerned"
+                ]
+              },
+              "description": "The attention states the other aircraft of a pair may be in, TopSky's TCT_Min_State_Target. Absent is every state."
+            },
+            "severity": {
+              "type": "object",
+              "description": "Board severity per band for a route or heading conflict. TopSky's look is info and warning.",
+              "properties": {
+                "warningBand": {
+                  "enum": [
+                    "info",
+                    "warning",
+                    "alert"
+                  ],
+                  "default": "info",
+                  "description": "Board severity of a conflict starting between imminentS and warningS."
+                },
+                "imminent": {
+                  "enum": [
+                    "info",
+                    "warning",
+                    "alert"
+                  ],
+                  "default": "warning",
+                  "description": "Board severity of a conflict starting within imminentS."
+                }
+              },
+              "additionalProperties": false
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "default": "TC",
+              "description": "alertText for one conflict."
+            },
+            "textMultiple": {
+              "type": "string",
+              "minLength": 1,
+              "default": "TC+",
+              "description": "alertText when the aircraft is in more than one."
+            },
+            "yieldToStca": {
+              "type": "boolean",
+              "default": true,
+              "description": "One pair, one alert: drop the TCT for any pair STCA holds, as the TCT simulations ranked them. Only while STCA is enabled and shown."
+            },
+            "groundTrackTurn": {
+              "type": "boolean",
+              "default": false,
+              "description": "Carry the measured turn rate on in the ground track branch, at most half a circle, instead of a straight line. TopSky predicts straight."
+            },
+            "stateVector": {
+              "type": "object",
+              "description": "5370's State Vector class: each aircraft also flown straight along its present ground track, and a conflict found only there ranks above a route or heading one. Off unless authored; it doubles the prediction work.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False switches it off."
+                },
+                "severity": {
+                  "type": "object",
+                  "description": "Board severity per band for a State Vector conflict.",
+                  "properties": {
+                    "warningBand": {
+                      "enum": [
+                        "info",
+                        "warning",
+                        "alert"
+                      ],
+                      "default": "warning",
+                      "description": "Board severity of a conflict starting between imminentS and warningS."
+                    },
+                    "imminent": {
+                      "enum": [
+                        "info",
+                        "warning",
+                        "alert"
+                      ],
+                      "default": "warning",
+                      "description": "Board severity of a conflict starting within imminentS."
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "default": "TC",
+                  "description": "alertText for one State Vector conflict."
+                },
+                "textMultiple": {
+                  "type": "string",
+                  "minLength": 1,
+                  "default": "TC+",
+                  "description": "alertText when in more than one."
+                }
+              },
+              "additionalProperties": false
+            },
+            "legs": {
+              "type": "object",
+              "description": "The TCT legs: which draw without a click, and whether they hide the pair's speed vectors and route legs.",
+              "properties": {
+                "auto": {
+                  "enum": [
+                    "none",
+                    "imminent",
+                    "all"
+                  ],
+                  "default": "none",
+                  "description": "Raised conflicts whose legs draw unasked: none (TopSky, the showTctLegs click only), imminent, or all."
+                },
+                "hideVectors": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Hide both aircraft's speed vectors and route legs while their TCT legs show, unless either has an STCA (TopSky)."
+                }
+              },
+              "additionalProperties": false
+            },
+            "heading": {
+              "type": "object",
+              "description": "An assigned heading, TopSky's TCT_AHDG_*. Believed while the track is within toleranceDeg of it, or until maxTurnS after the clearance; after that it is disbelieved and the route and ground track rules apply. The heading is taken as a track, with no wind and no magnetic variation.",
+              "properties": {
+                "reactionS": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 10,
+                  "description": "Seconds after the clearance on the present track before the turn starts."
+                },
+                "turnRateDegS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 1.2,
+                  "description": "The modelled turn rate onto the heading, the short way round."
+                },
+                "toleranceDeg": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 180,
+                  "default": 20
+                },
+                "maxTurnS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 60
+                }
+              },
+              "additionalProperties": false
+            },
+            "route": {
+              "type": "object",
+              "description": "Conformance to the expanded route, TopSky's TCT_Track_Tolerance and TCT_Waypoint_Turn_Radius. A conforming aircraft is flown waypoint to waypoint from the leg the route classifier picks, a direct-to already folded in, at the measured ground speed and with no turn radius.",
+              "properties": {
+                "toleranceDeg": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 180,
+                  "default": 10,
+                  "description": "The track against the bearing to the next waypoint."
+                },
+                "toleranceNearWaypointDeg": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 180,
+                  "default": 45,
+                  "description": "The wider tolerance inside waypointRadiusNm of the previous or next waypoint."
+                },
+                "waypointRadiusNm": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 4
+                }
+              },
+              "additionalProperties": false
+            },
+            "vertical": {
+              "type": "object",
+              "description": "The vertical band, TopSky's TCT_BS_* and TCTA_VS_*. At the cleared level, or level with none, the band is the current level. Level with a different cleared level it may start the change any time within leaveLevelS at any rate from minFpm to maxFpm. Climbing or descending it runs from (1 - minRatio) to (1 + maxRatio) times the measured rate, the top being maxFpm under thresholdFpm. It stops at the cleared level (a cleared ILS or visual approach is no level), else at the coordinated exit level, else the filed cruise level, the chain sectorExitLevel reads; with none it is unbounded and the explainer marks it assumed.",
+              "properties": {
+                "atLevelFt": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 200,
+                  "description": "Within this of the cleared level is at it: CAP 493's at a level."
+                },
+                "levelFpm": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 100,
+                  "description": "Under this vertical rate the aircraft is read as level."
+                },
+                "leaveLevelS": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 60
+                },
+                "minFpm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 500
+                },
+                "maxFpm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 4000
+                },
+                "minRatio": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMaximum": 1,
+                  "default": 0.5
+                },
+                "maxRatio": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0.5
+                },
+                "thresholdFpm": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 1000
+                },
+                "climb": {
+                  "type": "object",
+                  "properties": {
+                    "minFpm": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "description": "Slowest rate, ft/min."
+                    },
+                    "maxFpm": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "description": "Fastest rate, ft/min."
+                    },
+                    "thresholdFpm": {
+                      "type": "number",
+                      "minimum": 0,
+                      "description": "Below this measured rate the top of the band is maxFpm."
+                    }
+                  },
+                  "additionalProperties": false,
+                  "description": "TopSky's TCTA_VS_Climb: overrides minFpm, maxFpm and thresholdFpm for a climb."
+                },
+                "descent": {
+                  "type": "object",
+                  "properties": {
+                    "minFpm": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "description": "Slowest rate, ft/min."
+                    },
+                    "maxFpm": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "description": "Fastest rate, ft/min."
+                    },
+                    "thresholdFpm": {
+                      "type": "number",
+                      "minimum": 0,
+                      "description": "Below this measured rate the top of the band is maxFpm."
+                    }
+                  },
+                  "additionalProperties": false,
+                  "description": "TopSky's TCTA_VS_Descent: overrides minFpm, maxFpm and thresholdFpm for a descent."
+                },
+                "boundPreference": {
+                  "enum": [
+                    "cleared",
+                    "exit"
+                  ],
+                  "default": "cleared",
+                  "description": "Which level the band stops at first when both exist: the cleared level, or the coordinated exit level (TopSky's TCT_Use_CFL_For_Coordinated off)."
+                }
+              },
+              "additionalProperties": false
+            },
+            "blindSpot": {
+              "type": "object",
+              "description": "TopSky's Blind Spot function on TCT's predictor: the CFL menu's levels, and the heading and direct-to menus' entries, probed once as the menu opens and coloured conflict, crossed level, clear or unknown, aged after agedS. On whenever safetyNets.tct is authored, independent of safetyNets.show.tct. Null minima and band keep TCT's.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False draws no bars in any menu."
+                },
+                "levelRangeFt": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "description": "Probe only levels within this many feet of the present one (TopSky's 5000). Absent probes every listed level; a level beyond the range still reads crossed when a conflicting level lies between."
+                },
+                "windowS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 600,
+                  "default": 180,
+                  "description": "A conflict starting within this many seconds colours the entry. The Blind Spots study's events fit three minutes; TopSky's setting default is 120."
+                },
+                "agedS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 10,
+                  "description": "Seconds after which every bar turns the aged colour; never probed again while the menu stays open."
+                },
+                "reversalReactionS": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 10,
+                  "description": "A level against the present climb or descent holds the present rate this long before turning back, so the overshoot counts. 0 flies it as an instant level-off."
+                },
+                "traffic": {
+                  "enum": [
+                    "allWithAltitude",
+                    "eligible"
+                  ],
+                  "default": "allWithAltitude",
+                  "description": "What an entry is probed against: every airborne aircraft with an altitude, TCT judges it or not (an inhibited or uncorrelated aircraft still counts, a stale one makes the entry unknown), or only TCT's eligible tracks."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Blind Spot's own closing minimum, TopSky's TCT_BS_Sep_Lat second value."
+                },
+                "lateralDivergingNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Blind Spot's own opening minimum."
+                },
+                "verticalFt": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Blind Spot's own vertical minimum."
+                },
+                "verticalUpperFt": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Blind Spot's own upper vertical minimum."
+                },
+                "vertical": {
+                  "type": "object",
+                  "description": "The vertical band, TopSky's TCT_BS_* and TCTA_VS_*. At the cleared level, or level with none, the band is the current level. Level with a different cleared level it may start the change any time within leaveLevelS at any rate from minFpm to maxFpm. Climbing or descending it runs from (1 - minRatio) to (1 + maxRatio) times the measured rate, the top being maxFpm under thresholdFpm. It stops at the cleared level (a cleared ILS or visual approach is no level), else at the coordinated exit level, else the filed cruise level, the chain sectorExitLevel reads; with none it is unbounded and the explainer marks it assumed.",
+                  "properties": {
+                    "atLevelFt": {
+                      "type": "number",
+                      "minimum": 0,
+                      "default": 200,
+                      "description": "Within this of the cleared level is at it: CAP 493's at a level."
+                    },
+                    "levelFpm": {
+                      "type": "number",
+                      "minimum": 0,
+                      "default": 100,
+                      "description": "Under this vertical rate the aircraft is read as level."
+                    },
+                    "leaveLevelS": {
+                      "type": "number",
+                      "minimum": 0,
+                      "default": 60
+                    },
+                    "minFpm": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "default": 500
+                    },
+                    "maxFpm": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "default": 4000
+                    },
+                    "minRatio": {
+                      "type": "number",
+                      "minimum": 0,
+                      "exclusiveMaximum": 1,
+                      "default": 0.5
+                    },
+                    "maxRatio": {
+                      "type": "number",
+                      "minimum": 0,
+                      "default": 0.5
+                    },
+                    "thresholdFpm": {
+                      "type": "number",
+                      "minimum": 0,
+                      "default": 1000
+                    },
+                    "climb": {
+                      "type": "object",
+                      "properties": {
+                        "minFpm": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "description": "Slowest rate, ft/min."
+                        },
+                        "maxFpm": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "description": "Fastest rate, ft/min."
+                        },
+                        "thresholdFpm": {
+                          "type": "number",
+                          "minimum": 0,
+                          "description": "Below this measured rate the top of the band is maxFpm."
+                        }
+                      },
+                      "additionalProperties": false,
+                      "description": "TopSky's TCTA_VS_Climb: overrides minFpm, maxFpm and thresholdFpm for a climb."
+                    },
+                    "descent": {
+                      "type": "object",
+                      "properties": {
+                        "minFpm": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "description": "Slowest rate, ft/min."
+                        },
+                        "maxFpm": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "description": "Fastest rate, ft/min."
+                        },
+                        "thresholdFpm": {
+                          "type": "number",
+                          "minimum": 0,
+                          "description": "Below this measured rate the top of the band is maxFpm."
+                        }
+                      },
+                      "additionalProperties": false,
+                      "description": "TopSky's TCTA_VS_Descent: overrides minFpm, maxFpm and thresholdFpm for a descent."
+                    },
+                    "boundPreference": {
+                      "enum": [
+                        "cleared",
+                        "exit"
+                      ],
+                      "default": "cleared",
+                      "description": "Which level the band stops at first when both exist: the cleared level, or the coordinated exit level (TopSky's TCT_Use_CFL_For_Coordinated off)."
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "headingProbe": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Colour the heading menu's entries and RESUME the same way."
+                },
+                "directProbe": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Colour the direct-to menu's fixes the same way."
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "kinds": {
+          "type": "object",
+          "description": "Per kind, by wire name: the board-level overrides that give a system full control of every net, client or server. Every key is optional and absent leaves the net's own behaviour.",
+          "propertyNames": {
+            "enum": [
+              "bust",
+              "clam",
+              "ram",
+              "msaw",
+              "apw",
+              "aiw",
+              "holdIntrusion",
+              "mtcd",
+              "tct",
+              "rimcas",
+              "stca",
+              "afdas",
+              "emergency"
+            ]
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "severity": {
+                "type": "object",
+                "description": "The severity the net raised, by name, to the one the board shows.",
+                "propertyNames": {
+                  "enum": [
+                    "info",
+                    "warning",
+                    "alert"
+                  ]
+                },
+                "additionalProperties": {
+                  "enum": [
+                    "info",
+                    "warning",
+                    "alert"
+                  ]
+                }
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "description": "The alertText: {text} is the net's own wording, {other} the other aircraft. A plain word replaces the net's."
+              },
+              "sound": {
+                "enum": [
+                  "net",
+                  "on",
+                  "off"
+                ],
+                "default": "net",
+                "description": "Whether a raise sounds: the net's own call (TCT and a STCA outside soundScope are silent), or always, or never. The sound itself is sounds.perKind or the severity's."
+              },
+              "exclude": {
+                "type": "object",
+                "description": "Aircraft this net alone never looks at, on top of safetyNets.exclude: callsigns and squawks as there. Never on emergency or rimcas; a server net's raises are dropped on arrival.",
+                "properties": {
+                  "callsigns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "squawks": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[0-7]{1,4}$"
+                    }
+                  }
+                },
+                "additionalProperties": false
+              },
+              "inhibitable": {
+                "type": "boolean",
+                "default": true,
+                "description": "Whether the controller's inhibitAlerts switches this client net off for an aircraft. The TCT simulations say a controller should not be able to suppress TCT; a system that agrees authors false. Never on emergency, rimcas or a server net."
+              }
+            },
+            "additionalProperties": false
+          }
         }
       },
       "additionalProperties": false
