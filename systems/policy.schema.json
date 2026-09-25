@@ -650,11 +650,11 @@
     },
     "safetyNets": {
       "type": "object",
-      "description": "The alert board every safety net wears: the server's (MTCD), the client's own (BUST, CLAM, RIMCAS, RAM, AIW, AFDAS, MSAW, STCA, TCT, the emergency squawk), merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. BUST and CLAM are client nets that take their numbers from safetyNets.bust and safetyNets.clam here, each the server's tuned defaults when absent.",
+      "description": "The alert board every safety net wears, all of them the client's (BUST, CLAM, RIMCAS, RAM, AIW, AFDAS, MSAW, STCA, TCT, the emergency squawk; MTCD is planned), merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. BUST and CLAM are client nets that take their numbers from safetyNets.bust and safetyNets.clam here, each the server's tuned defaults when absent.",
       "properties": {
         "show": {
           "type": "object",
-          "description": "Hides a kind on this system. An unlisted kind is shown, so name only what this system has no use for: a tower hides mtcd and tct, an area system hides rimcas and afdas. Hiding never stops the server evaluating the net; .dev alert-info says which kinds are hidden and which the server advertised.",
+          "description": "Hides a kind on this system. An unlisted kind is shown, so name only what this system has no use for: a tower hides mtcd and tct, an area system hides rimcas and afdas. Hiding filters the board and never stops the net evaluating; .dev alert-info says which kinds are hidden.",
           "propertyNames": {
             "enum": [
               "bust",
@@ -784,7 +784,7 @@
             "tct",
             "mtcd"
           ],
-          "description": "Which kind alertKind and alertText report when several stand on one aircraft, highest first. Kinds left out follow the listed ones in the default order, so a partial list cannot hide one. Severity breaks a tie within a kind, then the server's own priority field. Use the per-kind keys instead where a system wants each net placed by hand."
+          "description": "Which kind alertKind and alertText report when several stand on one aircraft, highest first. Kinds left out follow the listed ones in the default order, so a partial list cannot hide one. Severity breaks a tie within a kind, then the net's own priority (BUST 40, CLAM 50). Use the per-kind keys instead where a system wants each net placed by hand."
         },
         "emergencySquawk": {
           "type": "boolean",
@@ -2423,7 +2423,7 @@
         },
         "kinds": {
           "type": "object",
-          "description": "Per kind, by wire name: the board-level overrides that give a system full control of every net, the client's and the server's (mtcd). Every key is optional and absent leaves the net's own behaviour.",
+          "description": "Per kind, by wire name: the board-level overrides that give a system full control of every net. Every key is optional and absent leaves the net's own behaviour.",
           "propertyNames": {
             "enum": [
               "bust",
@@ -2478,7 +2478,7 @@
               },
               "exclude": {
                 "type": "object",
-                "description": "Aircraft this net alone never looks at, on top of safetyNets.exclude: callsigns and squawks as there. Never on emergency or rimcas; mtcd, the one server net, has its raises dropped on arrival.",
+                "description": "Aircraft this net alone never looks at, on top of safetyNets.exclude: callsigns and squawks as there. Never on emergency or rimcas.",
                 "properties": {
                   "callsigns": {
                     "type": "array",
@@ -2500,7 +2500,7 @@
               "inhibitable": {
                 "type": "boolean",
                 "default": true,
-                "description": "Whether the controller's inhibitAlerts switches this client net off for an aircraft. The TCT simulations say a controller should not be able to suppress TCT; a system that agrees authors false. Never on emergency, rimcas or mtcd, the one server net."
+                "description": "Whether the controller's inhibitAlerts switches this client net off for an aircraft. The TCT simulations say a controller should not be able to suppress TCT; a system that agrees authors false. Never on emergency or rimcas."
               }
             },
             "additionalProperties": false
