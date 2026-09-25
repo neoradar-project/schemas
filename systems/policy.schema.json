@@ -744,7 +744,7 @@
               "type": "number",
               "minimum": 0,
               "default": 1,
-              "description": "Nautical miles a pairwise alert's predicted closest lateral distance must shrink after the click before the acknowledgement is spent, TopSky's de-acknowledge on a separation decrease: an STCA acknowledged at 2.8 NM that closes to 1.8 NM sounds and asks again, and opening back out does not re-acknowledge it. 0 turns the rule off; a new other aircraft re-arms either way. Only STCA carries a predicted distance today; a server net's pairwise alert keeps the kind-and-severity rule."
+              "description": "Nautical miles a pairwise alert's predicted closest lateral distance must shrink after the click before the acknowledgement is spent, TopSky's de-acknowledge on a separation decrease: an STCA acknowledged at 2.8 NM that closes to 1.8 NM sounds and asks again, and opening back out does not re-acknowledge it. 0 turns the rule off; a new other aircraft re-arms either way. STCA and TCT carry a predicted distance; any other pairwise alert keeps the kind-and-severity rule."
             }
           },
           "additionalProperties": false
