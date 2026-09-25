@@ -650,7 +650,7 @@
     },
     "safetyNets": {
       "type": "object",
-      "description": "The alert board every safety net wears: the server's nets (BUST and CLAM today, MTCD and TCT later), the client's own (RIMCAS, RAM, AIW, AFDAS, STCA, the emergency squawk), merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. BUST and CLAM take their numbers from safetyNets.bust and safetyNets.clam here, each the server's own defaults when absent.",
+      "description": "The alert board every safety net wears: the server's (MTCD), the client's own (BUST, CLAM, RIMCAS, RAM, AIW, AFDAS, MSAW, STCA, TCT, the emergency squawk), merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. BUST and CLAM are client nets that take their numbers from safetyNets.bust and safetyNets.clam here, each the server's tuned defaults when absent.",
       "properties": {
         "show": {
           "type": "object",
@@ -836,7 +836,7 @@
         },
         "exclude": {
           "type": "object",
-          "description": "Aircraft NO client-side net looks at: STCA, RAM, AIW and AFDAS all skip them at their eligibility stage, and the duplicate-code detector in Correlation stops calling a listed code duplicated (TopSky's Airspace_No_DUPE_Codes). The emergency squawk net is never excluded. A controller's per-aircraft twin of this is the inhibitAlerts click action. Note that excluding the conspicuity codes silences AIW on exactly the traffic AIW exists to watch, the untracked VFR under a TMA, so list them only when that is what the vAcc wants.",
+          "description": "Aircraft NO client-side net looks at: STCA, RAM, AIW, AFDAS, BUST and CLAM all skip them at their eligibility stage, and the duplicate-code detector in Correlation stops calling a listed code duplicated (TopSky's Airspace_No_DUPE_Codes). The emergency squawk net is never excluded. A controller's per-aircraft twin of this is the inhibitAlerts click action. Note that excluding the conspicuity codes silences AIW on exactly the traffic AIW exists to watch, the untracked VFR under a TMA, so list them only when that is what the vAcc wants.",
           "properties": {
             "callsigns": {
               "type": "array",
@@ -1346,7 +1346,7 @@
         },
         "bust": {
           "type": "object",
-          "description": "Level bust: the aircraft has passed through its cleared level by more than triggerFt. Raises an alert-severity Bust worded with the cleared level, as BUST A060 or BUST FL350. Absent is every default below, the server's own descriptor, never off.",
+          "description": "Level bust: the aircraft has passed through its cleared level by more than triggerFt. Raises an alert-severity Bust worded with the cleared level, as BUST A060 or BUST FL350. A client net; absent is every default below, the values the server tuned it with, never off.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -1387,7 +1387,7 @@
         },
         "clam": {
           "type": "object",
-          "description": "Cleared level adherence monitoring: the aircraft is more than triggerFt off its cleared level and not closing on it. Raises a warning-severity Clam worded with the cleared level, as CLAM FL350, and stands down while a bust stands on the same aircraft. Absent is every default below, the server's own descriptor, never off.",
+          "description": "Cleared level adherence monitoring: the aircraft is more than triggerFt off its cleared level and not closing on it. Raises a warning-severity Clam worded with the cleared level, as CLAM FL350, and stands down while a bust stands on the same aircraft. A client net; absent is every default below, the values the server tuned it with, never off.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -2423,7 +2423,7 @@
         },
         "kinds": {
           "type": "object",
-          "description": "Per kind, by wire name: the board-level overrides that give a system full control of every net, client or server. Every key is optional and absent leaves the net's own behaviour.",
+          "description": "Per kind, by wire name: the board-level overrides that give a system full control of every net, the client's and the server's (mtcd). Every key is optional and absent leaves the net's own behaviour.",
           "propertyNames": {
             "enum": [
               "bust",
@@ -2478,7 +2478,7 @@
               },
               "exclude": {
                 "type": "object",
-                "description": "Aircraft this net alone never looks at, on top of safetyNets.exclude: callsigns and squawks as there. Never on emergency or rimcas; a server net's raises are dropped on arrival.",
+                "description": "Aircraft this net alone never looks at, on top of safetyNets.exclude: callsigns and squawks as there. Never on emergency or rimcas; mtcd, the one server net, has its raises dropped on arrival.",
                 "properties": {
                   "callsigns": {
                     "type": "array",
@@ -2500,7 +2500,7 @@
               "inhibitable": {
                 "type": "boolean",
                 "default": true,
-                "description": "Whether the controller's inhibitAlerts switches this client net off for an aircraft. The TCT simulations say a controller should not be able to suppress TCT; a system that agrees authors false. Never on emergency, rimcas or a server net."
+                "description": "Whether the controller's inhibitAlerts switches this client net off for an aircraft. The TCT simulations say a controller should not be able to suppress TCT; a system that agrees authors false. Never on emergency, rimcas or mtcd, the one server net."
               }
             },
             "additionalProperties": false
