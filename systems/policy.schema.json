@@ -650,7 +650,7 @@
     },
     "safetyNets": {
       "type": "object",
-      "description": "The alert board every safety net wears: the server's nets (BUST and CLAM today, MTCD and TCT later), the client's own (RIMCAS, RAM, AIW, AFDAS, STCA, the emergency squawk), merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. Numbers a vAcc owns (what each server net triggers on) live in the hub, not here.",
+      "description": "The alert board every safety net wears: the server's nets (BUST and CLAM today, MTCD and TCT later), the client's own (RIMCAS, RAM, AIW, AFDAS, STCA, the emergency squawk), merged into one ordered set per aircraft and read through alertKind, alertSeverity, alertText, alertOther, alertCount, alertAcknowledged, alertsMuted and the twelve per-kind severities. Unlike the other sections an absent one is the full default rather than off: the board shows only what a label, list or target already asks for, so a package that binds none of those keys sees nothing either way. BUST and CLAM take their numbers from safetyNets.bust and safetyNets.clam here, each the server's own defaults when absent.",
       "properties": {
         "show": {
           "type": "object",
@@ -1340,6 +1340,88 @@
               "enum": ["all", "own"],
               "default": "all",
               "description": "Whose airspace is watched, TopSky's AIW_Type. own watches only the volumes this controller, or a position it observes, works; ignored when the package draws controlled zones, which name nobody."
+            }
+          },
+          "additionalProperties": false
+        },
+        "bust": {
+          "type": "object",
+          "description": "Level bust: the aircraft has passed through its cleared level by more than triggerFt. Raises an alert-severity Bust worded with the cleared level, as BUST A060 or BUST FL350. Absent is every default below, the server's own descriptor, never off.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "False stops the net evaluating at all. Use safetyNets.show.bust instead to keep it evaluating and hide it on this system."
+            },
+            "triggerFt": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 300,
+              "description": "How far beyond the cleared level, in feet, the aircraft must be before the net raises."
+            },
+            "clearFt": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 200,
+              "description": "How close to the cleared level, in feet, the aircraft must come back for the net to clear. Must not exceed triggerFt: the band between the two is the hysteresis that stops an aircraft riding the trigger flapping."
+            },
+            "confirmCycles": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2,
+              "description": "Distinct position reports beyond triggerFt before the net raises; an evaluation that sees no new report does not count."
+            },
+            "inhibitAfterCflChangeSeconds": {
+              "type": "integer",
+              "default": 60,
+              "description": "Seconds after the cleared level changes during which the net does not raise, so a new clearance is not an alert before the crew has reacted. It holds off a raise only; clearing is unaffected."
+            },
+            "transitionAltitudeFt": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 6000,
+              "description": "The highest cleared level that is an altitude on QNH: at or below it the net compares true altitude and words the level A060, above it pressure altitude and FL350. 0 means 6000."
+            }
+          },
+          "additionalProperties": false
+        },
+        "clam": {
+          "type": "object",
+          "description": "Cleared level adherence monitoring: the aircraft is more than triggerFt off its cleared level and not closing on it. Raises a warning-severity Clam worded with the cleared level, as CLAM FL350, and stands down while a bust stands on the same aircraft. Absent is every default below, the server's own descriptor, never off.",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": true,
+              "description": "False stops the net evaluating at all. Use safetyNets.show.clam instead to keep it evaluating and hide it on this system."
+            },
+            "triggerFt": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 300,
+              "description": "How far off the cleared level, in feet, the aircraft must be before the net raises."
+            },
+            "clearFt": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 200,
+              "description": "How close to the cleared level, in feet, the aircraft must come back for the net to clear. Must not exceed triggerFt: the band between the two is the hysteresis that stops an aircraft riding the trigger flapping."
+            },
+            "confirmCycles": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2,
+              "description": "Distinct position reports off the cleared level before the net raises; an evaluation that sees no new report does not count."
+            },
+            "inhibitAfterCflChangeSeconds": {
+              "type": "integer",
+              "default": 60,
+              "description": "Seconds after the cleared level changes during which the net does not raise, so a new clearance is not an alert before the crew has reacted. It holds off a raise only; clearing is unaffected."
+            },
+            "transitionAltitudeFt": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 6000,
+              "description": "The highest cleared level that is an altitude on QNH: at or below it the net compares true altitude and words the level A060, above it pressure altitude and FL350. 0 means 6000."
             }
           },
           "additionalProperties": false
