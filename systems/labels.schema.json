@@ -658,7 +658,7 @@
                     {
                       "type": "string",
                       "const": "alertText",
-                      "description": "That alert's own text, the server's wording for a server net and the evaluator's for a client one; blank for none."
+                      "description": "That alert's own text, worded by the net that raised it; blank for none."
                     },
                     {
                       "type": "string",
@@ -688,47 +688,47 @@
                     {
                       "type": "string",
                       "const": "alertMsaw",
-                      "description": "MSAW severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                      "description": "MSAW severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
                     },
                     {
                       "type": "string",
                       "const": "alertApw",
-                      "description": "APW severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                      "description": "APW severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
                     },
                     {
                       "type": "string",
                       "const": "alertAiw",
-                      "description": "AIW severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                      "description": "AIW severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
                     },
                     {
                       "type": "string",
                       "const": "alertRam",
-                      "description": "RAM severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                      "description": "RAM severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
                     },
                     {
                       "type": "string",
                       "const": "alertClam",
-                      "description": "CLAM severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                      "description": "CLAM severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
                     },
                     {
                       "type": "string",
                       "const": "alertBust",
-                      "description": "BUST severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                      "description": "BUST severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
                     },
                     {
                       "type": "string",
                       "const": "alertHold",
-                      "description": "Hold intrusion severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                      "description": "Hold intrusion severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
                     },
                     {
                       "type": "string",
                       "const": "alertTct",
-                      "description": "TCT severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                      "description": "TCT severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
                     },
                     {
                       "type": "string",
                       "const": "alertMtcd",
-                      "description": "MTCD severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or the server does not run it."
+                      "description": "MTCD severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
                     },
                     {
                       "type": "string",
