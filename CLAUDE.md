@@ -17,6 +17,7 @@ These pairs move in LOCKSTEP. A one-sided edit is a break, not a cleanup:
 - `@server/internal/contract/` and `@client/src/NeoRadar.Core/ServerLink/Contract/`
 - `@server/internal/contract/testdata/*.json` and `@client/tests/NeoRadar.Core.Tests/ServerLink/Vectors/*.json`
 - `@server/internal/contract/vocabulary.json` and `@client/tests/NeoRadar.Core.Tests/ServerLink/vocabulary.json`
+- `@server/internal/trajectory/testdata/copx-matcher-cases.json` and `@client/tests/NeoRadar.Core.Tests/FutureOwnership/Copx/copx-matcher-cases.json`
 
 Stance: alpha. Do not write backwards-compatibility or fallback layers unless asked, especially
 in ServerLink. Document any process change and how it rolls out to other sector files. The
