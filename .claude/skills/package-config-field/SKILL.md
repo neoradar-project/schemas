@@ -32,22 +32,28 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `systems/shapes.{json,yaml}` | `@schemas/systems/shapes.schema.json` | **none** | `Package/ShapesConfig.cs` | `ShapesConfigWriter.Write` |
 | `systems/expressions.{json,yaml}` | `@schemas/systems/expressions.schema.json` | **none** | `Package/ExpressionsConfig.cs` | `ExpressionsConfigWriter.Write` |
 | `systems/lists.{json,yaml}` | `@schemas/systems/lists.schema.json` | **none** | `Package/ListsConfig.cs` | `ListsConfigWriter.Write` |
-| `manifest.json` | `@schemas/package/manifest.schema.json` | `@cli/src/commands/init-package.ts:129-159`, `@cli/src/commands/indexer.ts:167-200` | `Package/PackageManifest.cs` | none (manifest has no section) |
-| `profiles/*.stp` | `@schemas/profile.schema.json` | `@cli/src/commands/converter/asr.ts:168-171` | `Package/Profile.cs` | `ProfileStorageService` |
-| `datasets/atc-data.json` | none | `@cli/src/commands/converter/atc-data-parser.ts:193` | `Package/AtcData.cs` | none |
+| `manifest.json` | `@schemas/package/manifest.schema.json` | `initPackage` (`@cli/src/commands/init-package.ts`), `indexer` (`@cli/src/commands/indexer.ts`) | `Package/PackageManifest.cs` | none (manifest has no section) |
+| `profiles/*.stp` | `@schemas/profile.schema.json` | `AsrFolderConverter.processFile` (`@cli/src/commands/converter/asr.ts`) | `Package/Profiles/Profile.cs` | `ProfileStorageService` |
+| `datasets/atc-data.json` | none | `AtcDataManager.writeAtcData` (`@cli/src/commands/converter/atc-data-parser.ts`) | `Package/AtcData.cs` | none |
 | `datasets/nse.json` | none | `@cli/src/helper/nse.ts` | `Package/EseDataset.cs` | none |
+| `datasets/zones.geojson` | `@schemas/datasets/zones.schema.json` | **none** (hand-authored) | `Package/ZonesDataset.cs` | none |
+| `datasets/radars.json` | `@schemas/datasets/radars.schema.json` | `writeRadarsDataset` (`@cli/src/helper/radars.ts`) | `Package/RadarsDataset.cs` | none |
+| `datasets/msaw.geojson` | `@schemas/datasets/msaw.schema.json` | `buildMsawDataset` (`@cli/src/commands/converter/topsky/topsky-msaw.ts`) | `Package/MsawDataset.cs` | none |
+| `datasets/areas.geojson` | `@schemas/datasets/areas.schema.json` | `buildAreasDataset` (`.../topsky/topsky-areas.ts`) | not read by the client | none |
+| `datasets/stca-runways.json` | `@schemas/datasets/stca-runways.schema.json` | `buildStcaRunwaysDataset` (`.../topsky/topsky-stca.ts`) | not read by the client | none |
 | `server-dataset.json` | none | `@cli/src/helper/server-dataset.ts` | not read by the client | none |
 
 `policy.json` is the one systems config with no writer at all: nothing in the Configurator edits it yet, so the §4 erase-on-save hazard does not apply to it and the round-trip test in §8 is the schema drift case instead. Its sections are owned by the modules that consume them (`Correlation/CorrelationPolicySection.cs` is the model), not by `Package/`, so a new section is a property on `SystemPolicy` plus a section type and a `Resolve` beside the module that reads it.
 
-**The `systems/*` configs have no CLI leg.** `@cli/src/commands/init-package.ts:18-75` downloads
-the whole starter tree from the `neoradar-project/base-package` release and unzips it; the CLI
-never generates or rewrites a systems config, and it never writes a `$schema` key anywhere
-(`grep -rn '\$schema' @cli/src` returns nothing). A new systems-config field therefore lands in
+**The `systems/*` configs have no CLI leg.** `downloadBasePackage` (`@cli/src/commands/init-package.ts`)
+downloads the whole starter tree from the `neoradar-project/base-package` release and unzips it; the
+CLI never generates or rewrites a systems config. The only `$schema` keys it writes are on the four
+datasets it emits (`radars`, `msaw`, `areas`, `stca-runways`; `grep -rn '\$schema' @cli/src`), so a
+dataset schema that moves needs its constant there moved too. A new systems-config field therefore lands in
 `@schemas` + `@client` + optionally the base-package template, and the "emitter" step is a no-op.
 
 `TagItem` is the shared shape used by both tag grids and list columns
-(`@client/src/NeoRadar.Core/Package/LabelsConfig.cs:10`), so a `TagItem` field appears in the
+(`TagItem` in `@client/src/NeoRadar.Core/Package/LabelsConfig.cs`), so a `TagItem` field appears in the
 labels schema **and** the lists schema and reaches two Configurator sections.
 
 ---
@@ -56,19 +62,26 @@ labels schema **and** the lists schema and reaches two Configurator sections.
 
 `@schemas` has no versioning and no pinned ref: sector files reference the raw URL on `main`,
 so a merge is instantly live for every author. Verified in the real sector files —
-`@sectorsrc/UK-Sector-File/package/systems/*/targets.json:2` uses
+the `$schema` key of `@sectorsrc/UK-Sector-File/package/systems/*/targets.json` uses
 `.../schemas/refs/heads/main/systems/targets.schema.json`, and the YAML siblings use a
 `# yaml-language-server: $schema=.../schemas/main/systems/mapstyle.schema.json` first line.
 
 Every root schema except `lists` sets **`additionalProperties: false`**:
 
 ```
-$ python -c "import json,glob; [print(f, json.load(open(f,encoding='utf-8')).get('additionalProperties','ABSENT')) for f in glob.glob('systems/*.json')]"
-systems\expressions.schema.json False
-systems\labels.schema.json      False
-systems\lists.schema.json       ABSENT
-systems\mapstyle.schema.json    False
-systems\targets.schema.json     False
+$ python -c "import json,glob; [print(f, json.load(open(f,encoding='utf-8')).get('additionalProperties','ABSENT')) for f in sorted(glob.glob('systems/*.json')+glob.glob('datasets/*.json'))]"
+datasets\areas.schema.json        False
+datasets\msaw.schema.json         False
+datasets\radars.schema.json       False
+datasets\stca-runways.schema.json False
+datasets\zones.schema.json        False
+systems\expressions.schema.json   False
+systems\labels.schema.json        False
+systems\lists.schema.json         ABSENT
+systems\mapstyle.schema.json      False
+systems\policy.schema.json        False
+systems\shapes.schema.json        False
+systems\targets.schema.json       False
 ```
 
 So an author who writes the new field **before** the schema lands sees a red editor error. The
@@ -91,7 +104,7 @@ Order:
 
 Two parser families, and they behave differently.
 
-### Source-generated (targets, labels, expressions, lists, manifest, profile)
+### Source-generated (targets, labels, expressions, shapes, lists, manifest, profile)
 
 Add the property with an explicit `[JsonPropertyName]` matching the schema's camelCase key.
 Nullable, or a value type with the default that means "absent":
@@ -101,29 +114,59 @@ Nullable, or a value type with the default that means "absent":
 public int HistoryTrailsSkipSteps { get; set; }
 ```
 
-Reads go through `FileParseHelper.ReadJsonOrYaml` (`Package/FileParseHelper.cs:12-27`), which
+Reads go through `FileParseHelper.ReadJsonOrYaml`, which
 tries `.json`, `.yaml`, `.yml` in that order and routes YAML through the reflection-free
-`YamlToJson`. You get YAML support for free; you do not get YAML **write** support (§5).
+`YamlToJson`. You get YAML support for free; you do not get YAML **write** support (§5). One
+YAML shape is not a plain string: a literal block (`|`) whose first non-blank line starts with `=`
+arrives as the rule array (one line: the string), so a property that takes a rule list is a
+`JsonElement?`, never a `string`.
+
+**A property that may be dynamic keeps its `JsonElement?` and gains a parsed form beside it.** The
+`JsonElement?` is what the writers round-trip, so it stays the serialised property; behind it sits a
+`DynamicProperty` (`Package/DynamicProperty.cs`) whose `Parsed` is the `DynamicValue` the engines
+read, parsed on first use and again whenever the property is set:
+
+```csharp
+[JsonPropertyName("color")]
+public JsonElement? Color { get => _color.Json; set => _color = new DynamicProperty(value); }
+
+private DynamicProperty _color;
+
+[JsonIgnore]
+public DynamicValue ParsedColor => _color.Parsed;
+```
+
+Read it through `DynamicValueResolver` (the `tag-and-list-authoring` skill lists the readers; the
+typed ones take the property's name, for the warning an unreadable entry gets once) and never test
+the JSON for a leading `=` or `&` yourself: an inventory test fails a file that does. A field that
+is geometry, layout, controller-owned profile state, a safety-net threshold or a click gate stays a
+plain typed property and takes no rule at all; add its row to that skill's table either way, with
+the reason.
+
+**An `applyWhen` is the same shape with `ConditionProperty`**: the `JsonElement?` stays the
+serialised property and `ParsedApplyWhen` is the `Condition` the engines ask. No file in Core or
+Rendering outside the two model files reads the JSON
+(`ConditionTests.NoFileOutsideTheModels_ReadsAnApplyWhenAsJson`).
 
 The `JsonSerializerContext`s are in `@client/src/NeoRadar.Core/Json/CoreJsonContexts.cs`.
 Adding a **property** to an already-registered type needs no context edit. Adding a new **type**
-needs a `[JsonSerializable]` on `CoreReadJsonContext` (`:19-34`) and, if it is written,
-`CoreWriteJsonContext` (`:40-48`). Both contexts are `internal`, so a desktop-side section can
-never serialise a config itself — that is why all writes go through the Core writer interfaces.
+needs a `[JsonSerializable]` on `CoreReadJsonContext` and, if it is written,
+`CoreWriteJsonContext`. Both contexts are `internal`; the desktop reaches them (`InternalsVisibleTo`)
+only to clone a section's working copy (`ConfiguratorClone`), and every write still goes through the
+Core writer interfaces.
 
 Validation is `DataAnnotations` via `PackageValidator` (`Package/PackageValidator.cs`). Note the
 asymmetry, it matters for rollout:
 
-- `Validate<T>` **warns and continues** (`:17-27`) — an invalid object still loads.
-- `ValidateList<T>` **drops the invalid element** (`:31-41`) — so adding `[Required]` to a
+- `PackageValidator.Validate<T>` **warns and continues** — an invalid object still loads.
+- `PackageValidator.ValidateList<T>` **drops the invalid element** — so adding `[Required]` to a
   `DynamicListConfig` or `TagItem` field silently removes whole entries from every package that
   predates the field. Never retro-fit `[Required]`.
 
 ### Hand-written (mapstyle only)
 
-`SystemMapStyle` uses tuples and is parsed by `MapStyleParser.Parse`
-(`Package/MapStyleParser.cs:9-47`) and serialised by `MapStyleSerializer.Serialize`
-(`Package/MapStyleSerializer.cs:19-56`). A mapstyle field is **four** edits, not two: the
+`SystemMapStyle` uses tuples and is parsed by `MapStyleParser.Parse` and serialised by
+`MapStyleSerializer.Serialize`. A mapstyle field is **four** edits, not two: the
 `AtmSystem.cs` property, the parser `TryGetProperty` line, the serialiser `Write*` line, and the
 schema. Miss the serialiser and §4 bites.
 
@@ -135,45 +178,55 @@ schema. Miss the serialiser and §4 bites.
 `grep -rn JsonExtensionData src/NeoRadar.Core --include=*.cs` returns nothing. Combined with
 `MapStyleSerializer` writing only the fields it knows about, the consequence is:
 
-> Any property present on disk but absent from the client model is **silently erased** the first
-> time a user saves that file in the Configurator.
+> Any property present on disk but absent from the client model is **erased** the first time a
+> user saves that file in the Configurator. The save asks once per file first and names the keys it
+> would remove (`ConfiguratorFileState.ReformatNotice`), but a confirmed save still removes them.
 
 That is a data-loss bug against a real author's package, not a cosmetic gap. It is why the rule
 is parser **and** writer in the same change, and why the client leg is three files, not one:
 parser (§3), writer (this section), Configurator section view model (§7).
 
 All writes route through `Package/Writers/`:
-`ISystemConfigWriter`, `IExpressionsConfigWriter`, `IListsConfigWriter`, `ISystemFolderWriter`,
-`IProfileStorageService` — singletons registered at
-`@client/src/NeoRadar/Program.cs:280-284`. Every one of them writes through
-`AtomicConfigWriter.Write` (tmp file + `File.Move` overwrite,
-`Package/Writers/AtomicConfigWriter.cs:8-26`). Never `File.WriteAllText` a package file from a
+`ISystemConfigWriter`, `IExpressionsConfigWriter`, `IListsConfigWriter`, `IShapesConfigWriter`,
+`ISystemFolderWriter`, `IProfileStorageService` — singletons registered in
+`PackageModule.AddPackageServices`. Every one of them writes through
+`AtomicConfigWriter.Write` (tmp file + `File.Move` overwrite). Never `File.WriteAllText` a package file from a
 section.
 
+**A save reaches the running views through one path, and it is the on-disk path.** Each writer
+tells `IOwnPackageWrites` (implemented by `Package/ReloadPackageFilesOnChange`) what it wrote, through
+the member for its file: `SystemFile(path, systemId, geometryAffected)`, `ListsFile`,
+`ExpressionsFile`, `ShapesFile`, `ProfileInMemory(profile)` for a stored profile edited in place, and
+`Unwatched(path)` for a file whose content the stores already hold. The watcher's echo of that write is ignored, the file is reloaded into the store once,
+and the typed `*FileChanged` bus event tells every open radar view, main window and insets alike,
+to re-apply what it shows. An edit made in a text editor arrives at the same reload through
+`PackageFileWatcher`. A section never publishes a reload event and never pokes a view; a new
+writer that skips the `IOwnPackageWrites` call saves correctly and shows nothing until restart. A
+new package FILE needs a watcher entry, a `Reload*` on `IPackageLoaderService` and its event as
+well (`datasets/msaw.geojson` is the model).
+
 If the field has a structural invariant, add it to that writer's validation list so the write
-fails before touching disk — `SystemConfigWriter.ValidateTargets` is the model
-(`Package/Writers/SystemConfigWriter.cs:90-103`), and its failure path returns
+fails before touching disk — `SystemConfigWriter.ValidateTargets` is the model, and its failure path returns
 `ConfigWriteResult.Fail` and writes nothing.
 
 ### Round-trip test (required)
 
-Extend `@client/tests/NeoRadar.Core.Tests/Package/ConfigWriterTests.cs`. It already holds 19
-facts in this exact shape: parse a JSON literal, write, re-parse from disk, assert the field
+Extend `@client/tests/NeoRadar.Core.Tests/Package/ConfigWriterTests.cs`. It already holds 56
+facts, most in this exact shape: parse a JSON literal, write, re-parse from disk, assert the field
 survived. Name the test after what it protects.
 
 ```
 dotnet test tests/NeoRadar.Core.Tests/NeoRadar.Core.Tests.csproj --filter ConfigWriterTests
 ```
 
-For mapstyle, follow `WriteMapStyle_RoundTripsThroughParser` (`:333`) — parser and serialiser
+For mapstyle, follow `WriteMapStyle_RoundTripsThroughParser` — parser and serialiser
 must agree, and only a round-trip catches a one-sided edit.
 
 ---
 
 ## 5 · YAML write-back is refused, and both real sector files are YAML
 
-Every writer resolves the on-disk extension through `ConfigPathResolver.Resolve`
-(`Package/Writers/ConfigPathResolver.cs:15-24`) and **fails** if it is `.yaml`/`.yml`:
+Every writer resolves the on-disk extension through `ConfigPathResolver.Resolve` and **fails** if it is `.yaml`/`.yml`:
 
 ```csharp
 if (resolved.IsYaml)
@@ -184,18 +237,19 @@ This is not hypothetical. Checked against the two real sector files:
 
 ```
 $ ls @sectorsrc/UK-Sector-File/package/systems/default
-labels.json  mapstyle.yaml  targets.json
+labels.json  mapstyle.yaml  policy.json  targets.json
 $ ls @sectorsrc/UK-Sector-File/package/systems
-default  expressions.json  gatwick-smr  lgw  lhr  lists.yaml  sco  smr  stc
+default  expressions.json  gatwick-smr  lgw  lhr  'lists copy.yaml'  lists.yaml  node  sco  shapes.json  smr  stc
 ```
 
 `@sectorsrc/LFXX-Sector-File` is identical in shape: `mapstyle.yaml` per system, `lists.yaml` at
 the root. So **today, a new mapstyle or lists field cannot be edited in the Configurator for
-either shipping sector file** — the save refuses with the message above. Targets, labels and
-expressions are JSON and do save.
+either shipping sector file** — the save refuses with the message above. Targets, labels,
+expressions and shapes are JSON and do save.
 
 Plan for this up front. A mapstyle field is author-edits-YAML-by-hand until YAML write-back
-exists, and the Configurator UI for it should not pretend otherwise.
+exists. The Configurator says so: a section whose file is YAML shows a read-only banner before any
+edit, stays browsable, and a save reports that the file is YAML and was not written.
 
 ---
 
@@ -224,33 +278,49 @@ consumers. If a claim in your rollout note is not true of both of them, it is no
 ## 7 · The Configurator section leg
 
 Sections live in `@client/src/NeoRadar/Screens/Configurator/Sections/`. They are **hand
-constructed** in `ConfiguratorViewModel.BuildSections()`
-(`Screens/Configurator/ConfiguratorViewModel.cs:130`), not resolved from DI — only the shell
-VM itself is registered (`Program.cs:276`). Adding a constructor dependency to a section means
+constructed** in `ConfiguratorViewModel.BuildSections()`, not resolved from DI — only the shell
+VM itself is registered (`DesktopServices.AddDesktopViewModels`). Adding a constructor dependency to a section means
 editing `BuildSections`.
 
 Two shell contracts:
 
 | Contract | File | Obligation |
 |---|---|---|
-| `IConfiguratorSaveable` | `Screens/Configurator/IConfiguratorSaveable.cs:10-17` | `IsDirty`, `DirtyChanged`, `TrySave()`. Without it the footer cannot save the section. |
-| `IConfiguratorScopedSection` | `Screens/Configurator/IConfiguratorScopedSection.cs:7-10` | `SetSystem(AtmSystem?)`. System-scoped sections re-read on every switch; never cache the system. |
+| `IConfiguratorSaveable` | `Screens/Configurator/IConfiguratorSaveable.cs` | `IsDirty`, `DirtyChanged`, `TrySave()`, `SaveStatus` / `SaveFailed` (the footer shows them), `File`, `DiscardEdits()`, `ReloadIfStale()`. The shell saves every dirty section, not only the one on show. |
+| `IConfiguratorScopedSection` | `Screens/Configurator/IConfiguratorScopedSection.cs` | `SetSystem(AtmSystem?)`. System-scoped sections re-read on every switch and resolve the store's current instance by id; never cache the system. |
+
+Three rules every section follows (`src/NeoRadar/CLAUDE.md` § Configurator):
+
+- **It edits a copy.** The model is cloned on load (`ConfiguratorClone`); the store is never touched,
+  so nothing is live before a save and a cancel has nothing to undo.
+- **One save path.** `TrySave` calls the Core writer; the reload the writer announces is the only
+  thing that changes the store. Never call a store setter from a section.
+- **Conflicts are refused, not overwritten.** `ConfiguratorFileState` hashes the file at load;
+  `File.SaveRefusal()` runs first in `TrySave` (YAML, or the file moved on disk), and
+  `File.MarkSaved(...)` after a successful write.
 
 `TargetsSectionViewModel` is the reference implementation. The pattern for one new field:
 
 1. An `[ObservableProperty]` for the editable value.
-2. Its `nameof(...)` added to the section's edit-field set so a change marks dirty —
-   `Sections/TargetsSectionViewModel.cs:37-42` (`s_editFields`).
-3. Read it in `SetSystem` / the section's reload path from the parsed config object.
-4. Write it back onto the config model before `TrySave` calls the writer —
-   `Sections/TargetsSectionViewModel.cs:435-452`.
-5. The XAML row. Do not put a `LineHeight`, `Padding` or `Height` on the control by feel; see
+2. Its `nameof(...)` added to the section's edit-field set so a change marks dirty (`s_editFields`).
+3. Seed it in the inspector's seed method from the working copy, and keep the authored value in the
+   seed snapshot.
+4. Write it in `ApplyField` under its own `case`: only the field that changed is written, and a
+   field set back to what it was seeded with writes the authored value back
+   (`TagItemFields.KeptString` and friends). Never re-apply the whole inspector: that stamps a
+   default into every field the file left absent.
+5. A picker over a vocabulary takes it from the code that parses the value, and offers the current
+   value before it is written (`PickerOptions`), or the ComboBox nulls a value it does not list.
+6. The XAML row. Do not put a `LineHeight`, `Padding` or `Height` on the control by feel; see
    the `ui-text-metrics` skill.
 
+Then extend `ConfiguratorOneEditTests` (`tests/NeoRadar.Tests/Screens/Configurator/`): load the
+real-file fixture, edit the new field, save, and assert the file differs from an unedited save at
+that field alone.
+
 `TrySave` must surface failure rather than swallowing it: set `SaveFailed` + `SaveStatus` from
-`ConfigWriteResult.Errors` and return `false`, exactly as `TargetsSectionViewModel.cs:435-452`
-does. Silent success on a refused write is the worst outcome, because the author believes the
-edit landed.
+`ConfigWriteResult.Errors` and return `false`. Silent success on a refused write is the worst
+outcome, because the author believes the edit landed.
 
 ---
 
@@ -263,6 +333,7 @@ edit landed.
 - [ ] Writer round-trips it. No `[Required]` retro-fitted to any list-element type.
 - [ ] Round-trip test added to `ConfigWriterTests` and named after what it protects; suite green.
 - [ ] New serialisable **type** registered in both `CoreJsonContexts` contexts (new property only, no edit).
-- [ ] Configurator section reads it, marks dirty, writes it back, and reports write failure.
+- [ ] Configurator section reads it, marks dirty, writes only it back, and reports write failure;
+      `ConfiguratorOneEditTests` covers it.
 - [ ] YAML refusal accounted for if the field lives in mapstyle or lists.
 - [ ] Rollout path written, all five lines, checked against both live sector files.
