@@ -61,7 +61,7 @@ these schemas stay hand-written rather than generated. `mapstyle.schema.json` ha
 
 ## The expression catalogue mirror
 
-`@client`'s `ExpressionCatalog` (`Utils/Expressions/ExpressionCatalog.cs`, exactly 188 `Add(...)`
+`@client`'s `ExpressionCatalog` (`Utils/Expressions/ExpressionCatalog.cs`, exactly 285
 entries) is THE whitelist for a tag `itemName`, a list column and an `&ref`. Every key is mirrored
 THREE times here, as a `const` or `enum` member in `expressions.schema.json`, `labels.schema.json`
 and `lists.schema.json`, and `SystemsSchemaDriftTests` does not check enums, so a key added to the
@@ -70,7 +70,7 @@ difference, not by eye: collect every `enum` member and `const` string in each f
 catalogue's `Add("...")` names; the result must be empty in all three. The 2026-09 coordination
 work added `sectorIndicator`, `minutesToSectorExit`, `nextControllerIsManual`, `sectorEntryLevel`,
 `sectorExitLevel`, `sectorEntryLevelSource`, `sectorExitLevelSource`, `coordinatedLevel` and
-`temporaryAltitude` this way; all three files list all 188 today.
+`temporaryAltitude` this way; all three files list all 285 today.
 
 ## What has no schema
 
