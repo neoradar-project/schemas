@@ -836,7 +836,7 @@
         },
         "exclude": {
           "type": "object",
-          "description": "Aircraft NO client-side net looks at: STCA, RAM, AIW, AFDAS, BUST and CLAM all skip them at their eligibility stage, and the duplicate-code detector in Correlation stops calling a listed code duplicated (TopSky's Airspace_No_DUPE_Codes). The emergency squawk net is never excluded. A controller's per-aircraft twin of this is the inhibitAlerts click action. Note that excluding the conspicuity codes silences AIW on exactly the traffic AIW exists to watch, the untracked VFR under a TMA, so list them only when that is what the vAcc wants.",
+          "description": "Aircraft NO client-side net looks at: STCA, TCT, RAM, AIW, MSAW, AFDAS, BUST and CLAM all skip them at their eligibility stage. An aircraft is excluded when a callsign pattern matches, or a squawk prefix matches, or the when condition holds; any one is enough. The duplicate-code detector in Correlation stops calling a code listed in squawks duplicated (TopSky's Airspace_No_DUPE_Codes); it reads squawks alone, never callsigns or when. The emergency squawk net and RIMCAS are never excluded. A controller's per-aircraft twin of this is the inhibitAlerts click action. Note that excluding the conspicuity codes silences AIW on exactly the traffic AIW exists to watch, the untracked VFR under a TMA, so list them only when that is what the vAcc wants.",
           "properties": {
             "callsigns": {
               "type": "array",
@@ -847,6 +847,10 @@
               "type": "array",
               "items": { "type": "string", "pattern": "^[0-7]{1,4}$" },
               "description": "Octal SSR code prefixes, TopSky's form: \"20\" is 2000 to 2077, \"7000\" is that code alone. One to four octal digits; anything else is a load error naming the entry."
+            },
+            "when": {
+              "$ref": "#/definitions/condition",
+              "description": "Exclude by rule: every aircraft this condition holds for is excluded, on top of callsigns and squawks. Written and read exactly as an applyWhen: a \"$name\" of the package's systems/expressions file, one [operator, key, value] comparison, or an AND / OR / NOT group, over any aircraft key (the military rule the tags already use, [\"contains\", \"zoneTags\", \"danger\"], a flight rule). Absent or empty excludes nobody. It is read as each net sweeps, against the track as the screen last drew it. A condition that cannot be read, one naming an expression that does not exist and one whose evaluation fails exclude nobody; each is logged once and listed by .dev package-check. .dev alert-info says when it is what excluded an aircraft."
             }
           },
           "additionalProperties": false
@@ -2478,7 +2482,7 @@
               },
               "exclude": {
                 "type": "object",
-                "description": "Aircraft this net alone never looks at, on top of safetyNets.exclude: callsigns and squawks as there. Never on emergency or rimcas.",
+                "description": "Aircraft this net alone never looks at, on top of safetyNets.exclude: callsigns, squawks and when as there. Never on emergency or rimcas.",
                 "properties": {
                   "callsigns": {
                     "type": "array",
@@ -2493,6 +2497,10 @@
                       "type": "string",
                       "pattern": "^[0-7]{1,4}$"
                     }
+                  },
+                  "when": {
+                    "$ref": "#/definitions/condition",
+                    "description": "A condition as safetyNets.exclude.when takes; an aircraft it holds for is skipped by this net alone."
                   }
                 },
                 "additionalProperties": false
@@ -2590,6 +2598,62 @@
     "squawkCodeOrRange": {
       "type": "string",
       "pattern": "^[0-7]{4}(-[0-7]{4})?$"
+    },
+    "condition": {
+      "description": "A condition over one aircraft, in the expression language of systems/expressions and of every applyWhen. The key is not enumerated here: expressions.schema.json lists the catalogue, and .dev package-check names a key the client does not know.",
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^(\\$[A-Za-z0-9_-]+)?$",
+          "description": "\"$name\": an expression of the package's systems/expressions file. An empty string asks nothing."
+        },
+        {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": [
+            { "enum": ["==", "!=", "<", "<=", ">", ">=", "beginsWith", "endsWith", "contains"] },
+            { "type": "string", "minLength": 1, "description": "The key read from the aircraft." },
+            { "type": ["string", "number", "boolean"], "description": "Text, a number, true or false, \"&key\" for another key's value or \"$name\" for an expression (compared as \"1\" or \"0\")." }
+          ],
+          "description": "One comparison: [operator, key, value]."
+        },
+        {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": [
+            { "enum": ["isEmpty", "notEmpty"] },
+            { "type": "string", "minLength": 1 }
+          ],
+          "description": "[\"isEmpty\", key] or [\"notEmpty\", key]."
+        },
+        {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": [
+            { "enum": ["AND", "OR", "NOT"] },
+            { "type": "array", "minItems": 1, "items": { "$ref": "#/definitions/condition" } }
+          ],
+          "description": "A group: [\"AND\" | \"OR\" | \"NOT\", [conditions]]. NOT over several holds when none does."
+        },
+        {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": [
+            { "enum": ["AND", "OR", "NOT"] },
+            { "enum": ["isEmpty", "notEmpty"] },
+            { "type": "string", "minLength": 1 }
+          ],
+          "description": "The short form of a group over one emptiness test: [\"NOT\", \"isEmpty\", key]."
+        },
+        {
+          "type": "object",
+          "description": "The object form: { \"reference\": name }, { \"operator\", \"variable\", \"value\" } or { \"operator\", \"conditions\" }."
+        }
+      ]
     }
   }
 }
