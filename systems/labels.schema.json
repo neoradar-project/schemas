@@ -820,7 +820,16 @@
                     "metarVisibilityString",
                     "metarTemperature",
                     "metarDewpoint",
-                    "metarATISLetter"
+                    "metarATISLetter",
+                    "metarWindVariableFrom",
+                    "metarWindVariableTo",
+                    "metarIsWindVariable",
+                    "metarHasWindGust",
+                    "metarCeiling",
+                    "metarCloudCount",
+                    "metarHasMetar",
+                    "metarIsParsed",
+                    "metarIsCAVOK"
                   ]
                 },
                 {
@@ -837,7 +846,25 @@
                     "controllerIsTower",
                     "controllerIsApproach",
                     "controllerIsCenter",
-                    "controllerHasIdentifier"
+                    "controllerHasIdentifier",
+                    "controllerCid",
+                    "controllerName",
+                    "controllerRating",
+                    "controllerFacility",
+                    "controllerFrequencyHz",
+                    "controllerFrequencyCount",
+                    "controllerLatitude",
+                    "controllerLongitude",
+                    "controllerVisibilityRange",
+                    "controllerIsATC",
+                    "controllerIsReady",
+                    "controllerHasPositionUpdate",
+                    "controllerAtisLetter",
+                    "controllerAtisLineCount",
+                    "controllerHasReceivedLastATISLine",
+                    "controllerLogoffTime",
+                    "controllerIsDelivery",
+                    "controllerSectorFileName"
                   ]
                 },
                 {
@@ -856,7 +883,10 @@
                     "frequencyOnSpeaker",
                     "frequencyIsOutputMuted",
                     "frequencyOutputVolume",
-                    "frequencyIsActiveRxTx"
+                    "frequencyIsActiveRxTx",
+                    "frequencyIsActive",
+                    "frequencyIsReceiving",
+                    "frequencyIsTransmitting"
                   ]
                 },
                 {
