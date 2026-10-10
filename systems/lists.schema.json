@@ -941,7 +941,7 @@
                       {
                         "type": "string",
                         "const": "NOT",
-                        "description": "Logical NOT operator"
+                        "description": "Logical NOT operator: true when none of the listed conditions is true"
                       }
                     ]
                   },
@@ -1116,8 +1116,8 @@
                   ]
                 },
                 "placeholder": {
-                  "type": "string",
-                  "description": "A placeholder string to be displayed when the item is empty or equal to 0."
+                  "$ref": "#/items/properties/columns/items/properties/tagItem/properties/prefix",
+                  "description": "Text displayed when the item is empty or equal to 0. Takes every form prefix takes: plain text, a \"=rule\" or \"&key\" reference, or an array of them tried in order."
                 },
                 "prefix": {
                   "anyOf": [

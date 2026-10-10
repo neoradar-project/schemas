@@ -450,7 +450,7 @@
                                       {
                                         "type": "string",
                                         "const": "NOT",
-                                        "description": "Logical NOT operator"
+                                        "description": "Logical NOT operator: true when none of the listed conditions is true"
                                       }
                                     ]
                                   },
@@ -556,7 +556,7 @@
                   },
                   "plotColor": {
                     "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor",
-                    "description": "Colour that the plotShape's inheriting elements take. Lets one shape serve every attention state."
+                    "description": "Colour that the plotShape's inheriting elements take. Lets one shape serve every attention state. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array (a at most 1 is a fraction, above 1 is 0-255), a \"=rule\" or \"&key\" reference, or an array of references tried in order. The first entry that matches and reads as a colour wins; it is resolved per aircraft when the aircraft's data changes, never per frame."
                   },
                   "historyTrailShape": {
                     "type": "object",
@@ -573,7 +573,8 @@
                         "description": "How many trail marks to draw. Replaces repeating historyTrailImages N times."
                       },
                       "color": {
-                        "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor"
+                        "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor",
+                        "description": "Colour the trail shape's inheriting elements take. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array (a at most 1 is a fraction, above 1 is 0-255), a \"=rule\" or \"&key\" reference, or an array of references tried in order. The first entry that matches and reads as a colour wins; it is resolved per aircraft when the aircraft's data changes, never per frame."
                       },
                       "opacityRamp": {
                         "type": "array",
@@ -593,25 +594,39 @@
                   "primaryPlotColor": {
                     "anyOf": [
                       {
-                        "type": "array",
-                        "items": {
-                          "type": "number"
-                        },
-                        "minItems": 3,
-                        "maxItems": 3,
-                        "description": "RGB color array [r,g,b]"
+                        "anyOf": [
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            },
+                            "minItems": 3,
+                            "maxItems": 3,
+                            "description": "RGB color array [r,g,b]"
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "number"
+                            },
+                            "minItems": 4,
+                            "maxItems": 4,
+                            "description": "RGBA color array [r,g,b,a]"
+                          }
+                        ],
+                        "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+                      },
+                      {
+                        "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/speedVectorColor/anyOf/1"
                       },
                       {
                         "type": "array",
                         "items": {
-                          "type": "number"
-                        },
-                        "minItems": 4,
-                        "maxItems": 4,
-                        "description": "RGBA color array [r,g,b,a]"
+                          "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/speedVectorColor/anyOf/1"
+                        }
                       }
                     ],
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+                    "description": "Colour of the raw video return; an aircraft it gives no colour draws none. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array (a at most 1 is a fraction, above 1 is 0-255), a \"=rule\" or \"&key\" reference, or an array of references tried in order. The first entry that matches and reads as a colour wins; it is resolved per aircraft when the aircraft's data changes, never per frame."
                   },
                   "historyTrailImages": {
                     "type": "array",
@@ -621,10 +636,18 @@
                     "default": []
                   },
                   "primaryHistoryTrailColor": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor"
-                    }
+                    "anyOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor"
+                        }
+                      },
+                      {
+                        "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor"
+                      }
+                    ],
+                    "description": "Colours of the raw video history marks, newest first, one mark per colour. A list is an array whose FIRST entry is itself an array, and each entry takes every form primaryPlotColor takes, so [[\"=alertTrail\", \"=trail\"], [0,219,219,150]] is two marks; an entry that gives an aircraft no colour leaves its mark undrawn. Anything else is ONE colour and one mark: [0,255,255], \"=trail\", or [\"=alertTrail\", \"=trail\"] (two references tried in order)."
                   },
             "primaryHistoryTrailScale": {
               "type": "number",
@@ -771,7 +794,7 @@
                   },
                   "hoverShapeColor": {
                     "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor",
-                    "description": "Colour the hover shape's inheriting elements take. Falls back to plotColor."
+                    "description": "Colour the hover shape's inheriting elements take. Falls back to plotColor. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array (a at most 1 is a fraction, above 1 is 0-255), a \"=rule\" or \"&key\" reference, or an array of references tried in order. The first entry that matches and reads as a colour wins; it is resolved per aircraft when the aircraft's data changes, never per frame."
                   },
                   "rotatePlotWithHeading": {
                     "type": "boolean",
@@ -786,21 +809,10 @@
                     "default": 0
                   },
                   "speedVectorColor": {
+                    "description": "Colour of the speed vector. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array (a at most 1 is a fraction, above 1 is 0-255), a \"=rule\" or \"&key\" reference, or an array of references tried in order. The first entry that matches and reads as a colour wins; it is resolved per aircraft when the aircraft's data changes, never per frame.",
                     "anyOf": [
                       {
-                        "anyOf": [
-                          {
-                            "not": {}
-                          },
-                          {
-                            "type": "array",
-                            "items": {
-                              "type": "number"
-                            },
-                            "minItems": 3,
-                            "maxItems": 3
-                          }
-                        ]
+                        "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items/properties/primaryPlotColor/anyOf/0"
                       },
                       {
                         "type": "string",

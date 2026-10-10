@@ -937,8 +937,8 @@
           ]
         },
         "placeholder": {
-          "type": "string",
-          "description": "A placeholder string to be displayed when the item is empty or equal to 0."
+          "$ref": "#/$defs/tagItem/properties/prefix",
+          "description": "Text displayed when the item is empty or equal to 0. Takes every form prefix takes: plain text, a \"=rule\" or \"&key\" reference, or an array of them tried in order."
         },
         "prefix": {
           "anyOf": [
@@ -1631,13 +1631,13 @@
           "description": "Line height of the label text."
         },
         "textColor": {
-          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
-          "description": "Text color of the label (in RGB). This is the default text color for all states."
+          "$ref": "#/$defs/tagItem/properties/color",
+          "description": "Text color of the label (in RGB). This is the default text color for all states. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array, a \"=rule\" or \"&key\" reference, or an array of references tried in order. It is resolved per aircraft when the tag's content is, never per frame."
         },
         "textColorForState": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/$defs/tagItem/properties/color/anyOf/0"
+            "$ref": "#/$defs/tagItem/properties/color"
           },
           "propertyNames": {
             "enum": [
@@ -1646,14 +1646,15 @@
               "kIncomingTransfer",
               "kAssumed",
               "kOutgoingTransfer",
-              "kIntruder"
+              "kIntruder",
+              "kConcerned"
             ]
           },
           "description": "Text color of the label (in RGB) for each attention state. This overrides the default text color."
         },
         "backgroundColor": {
-          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
-          "description": "Background color of the label (in RGB). This is the default background color for all states."
+          "$ref": "#/$defs/tagItem/properties/color",
+          "description": "Background color of the label (in RGB). This is the default background color for all states. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array, a \"=rule\" or \"&key\" reference, or an array of references tried in order. It is resolved per aircraft when the tag's content is, never per frame."
         },
         "backgroundColorOpacity": {
           "type": "number",
@@ -1666,20 +1667,20 @@
           "description": "Rounded corners of the label (0-100). This is the default rounded corners for all states."
         },
         "hoverBorderColor": {
-          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
-          "description": "Border color of the label when the aircraft is hovered (in RGB)."
+          "$ref": "#/$defs/tagItem/properties/color",
+          "description": "Border color of the label when the aircraft is hovered (in RGB). Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array, a \"=rule\" or \"&key\" reference, or an array of references tried in order. It is resolved per aircraft when the tag's content is, never per frame."
         },
         "leaderLineColor": {
-          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
-          "description": "Color of the leader line drawn between the aircraft position and the label (in RGB). Omit it and no leader line is drawn for this variant."
+          "$ref": "#/$defs/tagItem/properties/color",
+          "description": "Color of the leader line drawn between the aircraft position and the label (in RGB). Omit it and no leader line is drawn for this variant. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array, a \"=rule\" or \"&key\" reference, or an array of references tried in order. It is resolved per aircraft when the tag's content is, never per frame."
         },
         "detailedLeaderLineColor": {
-          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
-          "description": "Color of the leader line while the aircraft is hovered (in RGB). Omit it and the hovered tag keeps leaderLineColor. Set only this key and the leader line is drawn in the detailed (hovered) tag alone."
+          "$ref": "#/$defs/tagItem/properties/color",
+          "description": "Color of the leader line while the aircraft is hovered (in RGB). Omit it and the hovered tag keeps leaderLineColor. Set only this key and the leader line is drawn in the detailed (hovered) tag alone. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array, a \"=rule\" or \"&key\" reference, or an array of references tried in order. It is resolved per aircraft when the tag's content is, never per frame."
         },
         "detailedBackgroundColor": {
-          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
-          "description": "Background color of the label when the aircraft is hovered (in RGB). This overrides the default background color."
+          "$ref": "#/$defs/tagItem/properties/color",
+          "description": "Background color of the label when the aircraft is hovered (in RGB). This overrides the default background color. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array, a \"=rule\" or \"&key\" reference, or an array of references tried in order. It is resolved per aircraft when the tag's content is, never per frame."
         },
         "detailedBackgroundColorOpacity": {
           "type": "number",
@@ -1692,8 +1693,8 @@
           "description": "Rounded corners of the label when the aircraft is hovered (0-100). This overrides the default rounded corners."
         },
         "detailedTextColor": {
-          "$ref": "#/$defs/tagItem/properties/color/anyOf/0",
-          "description": "Text color of the label when the aircraft is hovered (in RGB). This overrides the default text color."
+          "$ref": "#/$defs/tagItem/properties/color",
+          "description": "Text color of the label when the aircraft is hovered (in RGB). This overrides the default text color. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array, a \"=rule\" or \"&key\" reference, or an array of references tried in order. It is resolved per aircraft when the tag's content is, never per frame."
         },
         "detailedFontSize": {
           "type": "number",
@@ -1909,7 +1910,7 @@
                     {
                       "type": "string",
                       "const": "NOT",
-                      "description": "Logical NOT operator"
+                      "description": "Logical NOT operator: true when none of the listed conditions is true"
                     }
                   ]
                 },

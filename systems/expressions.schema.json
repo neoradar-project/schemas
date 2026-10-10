@@ -938,7 +938,7 @@
                       {
                         "type": "string",
                         "const": "NOT",
-                        "description": "Logical NOT operator"
+                        "description": "Logical NOT operator: true when none of the listed conditions is true"
                       }
                     ]
                   },
