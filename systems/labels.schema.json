@@ -1172,6 +1172,23 @@
           ],
           "description": "Blink color of the item (in RGBA), can also be an expression rule."
         },
+        "backgroundBlinkColor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/tagItem/properties/color/anyOf/0"
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "Background color of the item on the blink phase (in RGBA), in step with blinkColor; off the phase the item shows its backgroundColor, or none. Can also be an expression rule."
+        },
         "backgroundColor": {
           "anyOf": [
             {

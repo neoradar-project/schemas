@@ -1332,6 +1332,23 @@
                   ],
                   "description": "Blink color of the item (in RGBA), can also be an expression rule."
                 },
+                "backgroundBlinkColor": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/0"
+                    },
+                    {
+                      "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/items/properties/columns/items/properties/tagItem/properties/truncate/anyOf/1"
+                      }
+                    }
+                  ],
+                  "description": "Background color of the item on the blink phase (in RGBA). Accepted so a tag item can be shared with labels.json; a list cell resolves it and does not draw it."
+                },
                 "backgroundColor": {
                   "anyOf": [
                     {
