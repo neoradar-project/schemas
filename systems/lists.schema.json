@@ -1279,7 +1279,7 @@
                       }
                     }
                   ],
-                  "description": "Color of the item (in RGBA), can also be an expression rule."
+                  "description": "Color of the item (in RGBA), can also be an expression rule. In a YAML file a literal block (|) of =rule lines, one per line, is read as this array."
                 },
                 "applyWhen": {
                   "$ref": "#/items/properties/filterExpressions",
@@ -1317,7 +1317,7 @@
                       }
                     }
                   ],
-                  "description": "Background color of the item (in RGBA), can also be an expression rule."
+                  "description": "Background color of the item (in RGBA), can also be an expression rule. In a YAML file a literal block (|) of =rule lines, one per line, is read as this array."
                 },
                 "padding": {
                   "description": "Radar-label only: room between a tag item's text and the edge of its background. A list cell lays out through the list's own column width, so this does nothing here.",
@@ -1352,7 +1352,7 @@
                       }
                     }
                   ],
-                  "description": "A static value or expression to be displayed instead of the item if the item name is set to text."
+                  "description": "A static value or expression to be displayed instead of the item if the item name is set to text. In a YAML file a literal block (|) of =rule lines, one per line, is read as this array."
                 },
                 "leftClick": {
                   "anyOf": [
@@ -1752,6 +1752,7 @@
                 "description": "What sits behind the list. 'transparent' lets the radar show through on every platform; 'blur' asks for a frosted backdrop and falls back to 'transparent' where the platform has none (macOS, Linux). Omitted, any headerOpacity or bodyOpacity below 1 still means 'transparent'."
               },
               "rowColor": {
+                "description": "Colour of every cell in the row: an RGB or RGBA array, one =rule, or an array of =rule where the first that matches wins. In a YAML file a literal block (|) of =rule lines, one per line, is read as this array.",
                 "anyOf": [
                   {
                     "anyOf": [

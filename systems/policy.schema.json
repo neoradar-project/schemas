@@ -523,7 +523,7 @@
         },
         "sounds": {
           "type": "object",
-          "description": "Sound ids from the package's sounds folder, played once per escalation; absent plays nothing.",
+          "description": "Sound ids from the package's sounds folder, played once per escalation; absent plays nothing. Each id is the name of a file in the package's sounds folder without its extension (stca is sounds/stca.wav, else sounds/stca.mp3), never a path. An id with no file is logged as a warning and plays nothing.",
           "properties": {
             "stageOne": {
               "type": "string",
@@ -678,7 +678,7 @@
         },
         "sounds": {
           "type": "object",
-          "description": "Sound ids in the package's sounds folder, played once when an aircraft's highest alert escalates. Absent plays nothing, which is what a package that authors no sounds gets.",
+          "description": "Sound ids in the package's sounds folder, played once when an aircraft's highest alert escalates. Absent plays nothing, which is what a package that authors no sounds gets. Each id is the name of a file in the package's sounds folder without its extension (stca is sounds/stca.wav, else sounds/stca.mp3), never a path. An id with no file is logged as a warning and plays nothing.",
           "properties": {
             "info": {
               "type": "string",

@@ -982,6 +982,7 @@
         "type": "object",
         "properties": {
           "expression": {
+            "description": "One \"$expression\" reference, or an array of them. The rule matches when ANY referenced expression is true; a reference to an expression that is not defined is never true, and an empty array never matches. For conditions that must all hold, define one expression as [\"AND\", [\"$a\", \"$b\"]] and reference that alone.",
             "anyOf": [
               {
                 "type": "array",
