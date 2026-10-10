@@ -1,6 +1,6 @@
 ---
 name: cross-repo-contract-change
-description: Land one contract change in lockstep across the five NeoRadar repos (@client, @server, @hub, @cli, @schemas) in the right order. Use when the user says "keep the repos in lockstep", "what else has to change", "I only have the server checkout", "cross-repo change", "which repos does this touch", "the sibling repo is missing", "mirror this on the client", or is changing a session frame, a panel route, the server-dataset artifact or a package schema from inside one repo. Covers the repo id registry, the three lockstep pairs, which repos actually move for which lane, the order, and the per-repo verify command.
+description: Land one contract change in lockstep across the five NeoRadar repos (@client, @server, @hub, @cli, @schemas) in the right order. Use when the user says "keep the repos in lockstep", "what else has to change", "I only have the server checkout", "cross-repo change", "which repos does this touch", "the sibling repo is missing", "mirror this on the client", or is changing a session frame, a panel route, the server-dataset artifact or a package schema from inside one repo. Covers the repo id registry, the four lockstep pairs, which repos actually move for which lane, the order, and the per-repo verify command.
 ---
 
 > **Shared skill.** Copied verbatim into `@client`, `@server`, `@hub`, `@cli`, `@schemas`. Editing one copy alone is a break, not a cleanup.
@@ -55,7 +55,7 @@ Straight from `lockstepPairs` in the registry, and these are hard pairs, not con
 
 The 37 vector files are byte-identical LF on both sides, and `diff -r` between the two directories must report only `vectors.sha256` (client-side only). The vocabulary copy sits outside `Vectors/`, so that `diff -r` never sees it; check it with its own `diff`. A one-sided edit is a contract break.
 
-Third copy to remember, NOT in `lockstepPairs`: `@hub/src/lib/panel/types.ts` hand-mirrors the panel wire in TypeScript. It is a real third transcription of some lane-A types; `contract.AirportConfig` is reused by `@server/internal/api/admin.go`, so `AirportConfig` exists in Go, in C# as `AirportConfigDto`, and in TS as `AirportConfig`. Identifier names differ across all three; **the JSON key is the contract.**
+Third copy to remember, NOT in `lockstepPairs`: `@hub/src/lib/panel/types.ts` hand-mirrors the panel wire in TypeScript. It is a real third transcription of some lane-A types; `contract.AirportConfig` is reused by `@server/internal/vaccconfig/http_airports.go`, so `AirportConfig` exists in Go, in C# as `AirportConfigDto`, and in TS as `AirportConfig`. Identifier names differ across all three; **the JSON key is the contract.**
 
 ## 4 · Order of operations
 
@@ -63,7 +63,7 @@ Third copy to remember, NOT in `lockstepPairs`: `@hub/src/lib/panel/types.ts` ha
 
 ### Lane A · session wire
 
-1. **`@server`**: struct + `,omitempty`, `envelope.go` const, `vocabulary.go` (`AllFrameTypes` / `allEnumVocabularies`), `internal/api/session.go` handler or `writeFrame` call, `internal/api/errors.go` for a new code, vector in `internal/contract/testdata/`, test in `golden_test.go` or `session_test.go`.
+1. **`@server`**: struct + `,omitempty`, `envelope.go` const, `vocabulary.go` (`AllFrameTypes` / `allEnumVocabularies`; a feature goes in `AllFeatures`, `capabilities.go`), then for an uplink frame one row in the handler table (`newFrameHandlers` in `internal/session/session.go`, through `on` / `onFlightRecord` / `onRaw` from `frame_handlers.go`) or for a downlink frame a `writeFrame` call (`internal/session/session_socket.go`), and either way a row in `frameWiring` (`internal/servertest/frame_wiring_test.go`), `internal/errcode/errcode.go` plus `apiErrorCodes` (`internal/contract/vocabulary_test.go`) for a new code, vector in `internal/contract/testdata/`, test in `golden_test.go` or `session_test.go`.
 2. Regenerate the vocabulary manifest and commit it:
    `go test ./internal/contract -run TestVocabularyManifestIsCurrent -update-vocabulary`
    `TestVocabularyManifestIsCurrent` fails the build while `vocabulary.json` is stale.
@@ -74,27 +74,27 @@ Third copy to remember, NOT in `lockstepPairs`: `@hub/src/lib/panel/types.ts` ha
 
 ### Lane B · panel plane
 
-1. **`@server`**: route + handler + test under `internal/api/panel*.go`. Authz is enforced here and only here.
+1. **`@server`**: route + handler in the owning feature's `Mount` (its `http*.go`, e.g. `internal/panel/http.go`, `internal/vaccconfig/http_airports.go`), registered through the `internal/httpapi` `Router` method for its guard tier (`PanelViewer`, `PanelEditor`, `PanelOwner`, `PanelGlobalAdmin`, ...); `internal/api/routes.go` is the one list of mounted features and holds no handler. Tests go in `internal/servertest/panel*_test.go`, and every route is a line of `internal/servertest/testdata/routes.golden.txt` (`TestRouteInventory_ComposedServer_MatchesTheGolden`). Authz is enforced here and only here.
 2. **`@hub`**: `@hub/src/lib/panel/types.ts`, then the fetcher in `@hub/src/lib/panel/`, then the SWR hook in `@hub/src/lib/panel/hooks.ts`, then the page. Never raw `fetch('/api/...')` in a page; the hub is presentation and `usePermissions()` is a UX mirror only.
 3. If the type is shared with lane A, you are also in lane A. Go do steps 3 to 6 above.
 
 ### Lane C · dataset artifact
 
 1. **`@cli`**: `@cli/src/helper/server-dataset.ts` builds the envelope. Note the artifact splices pre-stringified sections in verbatim so the embedded bytes are exactly the ones hashed (`atcDataSha256` / `nseSha256`); keep that property.
-2. **`@server`**: `internal/importvacc/import.go` rejects anything that is not `format == "neoradar-server-dataset"` with `formatVersion == 1`, and `internal/api/panel_dataset.go` re-checks it on upload. Changing `formatVersion` breaks every artifact already staged, so add fields instead.
+2. **`@server`**: `internal/importvacc/import.go` rejects anything that is not `format == "neoradar-server-dataset"` with `formatVersion == 1`, and `internal/importvacc/http_datasets.go` re-checks it on upload. Changing `formatVersion` breaks every artifact already staged, so add fields instead.
 3. **`@hub`**: only if the staged-review or diff UI must show the new field.
 
 ### Lane D · package file format
 
 1. **`@cli`**: the writer.
 2. **`@client`**: the reader, under `src/NeoRadar.Core/Package/`.
-3. **`@schemas`**: update `package/manifest.schema.json`, `profile.schema.json` or `systems/*.schema.json`. No source file in `@client` or `@cli` references these schemas by path, so nothing fails if you forget; that is exactly why it needs to be on the checklist.
+3. **`@schemas`**: update `package/manifest.schema.json`, `profile.schema.json`, `systems/*.schema.json` or `datasets/*.schema.json`. Only part of this is tested: `@client`'s `SystemsSchemaDriftTests` and `SchemaVocabularyDriftTests` (`tests/NeoRadar.Core.Tests/Package/`) compare six systems schemas, the profile schema and the zones and radars dataset schemas against the C# models and vocabularies. `package/manifest.schema.json`, `systems/mapstyle.schema.json` and the other dataset schemas have no such test, and `@cli` only writes a `$schema` URL, so there nothing fails if you forget; that is exactly why it needs to be on the checklist.
 
 ## 5 · Verify, per repo
 
 | Repo | Command |
 |---|---|
-| `@server` | `go test ./internal/contract/ ./internal/api/` |
+| `@server` | `go test ./internal/contract/ ./internal/session/ ./internal/servertest/` (the composed server's tests, panel routes included, live in `servertest`; `internal/api` is the composition root) |
 | `@client` | `dotnet test tests/NeoRadar.Core.Tests/NeoRadar.Core.Tests.csproj --filter "FullyQualifiedName~ServerLink"` and `pwsh .github/scripts/check-golden-vectors.ps1` |
 | `@hub` | `pnpm typecheck` then `pnpm test` |
 | `@cli` | `npm run typecheck` then `npm test` |
