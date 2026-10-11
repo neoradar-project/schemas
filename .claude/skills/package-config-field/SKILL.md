@@ -1,6 +1,6 @@
 ---
 name: package-config-field
-description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the YAML write-back refusal that blocks mapstyle today (lists is edited as a document and saves in YAML), and the mandatory rollout path for sector files that predate the field.
+description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the YAML write-back refusal that blocks mapstyle today (lists and policy are edited as documents and save in YAML), and the mandatory rollout path for sector files that predate the field.
 ---
 
 > **Shared skill.** Copied verbatim into `@client`, `@cli`, `@schemas`. Editing one copy alone is a break, not a cleanup.
@@ -28,7 +28,7 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `systems/<id>/targets.{json,yaml}` | `@schemas/systems/targets.schema.json` | **none** | `@client/src/NeoRadar.Core/Package/TargetConfig.cs` | `SystemConfigWriter.WriteTargets` |
 | `systems/<id>/labels.{json,yaml}` | `@schemas/systems/labels.schema.json` | **none** | `Package/LabelsConfig.cs` | `SystemConfigWriter.WriteLabels` |
 | `systems/<id>/mapstyle.{json,yaml}` | `@schemas/systems/mapstyle.schema.json` | **none** | `Package/MapStyleParser.cs` (hand-written) | `SystemConfigWriter.WriteMapStyle` via `MapStyleSerializer` |
-| `systems/<id>/policy.json` | `@schemas/systems/policy.schema.json` | **none** | `Package/SystemPolicy.cs` plus the owning module's section type | none |
+| `systems/<id>/policy.{json,yaml}` | `@schemas/systems/policy.schema.json` | **none** | `Package/SystemPolicy.cs` plus the owning module's section type | `PolicyConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/shapes.{json,yaml}` | `@schemas/systems/shapes.schema.json` | **none** | `Package/ShapesConfig.cs` | `ShapesConfigWriter.Write` |
 | `systems/expressions.{json,yaml}` | `@schemas/systems/expressions.schema.json` | **none** | `Package/ExpressionsConfig.cs` | `ExpressionsConfigWriter.Write` |
 | `systems/lists.{json,yaml}` | `@schemas/systems/lists.schema.json` | **none** | `Package/ListsConfig.cs` | `ListsConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
@@ -43,7 +43,7 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `datasets/stca-runways.json` | `@schemas/datasets/stca-runways.schema.json` | `buildStcaRunwaysDataset` (`.../topsky/topsky-stca.ts`) | not read by the client | none |
 | `server-dataset.json` | none | `@cli/src/helper/server-dataset.ts` | not read by the client | none |
 
-`policy.json` is the one systems config with no writer at all: nothing in the Configurator edits it yet, so the §4 erase-on-save hazard does not apply to it and the round-trip test in §8 is the schema drift case instead. Its sections are owned by the modules that consume them (`Correlation/CorrelationPolicySection.cs` is the model), not by `Package/`, so a new section is a property on `SystemPolicy` plus a section type and a `Resolve` beside the module that reads it.
+`policy.json` is edited as a document, as lists is (§4a): the Policy section holds the file's own text, so the §4 erase-on-save hazard does not apply to it and the test in §8 is the schema test of §7a instead. A system with no policy file gets one at the first save that has something in it. Its sections are owned by the modules that consume them (`Correlation/CorrelationPolicySection.cs` is the model), not by `Package/`, so a new section is a property on `SystemPolicy` plus a section type and a `Resolve` beside the module that reads it.
 
 **The `systems/*` configs have no CLI leg.** `downloadBasePackage` (`@cli/src/commands/init-package.ts`)
 downloads the whole starter tree from the `neoradar-project/base-package` release and unzips it; the
@@ -175,8 +175,8 @@ schema. Miss the serialiser and §4 bites.
 
 ## 4 · The writer leg: a field the writer skips is deleted
 
-This section is true of every Configurator file **except `lists`**, which no longer has a writer
-leg at all: §4a.
+This section is true of every Configurator file **except `lists` and `policy`**, which have no
+writer leg at all: §4a.
 
 **No config type in Core has `[JsonExtensionData]`** — verified,
 `grep -rn JsonExtensionData src/NeoRadar.Core --include=*.cs` returns nothing. Combined with
@@ -228,7 +228,7 @@ must agree, and only a round-trip catches a one-sided edit.
 
 ---
 
-## 4a · Lists is edited as a document: nothing is serialised, so nothing is deleted
+## 4a · Lists and policy are edited as documents: nothing is serialised, so nothing is deleted
 
 `systems/lists.{json,yaml,yml}` is the first file moved onto the document model
 (`@client/src/NeoRadar.Core/Package/Documents/`). The Lists section holds the file's own text as a
@@ -238,7 +238,12 @@ patch of that text and checked by reading the patched text back through the clie
 `ListsConfigWriter.Write(packagePath, document)` reads the document once as the loader will (a
 file the client could not load is never written), writes `document.ToBytes()` through
 `AtomicConfigWriter` and tells `IOwnPackageWrites.ListsFile`. The typed `DynamicListConfig` is only
-ever READ from the document. Consequences for a new lists field:
+ever READ from the document. `systems/<id>/policy.{json,yaml,yml}` is the second file on the model:
+`PolicyConfigWriter.Write(packagePath, systemId, document)` resolves the document as the loader
+will (`SystemPolicies.Resolve`, so a policy that would leave the system on defaults is never
+written and the refusal carries the reader's own message) and tells
+`IOwnPackageWrites.PolicyFile`, whose one reload publishes `PolicyFileChanged`. Consequences for a
+new lists or policy field:
 
 - **A field the client model does not know survives every save**, with its comments, key order,
   quoting, rule blocks and line endings. There is no erase-on-save hazard and no
@@ -247,7 +252,8 @@ ever READ from the document. Consequences for a new lists field:
   what makes the client READ the field. What a save writes is pinned by
   `ListsConfigWriterTests` (Core) and, per field, by
   `ListsOneEditOnTheRealFileTests` (desktop): the UK `lists.yaml`, one field edited as a user
-  edits it, and the file may differ only on that field's lines.
+  edits it, and the file may differ only on that field's lines. Policy has the same pair:
+  `PolicyConfigWriterTests` and `PolicyOneEditOnTheRealFileTests` over the UK `lhr/policy.json`.
 - **The Configurator leg is one declaration** (§7a).
 
 Two answers an edit can need are the user's to give, and one piece of UI gives both for every
@@ -260,9 +266,9 @@ read-only with the reason and line.
 
 ---
 
-## 5 · YAML write-back is refused for every file but lists, and both real sector files are YAML
+## 5 · YAML write-back is refused for every file but lists and policy, and both real sector files are YAML
 
-Every writer but `ListsConfigWriter` resolves the on-disk extension through `ConfigPathResolver.Resolve` and **fails** if it is `.yaml`/`.yml`:
+Every writer but `ListsConfigWriter` and `PolicyConfigWriter` resolves the on-disk extension through `ConfigPathResolver.Resolve` and **fails** if it is `.yaml`/`.yml`:
 
 ```csharp
 if (resolved.IsYaml)
@@ -331,8 +337,8 @@ Two shell contracts:
 | `IConfiguratorSaveable` | `Screens/Configurator/IConfiguratorSaveable.cs` | `IsDirty`, `DirtyChanged`, `TrySave()`, `SaveStatus` / `SaveFailed` (the footer shows them), `File`, `DiscardEdits()`, `ReloadIfStale()`. The shell saves every dirty section, not only the one on show. |
 | `IConfiguratorScopedSection` | `Screens/Configurator/IConfiguratorScopedSection.cs` | `SetSystem(AtmSystem?)`. System-scoped sections re-read on every switch and resolve the store's current instance by id; never cache the system. |
 
-Three rules every section but Lists follows (`src/NeoRadar/CLAUDE.md` § Configurator); Lists
-keeps the last two and replaces the first with a draft of the document (§7a):
+Three rules every section but Lists and Policy follows (`src/NeoRadar/CLAUDE.md` § Configurator);
+those two keep the last two and replace the first with a draft of the document (§7a):
 
 - **It edits a copy.** The model is cloned on load (`ConfiguratorClone`); the store is never touched,
   so nothing is live before a save and a cancel has nothing to undo.
@@ -388,6 +394,28 @@ For a new lists field:
 A value the client reads in a shape no kind holds yet is a new `FieldKind` plus its editor class
 and its template in `Fields/FieldEditorView.axaml`, never a special case in the section.
 
+**A policy field is one declaration too.** `Sections/PolicyFields.cs` declares the policy schema:
+`OfPolicy` (each field by its path from the top of the file), `OfKind(kind)` (the three maps keyed
+by safety net kind), `Tables` (`RowsDeclaration`s: a list of rows such as `safetyNets.stca.regions`,
+or a map of rows by key such as `runwayMonitoring.runways`) and `NotEdited`. The steps are the
+three above with `policy.schema.json`, `PolicyFieldsSchemaTests` and
+`PolicyOneEditOnTheRealFileTests`. Three things are particular to policy:
+
+- **A number carries its unit in its label and takes the schema's range.** `PolicyFieldsSchemaTests`
+  holds each declared minimum, maximum, exclusive minimum, whole-number flag and absent-key default
+  to the pinned schema, and fails a number whose key names a unit (`Nm`, `Ft`, `S`, `Kts`, `Fpm`,
+  `Deg`) that its label does not show.
+- **A section that is in force by being written is declared `FieldKind.Block`**
+  (`runwayMonitoring`, `runwayMonitoring.approachFunnel`, `safetyNets.stca` and its `cflLeave` and
+  `finalApproach`, `safetyNets.tct` and its `stateVector`). Clearing the last setting inside one
+  leaves the empty block, where any other map goes with its last key (`WrittenBlocks`). A new
+  section whose reader tells absent from empty must be declared so, or clearing its last setting
+  switches it off.
+- **A name list the reader spells only inside its own switch** is written once in `PolicyFields`
+  and held to the schema's `enum` and to what `SystemPolicies.Resolve` accepts
+  (`EveryNameOfEveryPicker_IsTakenByThePolicyReader`). Kinds, severities, attention states and
+  sound ids are read from Core.
+
 ---
 
 ## 8 · Checklist
@@ -403,5 +431,8 @@ and its template in `Fields/FieldEditorView.axaml`, never a special case in the 
       `ConfiguratorOneEditTests` covers it.
 - [ ] For lists: the pinned schema copy refreshed, the field declared in `ListFields` (or excused in
       `NotEdited`), `ListFieldsSchemaTests` and `ListsOneEditOnTheRealFileTests` green; no writer leg.
+- [ ] For policy: the same with `PolicyFields`, `PolicyFieldsSchemaTests` and
+      `PolicyOneEditOnTheRealFileTests`; a unit in every number's label; a section in force by being
+      written declared `Block`.
 - [ ] YAML refusal accounted for if the field lives in mapstyle.
 - [ ] Rollout path written, all five lines, checked against both live sector files.
