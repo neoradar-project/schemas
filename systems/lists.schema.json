@@ -1365,7 +1365,7 @@
                       }
                     }
                   ],
-                  "description": "Background color of the item on the blink phase (in RGBA). Accepted so a tag item can be shared with labels.json; a list cell resolves it and does not draw it."
+                  "description": "Background color of the item on the blink phase (in RGBA)."
                 },
                 "backgroundColor": {
                   "anyOf": [
