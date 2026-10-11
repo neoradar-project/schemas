@@ -26,7 +26,7 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | File | Schema | CLI emitter | Client parser | Configurator writer |
 |---|---|---|---|---|
 | `systems/<id>/targets.{json,yaml}` | `@schemas/systems/targets.schema.json` | **none** | `@client/src/NeoRadar.Core/Package/TargetConfig.cs` | `SystemConfigWriter.WriteTargets`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
-| `systems/<id>/labels.{json,yaml}` | `@schemas/systems/labels.schema.json` | **none** | `Package/LabelsConfig.cs` | `SystemConfigWriter.WriteLabels` |
+| `systems/<id>/labels.{json,yaml}` | `@schemas/systems/labels.schema.json` | **none** | `Package/LabelsConfig.cs` | `SystemConfigWriter.WriteLabels`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/<id>/mapstyle.{json,yaml}` | `@schemas/systems/mapstyle.schema.json` | **none** | `Package/MapStyleParser.cs` (hand-written) | `SystemConfigWriter.WriteMapStyle` via `MapStyleSerializer` |
 | `systems/<id>/policy.{json,yaml}` | `@schemas/systems/policy.schema.json` | **none** | `Package/SystemPolicy.cs` plus the owning module's section type | `PolicyConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/shapes.{json,yaml}` | `@schemas/systems/shapes.schema.json` | **none** | `Package/ShapesConfig.cs` | `ShapesConfigWriter.Write` |
@@ -54,7 +54,8 @@ dataset schema that moves needs its constant there moved too. A new systems-conf
 
 `TagItem` is the shared shape used by both tag grids and list columns
 (`TagItem` in `@client/src/NeoRadar.Core/Package/LabelsConfig.cs`), so a `TagItem` field appears in the
-labels schema **and** the lists schema and reaches two Configurator sections.
+labels schema **and** the lists schema and reaches two Configurator sections through ONE declaration
+(`Sections/TagItemFields.Fields`, §7a).
 
 ---
 
@@ -153,8 +154,8 @@ The `JsonSerializerContext`s are in `@client/src/NeoRadar.Core/Json/CoreJsonCont
 Adding a **property** to an already-registered type needs no context edit. Adding a new **type**
 needs a `[JsonSerializable]` on `CoreReadJsonContext` and, if it is written,
 `CoreWriteJsonContext`. Both contexts are `internal`; the desktop reaches them (`InternalsVisibleTo`)
-only to clone a section's working copy (`ConfiguratorClone`), and every write still goes through the
-Core writer interfaces.
+only to read a draft as the loader will and to clone the working copy of a section not yet on a
+draft (`ConfiguratorClone`), and every write still goes through the Core writer interfaces.
 
 Validation is `DataAnnotations` via `PackageValidator` (`Package/PackageValidator.cs`). Note the
 asymmetry, it matters for rollout:
@@ -210,14 +211,15 @@ new package FILE needs a watcher entry, a `Reload*` on `IPackageLoaderService` a
 well (`datasets/msaw.geojson` is the model).
 
 If the field has a structural invariant, add it to that writer's validation list so the write
-fails before touching disk — `SystemConfigWriter.ValidateTargets` is the model (it runs on the typed
-read of the document a targets save hands over), and its failure path returns
+fails before touching disk — `SystemConfigWriter.ValidateTargets` and `ValidateLabels` are the model
+(each runs on the typed read of the document a save hands over), and the failure path returns
 `ConfigWriteResult.Fail` and writes nothing.
 
 ### Round-trip test (required)
 
-Extend `@client/tests/NeoRadar.Core.Tests/Package/ConfigWriterTests.cs`. It already holds 39
-facts, most in this exact shape: parse a JSON literal, write, re-parse from disk, assert the field
+Extend `@client/tests/NeoRadar.Core.Tests/Package/ConfigWriterTests.cs` (expressions, mapstyle,
+profiles and system folders; a file edited as a document has no round trip to test, §4a). Most of
+its facts are in this exact shape: parse a JSON literal, write, re-parse from disk, assert the field
 survived. Name the test after what it protects.
 
 ```
@@ -229,7 +231,7 @@ must agree, and only a round-trip catches a one-sided edit.
 
 ---
 
-## 4a · Lists, policy and targets are edited as documents: nothing is serialised, so nothing is deleted
+## 4a · Lists, policy, targets and labels are edited as documents: nothing is serialised, so nothing is deleted
 
 `systems/lists.{json,yaml,yml}` is the first file moved onto the document model
 (`@client/src/NeoRadar.Core/Package/Documents/`). The Lists section holds the file's own text as a
@@ -247,8 +249,13 @@ written and the refusal carries the reader's own message) and tells
 `systems/<id>/targets.{json,yaml,yml}` is the third: `SystemConfigWriter.WriteTargets(packagePath,
 systemId, document)` reads the document as the loader will, runs `ValidateTargets` on that read
 (an unknown selector name in any list, an airborne variant with neither a sprite nor a shape),
-and tells `IOwnPackageWrites.SystemFile` with `geometryAffected` false. Consequences for a
-new lists, policy or targets field:
+and tells `IOwnPackageWrites.SystemFile` with `geometryAffected` false.
+`systems/<id>/labels.{json,yaml,yml}` is the fourth: `SystemConfigWriter.WriteLabels(packagePath,
+systemId, document)` reads the document as the loader will, its ground section too, runs
+`ValidateLabels` on that read (an unknown selector name on a label variant or a style variant of
+either section) and tells `IOwnPackageWrites.SystemFile` the same way. The typed `WriteLabels`,
+its ground override and its YAML refusal are deleted. Consequences for a new lists, policy,
+targets or labels field:
 
 - **A field the client model does not know survives every save**, with its comments, key order,
   quoting, rule blocks and line endings. There is no erase-on-save hazard and no
@@ -259,8 +266,9 @@ new lists, policy or targets field:
   `ListsOneEditOnTheRealFileTests` (desktop): the UK `lists.yaml`, one field edited as a user
   edits it, and the file may differ only on that field's lines. Policy has the same pair:
   `PolicyConfigWriterTests` and `PolicyOneEditOnTheRealFileTests` over the UK `lhr/policy.json`,
-  and targets `TargetsConfigWriterTests` and `TargetsOneEditOnTheRealFileTests` over the UK
-  `default` and `lhr` `targets.json`.
+  targets `TargetsConfigWriterTests` and `TargetsOneEditOnTheRealFileTests` over the UK
+  `default` and `lhr` `targets.json`, and labels `LabelsConfigWriterTests` and
+  `LabelsOneEditOnTheRealFileTests` over the UK `default` and `lhr` `labels.json`.
 - **The Configurator leg is one declaration** (§7a).
 
 Two answers an edit can need are the user's to give, and one piece of UI gives both for every
@@ -273,9 +281,9 @@ read-only with the reason and line.
 
 ---
 
-## 5 · YAML write-back is refused for every file but lists, policy and targets, and both real sector files are YAML
+## 5 · YAML write-back is refused for every file but lists, policy, targets and labels, and both real sector files are YAML
 
-Every writer but `ListsConfigWriter`, `PolicyConfigWriter` and `SystemConfigWriter.WriteTargets` resolves the on-disk extension through `ConfigPathResolver.Resolve` and **fails** if it is `.yaml`/`.yml`:
+Every writer but `ListsConfigWriter`, `PolicyConfigWriter` and `SystemConfigWriter.WriteTargets` and `.WriteLabels` resolves the on-disk extension through `ConfigPathResolver.Resolve` and **fails** if it is `.yaml`/`.yml`:
 
 ```csharp
 if (resolved.IsYaml)
@@ -294,7 +302,10 @@ default  expressions.json  gatwick-smr  lgw  lhr  'lists copy.yaml'  lists.yaml 
 `@sectorsrc/LFXX-Sector-File` is identical in shape: `mapstyle.yaml` per system, `lists.yaml` at
 the root. So **today, a new mapstyle field cannot be edited in the Configurator for either
 shipping sector file** — the save refuses with the message above. `lists.yaml` saves (§4a), a
-targets file saves in either format (§4a), and labels, expressions and shapes are JSON and do save.
+targets or a labels file saves in either format (§4a), and expressions and shapes are JSON and do
+save. The four LFXX `labels.json` files are in an older layout the client no longer reads (a
+section holding bare row grids in place of `labels`): the Tags section opens them read-only and
+says so; they are converted by hand.
 
 Plan for this up front. A mapstyle field is author-edits-YAML-by-hand until that section moves
 onto the document model as lists has. The Configurator says so: a section whose file is YAML and
@@ -344,8 +355,8 @@ Two shell contracts:
 | `IConfiguratorSaveable` | `Screens/Configurator/IConfiguratorSaveable.cs` | `IsDirty`, `DirtyChanged`, `TrySave()`, `SaveStatus` / `SaveFailed` (the footer shows them), `File`, `DiscardEdits()`, `ReloadIfStale()`. The shell saves every dirty section, not only the one on show. |
 | `IConfiguratorScopedSection` | `Screens/Configurator/IConfiguratorScopedSection.cs` | `SetSystem(AtmSystem?)`. System-scoped sections re-read on every switch and resolve the store's current instance by id; never cache the system. |
 
-Three rules every section but Lists, Policy and Targets follows (`src/NeoRadar/CLAUDE.md` § Configurator);
-those three keep the last two and replace the first with a draft of the document (§7a):
+Three rules every section but Lists, Policy, Targets and Tags follows (`src/NeoRadar/CLAUDE.md` § Configurator);
+those four keep the last two and replace the first with a draft of the document (§7a):
 
 - **It edits a copy.** The model is cloned on load (`ConfiguratorClone`); the store is never touched,
   so nothing is live before a save and a cancel has nothing to undo.
@@ -355,26 +366,23 @@ those three keep the last two and replace the first with a draft of the document
   `File.SaveRefusal()` runs first in `TrySave` (YAML, or the file moved on disk), and
   `File.MarkSaved(...)` after a successful write.
 
-The Tags item inspector (`TagsSectionViewModel.ItemInspector.cs`) is the reference for a section
-not yet on a draft. The pattern for one new field:
+A section not yet on a draft (Maps, Expressions, Shapes, Profiles) is hand-wired. The pattern
+for one new field there:
 
-1. An `[ObservableProperty]` for the editable value.
-2. Its `nameof(...)` added to the section's edit-field set so a change marks dirty
-   (`s_itemEditFields`).
-3. Seed it in the inspector's seed method (`SeedItemInspector`) from the working copy, and keep the
-   authored value in the seed snapshot (`TagItemKept.Snapshot`).
-4. Write it in `ApplyItemInspector`: a field still showing what it was seeded with writes the
-   authored value back (`TagItemKept.KeptString` and friends), so only the field that changed
-   differs. Never write a field from what the control shows without that check: it stamps a
-   default into every field the file left absent.
+1. An `[ObservableProperty]` (or the section's own row type) for the editable value.
+2. A change marks the section dirty.
+3. Seed it from the working copy, and keep the authored value beside it.
+4. Write it on save: a field still showing what it was seeded with writes the authored value
+   back, so only the field that changed differs. Never write a field from what the control shows
+   without that check: it stamps a default into every field the file left absent.
 5. A picker over a vocabulary takes it from the code that parses the value, and offers the current
    value before it is written (`PickerOptions`), or the ComboBox nulls a value it does not list.
-6. The XAML row. Do not put a `LineHeight`, `Padding` or `Height` on the control by feel; see
+6. The XAML row. Only the control classes of `ConfiguratorStyles.axaml` size a control; see
    the `ui-text-metrics` skill.
 
-Then extend `ConfiguratorOneEditTests` (`tests/NeoRadar.Tests/Screens/Configurator/`): load the
-real-file fixture, edit the new field, save, and assert the file differs from an unedited save at
-that field alone.
+Then extend `ConfiguratorOneEditTests` (`tests/NeoRadar.Tests/Screens/Configurator/`, which now
+holds the expression and profile rows): load the real-file fixture, edit the new field, save, and
+assert the file differs from an unedited save at that field alone.
 
 `TrySave` must surface failure rather than swallowing it: set `SaveFailed` + `SaveStatus` from
 `ConfigWriteResult.Errors` and return `false`. Silent success on a refused write is the worst
@@ -443,6 +451,27 @@ files with no further code). Three things are particular to targets:
   `primaryPlotSynthesis` and `historyTrailShape` are excused in `NotEdited` with that reason; a
   block that is in force by being written is `FieldKind.Block`, as in policy.
 
+**A labels field is one declaration, in the owner it belongs to.** `Sections/LabelFields.cs`
+declares the file: `OfRoot` (the font scale and the altitude format), `OfSection` (a section's
+`tagPositioning`), `OfLabelVariant`, `OfStyleVariant`, and `NotEdited` for the lists and
+containers; a tag item's fields are `Sections/TagItemFields.Fields`, the one list a list column
+places under `tagItem` too. The steps are the three above with `labels.schema.json`,
+`LabelFieldsSchemaTests` (and `TagItemFieldsSchemaTests` for an item field) and
+`LabelsOneEditOnTheRealFileTests`, which drives the new field through the Tags section on the UK
+`default` and `lhr` files with no further code; `FieldClearedBackToAbsentTests` sets and clears
+it where no owner writes it. Particular to labels:
+
+- **The section is parts over one draft, each with its owner's path.** `LabelsDraft` is the
+  plumbing; `LabelOwnerFieldsViewModel` is one owner's editors; `TagVariantListViewModel` a
+  section's label variants or style variants; `TagGridViewModel` a label variant's rows and the
+  selected item. A new owner is a declaration list and one `LabelOwnerFieldsViewModel`.
+- **A tag item field reaches Lists as well**, unless `ListFields` filters it out; move
+  `ListColumnFieldsOrderTests` when it does.
+- **A new selector of a label or style variant is taught to `Sections/UnreachableVariants`**
+  (`VariantSelectors`), or the never-drawn marker lies.
+- **What an item reads in the preview is a sample, not a field**: it comes from
+  `OfferedName.Sample` and `.Options` and is never written (`Preview/TagPreviewSamples`).
+
 ---
 
 ## 8 · Checklist
@@ -455,7 +484,7 @@ files with no further code). Three things are particular to targets:
 - [ ] Round-trip test added to `ConfigWriterTests` and named after what it protects; suite green.
 - [ ] New serialisable **type** registered in both `CoreJsonContexts` contexts (new property only, no edit).
 - [ ] Configurator section reads it, marks dirty, writes only it back, and reports write failure;
-      `ConfiguratorOneEditTests` covers it.
+      `ConfiguratorOneEditTests` covers it (a section not yet on a draft).
 - [ ] For lists: the pinned schema copy refreshed, the field declared in `ListFields` (or excused in
       `NotEdited`), `ListFieldsSchemaTests` and `ListsOneEditOnTheRealFileTests` green; no writer leg.
 - [ ] For policy: the same with `PolicyFields`, `PolicyFieldsSchemaTests` and
@@ -464,5 +493,8 @@ files with no further code). Three things are particular to targets:
 - [ ] For targets: the same with `TargetFields`, `TargetFieldsSchemaTests` and
       `TargetsOneEditOnTheRealFileTests`; a number's default held to the reader; a new selector
       taught to `UnreachableVariants`; no writer leg.
+- [ ] For labels: the same with `LabelFields` (or `TagItemFields` for an item field, which reaches
+      Lists too), `LabelFieldsSchemaTests` / `TagItemFieldsSchemaTests` and
+      `LabelsOneEditOnTheRealFileTests`; a new selector taught to `UnreachableVariants`; no writer leg.
 - [ ] YAML refusal accounted for if the field lives in mapstyle.
 - [ ] Rollout path written, all five lines, checked against both live sector files.
