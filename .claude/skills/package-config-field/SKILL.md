@@ -1,6 +1,6 @@
 ---
 name: package-config-field
-description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the YAML write-back refusal that blocks mapstyle today (lists and policy are edited as documents and save in YAML), and the mandatory rollout path for sector files that predate the field.
+description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the YAML write-back refusal that blocks mapstyle today (lists, policy, targets and labels are edited as documents and save in YAML), and the mandatory rollout path for sector files that predate the field.
 ---
 
 > **Shared skill.** Copied verbatim into `@client`, `@cli`, `@schemas`. Editing one copy alone is a break, not a cleanup.
@@ -43,7 +43,7 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `datasets/stca-runways.json` | `@schemas/datasets/stca-runways.schema.json` | `buildStcaRunwaysDataset` (`.../topsky/topsky-stca.ts`) | not read by the client | none |
 | `server-dataset.json` | none | `@cli/src/helper/server-dataset.ts` | not read by the client | none |
 
-`policy.json` and `targets.json` are edited as documents, as lists is (§4a): the section holds the file's own text, so the §4 erase-on-save hazard does not apply to them and the test in §8 is the schema test of §7a instead. A system with no policy file gets one at the first save that has something in it. Its sections are owned by the modules that consume them (`Correlation/CorrelationPolicySection.cs` is the model), not by `Package/`, so a new section is a property on `SystemPolicy` plus a section type and a `Resolve` beside the module that reads it.
+`policy.json`, `targets.json` and `labels.json` are edited as documents, as lists is (§4a): the section holds the file's own text, so the §4 erase-on-save hazard does not apply to them and the test in §8 is the schema test of §7a instead. A system with no policy file gets one at the first save that has something in it. Its sections are owned by the modules that consume them (`Correlation/CorrelationPolicySection.cs` is the model), not by `Package/`, so a new section is a property on `SystemPolicy` plus a section type and a `Resolve` beside the module that reads it.
 
 **The `systems/*` configs have no CLI leg.** `downloadBasePackage` (`@cli/src/commands/init-package.ts`)
 downloads the whole starter tree from the `neoradar-project/base-package` release and unzips it; the
@@ -176,7 +176,7 @@ schema. Miss the serialiser and §4 bites.
 
 ## 4 · The writer leg: a field the writer skips is deleted
 
-This section is true of every Configurator file **except `lists`, `policy` and `targets`**, which
+This section is true of every Configurator file **except `lists`, `policy`, `targets` and `labels`**, which
 have no writer leg at all: §4a.
 
 **No config type in Core has `[JsonExtensionData]`** — verified,
@@ -193,7 +193,7 @@ parser (§3), writer (this section), Configurator section view model (§7).
 
 All writes route through `Package/Writers/`:
 `ISystemConfigWriter`, `IExpressionsConfigWriter`, `IListsConfigWriter`, `IShapesConfigWriter`,
-`ISystemFolderWriter`, `IProfileStorageService` — singletons registered in
+`IPolicyConfigWriter`, `ISystemFolderWriter`, `IProfileStorageService`, all singletons, registered in
 `PackageModule.AddPackageServices`. Every one of them writes through
 `AtomicConfigWriter.Write` (tmp file + `File.Move` overwrite). Never `File.WriteAllText` a package file from a
 section.
@@ -331,8 +331,8 @@ is not.
    need a re-convert; a manifest or `.stp` field usually does (`neoradar-cli convert`).
 5. **Write-back safety.** State that the writer round-trips the field, and that the round-trip
    test exists and is named. This is the line that certifies no author data is erased. For a
-   `lists` field the statement is that the file is edited as a document (§4a), so a save writes
-   nothing the user did not change.
+   `lists`, `policy`, `targets` or `labels` field the statement is that the file is edited as a
+   document (§4a), so a save writes nothing the user did not change.
 
 Cross-check: `@sectorsrc/UK-Sector-File` and `@sectorsrc/LFXX-Sector-File` are the two live
 consumers. If a claim in your rollout note is not true of both of them, it is not true.
@@ -366,7 +366,7 @@ those four keep the last two and replace the first with a draft of the document 
   `File.SaveRefusal()` runs first in `TrySave` (YAML, or the file moved on disk), and
   `File.MarkSaved(...)` after a successful write.
 
-A section not yet on a draft (Maps, Expressions, Shapes, Profiles) is hand-wired. The pattern
+A section not yet on a draft (Maps, Expressions, Shapes, Profiles, Systems, Map Edit) is hand-wired. The pattern
 for one new field there:
 
 1. An `[ObservableProperty]` (or the section's own row type) for the editable value.
