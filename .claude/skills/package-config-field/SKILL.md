@@ -317,10 +317,12 @@ consumers. If a claim in your rollout note is not true of both of them, it is no
 
 ## 7 · The Configurator section leg
 
-Sections live in `@client/src/NeoRadar/Screens/Configurator/Sections/`. They are **hand
-constructed** in `ConfiguratorViewModel.BuildSections()`, not resolved from DI — only the shell
-VM itself is registered (`DesktopServices.AddDesktopViewModels`). Adding a constructor dependency to a section means
-editing `BuildSections`.
+Sections live in `@client/src/NeoRadar/Screens/Configurator/Sections/`. Each is **one
+registration** in `ConfiguratorSections.AddConfiguratorSections`
+(`AddConfiguratorSection<TViewModel, TView>(id, label, icon, group, order, scopeHint)`), and its view
+model is resolved from DI when the shell is built, so a new constructor dependency only has to be
+registered. The shell names no section; what it asks of one is the interfaces its view model
+implements.
 
 Two shell contracts:
 
