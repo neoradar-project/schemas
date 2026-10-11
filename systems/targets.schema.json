@@ -418,6 +418,11 @@
                                         ]
                                       },
                                       {
+                                        "type": "string",
+                                        "pattern": "^plugin:[^:]+:.+$",
+                                        "description": "A plugin tag item, written plugin:{plugin name}:TAG_{item name}. As an itemName it shows the plugin's value, or the item's default. As a condition key or an \"&key\" it reads what the plugin last pushed for the aircraft: empty until it pushes one, while the plugin is not loaded, and on a row that is no aircraft."
+                                      },
+                                      {
                                         "type": "string"
                                       }
                                     ]
