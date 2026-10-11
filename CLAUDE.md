@@ -59,6 +59,14 @@ only: types, ranges, enums and descriptions carry intent no C# property expresse
 these schemas stay hand-written rather than generated. `mapstyle.schema.json` has no case because
 `MapStyleParser` reads it by hand with nothing to reflect over; it needs eyes.
 
+**A schema change is not finished here.** A property added or changed in a `systems/`, manifest or
+profile schema also needs `@client`'s Configurator to edit it or preserve it on save. A
+Configurator section edited as a document pins a copy of its schema in `@client`'s test project
+and fails when a property is neither a declared field nor excused with a reason
+(`ListFieldsSchemaTests`), and a second test fails when that pinned copy's property set drifts
+from this repo. So a property added here alone turns `@client` red the next time the two are
+checked out together, which is the intent: say in the change what the Configurator does with it.
+
 ## The expression catalogue mirror
 
 `@client`'s `ExpressionCatalog` (`Utils/Expressions/ExpressionCatalog.cs`, exactly 285
