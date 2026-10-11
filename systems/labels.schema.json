@@ -1732,6 +1732,8 @@
         },
         "backgroundColorOpacity": {
           "type": "number",
+          "minimum": 0,
+          "maximum": 1,
           "default": 1,
           "description": "Background color opacity of the label (0-1). This is the default background color opacity for all states."
         },
@@ -1758,6 +1760,8 @@
         },
         "detailedBackgroundColorOpacity": {
           "type": "number",
+          "minimum": 0,
+          "maximum": 1,
           "default": 1,
           "description": "Background color opacity of the label when the aircraft is hovered (0-1). This overrides the default background color opacity."
         },
@@ -1780,11 +1784,15 @@
         },
         "tagItemPaddingY": {
           "type": "number",
+          "minimum": 0,
+          "maximum": 50,
           "default": 2,
           "description": "Padding of the tag item in the Y direction (top and bottom). The default is 2."
         },
         "tagItemPaddingX": {
           "type": "number",
+          "minimum": 0,
+          "maximum": 50,
           "default": 3,
           "description": "Padding of the tag item in the X direction (left and right). The default is 3."
         },

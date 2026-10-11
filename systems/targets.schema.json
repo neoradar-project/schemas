@@ -572,7 +572,7 @@
                         "description": "Vector symbol name from systems/shapes.json."
                       },
                       "steps": {
-                        "type": "number",
+                        "type": "integer",
                         "exclusiveMinimum": 0,
                         "default": 6,
                         "description": "How many trail marks to draw. Replaces repeating historyTrailImages N times."
@@ -810,7 +810,8 @@
                     "default": false
                   },
                   "historyTrailsSkipSteps": {
-                    "type": "number",
+                    "type": "integer",
+                    "minimum": 0,
                     "default": 0
                   },
                   "speedVectorColor": {
