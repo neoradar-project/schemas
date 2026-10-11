@@ -1033,18 +1033,44 @@
           "description": "Font size of the itemm can also be an expression rule."
         },
         "textWeight": {
-          "type": "number",
-          "minimum": -0.45,
-          "maximum": 0.45,
-          "default": 0,
-          "description": "Fine stroke weight. Negative thins the strokes, positive thickens them, 0 is the font's own weight. Overrides fontWeight."
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": -0.45,
+              "maximum": 0.45,
+              "default": 0
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "Fine stroke weight. Negative thins the strokes, positive thickens them, 0 is the font's own weight. Overrides fontWeight. Also takes a \"=rule\" or \"&key\" reference, or an array of them tried in order, read for each aircraft."
         },
         "textSharpness": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 1,
-          "default": 0,
-          "description": "Edge hardness. 0 keeps the rasteriser's own antialiasing, 1 gives a near-binary edge. A negative textWeight with some sharpness gives a thin, crisp look."
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "Edge hardness. 0 keeps the rasteriser's own antialiasing, 1 gives a near-binary edge. A negative textWeight with some sharpness gives a thin, crisp look. Also takes a \"=rule\" or \"&key\" reference, or an array of them tried in order, read for each aircraft."
         },
         "toggleGroup": {
           "type": "string",
@@ -1084,8 +1110,21 @@
           "description": "Font weight of the item, can also be an expression rule."
         },
         "fontFamily": {
-          "type": "string",
-          "description": "Font family of the item."
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "Font family of the item. Also takes a \"=rule\" or \"&key\" reference, or an array of them tried in order, read for each aircraft."
         },
         "textAlign": {
           "type": "string",
@@ -1220,9 +1259,22 @@
           "description": "Whether add a blank padding the item."
         },
         "showPlusMinus": {
-          "type": "boolean",
-          "default": false,
-          "description": "Whether to show a plus/minus sign before the item if the item is a number."
+          "anyOf": [
+            {
+              "type": "boolean",
+              "default": false
+            },
+            {
+              "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/tagItem/properties/truncate/anyOf/1"
+              }
+            }
+          ],
+          "description": "Whether to show a plus/minus sign before the item if the item is a number. Also takes a \"=rule\" or \"&key\" reference, or an array of them tried in order, read for each aircraft. A rule's value or a key that reads 1 or true turns it on, 0 or false off."
         },
         "value": {
           "anyOf": [
