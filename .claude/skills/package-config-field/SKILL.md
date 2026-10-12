@@ -1,6 +1,6 @@
 ---
 name: package-config-field
-description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the YAML write-back refusal that blocks mapstyle today (lists, policy, targets and labels are edited as documents and save in YAML), and the mandatory rollout path for sector files that predate the field.
+description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the document model that saves YAML (lists, policy, targets, labels and mapstyle are edited as documents; the other writers still refuse YAML), and the mandatory rollout path for sector files that predate the field.
 ---
 
 > **Shared skill.** Copied verbatim into `@client`, `@cli`, `@schemas`. Editing one copy alone is a break, not a cleanup.
@@ -27,7 +27,7 @@ wrong and you will hunt for a CLI emitter that does not exist.
 |---|---|---|---|---|
 | `systems/<id>/targets.{json,yaml}` | `@schemas/systems/targets.schema.json` | **none** | `@client/src/NeoRadar.Core/Package/TargetConfig.cs` | `SystemConfigWriter.WriteTargets`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/<id>/labels.{json,yaml}` | `@schemas/systems/labels.schema.json` | **none** | `Package/LabelsConfig.cs` | `SystemConfigWriter.WriteLabels`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
-| `systems/<id>/mapstyle.{json,yaml}` | `@schemas/systems/mapstyle.schema.json` | **none** | `Package/MapStyleParser.cs` (hand-written) | `SystemConfigWriter.WriteMapStyle` via `MapStyleSerializer` |
+| `systems/<id>/mapstyle.{json,yaml}` | `@schemas/systems/mapstyle.schema.json` | **none** | `Package/MapStyleParser.cs` (hand-written) | `SystemConfigWriter.WriteMapStyle`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/<id>/policy.{json,yaml}` | `@schemas/systems/policy.schema.json` | **none** | `Package/SystemPolicy.cs` plus the owning module's section type | `PolicyConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/shapes.{json,yaml}` | `@schemas/systems/shapes.schema.json` | **none** | `Package/ShapesConfig.cs` | `ShapesConfigWriter.Write` |
 | `systems/expressions.{json,yaml}` | `@schemas/systems/expressions.schema.json` | **none** | `Package/ExpressionsConfig.cs` | `ExpressionsConfigWriter.Write` |
@@ -118,7 +118,7 @@ public int HistoryTrailsSkipSteps { get; set; }
 Reads go through `FileParseHelper.ReadJsonOrYaml`, which
 tries `.json`, `.yaml`, `.yml` in that order and routes YAML through the reflection-free
 `YamlToJson`. You get YAML support for free; you do not get YAML **write** support (§5), except in
-`lists`, which the Configurator edits as a document (§4a). One
+`lists`, `policy`, `targets`, `labels` and `mapstyle`, which the Configurator edits as documents (§4a). One
 YAML shape is not a plain string: a literal block (`|`) whose first non-blank line starts with `=`
 arrives as the rule array (one line: the string), so a property that takes a rule list is a
 `JsonElement?`, never a `string`.
@@ -167,21 +167,21 @@ asymmetry, it matters for rollout:
 
 ### Hand-written (mapstyle only)
 
-`SystemMapStyle` uses tuples and is parsed by `MapStyleParser.Parse` and serialised by
-`MapStyleSerializer.Serialize`. A mapstyle field is **four** edits, not two: the
-`AtmSystem.cs` property, the parser `TryGetProperty` line, the serialiser `Write*` line, and the
-schema. Miss the serialiser and §4 bites.
+`SystemMapStyle` uses tuples and is parsed by `MapStyleParser.Parse`. A mapstyle field is **three**
+edits for the client to read it: the `AtmSystem.cs` property, the parser `TryGetProperty` line and
+the schema. Nothing serialises the model, so there is no fourth; the Configurator leg is one
+declaration in `MapStyleFields` (§7a).
 
 ---
 
 ## 4 · The writer leg: a field the writer skips is deleted
 
-This section is true of every Configurator file **except `lists`, `policy`, `targets` and `labels`**, which
+This section is true of every Configurator file **except `lists`, `policy`, `targets`, `labels` and `mapstyle`**, which
 have no writer leg at all: §4a.
 
 **No config type in Core has `[JsonExtensionData]`** — verified,
-`grep -rn JsonExtensionData src/NeoRadar.Core --include=*.cs` returns nothing. Combined with
-`MapStyleSerializer` writing only the fields it knows about, the consequence is:
+`grep -rn JsonExtensionData src/NeoRadar.Core --include=*.cs` returns nothing. Combined with a
+typed writer writing only the fields it knows about, the consequence is:
 
 > Any property present on disk but absent from the client model is **erased** the first time a
 > user saves that file in the Configurator. The save asks once per file first and names the keys it
@@ -217,7 +217,7 @@ fails before touching disk — `SystemConfigWriter.ValidateTargets` and `Validat
 
 ### Round-trip test (required)
 
-Extend `@client/tests/NeoRadar.Core.Tests/Package/ConfigWriterTests.cs` (expressions, mapstyle,
+Extend `@client/tests/NeoRadar.Core.Tests/Package/ConfigWriterTests.cs` (expressions,
 profiles and system folders; a file edited as a document has no round trip to test, §4a). Most of
 its facts are in this exact shape: parse a JSON literal, write, re-parse from disk, assert the field
 survived. Name the test after what it protects.
@@ -226,12 +226,9 @@ survived. Name the test after what it protects.
 dotnet test tests/NeoRadar.Core.Tests/NeoRadar.Core.Tests.csproj --filter ConfigWriterTests
 ```
 
-For mapstyle, follow `WriteMapStyle_RoundTripsThroughParser` — parser and serialiser
-must agree, and only a round-trip catches a one-sided edit.
-
 ---
 
-## 4a · Lists, policy, targets and labels are edited as documents: nothing is serialised, so nothing is deleted
+## 4a · Lists, policy, targets, labels and mapstyle are edited as documents: nothing is serialised, so nothing is deleted
 
 `systems/lists.{json,yaml,yml}` is the first file moved onto the document model
 (`@client/src/NeoRadar.Core/Package/Documents/`). The Lists section holds the file's own text as a
@@ -254,8 +251,12 @@ and tells `IOwnPackageWrites.SystemFile` with `geometryAffected` false.
 systemId, document)` reads the document as the loader will, its ground section too, runs
 `ValidateLabels` on that read (an unknown selector name on a label variant or a style variant of
 either section) and tells `IOwnPackageWrites.SystemFile` the same way. The typed `WriteLabels`,
-its ground override and its YAML refusal are deleted. Consequences for a new lists, policy,
-targets or labels field:
+its ground override and its YAML refusal are deleted.
+`systems/<id>/mapstyle.{json,yaml,yml}` is the fifth: `SystemConfigWriter.WriteMapStyle(packagePath,
+systemId, document)` reads the document as the loader reads the file (strict JSON, or YAML through
+`YamlToJson`; a file naming no map of styles is refused) and tells `IOwnPackageWrites.SystemFile`
+with `geometryAffected` true. The typed `WriteMapStyle`, `MapStyleSerializer` and the YAML refusal
+are deleted. Consequences for a new lists, policy, targets, labels or mapstyle field:
 
 - **A field the client model does not know survives every save**, with its comments, key order,
   quoting, rule blocks and line endings. There is no erase-on-save hazard and no
@@ -268,7 +269,9 @@ targets or labels field:
   `PolicyConfigWriterTests` and `PolicyOneEditOnTheRealFileTests` over the UK `lhr/policy.json`,
   targets `TargetsConfigWriterTests` and `TargetsOneEditOnTheRealFileTests` over the UK
   `default` and `lhr` `targets.json`, and labels `LabelsConfigWriterTests` and
-  `LabelsOneEditOnTheRealFileTests` over the UK `default` and `lhr` `labels.json`.
+  `LabelsOneEditOnTheRealFileTests` over the UK `default` and `lhr` `labels.json`, and mapstyle
+  `MapStyleConfigWriterTests` and `MapStyleOneEditOnTheRealFileTests` over the eight UK
+  `mapstyle.yaml` files and the four LFXX ones.
 - **The Configurator leg is one declaration** (§7a).
 
 Two answers an edit can need are the user's to give, and one piece of UI gives both for every
@@ -281,13 +284,13 @@ read-only with the reason and line.
 
 ---
 
-## 5 · YAML write-back is refused for every file but lists, policy, targets and labels, and both real sector files are YAML
+## 5 · YAML write-back is refused for every file but lists, policy, targets, labels and mapstyle, and both real sector files are YAML
 
-Every writer but `ListsConfigWriter`, `PolicyConfigWriter` and `SystemConfigWriter.WriteTargets` and `.WriteLabels` resolves the on-disk extension through `ConfigPathResolver.Resolve` and **fails** if it is `.yaml`/`.yml`:
+Every writer but `ListsConfigWriter`, `PolicyConfigWriter` and `SystemConfigWriter.WriteTargets`, `.WriteLabels` and `.WriteMapStyle` resolves the on-disk extension through `ConfigPathResolver.Resolve` and **fails** if it is `.yaml`/`.yml`:
 
 ```csharp
 if (resolved.IsYaml)
-    return ConfigWriteResult.Fail("This system's mapstyle config is YAML; YAML write-back is not supported yet.");
+    return ConfigWriteResult.Fail("... YAML write-back is not supported yet.");
 ```
 
 This is not hypothetical. Checked against the two real sector files:
@@ -300,17 +303,16 @@ default  expressions.json  gatwick-smr  lgw  lhr  'lists copy.yaml'  lists.yaml 
 ```
 
 `@sectorsrc/LFXX-Sector-File` is identical in shape: `mapstyle.yaml` per system, `lists.yaml` at
-the root. So **today, a new mapstyle field cannot be edited in the Configurator for either
-shipping sector file** — the save refuses with the message above. `lists.yaml` saves (§4a), a
-targets or a labels file saves in either format (§4a), and expressions and shapes are JSON and do
-save. The four LFXX `labels.json` files are in an older layout the client no longer reads (a
+the root. A mapstyle saves in either format (§4a), so a new mapstyle field is edited in the
+Configurator for both shipping sector files. `lists.yaml` saves too, as does a targets or a labels
+file, and expressions and shapes are JSON and do save. The four LFXX `labels.json` files are in an older layout the client no longer reads (a
 section holding bare row grids in place of `labels`): the Tags section opens them read-only and
 says so; they are converted by hand.
 
-Plan for this up front. A mapstyle field is author-edits-YAML-by-hand until that section moves
-onto the document model as lists has. The Configurator says so: a section whose file is YAML and
-is not yet on a draft shows a read-only banner before any edit, stays browsable, and a save
-reports that the file is YAML and was not written.
+Plan for this up front. A field in expressions, shapes, profiles or the manifest is
+author-edits-YAML-by-hand until that section moves onto the document model. The Configurator says
+so: a section whose file is YAML and is not yet on a draft shows a read-only banner before any
+edit, stays browsable, and a save reports that the file is YAML and was not written.
 
 ---
 
@@ -325,13 +327,14 @@ is not.
 2. **Editor impact.** The schema edit is live on `main` the moment it merges. Confirm the
    property is optional and not in `required`, so no existing file starts erroring.
 3. **Author action.** Nothing (widening), or a documented manual edit. If the file is
-   `mapstyle.yaml`, say so explicitly per §5 — the Configurator is not the path. `lists.yaml` is
-   editable in the Configurator once the field is declared (§7a).
+   an expressions, shapes or manifest file, say so explicitly per §5: the Configurator is not the
+   path. A lists, policy, targets, labels or mapstyle field is editable in the Configurator once
+   the field is declared (§7a).
 4. **Re-convert needed?** Only if §1 shows a CLI emitter for that file. Systems configs never
    need a re-convert; a manifest or `.stp` field usually does (`neoradar-cli convert`).
 5. **Write-back safety.** State that the writer round-trips the field, and that the round-trip
    test exists and is named. This is the line that certifies no author data is erased. For a
-   `lists`, `policy`, `targets` or `labels` field the statement is that the file is edited as a
+   `lists`, `policy`, `targets`, `labels` or `mapstyle` field the statement is that the file is edited as a
    document (§4a), so a save writes nothing the user did not change.
 
 Cross-check: `@sectorsrc/UK-Sector-File` and `@sectorsrc/LFXX-Sector-File` are the two live
@@ -355,8 +358,8 @@ Two shell contracts:
 | `IConfiguratorSaveable` | `Screens/Configurator/IConfiguratorSaveable.cs` | `IsDirty`, `DirtyChanged`, `TrySave()`, `SaveStatus` / `SaveFailed` (the footer shows them), `File`, `DiscardEdits()`, `ReloadIfStale()`. The shell saves every dirty section, not only the one on show. |
 | `IConfiguratorScopedSection` | `Screens/Configurator/IConfiguratorScopedSection.cs` | `SetSystem(AtmSystem?)`. System-scoped sections re-read on every switch and resolve the store's current instance by id; never cache the system. |
 
-Three rules every section but Lists, Policy, Targets and Tags follows (`src/NeoRadar/CLAUDE.md` § Configurator);
-those four keep the last two and replace the first with a draft of the document (§7a):
+Three rules every section but Lists, Policy, Targets, Tags and Map Style follows (`src/NeoRadar/CLAUDE.md` § Configurator);
+those five keep the last two and replace the first with a draft of the document (§7a):
 
 - **It edits a copy.** The model is cloned on load (`ConfiguratorClone`); the store is never touched,
   so nothing is live before a save and a cancel has nothing to undo.
@@ -366,7 +369,7 @@ those four keep the last two and replace the first with a draft of the document 
   `File.SaveRefusal()` runs first in `TrySave` (YAML, or the file moved on disk), and
   `File.MarkSaved(...)` after a successful write.
 
-A section not yet on a draft (Maps, Expressions, Shapes, Profiles, Systems, Map Edit) is hand-wired. The pattern
+A section not yet on a draft (Expressions, Shapes, Profiles, Systems, Map Edit) is hand-wired. The pattern
 for one new field there:
 
 1. An `[ObservableProperty]` (or the section's own row type) for the editable value.
@@ -472,6 +475,28 @@ it where no owner writes it. Particular to labels:
 - **What an item reads in the preview is a sample, not a field**: it comes from
   `OfferedName.Sample` and `.Options` and is never written (`Preview/TagPreviewSamples`).
 
+**A mapstyle field is one declaration too.** `Sections/MapStyleFields.cs` declares the file:
+`OfBlocks` (each field by its path from the top of the file), `OfLayer` (what one layer style
+holds, placed under `layerStyles` and the layer's source with `UnderKeys`), the four style lists
+`LineStyle`, `FillStyle`, `PointStyle` and `TextStyle` (declared once, placed under a layer and
+under `routeDraw`), `Pages` (the ten pages) and `NotEdited` (each property nothing reads, or a
+container, with its reason). The steps are the three above with `mapstyle.schema.json`,
+`MapStyleFieldsSchemaTests` and `MapStyleOneEditOnTheRealFileTests` (which sets and clears the new
+field on the eight UK files with no further code). Particular to mapstyle:
+
+- **A property is declared only if something reads it.** A text style key the layer label or the
+  route draw's fix label never reads is excused in `NotEdited`, and
+  `ExcusedLeaves_AreTextStylePropertiesNoReaderOfTheirOwnerReads_AndAMapLayersSprite` holds each
+  excuse to the reader; add the reader's key list beside `TextReadByALayer` when one changes.
+- **A block the reader tells absent from empty is `FieldKind.Block`** (`rdf`, `stcaPairLine`, a
+  layer's `pointStyle`), as in policy; `BlocksInForceByBeingWritten_AreTheOnesTheReaderTellsFromAbsent`
+  holds the list.
+- **A colour takes no rule, and its alpha is kept**: an authored four-part colour stays as
+  written when another field is edited or its swatch changes, and a new colour is three whole
+  numbers (`MapStyleColourAlphaTests`).
+- **Opening a page writes nothing**; a style appears with its first setting and leaves with its
+  last (`MapsSectionTests`).
+
 ---
 
 ## 8 · Checklist
@@ -479,7 +504,7 @@ it where no owner writes it. Particular to labels:
 - [ ] Owning file identified in §1, and the CLI leg confirmed to exist or not exist.
 - [ ] Schema property added as optional, not in `required`, no narrowing or rename.
 - [ ] Parser accepts it; absent means the documented pre-change default.
-- [ ] For mapstyle: `AtmSystem` property + `MapStyleParser` + `MapStyleSerializer` all four edited.
+- [ ] For mapstyle: `AtmSystem` property + `MapStyleParser` + the schema edited.
 - [ ] Writer round-trips it. No `[Required]` retro-fitted to any list-element type.
 - [ ] Round-trip test added to `ConfigWriterTests` and named after what it protects; suite green.
 - [ ] New serialisable **type** registered in both `CoreJsonContexts` contexts (new property only, no edit).
@@ -496,5 +521,8 @@ it where no owner writes it. Particular to labels:
 - [ ] For labels: the same with `LabelFields` (or `TagItemFields` for an item field, which reaches
       Lists too), `LabelFieldsSchemaTests` / `TagItemFieldsSchemaTests` and
       `LabelsOneEditOnTheRealFileTests`; a new selector taught to `UnreachableVariants`; no writer leg.
-- [ ] YAML refusal accounted for if the field lives in mapstyle.
+- [ ] For mapstyle: the pinned schema copy refreshed, the field declared in `MapStyleFields` (or
+      excused in `NotEdited` with the reader that does not read it), `MapStyleFieldsSchemaTests` and
+      `MapStyleOneEditOnTheRealFileTests` green (move the 171, 106 and 65); no writer leg.
+- [ ] YAML refusal accounted for if the field lives in expressions, shapes, profiles or the manifest.
 - [ ] Rollout path written, all five lines, checked against both live sector files.
