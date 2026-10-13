@@ -1,6 +1,6 @@
 ---
 name: package-config-field
-description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the document model that saves YAML (lists, policy, targets, labels, mapstyle, expressions, shapes and the properties of the zones dataset are edited as documents; no writer refuses YAML any more), and the mandatory rollout path for sector files that predate the field.
+description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the document model that saves YAML (lists, policy, targets, labels, mapstyle, expressions, shapes, the properties of the zones dataset and the manifest are edited as documents; no writer refuses YAML any more), the manifest keys the client writes at run time and patches one at a time, and the mandatory rollout path for sector files that predate the field.
 ---
 
 > **Shared skill.** Copied verbatim into `@client`, `@cli`, `@schemas`. Editing one copy alone is a break, not a cleanup.
@@ -32,7 +32,7 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `systems/shapes.{json,yaml}` | `@schemas/systems/shapes.schema.json` | **none** | `Package/ShapesConfig.cs` | `ShapesConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/expressions.{json,yaml}` | `@schemas/systems/expressions.schema.json` | **none** | `Package/ExpressionsConfig.cs` | `ExpressionsConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/lists.{json,yaml}` | `@schemas/systems/lists.schema.json` | **none** | `Package/ListsConfig.cs` | `ListsConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
-| `manifest.json` | `@schemas/package/manifest.schema.json` | `initPackage` (`@cli/src/commands/init-package.ts`), `indexer` (`@cli/src/commands/indexer.ts`) | `Package/PackageManifest.cs` | none (manifest has no section) |
+| `manifest.json` | `@schemas/package/manifest.schema.json` | `initPackage` (`@cli/src/commands/init-package.ts`), `indexer` (`@cli/src/commands/indexer.ts`) | `Package/PackageManifest.cs` | `ManifestWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a). The keys the client writes while a package is in use (`lastActiveProfile`, `plugins`, `lastOpened`) are set one at a time in the file's own text by `Package/ManifestKeyPatch` and are never edited in the section |
 | `profiles/*.stp` | `@schemas/profile.schema.json` | `AsrFolderConverter.processFile` (`@cli/src/commands/converter/asr.ts`) | `Package/Profiles/Profile.cs` | `ProfileStorageService` |
 | `datasets/atc-data.json` | none | `AtcDataManager.writeAtcData` (`@cli/src/commands/converter/atc-data-parser.ts`) | `Package/AtcData.cs` | none |
 | `datasets/nse.json` | none | `@cli/src/helper/nse.ts` | `Package/EseDataset.cs` | none |
@@ -193,16 +193,20 @@ parser (§3), writer (this section), Configurator section view model (§7).
 
 All writes route through `Package/Writers/`:
 `ISystemConfigWriter`, `IExpressionsConfigWriter`, `IListsConfigWriter`, `IShapesConfigWriter`,
-`IPolicyConfigWriter`, `IZonesDatasetWriter`, `ISystemFolderWriter`, `IProfileStorageService`, all singletons, registered in
+`IPolicyConfigWriter`, `IZonesDatasetWriter`, `IManifestWriter`, `ISystemFolderWriter`, `IProfileStorageService`, all singletons, registered in
 `PackageModule.AddPackageServices`. Every one of them writes through
 `AtomicConfigWriter.Write` (tmp file + `File.Move` overwrite). Never `File.WriteAllText` a package file from a
 section.
 
 **A save reaches the running views through one path, and it is the on-disk path.** Each writer
 tells `IOwnPackageWrites` (implemented by `Package/ReloadPackageFilesOnChange`) what it wrote, through
-the member for its file: `SystemFile(path, systemId, geometryAffected)`, `ListsFile`,
-`ExpressionsFile`, `ShapesFile`, `ZonesFile`, `ProfileInMemory(profile)` for a stored profile edited in place, and
-`Unwatched(path)` for a file whose content the stores already hold. The watcher's echo of that write is ignored, the file is reloaded into the store once,
+the member for its file: `SystemFile(path, systemId, geometryAffected)`, `PolicyFile(path, systemId)`,
+`ListsFile`, `ExpressionsFile`, `ShapesFile`, `ZonesFile`, `ManifestFile` (the manifest: the package
+is read again from it and `ManifestFileChanged` announced), `SystemFolder(systemId)` (a system
+folder created, filled, removed or renamed: the store gains or drops the system and
+`SystemListChanged` is announced), `ProfileFile(path)` (a profile file patched on disk: it is read
+again and the views showing it re-apply it), `ProfileInMemory(profile)` for a stored profile edited
+in place, and `Unwatched(path)` for a file whose content the stores already hold. The watcher's echo of that write is ignored, the file is reloaded into the store once,
 and the typed `*FileChanged` bus event tells every open radar view, main window and insets alike,
 to re-apply what it shows. An edit made in a text editor arrives at the same reload through
 `PackageFileWatcher`. A section never publishes a reload event and never pokes a view; a new
@@ -271,8 +275,16 @@ line under 2 points, a polygon under 3, a radius, a size or a stroke width of ze
 shape or to itself, an opacity outside 0 to 1). The loader reads every one of those and
 `ShapeCompiler` skips them at draw time, so the refusal is the writer's own, in its own words, and
 tells `IOwnPackageWrites.ShapesFile` when it does write. The typed `Write`, its YAML refusal,
-`ConfiguratorClone` and the `ShapesConfig` entry of the write context are deleted. Consequences
-for a new lists, policy, targets, labels, mapstyle, expressions or shapes field:
+`ConfiguratorClone` and the `ShapesConfig` entry of the write context are deleted.
+`manifest.json` is the ninth, after the zones dataset: `ManifestWriter.Write(packagePath, document)`
+reads the document as `PackageLoaderService.LoadPackage` reads the file, refuses what
+`ManifestWriter.Validate` names (what the loader's validation warns of, and a map layer with no
+name, no source or a type other than geojson), and tells `IOwnPackageWrites.ManifestFile`. The
+loader reads `manifest.json` and nothing else, so a YAML document is refused. The manifest never
+had a typed Configurator writer; the typed write its two run-time writers shared
+(`SaveManifestLastActiveProfile`, `SaveManifestPlugins`) is replaced by `Package/ManifestKeyPatch`,
+which sets one key in the file's own text. Consequences
+for a new lists, policy, targets, labels, mapstyle, expressions, shapes or manifest field:
 
 - **A field the client model does not know survives every save**, with its comments, key order,
   quoting, rule blocks and line endings. There is no erase-on-save hazard and no
@@ -291,7 +303,9 @@ for a new lists, policy, targets, labels, mapstyle, expressions or shapes field:
   `ExpressionsOneEditOnTheRealFileTests` over the UK `expressions.json` and the same 91 expressions
   and 79 rules written as YAML with comments, and shapes `ShapesDocumentWriterTests` and
   `ShapesOneEditOnTheRealFileTests` over the UK `shapes.json` and the same 8 shapes written as YAML
-  with comments.
+  with comments, and the manifest `ManifestWriterTests` and `ManifestOneEditOnTheRealFileTests` over
+  the manifests of the built UK and LFXX packages (the second holds `devDisableAntialiasing`,
+  which the model does not know).
 - **The Configurator leg is one declaration** (§7a).
 
 Two answers an edit can need are the user's to give, and one piece of UI gives both for every
@@ -332,8 +346,9 @@ an expressions or a shapes file in either format. The four LFXX `labels.json` fi
 section holding bare row grids in place of `labels`): the Tags section opens them read-only and
 says so; they are converted by hand.
 
-What is left outside the document model is not YAML: the manifest has no Configurator section, and
-a profile is a `.stp` the Profiles section writes whole through its typed model. The read-only banner
+What is left outside the document model is not YAML: a profile is a `.stp` the Profiles section
+writes whole through its typed model. The manifest is JSON only, because the loader reads
+`manifest.json` and nothing else. The read-only banner
 now means a file the document model cannot follow, or one that is not the shape its section expects
 (a shapes file whose `shapes` is no map, a labels file in the older layout); it names the reason,
 and a save reports the same.
@@ -350,15 +365,15 @@ is not.
    the pre-change behaviour, exactly.
 2. **Editor impact.** The schema edit is live on `main` the moment it merges. Confirm the
    property is optional and not in `required`, so no existing file starts erroring.
-3. **Author action.** Nothing (widening), or a documented manual edit. If the file is
-   the manifest, say so explicitly: the Configurator has no section for it. A lists, policy,
-   targets, labels, mapstyle, expressions or shapes field is editable in the Configurator once
-   the field is declared (§7a).
+3. **Author action.** Nothing (widening), or a documented manual edit. A lists, policy,
+   targets, labels, mapstyle, expressions, shapes or manifest field is editable in the
+   Configurator once the field is declared (§7a). If the manifest key is one the client writes
+   itself at run time, say so: it has no editor by decision.
 4. **Re-convert needed?** Only if §1 shows a CLI emitter for that file. Systems configs never
    need a re-convert; a manifest or `.stp` field usually does (`neoradar-cli convert`).
 5. **Write-back safety.** State that the writer round-trips the field, and that the round-trip
    test exists and is named. This is the line that certifies no author data is erased. For a
-   `lists`, `policy`, `targets`, `labels`, `mapstyle`, `expressions` or `shapes` field the statement is that the file is
+   `lists`, `policy`, `targets`, `labels`, `mapstyle`, `expressions`, `shapes` or manifest field the statement is that the file is
    edited as a document (§4a), so a save writes nothing the user did not change.
 
 Cross-check: `@sectorsrc/UK-Sector-File` and `@sectorsrc/LFXX-Sector-File` are the two live
@@ -604,6 +619,42 @@ Particular to zones:
   its line there, or the tag is not offered.
 - **A package with no zones file is not given one**: the section says so and the writer refuses.
 
+**A manifest property is one declaration too.** `Sections/ManifestFields.cs` declares the file:
+`OfManifest` (name, version, description and the six altitude format fields, by their path from the
+top of the file), `FontRows` (the fonts as rows of alias and file), `OfLayer` (the 25 fields of a
+map layer, by their path under the layer; under `defaultStyle` they are `MapStyleFields.OfLayer`,
+because the manifest's default style and a mapstyle's layer style are merged and read by one
+reader) and `NotEdited` (every other schema property with its reason). The steps are the three
+above with `@schemas/package/manifest.schema.json` (pinned as `Fixtures/manifest.schema.json`, held
+to the repository's by `ManifestSchemaPinTests`), `ManifestFieldsSchemaTests` and
+`ManifestOneEditOnTheRealFileTests` (the manifests of the built UK and LFXX packages, pinned beside
+the system files). Particular to the manifest:
+
+- **A key the client writes while the package is in use is never a field.** `lastActiveProfile`,
+  `plugins`, `ignorePaths`, `remoteSource`, `installedFiles` and `lastOpened` are
+  `ManifestFields.WrittenByTheClient`: excused in `NotEdited` as the client's where the schema
+  names them, and a save takes each from the file as it is on disk then, because the client
+  patches them under an open Configurator. A new key the client writes at run time is added to
+  that list and written through `Package/ManifestKeyPatch` (one key set in the file's own text),
+  never by serialising `PackageManifest` over the file.
+- **Identity is kept, not edited.** `id`, `namespace` and `createdAt` have no editor: the local
+  profiles folder and the server scope follow the namespace.
+- **The writer follows the loader's validation, and adds the layer rules the validator never
+  reaches.** `ManifestWriter.Validate` refuses, in the model's own words, a manifest with no id,
+  name, version, namespace or createdAt and a centerPoint that is not two numbers, and by its
+  place and name a layer with no name, no source or a type other than geojson. A new rule the
+  loader enforces goes there.
+- **A layer field under `defaultStyle` is a mapstyle layer field.** Declare it in
+  `MapStyleFields.OfLayer` and it reaches the manifest with no second declaration, unless the
+  manifest schema does not name it (`textWeight`, `textSharpness`), in which case
+  `ManifestFields.InTheManifestSchema` leaves it out until the schema does.
+- **A new layer and a new font are written with the keys the schema requires and nothing chosen
+  for the author** (`ManifestFields.NewLayer`, `RowsDeclaration.NewRow`); the writer refuses a
+  layer until it has a name and a source.
+- **The layers being edited reach Map Style before a save** through
+  `Vocabulary/EditedPackageManifest`, which the Manifest section reports to. A new section that
+  lists or offers the manifest's layers reads it, and falls back to the stored manifest.
+
 ---
 
 ## 8 · Checklist
@@ -642,5 +693,10 @@ Particular to zones:
       in `NotEdited`), read by `ZoneProperties` and `ZoneIndex`, `ZoneFieldsSchemaTests` and
       `ZonesOneEditOnTheRealFileTests` green; a new policy key naming a zone tag added to
       `ZoneTagsThePoliciesRead`; no geometry edited.
-- [ ] A manifest or profile field has no document model yet: say how an author edits it.
+- [ ] For the manifest: the pinned schema copy refreshed, the property declared in `ManifestFields` (or
+      excused in `NotEdited`; a key the client writes at run time is excused as the client's and
+      added to `WrittenByTheClient`), `ManifestFieldsSchemaTests` and
+      `ManifestOneEditOnTheRealFileTests` green; a rule the loader enforces added to
+      `ManifestWriter.Validate`; no writer leg.
+- [ ] A profile field has no document model yet: say how an author edits it.
 - [ ] Rollout path written, all five lines, checked against both live sector files.
