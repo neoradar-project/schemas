@@ -298,7 +298,14 @@ had a typed Configurator writer; the typed write its two run-time writers shared
 which sets one key in the file's own text; the launcher's four writers (`IgnorePathService`,
 `ProviderUpdater`, `LocalPackageLinker`, `PackageDeletionService.ConvertRemoteToLocal`) set their
 keys the same way, and `ManifestIsNeverWrittenWholeTests` fails a file in `src/` that serialises
-`PackageManifest`.
+`PackageManifest`. An update leaves the manifest the provider served on disk, with those keys set
+in it. So a new key the client writes is added in three places, or an update or a save loses it:
+`Package/ManifestClientKeys.All`, the Configurator's `ManifestFields.WrittenByTheClient` (a test
+holds the two equal), and `Package/CarriedManifestSettings` when it is a controller's setting that
+must outlive an update or a reinstall. These writers and the radar's profile save never refuse for
+a comment or a trailing comma where the key or item goes: they remove it from that one container
+(`PackageDocument.WithoutWhatBlocks`) and log a Warning. A Configurator section does not: its
+draft keeps the refusal to show.
 A profile (`profiles/**/*.stp`, and its local copy under the data root) is the tenth:
 `ProfileStorageService.Write(packagePath, namespace, profile, document, target)` reads the document
 as the loader reads a profile, refuses one with no name, no map or a window area of one to three
