@@ -1,6 +1,6 @@
 ---
 name: package-config-field
-description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the document model that saves YAML (lists, policy, targets, labels, mapstyle, expressions, shapes, the properties of the zones dataset and the manifest are edited as documents; no writer refuses YAML any more), the manifest keys the client writes at run time and patches one at a time, and the mandatory rollout path for sector files that predate the field.
+description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the document model that saves YAML (lists, policy, targets, labels, mapstyle, expressions, shapes, the properties of the zones dataset, the manifest and a profile are edited as documents; no writer refuses YAML any more), the manifest keys the client writes itself and patches one at a time, and the mandatory rollout path for sector files that predate the field.
 ---
 
 > **Shared skill.** Copied verbatim into `@client`, `@cli`, `@schemas`. Editing one copy alone is a break, not a cleanup.
@@ -32,8 +32,8 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `systems/shapes.{json,yaml}` | `@schemas/systems/shapes.schema.json` | **none** | `Package/ShapesConfig.cs` | `ShapesConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/expressions.{json,yaml}` | `@schemas/systems/expressions.schema.json` | **none** | `Package/ExpressionsConfig.cs` | `ExpressionsConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/lists.{json,yaml}` | `@schemas/systems/lists.schema.json` | **none** | `Package/ListsConfig.cs` | `ListsConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
-| `manifest.json` | `@schemas/package/manifest.schema.json` | `initPackage` (`@cli/src/commands/init-package.ts`), `indexer` (`@cli/src/commands/indexer.ts`) | `Package/PackageManifest.cs` | `ManifestWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a). The keys the client writes while a package is in use (`lastActiveProfile`, `plugins`, `lastOpened`) are set one at a time in the file's own text by `Package/ManifestKeyPatch` and are never edited in the section |
-| `profiles/*.stp` | `@schemas/profile.schema.json` | `AsrFolderConverter.processFile` (`@cli/src/commands/converter/asr.ts`) | `Package/Profiles/Profile.cs` | `ProfileStorageService` |
+| `manifest.json` | `@schemas/package/manifest.schema.json` | `initPackage` (`@cli/src/commands/init-package.ts`), `indexer` (`@cli/src/commands/indexer.ts`) | `Package/PackageManifest.cs` | `ManifestWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a). The keys the client writes itself (`lastActiveProfile`, `plugins` and `lastOpened` while a package is in use; `ignorePaths`, `version`, `installedFiles` and `remoteSource` from the launcher) are set one at a time in the file's own text by `Package/ManifestKeyPatch` and are never edited in the section |
+| `profiles/*.stp` | `@schemas/profile.schema.json` | `AsrFolderConverter.processFile` (`@cli/src/commands/converter/asr.ts`) | `Package/Profiles/Profile.cs` | `ProfileStorageService.Write`, which writes the edited `PackageDocument` as it stands (§4a) as the local copy, the package file or both. The radar's own save of a profile (`ProfileStore.SaveUserProfile`) still serialises the typed model: a profile key the model does not hold is dropped by it |
 | `datasets/atc-data.json` | none | `AtcDataManager.writeAtcData` (`@cli/src/commands/converter/atc-data-parser.ts`) | `Package/AtcData.cs` | none |
 | `datasets/nse.json` | none | `@cli/src/helper/nse.ts` | `Package/EseDataset.cs` | none |
 | `datasets/zones.geojson` | `@schemas/datasets/zones.schema.json` | **none** (hand-authored) | `Package/ZonesDataset.cs`, built into zones by `Sectors/ZoneIndex.cs` | `ZonesDatasetWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): a zone's `properties.tags`, `id`, `floor` and `ceiling` only, never a coordinate, and it creates no file |
@@ -175,17 +175,18 @@ declaration in `MapStyleFields` (§7a).
 
 ## 4 · The writer leg: a field the writer skips is deleted
 
-This section is true of what the Configurator still writes through a typed model: a profile and a
-system's folder. **`lists`, `policy`, `targets`, `labels`, `mapstyle`, `expressions` and `shapes`** have no
-writer leg at all: §4a.
+This section is true of what the client still writes through a typed model: the radar's own save
+of a profile (`ProfileStore.SaveUserProfile`: the viewport, the filters, the map items), which is
+why a profile property the client must keep is a property of `Profile`. Nothing the Configurator
+edits is written that way: **`lists`, `policy`, `targets`, `labels`, `mapstyle`, `expressions`,
+`shapes`, the zones dataset, the manifest and a profile** have no writer leg at all: §4a.
 
 **No config type in Core has `[JsonExtensionData]`** — verified,
 `grep -rn JsonExtensionData src/NeoRadar.Core --include=*.cs` returns nothing. Combined with a
 typed writer writing only the fields it knows about, the consequence is:
 
-> Any property present on disk but absent from the client model is **erased** the first time a
-> user saves that file in the Configurator. The save asks once per file first and names the keys it
-> would remove (`ConfiguratorFileState.ReformatNotice`), but a confirmed save still removes them.
+> Any property of a profile present on disk but absent from the client model is **erased** the
+> first time the radar saves that profile: a pan, a filter, a map item toggled.
 
 That is a data-loss bug against a real author's package, not a cosmetic gap. It is why the rule
 is parser **and** writer in the same change, and why the client leg is three files, not one:
@@ -204,9 +205,10 @@ the member for its file: `SystemFile(path, systemId, geometryAffected)`, `Policy
 `ListsFile`, `ExpressionsFile`, `ShapesFile`, `ZonesFile`, `ManifestFile` (the manifest: the package
 is read again from it and `ManifestFileChanged` announced), `SystemFolder(systemId)` (a system
 folder created, filled, removed or renamed: the store gains or drops the system and
-`SystemListChanged` is announced), `ProfileFile(path)` (a profile file patched on disk: it is read
-again and the views showing it re-apply it), `ProfileInMemory(profile)` for a stored profile edited
-in place, and `Unwatched(path)` for a file whose content the stores already hold. The watcher's echo of that write is ignored, the file is reloaded into the store once,
+`SystemListChanged` is announced), `ProfileFile(path)` (a profile file written or patched on disk:
+it is read again and the views showing it re-apply it), `ProfileFileRemoved(path)` (a profile file
+deleted with nothing left to read: the views are told and the stores drop the profile),
+`ProfileInMemory(profile)` for a stored profile edited in place by Map Edit, and `Unwatched(path)` for a file whose content the stores already hold. The watcher's echo of that write is ignored, the file is reloaded into the store once,
 and the typed `*FileChanged` bus event tells every open radar view, main window and insets alike,
 to re-apply what it shows. An edit made in a text editor arrives at the same reload through
 `PackageFileWatcher`. A section never publishes a reload event and never pokes a view; a new
@@ -221,8 +223,9 @@ fails before touching disk — `SystemConfigWriter.ValidateTargets` and `Validat
 
 ### Round-trip test (required)
 
-Extend `@client/tests/NeoRadar.Core.Tests/Package/ConfigWriterTests.cs` (profiles and
-system folders; a file edited as a document has no round trip to test, §4a). Most of
+Extend `@client/tests/NeoRadar.Core.Tests/Package/ConfigWriterTests.cs` (system folders; a
+file edited as a document has no round trip to test, §4a) or, for a profile property the radar
+must keep, `ProfileStoreTests`. Most of
 its facts are in this exact shape: parse a JSON literal, write, re-parse from disk, assert the field
 survived. Name the test after what it protects.
 
@@ -283,8 +286,18 @@ name, no source or a type other than geojson), and tells `IOwnPackageWrites.Mani
 loader reads `manifest.json` and nothing else, so a YAML document is refused. The manifest never
 had a typed Configurator writer; the typed write its two run-time writers shared
 (`SaveManifestLastActiveProfile`, `SaveManifestPlugins`) is replaced by `Package/ManifestKeyPatch`,
-which sets one key in the file's own text. Consequences
-for a new lists, policy, targets, labels, mapstyle, expressions, shapes or manifest field:
+which sets one key in the file's own text; the launcher's four writers (`IgnorePathService`,
+`ProviderUpdater`, `LocalPackageLinker`, `PackageDeletionService.ConvertRemoteToLocal`) set their
+keys the same way, and `ManifestIsNeverWrittenWholeTests` fails a file in `src/` that serialises
+`PackageManifest`.
+A profile (`profiles/**/*.stp`, and its local copy under the data root) is the tenth:
+`ProfileStorageService.Write(packagePath, namespace, profile, document, target)` reads the document
+as the loader reads a profile, refuses one with no name, no map or a window area of one to three
+edges, writes the document's bytes as the local copy, the package file or both, and tells
+`IOwnPackageWrites.ProfileFile` for each file written. `Promote` copies the local copy's bytes over
+the package file; `RevertToPackage` and the two deletes remove a file and end in `ProfileFile` or
+`ProfileFileRemoved`. The typed `Save` is deleted. Consequences
+for a new lists, policy, targets, labels, mapstyle, expressions, shapes, manifest or profile field:
 
 - **A field the client model does not know survives every save**, with its comments, key order,
   quoting, rule blocks and line endings. There is no erase-on-save hazard and no
@@ -305,7 +318,9 @@ for a new lists, policy, targets, labels, mapstyle, expressions, shapes or manif
   `ShapesOneEditOnTheRealFileTests` over the UK `shapes.json` and the same 8 shapes written as YAML
   with comments, and the manifest `ManifestWriterTests` and `ManifestOneEditOnTheRealFileTests` over
   the manifests of the built UK and LFXX packages (the second holds `devDisableAntialiasing`,
-  which the model does not know).
+  which the model does not know), and a profile `ProfileStorageServiceTests` and
+  `ProfilesOneEditOnTheRealFileTests` over the five pinned egxx profiles (one holds `groupLabel`,
+  `filePath`, `lastModified` and `_saveMetadata`, which the model does not know).
 - **The Configurator leg is one declaration** (§7a).
 
 Two answers an edit can need are the user's to give, and one piece of UI gives both for every
@@ -346,9 +361,8 @@ an expressions or a shapes file in either format. The four LFXX `labels.json` fi
 section holding bare row grids in place of `labels`): the Tags section opens them read-only and
 says so; they are converted by hand.
 
-What is left outside the document model is not YAML: a profile is a `.stp` the Profiles section
-writes whole through its typed model. The manifest is JSON only, because the loader reads
-`manifest.json` and nothing else. The read-only banner
+Two files are JSON only: the manifest, because the loader reads `manifest.json` and nothing else,
+and a profile, which is a `.stp`. The read-only banner
 now means a file the document model cannot follow, or one that is not the shape its section expects
 (a shapes file whose `shapes` is no map, a labels file in the older layout); it names the reason,
 and a save reports the same.
@@ -399,32 +413,19 @@ Two shell contracts:
 
 Three rules every section follows (`src/NeoRadar/CLAUDE.md` § Configurator):
 
-- **Nothing is live before a save.** Lists, Policy, Targets, Tags, Map Style, Expressions and Shapes
-  each hold a draft of the document (§7a) and never touch the store. Profiles is the one section
-  that edits the stored object, and only inside its save, putting it back when the save fails.
+- **Nothing is live before a save.** Every section that edits a file holds a draft of the
+  document (§7a) and never touches the store, Profiles among them.
 - **One save path.** `TrySave` calls the Core writer; the reload the writer announces is the only
   thing that changes the store. Never call a store setter from a section.
 - **Conflicts are refused, not overwritten.** `ConfiguratorFileState` hashes the file at load;
-  `File.SaveRefusal()` runs first in `TrySave` (YAML, or the file moved on disk), and
-  `File.MarkSaved(...)` after a successful write.
+  `File.SaveRefusal()` runs first in `TrySave` (the file moved on disk), and
+  `File.MarkSaved(...)` after a successful write. Two files the client itself writes under an
+  open draft are the exception, each in its own way: a manifest save takes the client's keys from
+  the file as it is then, and a profile save sets the author's edited fields again on the file
+  as it is then.
 
-A section not yet on a draft (Profiles, Systems, Map Edit) is hand-wired. The pattern
-for one new field there:
-
-1. An `[ObservableProperty]` (or the section's own row type) for the editable value.
-2. A change marks the section dirty.
-3. Seed it from the working copy, and keep the authored value beside it.
-4. Write it on save: a field still showing what it was seeded with writes the authored value
-   back, so only the field that changed differs. Never write a field from what the control shows
-   without that check: it stamps a default into every field the file left absent.
-5. A picker over a vocabulary takes it from the code that parses the value, and offers the current
-   value before it is written (`PickerOptions`), or the ComboBox nulls a value it does not list.
-6. The XAML row. Only the control classes of `ConfiguratorStyles.axaml` size a control; see
-   the `ui-text-metrics` skill.
-
-Then extend `ConfiguratorOneEditTests` (`tests/NeoRadar.Tests/Screens/Configurator/`, which now
-holds the profile row): load the real-file fixture, edit the new field, save, and
-assert the file differs from an unedited save at that field alone.
+No section that edits a file is hand-wired any more: a new field is one declaration (§7a).
+Systems works on folders and Map Edit on the profile the radar holds; neither has fields.
 
 `TrySave` must surface failure rather than swallowing it: set `SaveFailed` + `SaveStatus` from
 `ConfigWriteResult.Errors` and return `false`. Silent success on a refused write is the worst
@@ -655,6 +656,31 @@ the system files). Particular to the manifest:
   `Vocabulary/EditedPackageManifest`, which the Manifest section reports to. A new section that
   lists or offers the manifest's layers reads it, and falls back to the stored manifest.
 
+**A profile property is one declaration too.** `Sections/ProfileFields.cs` declares the file:
+`OfProfile` (the seventeen properties the section edits, by their path from the top of the file)
+and `NotEdited` (every other schema property with its reason). The steps are the three above with
+`@schemas/profile.schema.json` (pinned as `Fixtures/profile.schema.json`, held to the repository's
+by `ProfileSchemaPinTests`), `ProfileFieldsSchemaTests` and `ProfilesOneEditOnTheRealFileTests`
+(the five egxx profiles pinned in `tests/NeoRadar.Core.Tests/Package/Documents/PinnedProfiles`).
+Particular to a profile:
+
+- **What the controller sets from the radar is never a field.** `map.items`, the three filter
+  switches, the speed vector, the hidden tag groups and the related profiles are excused in
+  `NotEdited` as the controller's and kept as written. A new property the radar's own menus set
+  is excused the same way, and must be a property of `Profile`, because the radar's save still
+  writes the typed model (§4).
+- **A new property an author sets is declared, and still needs the model property** for the
+  client to read it and for the radar's save to keep it.
+- **A profile has two files.** The draft is of the file the stores read (the local copy, else the
+  package file) and a save writes its bytes to the target picked. The writer's refusals are in
+  `ProfileStorageService.Check`; a new rule the loader enforces goes there.
+- **A coordinate is declared `EveryDigit`**, so its box shows every digit the file writes; a number
+  with a few decimals is not.
+- **A property required by the schema all the way down is declared `Required`**
+  (`AFieldIsRequired_ExactlyWhenTheSchemaRequiresItAndEveryMapAboveIt`); every other one clears
+  to absent. The four edges of the window area clear one at a time and the writer refuses a save
+  that leaves only some.
+
 ---
 
 ## 8 · Checklist
@@ -664,10 +690,8 @@ the system files). Particular to the manifest:
 - [ ] Parser accepts it; absent means the documented pre-change default.
 - [ ] For mapstyle: `AtmSystem` property + `MapStyleParser` + the schema edited.
 - [ ] Writer round-trips it. No `[Required]` retro-fitted to any list-element type.
-- [ ] Round-trip test added to `ConfigWriterTests` and named after what it protects; suite green.
+- [ ] Round-trip test added to `ConfigWriterTests` (a system folder) or `ProfileStoreTests` (a profile property the radar must keep) and named after what it protects; suite green.
 - [ ] New serialisable **type** registered in both `CoreJsonContexts` contexts (new property only, no edit).
-- [ ] Configurator section reads it, marks dirty, writes only it back, and reports write failure;
-      `ConfiguratorOneEditTests` covers it (a section not yet on a draft).
 - [ ] For lists: the pinned schema copy refreshed, the field declared in `ListFields` (or excused in
       `NotEdited`), `ListFieldsSchemaTests` and `ListsOneEditOnTheRealFileTests` green; no writer leg.
 - [ ] For policy: the same with `PolicyFields`, `PolicyFieldsSchemaTests` and
@@ -698,5 +722,9 @@ the system files). Particular to the manifest:
       added to `WrittenByTheClient`), `ManifestFieldsSchemaTests` and
       `ManifestOneEditOnTheRealFileTests` green; a rule the loader enforces added to
       `ManifestWriter.Validate`; no writer leg.
-- [ ] A profile field has no document model yet: say how an author edits it.
+- [ ] For a profile: the pinned schema copy refreshed, the property declared in `ProfileFields` (or
+      excused in `NotEdited`; what the radar's own menus set is excused as the controller's), the
+      model property added so the radar's save keeps it, `ProfileFieldsSchemaTests` and
+      `ProfilesOneEditOnTheRealFileTests` green; a rule the loader enforces added to
+      `ProfileStorageService.Check`.
 - [ ] Rollout path written, all five lines, checked against both live sector files.
