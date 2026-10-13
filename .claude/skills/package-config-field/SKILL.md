@@ -1,6 +1,6 @@
 ---
 name: package-config-field
-description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the document model that saves YAML (lists, policy, targets, labels, mapstyle, expressions and shapes are edited as documents; no writer refuses YAML any more), and the mandatory rollout path for sector files that predate the field.
+description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the document model that saves YAML (lists, policy, targets, labels, mapstyle, expressions, shapes and the properties of the zones dataset are edited as documents; no writer refuses YAML any more), and the mandatory rollout path for sector files that predate the field.
 ---
 
 > **Shared skill.** Copied verbatim into `@client`, `@cli`, `@schemas`. Editing one copy alone is a break, not a cleanup.
@@ -36,7 +36,7 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `profiles/*.stp` | `@schemas/profile.schema.json` | `AsrFolderConverter.processFile` (`@cli/src/commands/converter/asr.ts`) | `Package/Profiles/Profile.cs` | `ProfileStorageService` |
 | `datasets/atc-data.json` | none | `AtcDataManager.writeAtcData` (`@cli/src/commands/converter/atc-data-parser.ts`) | `Package/AtcData.cs` | none |
 | `datasets/nse.json` | none | `@cli/src/helper/nse.ts` | `Package/EseDataset.cs` | none |
-| `datasets/zones.geojson` | `@schemas/datasets/zones.schema.json` | **none** (hand-authored) | `Package/ZonesDataset.cs` | none |
+| `datasets/zones.geojson` | `@schemas/datasets/zones.schema.json` | **none** (hand-authored) | `Package/ZonesDataset.cs`, built into zones by `Sectors/ZoneIndex.cs` | `ZonesDatasetWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): a zone's `properties.tags`, `id`, `floor` and `ceiling` only, never a coordinate, and it creates no file |
 | `datasets/radars.json` | `@schemas/datasets/radars.schema.json` | `writeRadarsDataset` (`@cli/src/helper/radars.ts`) | `Package/RadarsDataset.cs` | none |
 | `datasets/msaw.geojson` | `@schemas/datasets/msaw.schema.json` | `buildMsawDataset` (`@cli/src/commands/converter/topsky/topsky-msaw.ts`) | `Package/MsawDataset.cs` | none |
 | `datasets/areas.geojson` | `@schemas/datasets/areas.schema.json` | `buildAreasDataset` (`.../topsky/topsky-areas.ts`) | not read by the client | none |
@@ -193,7 +193,7 @@ parser (§3), writer (this section), Configurator section view model (§7).
 
 All writes route through `Package/Writers/`:
 `ISystemConfigWriter`, `IExpressionsConfigWriter`, `IListsConfigWriter`, `IShapesConfigWriter`,
-`IPolicyConfigWriter`, `ISystemFolderWriter`, `IProfileStorageService`, all singletons, registered in
+`IPolicyConfigWriter`, `IZonesDatasetWriter`, `ISystemFolderWriter`, `IProfileStorageService`, all singletons, registered in
 `PackageModule.AddPackageServices`. Every one of them writes through
 `AtomicConfigWriter.Write` (tmp file + `File.Move` overwrite). Never `File.WriteAllText` a package file from a
 section.
@@ -201,7 +201,7 @@ section.
 **A save reaches the running views through one path, and it is the on-disk path.** Each writer
 tells `IOwnPackageWrites` (implemented by `Package/ReloadPackageFilesOnChange`) what it wrote, through
 the member for its file: `SystemFile(path, systemId, geometryAffected)`, `ListsFile`,
-`ExpressionsFile`, `ShapesFile`, `ProfileInMemory(profile)` for a stored profile edited in place, and
+`ExpressionsFile`, `ShapesFile`, `ZonesFile`, `ProfileInMemory(profile)` for a stored profile edited in place, and
 `Unwatched(path)` for a file whose content the stores already hold. The watcher's echo of that write is ignored, the file is reloaded into the store once,
 and the typed `*FileChanged` bus event tells every open radar view, main window and insets alike,
 to re-apply what it shows. An edit made in a text editor arrives at the same reload through
@@ -574,6 +574,36 @@ YAML, with no further code). Particular to shapes:
   shape is offered to a target variant before it is saved; a new shape-naming property takes that
   as its `Choices`.
 
+**A zones property is one declaration too.** `Sections/ZoneFields.cs` declares the dataset:
+`OfZone` (the four properties of a zone the client reads, by their path under the zone:
+`properties.tags`, `.id`, `.floor`, `.ceiling`) and `NotEdited` (every other schema property with
+its reason: the file's `type`, `name`, `crs` and `bbox`, the list of features, a feature's `type`,
+`id`, `bbox`, `geometry` and `properties` map). The steps are the three above with
+`@schemas/datasets/zones.schema.json` (pinned as `Fixtures/zones.schema.json`, held to the
+repository's by `ZonesSchemaPinTests`), `ZoneFieldsSchemaTests` and
+`ZonesOneEditOnTheRealFileTests` (the UK `zones.geojson`, pinned beside the system files).
+Particular to zones:
+
+- **Geometry is never edited and no zone is added, removed or moved.** A new property of a zone
+  is a declaration under `properties`; a property of the geometry, of the feature or of the file
+  is excused in `NotEdited` and kept byte for byte, as is any property the schema does not name
+  (a zones file listed in `mapLayers` carries its layer styling there).
+- **The parser leg is two files.** `Package/ZonesDataset.cs` (`ZoneProperties`) deserialises the
+  property and `Sectors/ZoneIndex.cs` decides what a zone is built with; a property only the
+  first reads is read and ignored.
+- **The writer follows the loader, the section follows the schema.** `ZonesDatasetWriter` refuses
+  by name what `ZoneIndex` would skip a zone for in its properties (no tags, a tag holding a
+  space, a ceiling below the floor) and a bound the loader cannot read; it does not refuse a tag
+  off the schema's pattern or a tag listed twice, which the loader takes. The tags editor is the
+  stricter half (`WordPattern`, `DistinctWords`, `Required`), so no edit made in the section puts
+  one in the file. A new rule the loader enforces goes in the writer; one only the schema states
+  goes in the declaration.
+- **A tag is offered from where it is read.** The tags box offers the tags the draft already uses
+  and the zone tags the stored systems' resolved policies read
+  (`ConfiguratorVocabulary.ZoneTagsThePoliciesRead`). A new policy key that names a zone tag adds
+  its line there, or the tag is not offered.
+- **A package with no zones file is not given one**: the section says so and the writer refuses.
+
 ---
 
 ## 8 · Checklist
@@ -608,5 +638,9 @@ YAML, with no further code). Particular to shapes:
 - [ ] For shapes: the pinned schema copy refreshed, the field declared in `ShapeFields` (or excused in
       `NotEdited`), shown for the kinds that read it, its absent-key row added, `ShapeFieldsSchemaTests`,
       `ShapesOneEditOnTheRealFileTests` and the characterisation table green; no writer leg.
+- [ ] For zones: the pinned schema copy refreshed, the property declared in `ZoneFields` (or excused
+      in `NotEdited`), read by `ZoneProperties` and `ZoneIndex`, `ZoneFieldsSchemaTests` and
+      `ZonesOneEditOnTheRealFileTests` green; a new policy key naming a zone tag added to
+      `ZoneTagsThePoliciesRead`; no geometry edited.
 - [ ] A manifest or profile field has no document model yet: say how an author edits it.
 - [ ] Rollout path written, all five lines, checked against both live sector files.
