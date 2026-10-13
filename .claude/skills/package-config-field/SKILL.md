@@ -33,7 +33,7 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `systems/expressions.{json,yaml}` | `@schemas/systems/expressions.schema.json` | **none** | `Package/ExpressionsConfig.cs` | `ExpressionsConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/lists.{json,yaml}` | `@schemas/systems/lists.schema.json` | **none** | `Package/ListsConfig.cs` | `ListsConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `manifest.json` | `@schemas/package/manifest.schema.json` | `initPackage` (`@cli/src/commands/init-package.ts`), `indexer` (`@cli/src/commands/indexer.ts`) | `Package/PackageManifest.cs` | `ManifestWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a). The keys the client writes itself (`lastActiveProfile`, `plugins` and `lastOpened` while a package is in use; `ignorePaths`, `version`, `installedFiles` and `remoteSource` from the launcher) are set one at a time in the file's own text by `Package/ManifestKeyPatch` and are never edited in the section |
-| `profiles/*.stp` | `@schemas/profile.schema.json` | `AsrFolderConverter.processFile` (`@cli/src/commands/converter/asr.ts`) | `Package/Profiles/Profile.cs` | `ProfileStorageService.Write`, which writes the edited `PackageDocument` as it stands (§4a) as the local copy, the package file or both. The radar's own save of a profile (`ProfileStore.SaveUserProfile`) still serialises the typed model: a profile key the model does not hold is dropped by it |
+| `profiles/*.stp` | `@schemas/profile.schema.json` | `AsrFolderConverter.processFile` (`@cli/src/commands/converter/asr.ts`) | `Package/Profiles/Profile.cs` | `ProfileStorageService.Write`, which writes the edited `PackageDocument` as it stands (§4a) as the local copy, the package file or both. The radar's own save of a profile (`ProfileStore.SaveUserProfile`) sets the values that differ in the file's own text (`ProfileFileDifference`, §4): a profile key the model does not hold is kept |
 | `datasets/atc-data.json` | none | `AtcDataManager.writeAtcData` (`@cli/src/commands/converter/atc-data-parser.ts`) | `Package/AtcData.cs` | none |
 | `datasets/nse.json` | none | `@cli/src/helper/nse.ts` | `Package/EseDataset.cs` | none |
 | `datasets/zones.geojson` | `@schemas/datasets/zones.schema.json` | **none** (hand-authored) | `Package/ZonesDataset.cs`, built into zones by `Sectors/ZoneIndex.cs` | `ZonesDatasetWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): a zone's `properties.tags`, `id`, `floor` and `ceiling` only, never a coordinate, and it creates no file |
@@ -173,22 +173,31 @@ declaration in `MapStyleFields` (§7a).
 
 ---
 
-## 4 · The writer leg: a field the writer skips is deleted
+## 4 · The writer leg: a property the radar's save skips is never saved
 
-This section is true of what the client still writes through a typed model: the radar's own save
-of a profile (`ProfileStore.SaveUserProfile`: the viewport, the filters, the map items), which is
-why a profile property the client must keep is a property of `Profile`. Nothing the Configurator
-edits is written that way: **`lists`, `policy`, `targets`, `labels`, `mapstyle`, `expressions`,
-`shapes`, the zones dataset, the manifest and a profile** have no writer leg at all: §4a.
+No package file is written whole from a typed model any more. The one typed thing left is the
+radar's own save of a profile (`ProfileStore.SaveUserProfile`: the viewport, the filters, the map
+items), and it is a patch: `ProfileCopy` copies the profile's values, `ProfileFileDifference`
+compares each with what the loader reads from the file, and only what differs is set in the
+file's own text. So a profile property the radar changes while the client runs needs three
+things: the `Profile` property, its line in `ProfileCopy`, and its comparison in
+`ProfileFileDifference`; `ProfileSaveTests.EveryPropertyOfTheProfileModel_IsCopiedForASave_AndIsComparedWithTheFileOrNamedAsLeftAlone`
+fails one that is neither compared nor named as left alone. A key the model does not hold is
+kept by that save, not deleted. Nothing the Configurator edits is written from a model either:
+**`lists`, `policy`, `targets`, `labels`, `mapstyle`, `expressions`, `shapes`, the zones dataset,
+the manifest and a profile** have no writer leg at all: §4a.
+
+What follows in this section is why the rule was parser and writer in one change, and it is
+still how the system folder writers validate.
 
 **No config type in Core has `[JsonExtensionData]`** — verified,
 `grep -rn JsonExtensionData src/NeoRadar.Core --include=*.cs` returns nothing. Combined with a
 typed writer writing only the fields it knows about, the consequence is:
 
-> Any property of a profile present on disk but absent from the client model is **erased** the
-> first time the radar saves that profile: a pan, a filter, a map item toggled.
+> Before the radar's save became a patch, any property of a profile present on disk but absent
+> from the client model was **erased** the first time the radar saved that profile.
 
-That is a data-loss bug against a real author's package, not a cosmetic gap. It is why the rule
+That was a data-loss bug against a real author's package, not a cosmetic gap. It is why the rule
 is parser **and** writer in the same change, and why the client leg is three files, not one:
 parser (§3), writer (this section), Configurator section view model (§7).
 
@@ -667,8 +676,8 @@ Particular to a profile:
 - **What the controller sets from the radar is never a field.** `map.items`, the three filter
   switches, the speed vector, the hidden tag groups and the related profiles are excused in
   `NotEdited` as the controller's and kept as written. A new property the radar's own menus set
-  is excused the same way, and must be a property of `Profile`, because the radar's save still
-  writes the typed model (§4).
+  is excused the same way, and must be a property of `Profile`, copied in `ProfileCopy` and
+  compared in `ProfileFileDifference`, or the radar's save never writes it (§4).
 - **A new property an author sets is declared, and still needs the model property** for the
   client to read it and for the radar's save to keep it.
 - **A profile has two files.** The draft is of the file the stores read (the local copy, else the
