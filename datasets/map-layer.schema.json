@@ -37,6 +37,11 @@
       },
       "additionalProperties": false
     },
+    "symbols": {
+      "type": "object",
+      "description": "Symbols this file's points name in their symbol property, each a shape in the systems/shapes.json vocabulary (logical pixels at 100%, origin at the symbol centre, +y down). Written by neoradar-cli from TopSky SYMBOLDEF lines, only the ones the file's points use. A point naming a symbol not held here names a systems/shapes.json shape.",
+      "additionalProperties": { "$ref": "../systems/shapes.schema.json#/$defs/shape" }
+    },
     "items": {
       "type": "array",
       "description": "The item table: one row per uuid the features carry. A row no feature names, and a feature whose uuid has no row, are findings.",
@@ -72,9 +77,27 @@
         "name": {
           "type": "string",
           "description": "The row label in Map Edit, and for the fix, vor, ndb and airport layers the point name a direct-to and a route resolve against."
+        },
+        "order": {
+          "type": "integer",
+          "description": "Draw order among the items of map layers, lower drawn first, whichever layer each sits in; drawings of one kind (fills, lines, points) are ordered among themselves. TopSky's LAYER; absent is 1, and TopSky draws its areas at 0."
         }
       },
       "additionalProperties": false
+    },
+    "color": {
+      "type": "array",
+      "items": { "type": "number", "minimum": 0, "maximum": 255 },
+      "minItems": 3,
+      "maxItems": 4,
+      "description": "[r, g, b] or [r, g, b, a], each 0 to 255."
+    },
+    "dashArray": {
+      "type": "array",
+      "items": { "type": "number", "exclusiveMinimum": 0 },
+      "minItems": 2,
+      "maxItems": 32,
+      "description": "Dash, gap, dash, gap and so on, in logical pixels, repeated along the line. neoradar-cli writes an even count; an odd count repeats with dashes and gaps swapped."
     },
     "drawing": {
       "type": "object",
@@ -96,15 +119,67 @@
             },
             "text": {
               "type": "string",
-              "description": "The text drawn at a point. On a point with no text the point's name is its label."
+              "description": "The text drawn at a point whenever the point is drawn. On a point with no text the point's name is its label, drawn when the profile asks."
             },
             "name": {
               "type": "string",
               "description": "The identity of a navaid or airport point, drawn as its label when the profile asks."
             },
-            "lineStyle": { "type": "object" },
-            "fillStyle": { "type": "object" },
+            "lineStyle": {
+              "type": "object",
+              "description": "A line's style, or a polygon's edge: a polygon is outlined only when it carries its own lineStyle, which the layer and system styles then fill in leaf by leaf. On a point with a symbol, the symbol's colour.",
+              "properties": {
+                "color": { "$ref": "#/$defs/color" },
+                "width": { "type": "number", "exclusiveMinimum": 0, "description": "Logical pixels." },
+                "opacity": { "type": "number", "minimum": 0, "maximum": 1, "description": "0 draws nothing (TopSky's Null style)." },
+                "dashArray": { "$ref": "#/$defs/dashArray" }
+              },
+              "additionalProperties": true
+            },
+            "fillStyle": {
+              "type": "object",
+              "description": "A polygon's fill. A polygon with no fill colour after the layer and system styles is not filled.",
+              "properties": {
+                "color": { "$ref": "#/$defs/color" },
+                "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
+                "hatch": { "type": "integer", "minimum": 0, "maximum": 52, "description": "A GDI+ HatchStyle (TopSky COORDPOLY:E0 to E52). Drawn as a half-opaque fill of color until hatches are drawn, which is a finding." },
+                "backgroundColor": { "$ref": "#/$defs/color", "description": "The background of a hatched fill (COLOR's third name). Not drawn yet." }
+              },
+              "additionalProperties": true
+            },
             "pointStyle": { "type": "object" },
+            "textStyle": {
+              "type": "object",
+              "description": "The style of this point's text, over the layer's own text style.",
+              "properties": {
+                "color": { "$ref": "#/$defs/color" },
+                "fontSize": { "type": "number", "exclusiveMinimum": 0, "description": "The size, in place of the layer's (FONTSIZE:=)." },
+                "fontScale": { "type": "number", "exclusiveMinimum": 0, "description": "The layer's size multiplied by this (FONTSIZE:*)." },
+                "fontSizeDelta": { "type": "number", "description": "The layer's size plus this, which may be negative (FONTSIZE:+ and -)." },
+                "fontWeight": { "type": "string", "enum": ["normal", "bold", "bolder", "lighter", "100", "200", "300", "400", "500", "600", "700", "800", "900"] },
+                "italic": { "type": "boolean", "description": "Not drawn yet." },
+                "underline": { "type": "boolean", "description": "Not drawn yet." },
+                "strikethrough": { "type": "boolean", "description": "Not drawn yet." },
+                "anchor": { "type": "string", "enum": ["start", "middle", "end"], "description": "Which end of the text sits at the point; middle when absent." },
+                "baseline": { "type": "string", "enum": ["top", "middle", "bottom"], "description": "Which edge of the text sits at the point; middle when absent." },
+                "offset": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2, "description": "[x, y] in logical pixels, right and down positive." }
+              },
+              "additionalProperties": false
+            },
+            "symbol": {
+              "type": "string",
+              "description": "The symbol drawn at this point: a name in this file's symbols, else a systems/shapes.json shape. Drawn in lineStyle.color, turning with the map."
+            },
+            "minPixelsPerNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Not drawn while the view shows fewer logical pixels per nautical mile than this at its centre (TopSky's ZOOM)."
+            },
+            "maxPixelsPerNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Not drawn while the view shows more logical pixels per nautical mile than this at its centre (TopSky's negative ZOOM)."
+            },
             "geodesic": {
               "type": "boolean",
               "description": "false draws a long oblique line as the Mercator chord instead of the great circle."
