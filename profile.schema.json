@@ -156,6 +156,13 @@
               },
               "uuid": {
                 "type": "string"
+              },
+              "show": {
+                "type": "string",
+                "enum": [
+                  "off"
+                ],
+                "description": "off forces the item off. A row without it forces the item on, so an automatic item (one whose layer gives it a showWhen) no row lists follows its showWhen, Map Edit's Auto. Map Edit writes and removes it."
               }
             },
             "required": [
