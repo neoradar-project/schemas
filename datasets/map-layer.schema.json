@@ -42,6 +42,12 @@
       "description": "Symbols this file's points name in their symbol property, each a shape in the systems/shapes.json vocabulary (logical pixels at 100%, origin at the symbol centre, +y down). Written by neoradar-cli from TopSky SYMBOLDEF lines, only the ones the file's points use. A point naming a symbol not held here names a systems/shapes.json shape.",
       "additionalProperties": { "$ref": "../systems/shapes.schema.json#/$defs/shape" }
     },
+    "tags": {
+      "type": "array",
+      "description": "Every tag this file's drawings carry, each once, in order: what Map Edit offers to hide or show without reading the features. Written by neoradar-cli; absent when no drawing carries one.",
+      "items": { "$ref": "#/$defs/tag" },
+      "uniqueItems": true
+    },
     "items": {
       "type": "array",
       "description": "The item table: one row per uuid the features carry. A row no feature names, and a feature whose uuid has no row, are findings.",
@@ -65,6 +71,12 @@
   },
   "additionalProperties": false,
   "$defs": {
+    "tag": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^A-Z,]+$",
+      "description": "One category name, lowercased, holding no comma."
+    },
     "item": {
       "type": "object",
       "required": ["uuid", "name"],
@@ -191,6 +203,12 @@
             "geodesic": {
               "type": "boolean",
               "description": "false draws a long oblique line as the Mercator chord instead of the great circle."
+            },
+            "tags": {
+              "type": "array",
+              "description": "Categories a profile hides or shows wholesale (map.hideTags, map.showTags), across every layer. TopSky's FILTER_ASR, written lowercased. A drawing with no tags is never hidden or shown by them.",
+              "items": { "$ref": "#/$defs/tag" },
+              "uniqueItems": true
             }
           },
           "additionalProperties": true,
