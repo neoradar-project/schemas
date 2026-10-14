@@ -2612,7 +2612,7 @@
           "minItems": 3,
           "maxItems": 3,
           "items": [
-            { "enum": ["==", "!=", "<", "<=", ">", ">=", "beginsWith", "endsWith", "contains"] },
+            { "enum": ["==", "!=", "<", "<=", ">", ">=", "beginsWith", "endsWith", "contains", "has", "in"] },
             { "type": "string", "minLength": 1, "description": "The key read from the aircraft." },
             { "type": ["string", "number", "boolean"], "description": "Text, a number, true or false, \"&key\" for another key's value or \"$name\" for an expression (compared as \"1\" or \"0\")." }
           ],
@@ -2652,6 +2652,11 @@
         {
           "type": "object",
           "description": "The object form: { \"reference\": name }, { \"operator\", \"variable\", \"value\" } or { \"operator\", \"conditions\" }."
+        },
+        {
+          "type": "array",
+          "maxItems": 0,
+          "description": "[]: the condition that always holds, as an absent one does where absence applies."
         }
       ]
     }

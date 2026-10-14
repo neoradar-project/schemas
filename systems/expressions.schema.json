@@ -58,6 +58,16 @@
                         "type": "string",
                         "const": "contains",
                         "description": "String contains operator"
+                      },
+                      {
+                        "type": "string",
+                        "const": "has",
+                        "description": "Whole entry operator: the key's value, split on spaces, holds the value as one entry"
+                      },
+                      {
+                        "type": "string",
+                        "const": "in",
+                        "description": "One of operator: the key's value is one of the space-separated entries of the value"
                       }
                     ]
                   },
@@ -1002,6 +1012,11 @@
                     "$ref": "#/properties/expressions/additionalProperties/anyOf/0/anyOf/0/items/1"
                   }
                 ]
+              },
+              {
+                "type": "array",
+                "maxItems": 0,
+                "description": "[]: the condition that always holds, as an absent one does where absence applies."
               }
             ]
           },
