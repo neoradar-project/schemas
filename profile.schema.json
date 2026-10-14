@@ -172,6 +172,22 @@
             "additionalProperties": false
           }
         },
+        "hideTags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "A map layer drawing carrying ANY of these tags is not drawn, whatever item it belongs to. Wins over showTags where both name a tag. TopSky's HideMapData; Map Edit sets it."
+        },
+        "showTags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "When present, a TAGGED map layer drawing is drawn only if it carries at least one of these; an untagged drawing is unaffected. TopSky's ShowMapData; Map Edit sets it."
+        },
         "sweepIntervalSeconds": {
           "type": "number",
           "minimum": 0,
