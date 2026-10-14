@@ -60,8 +60,27 @@
       "description": "[above the separation level, below it IFR, below it VFR]. Overrides the policy's global buffers for this area alone, which is how a vAcc widens the margin around one danger area without widening every one."
     },
     "activation": {
-      "description": "One rule. An area is active when ANY of its rules says so, and an area with no rule at all is inactive until a controller activates it by hand.",
+      "description": "One rule. An area is active when ANY of its rules says so, and an area with no rule at all is inactive until a controller activates it by hand. neoradar-cli writes the condition form, { when, lowerFt, upperFt, userText }; the kind forms are what it wrote before.",
       "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["when"],
+          "properties": {
+            "when": {
+              "description": "A condition over the controller's session, as a map item's showWhen: the area is active while it holds. [] always holds; [\"has\", \"aupAreas\", id] reads the airspace use plan; a within is a schedule. A condition the client cannot read never activates the area.",
+              "allOf": [
+                {
+                  "$ref": "../systems/expressions.schema.json#/properties/expressions/additionalProperties"
+                }
+              ]
+            },
+            "lowerFt": { "type": "number", "description": "The area's lowest level while this entry is what activates it, in place of the area's own; FEET." },
+            "upperFt": { "type": "number", "description": "The area's highest level while this entry is what activates it; FEET." },
+            "userText": { "type": "string", "description": "Text shown while this entry is what activates the area." }
+          },
+          "description": "The first entry whose when holds activates the area and supplies its limits."
+        },
         {
           "type": "object",
           "additionalProperties": false,
