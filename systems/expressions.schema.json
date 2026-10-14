@@ -917,6 +917,16 @@
                       },
                       {
                         "type": "string",
+                        "enum": [
+                          "myPosition",
+                          "onlinePositions",
+                          "arrivalRunways",
+                          "departureRunways"
+                        ],
+                        "description": "The controller's session, which a map item's showWhen reads and no aircraft, controller, METAR or frequency row does: myPosition (the position id the local login claims, empty with none claimed), onlinePositions (the other online controllers' position ids), arrivalRunways and departureRunways (every active runway as ICAO and runway, EGLL09L). Each list is space-separated; read one with has or in."
+                      },
+                      {
+                        "type": "string",
                         "pattern": "^plugin:[^:]+:.+$",
                         "description": "A plugin key: a tag item, written plugin:{plugin name}:TAG_{item name}, or an expression the plugin declares, written plugin:{plugin name}:EXP_{expression name}. As an itemName a tag item shows the plugin's value, or the item's default. As a condition key or an \"&key\" either reads what the plugin last pushed for the aircraft, else its default: a tag item's registered default, an expression's declared one. It reads empty while the plugin is not loaded and on a row that is no aircraft. A boolean expression reads \"1\" or \"0\"."
                       },
