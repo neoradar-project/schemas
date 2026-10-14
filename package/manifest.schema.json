@@ -89,16 +89,11 @@
                   "dashArray": {
                     "type": "array",
                     "minItems": 2,
-                    "maxItems": 2,
-                    "items": [
-                      {
-                        "type": "number"
-                      },
-                      {
-                        "type": "number"
-                      }
-                    ],
-                    "description": "Dash array [length, gap]"
+                    "maxItems": 32,
+                    "items": {
+                      "type": "number"
+                    },
+                    "description": "Dash, gap, dash, gap and so on, in logical pixels: an even number of values, repeated along the line. An odd count repeats with dashes and gaps swapped; a value of 0 or less draws solid"
                   }
                 },
                 "required": [
