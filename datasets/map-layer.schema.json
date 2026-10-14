@@ -81,6 +81,14 @@
         "order": {
           "type": "integer",
           "description": "Draw order among the items of map layers, lower drawn first, whichever layer each sits in; drawings of one kind (fills, lines, points) are ordered among themselves. TopSky's LAYER; absent is 1, and TopSky draws its areas at 0."
+        },
+        "showWhen": {
+          "description": "A condition over the controller's session that shows the item by itself, which makes it automatic: Map Edit offers Auto, On and Off for it, and a profile row forces it on or, with show off, off. Absent, the item is manual and a profile alone decides, as before. [] always holds, which is TopSky's ACTIVE:1. The keys are the session ones (myPosition, onlinePositions, arrivalRunways, departureRunways), read with has and in, and a \"$name\" names an expression of systems/expressions. A condition the client cannot read never shows the item, and .dev package-check says why.",
+          "allOf": [
+            {
+              "$ref": "../systems/expressions.schema.json#/properties/expressions/additionalProperties"
+            }
+          ]
         }
       },
       "additionalProperties": false
