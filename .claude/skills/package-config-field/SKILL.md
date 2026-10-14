@@ -36,7 +36,7 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `profiles/*.stp` | `@schemas/profile.schema.json` | `AsrFolderConverter.processFile` (`@cli/src/commands/converter/asr.ts`) | `Package/Profiles/Profile.cs` | `ProfileStorageService.Write`, which writes the edited `PackageDocument` as it stands (§4a) as the local copy, the package file or both. The radar's own save of a profile (`ProfileStore.SaveUserProfile`) sets the values that differ in the file's own text (`ProfileFileDifference`, §4): a profile key the model does not hold is kept |
 | `datasets/atc-data.json` | none | `AtcDataManager.writeAtcData` (`@cli/src/commands/converter/atc-data-parser.ts`) | `Package/AtcData.cs` | none |
 | `datasets/nse.json` | none | `@cli/src/helper/nse.ts` | `Package/EseDataset.cs` | none |
-| `datasets/<source>.geojson`, a manifest `mapLayers` layer (`maps/` for TopSky folders) | `@schemas/datasets/map-layer.schema.json` | `writeLayerFile` (`@cli/src/helper/layer-file.ts`), from `generateGeoJsonFilesForType` and the TopSky maps stage | `Package/Layers/LayerHeaderReader.cs` (the header: `name`, `origin`, `items` with their `order`), `GeoJson/GeoJsonLoader.cs` (the header's `symbols` and item orders, and the drawings: styles, text and its `textStyle`, `symbol`, zoom limits) | none: a generated file is rewritten by the next build, so no section edits one and nothing in the client writes one |
+| `datasets/<source>.geojson`, a manifest `mapLayers` layer (`maps/` for TopSky folders) | `@schemas/datasets/map-layer.schema.json` | `writeLayerFile` (`@cli/src/helper/layer-file.ts`), from `generateGeoJsonFilesForType` and the TopSky maps stage | `Package/Layers/LayerHeaderReader.cs` (the header: `name`, `origin`, `items` with their `order` and `showWhen`, which `MapItems/` judges), `GeoJson/GeoJsonLoader.cs` (the header's `symbols` and item orders, and the drawings: styles, text and its `textStyle`, `symbol`, zoom limits) | none: a generated file is rewritten by the next build, so no section edits one and nothing in the client writes one. Map Edit shows each `showWhen` read only beside its state, the reference index counts the names it holds, and a change on disk is read again (`LayerFileChanged`) |
 | `datasets/zones.geojson` | `@schemas/datasets/zones.schema.json` | **none** (hand-authored) | `Package/ZonesDataset.cs`, built into zones by `Sectors/ZoneIndex.cs` | `ZonesDatasetWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): a zone's `properties.tags`, `id`, `floor` and `ceiling` only, never a coordinate, and it creates no file |
 | `datasets/radars.json` | `@schemas/datasets/radars.schema.json` | `writeRadarsDataset` (`@cli/src/helper/radars.ts`) | `Package/RadarsDataset.cs` | none |
 | `datasets/msaw.geojson` | `@schemas/datasets/msaw.schema.json` | `buildMsawDataset` (`@cli/src/commands/converter/topsky/topsky-msaw.ts`) | `Package/MsawDataset.cs` | none |
@@ -681,9 +681,10 @@ by `ProfileSchemaPinTests`), `ProfileFieldsSchemaTests` and `ProfilesOneEditOnTh
 (the five egxx profiles pinned in `tests/NeoRadar.Core.Tests/Package/Documents/PinnedProfiles`).
 Particular to a profile:
 
-- **What the controller sets from the radar is never a field.** `map.items`, the three filter
-  switches, the speed vector, the hidden tag groups and the related profiles are excused in
-  `NotEdited` as the controller's and kept as written. A new property the radar's own menus set
+- **What the controller sets from the radar is never a field.** `map.items` (with each row's
+  `show`, which Map Edit sets to force an automatic item off through
+  `IProfileStore.SetItemOverride`), the three filter switches, the speed vector, the hidden tag
+  groups and the related profiles are excused in `NotEdited` as the controller's and kept as written. A new property the radar's own menus set
   is excused the same way, and must be a property of `Profile`, copied in `ProfileCopy` and
   compared in `ProfileFileDifference`, or the radar's save never writes it (§4).
 - **A new property an author sets is declared, and still needs the model property** for the
