@@ -101,6 +101,12 @@
               "$ref": "../systems/expressions.schema.json#/properties/expressions/additionalProperties"
             }
           ]
+        },
+        "includes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "Uuids of other items, in any layer, drawn whenever this one is, whatever the profile says of them. TopSky's SCTFILEDATA, resolved by neoradar-cli to the sector-file items it names. An item may include items and draw nothing of its own. A uuid no layer holds is a finding."
         }
       },
       "additionalProperties": false
