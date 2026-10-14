@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeoRadar map layer",
+  "description": "A map layer file: datasets/<source>.geojson, where <source> is the manifest mapLayers entry's source and may hold a folder (maps/rmas is datasets/maps/rmas.geojson). A GeoJSON FeatureCollection whose header members name the layer, say where it came from and list its items, the toggleable units Map Edit shows and a profile's map.items names. The header comes BEFORE features in the file: the client reads it with a streaming reader and refuses, with the reason, a file whose features come first. A file whose features carry a uuid must have an items table, and every uuid a feature carries has exactly one row; the client refuses a package holding a layer file with uuids and no table, which is a file built by a neoradar-cli older than the item table. A file with no uuid anywhere (a GIS-drawn layer, zones, msaw, areas) needs no table and lists nothing in Map Edit. Coordinates are EPSG:3857 metres like every other GeoJSON in datasets/.",
+  "type": "object",
+  "required": ["type", "features"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "const": "FeatureCollection"
+    },
+    "name": {
+      "type": "string",
+      "description": "The layer's display name, as the vAcc wrote it (a TopSky folder keeps its slash: Release/Delegation Lines). The indexer copies it into the manifest entry it adds; the manifest name wins where the two differ."
+    },
+    "origin": {
+      "type": "object",
+      "description": "Where the file came from. Read by the explainer only.",
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["sector-file", "topsky-maps", "authored"],
+          "description": "sector-file: written by neoradar-cli from the .sct and .ese. topsky-maps: written by neoradar-cli from TopSkyMaps.txt or TopSkyMapsLocal.txt. authored: written by hand or by another tool, which the converter never overwrites."
+        },
+        "file": {
+          "type": "string",
+          "description": "The source file name, without its folder."
+        },
+        "version": {
+          "type": "string",
+          "description": "The source's own version string where it has one (TopSky's //VERSION: line)."
+        }
+      },
+      "additionalProperties": false
+    },
+    "items": {
+      "type": "array",
+      "description": "The item table: one row per uuid the features carry. A row no feature names, and a feature whose uuid has no row, are findings.",
+      "items": { "$ref": "#/$defs/item" }
+    },
+    "crs": {
+      "type": "object",
+      "description": "Tolerated for GIS exporters that write one. Ignored by the client: the coordinates are always EPSG:3857."
+    },
+    "bbox": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 4,
+      "maxItems": 6
+    },
+    "features": {
+      "type": "array",
+      "description": "The drawings. Must come after every header member.",
+      "items": { "$ref": "#/$defs/drawing" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": ["uuid", "name"],
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The item's identity: what a feature's uuid points at and what a profile's map.items lists. Unique within the file."
+        },
+        "name": {
+          "type": "string",
+          "description": "The row label in Map Edit, and for the fix, vor, ndb and airport layers the point name a direct-to and a route resolve against."
+        }
+      },
+      "additionalProperties": false
+    },
+    "drawing": {
+      "type": "object",
+      "required": ["type", "geometry"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "Feature"
+        },
+        "geometry": {
+          "type": ["object", "null"]
+        },
+        "properties": {
+          "type": ["object", "null"],
+          "properties": {
+            "uuid": {
+              "type": "string",
+              "description": "The item this drawing belongs to; a row of items. A drawing with no uuid is drawn whenever the profile lists nothing, and never under a non-empty list."
+            },
+            "text": {
+              "type": "string",
+              "description": "The text drawn at a point. On a point with no text the point's name is its label."
+            },
+            "name": {
+              "type": "string",
+              "description": "The identity of a navaid or airport point, drawn as its label when the profile asks."
+            },
+            "lineStyle": { "type": "object" },
+            "fillStyle": { "type": "object" },
+            "pointStyle": { "type": "object" },
+            "geodesic": {
+              "type": "boolean",
+              "description": "false draws a long oblique line as the Mercator chord instead of the great circle."
+            }
+          },
+          "additionalProperties": true,
+          "description": "additionalProperties is open: the converter keeps what the source said about a drawing (section, icao, region and the like), which the client does not read."
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
