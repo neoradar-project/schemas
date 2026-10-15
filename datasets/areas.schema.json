@@ -20,6 +20,40 @@
       "$ref": "map-layer.schema.json#/properties/items",
       "description": "The map layer's item table, ahead of the features: one item per area, named by its uuid, whose showWhen neoradar-cli writes as the area active or pre-active, [\"OR\", [[\"has\", \"activeAreas\", entry], [\"has\", \"preActiveAreas\", entry]]], entry being the name with each run of whitespace an underscore. So an area draws while it is active or about to be, and Map Edit offers it Auto, On and Off."
     },
+    "display": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "How the client's area display draws every area's label, and the user text an AUP period carries when the notice gives none. neoradar-cli writes it from TopSkySettings.txt: Areas_Label_Font and Areas_Label_FontSize, Color_Active_Text_Map and Color_Preactive_Text_Map (else the plugin's defaults), Areas_AUP_UserText.",
+      "required": [
+        "font",
+        "fontSize",
+        "aupUserText"
+      ],
+      "properties": {
+        "font": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The label font family; one the client does not have falls back to its default."
+        },
+        "fontSize": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 99
+        },
+        "activeText": {
+          "$ref": "map-layer.schema.json#/$defs/color",
+          "description": "An active area's label, and the current period's levels."
+        },
+        "preActiveText": {
+          "$ref": "map-layer.schema.json#/$defs/color",
+          "description": "A pre-active area's label, and the next period's block under an active one."
+        },
+        "aupUserText": {
+          "type": "string",
+          "description": "TopSky's Areas_AUP_UserText: the user text of an AUP period the notice gave none."
+        }
+      }
+    },
     "crs": {
       "type": "object",
       "description": "Tolerated for GIS exporters that write one. Ignored by the client: the coordinates are always EPSG:3857."
@@ -251,6 +285,80 @@
             "fillStyle": {
               "$ref": "map-layer.schema.json#/$defs/drawing/properties/properties/properties/fillStyle",
               "description": "The area's fill while it is drawn: AREA type 1F to 5F, or a CATEGORYDEF fill pattern other than 0. Absent is unfilled."
+            },
+            "display": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "How the client's area display draws this area, as TopSky draws it: only while active or pre-active, in that state's look, with TopSky's reduced label at the label position. The area writes no lineStyle of its own, so the map layer itself draws nothing and only keeps the area's Map Edit row.",
+              "properties": {
+                "active": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "description": "How the area is drawn while active (AREA type 1 to 5: Active_Map_Type_N; T: its CATEGORYDEF).",
+                  "properties": {
+                    "lineStyle": {
+                      "$ref": "map-layer.schema.json#/$defs/drawing/properties/properties/properties/lineStyle"
+                    },
+                    "fillStyle": {
+                      "$ref": "map-layer.schema.json#/$defs/drawing/properties/properties/properties/fillStyle",
+                      "description": "Absent is unfilled."
+                    }
+                  }
+                },
+                "preActive": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "description": "How the area is drawn while pre-active (Preactive_Map unless a CATEGORYDEF says otherwise).",
+                  "properties": {
+                    "lineStyle": {
+                      "$ref": "map-layer.schema.json#/$defs/drawing/properties/properties/properties/lineStyle"
+                    },
+                    "fillStyle": {
+                      "$ref": "map-layer.schema.json#/$defs/drawing/properties/properties/properties/fillStyle",
+                      "description": "Absent is unfilled."
+                    }
+                  }
+                },
+                "label": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "description": "What the reduced label shows: TopSky's Areas_Label_* settings for Setup_COOPANS, an item shown only when both enabled and reduced, unless the area's category has a CATEGORYDEF_LABEL.",
+                  "required": [
+                    "name",
+                    "mapText",
+                    "userText",
+                    "levels",
+                    "times",
+                    "next"
+                  ],
+                  "properties": {
+                    "name": {
+                      "type": "boolean"
+                    },
+                    "mapText": {
+                      "type": "boolean"
+                    },
+                    "userText": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 3,
+                      "description": "0 not shown; else Areas_Label_UserText's style: 1 the data file's text, 2 also an activity period's, 3 also a NOTAM id."
+                    },
+                    "levels": {
+                      "type": "boolean",
+                      "description": "The upper limit underlined over the lower, in hundreds of feet."
+                    },
+                    "times": {
+                      "type": "boolean",
+                      "description": "The period start and end, HH:mm UTC."
+                    },
+                    "next": {
+                      "type": "boolean",
+                      "description": "Under an active area, the next period's levels and user text while it is pre-active."
+                    }
+                  }
+                }
+              }
             },
             "preActiveS": {
               "type": "integer",
