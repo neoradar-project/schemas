@@ -36,7 +36,7 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `profiles/*.stp` | `@schemas/profile.schema.json` | `AsrFolderConverter.processFile` (`@cli/src/commands/converter/asr.ts`) | `Package/Profiles/Profile.cs` | `ProfileStorageService.Write`, which writes the edited `PackageDocument` as it stands (§4a) as the local copy, the package file or both. The radar's own save of a profile (`ProfileStore.SaveUserProfile`) sets the values that differ in the file's own text (`ProfileFileDifference`, §4): a profile key the model does not hold is kept |
 | `datasets/atc-data.json` | none | `AtcDataManager.writeAtcData` (`@cli/src/commands/converter/atc-data-parser.ts`) | `Package/AtcData.cs` | none |
 | `datasets/nse.json` | none | `@cli/src/helper/nse.ts` | `Package/EseDataset.cs` | none |
-| `datasets/<source>.geojson`, a manifest `mapLayers` layer (`maps/` for TopSky folders) | `@schemas/datasets/map-layer.schema.json` | `writeLayerFile` (`@cli/src/helper/layer-file.ts`), from `generateGeoJsonFilesForType` and the TopSky maps stage | `Package/Layers/LayerHeaderReader.cs` (the header: `name`, `origin`, `tags`, `items` with their `order`, `showWhen`, which `MapItems/` judges, and `includes`), `GeoJson/GeoJsonLoader.cs` (the header's `symbols` and item orders, and the drawings: styles, text and its `textStyle`, `symbol`, zoom limits, `tags`) | none: a generated file is rewritten by the next build, so no section edits one and nothing in the client writes one. Map Edit shows each `showWhen` read only beside its state, the reference index counts the names it holds, and a change on disk is read again (`LayerFileChanged`) |
+| `datasets/<source>.geojson`, a manifest `mapLayers` layer (`maps/` for TopSky folders) | `@schemas/datasets/map-layer.schema.json` | `writeLayerFile` (`@cli/src/helper/layer-file.ts`), from `generateGeoJsonFilesForType` and the TopSky maps stage | `Package/Layers/LayerHeaderReader.cs` (the header: `name`, `origin`, `tags`, `conditions`, `items` with their `order`, `showWhen`, which `MapItems/` judges, `includes` and `listed`, and each drawing's `showWhen`, found past the table without parsing a feature), `GeoJson/GeoJsonLoader.cs` (the header's `symbols` and item orders, and the drawings: styles, text and its `textStyle`, `symbol`, zoom limits, `tags`, and its `showWhen` spelled as the header's to key its item index) | none: a generated file is rewritten by the next build, so no section edits one and nothing in the client writes one. Map Edit shows each `showWhen` read only beside its state and lists no `listed: false` item, the reference index counts the names an item's, a drawing's and a named condition's hold (a `"$name"` the file's own `conditions` define is no expression's use), `.dev map-info` prints the drawing verdicts and an unlisted item, and a change on disk is read again (`LayerFileChanged`) |
 | `datasets/zones.geojson` | `@schemas/datasets/zones.schema.json` | **none** (hand-authored) | `Package/ZonesDataset.cs`, built into zones by `Sectors/ZoneIndex.cs` | `ZonesDatasetWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): a zone's `properties.tags`, `id`, `floor` and `ceiling` only, never a coordinate, and it creates no file |
 | `datasets/radars.json` | `@schemas/datasets/radars.schema.json` | `writeRadarsDataset` (`@cli/src/helper/radars.ts`) | `Package/RadarsDataset.cs` | none |
 | `datasets/msaw.geojson` | `@schemas/datasets/msaw.schema.json` | `buildMsawDataset` (`@cli/src/commands/converter/topsky/topsky-msaw.ts`) | `Package/MsawDataset.cs` | none |
@@ -639,7 +639,7 @@ Particular to zones:
 
 **A manifest property is one declaration too.** `Sections/ManifestFields.cs` declares the file:
 `OfManifest` (name, version, description and the six altitude format fields, by their path from the
-top of the file), `FontRows` (the fonts as rows of alias and file), `OfLayer` (the 25 fields of a
+top of the file), `FontRows` (the fonts as rows of alias and file), `OfLayer` (the 26 fields of a
 map layer, by their path under the layer; under `defaultStyle` they are `MapStyleFields.OfLayer`,
 because the manifest's default style and a mapstyle's layer style are merged and read by one
 reader) and `NotEdited` (every other schema property with its reason). The steps are the three
@@ -724,7 +724,7 @@ Particular to a profile:
       `LabelsOneEditOnTheRealFileTests`; a new selector taught to `UnreachableVariants`; no writer leg.
 - [ ] For mapstyle: the pinned schema copy refreshed, the field declared in `MapStyleFields` (or
       excused in `NotEdited` with the reader that does not read it), `MapStyleFieldsSchemaTests` and
-      `MapStyleOneEditOnTheRealFileTests` green (move the 171, 106 and 65); no writer leg.
+      `MapStyleOneEditOnTheRealFileTests` green (move the 172, 107 and 65); no writer leg.
 - [ ] For expressions: the pinned schema copy refreshed, the field declared in `ExpressionFields` (or
       excused in `NotEdited`), `ExpressionFieldsSchemaTests` and `ExpressionsOneEditOnTheRealFileTests`
       green; a new operator or condition form taught to `ExpressionParser` and `ConditionNode` with its
