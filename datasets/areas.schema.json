@@ -284,7 +284,7 @@
             },
             "fillStyle": {
               "$ref": "map-layer.schema.json#/$defs/drawing/properties/properties/properties/fillStyle",
-              "description": "The area's fill while it is drawn: AREA type 1F to 5F, or a CATEGORYDEF fill pattern other than 0. Absent is unfilled."
+              "description": "The area's fill while it is drawn: AREA type 1F to 5F (the 50 percent hatch), or a CATEGORYDEF fill pattern other than 0 (a percentage below 100 is GDI+'s percent hatch of that number, as TopSky draws it). Absent is unfilled."
             },
             "display": {
               "type": "object",
