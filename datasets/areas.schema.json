@@ -244,6 +244,14 @@
               "type": "string",
               "description": "The area's map item: area- and the slug of its name, unique in the file. A row of the items table names it."
             },
+            "lineStyle": {
+              "$ref": "map-layer.schema.json#/$defs/drawing/properties/properties/properties/lineStyle",
+              "description": "The area's border while it is drawn, as TopSky draws an active one: AREA type 1 to 5 in Active_Map_Type_N, T by its CATEGORYDEF. The client outlines a polygon only in its own lineStyle."
+            },
+            "fillStyle": {
+              "$ref": "map-layer.schema.json#/$defs/drawing/properties/properties/properties/fillStyle",
+              "description": "The area's fill while it is drawn: AREA type 1F to 5F, or a CATEGORYDEF fill pattern other than 0. Absent is unfilled."
+            },
             "preActiveS": {
               "type": "integer",
               "minimum": 0,
