@@ -12,6 +12,14 @@
       "type": "string",
       "description": "Free text; the converter names the file it came from."
     },
+    "origin": {
+      "$ref": "map-layer.schema.json#/properties/origin",
+      "description": "Where the file came from; neoradar-cli writes kind topsky-areas."
+    },
+    "items": {
+      "$ref": "map-layer.schema.json#/properties/items",
+      "description": "The map layer's item table, ahead of the features: one item per area, named by its uuid, whose showWhen neoradar-cli writes as the area active or pre-active, [\"OR\", [[\"has\", \"activeAreas\", entry], [\"has\", \"preActiveAreas\", entry]]], entry being the name with each run of whitespace an underscore. So an area draws while it is active or about to be, and Map Edit offers it Auto, On and Off."
+    },
     "crs": {
       "type": "object",
       "description": "Tolerated for GIS exporters that write one. Ignored by the client: the coordinates are always EPSG:3857."
@@ -230,7 +238,17 @@
           "properties": {
             "name": {
               "type": "string",
-              "description": "The area's name, which is what the alert text prints and what an aup rule matches on."
+              "description": "The area's name, which is what the alert text prints and what an aup rule matches on. In activeAreas and preActiveAreas it is one entry, each run of whitespace an underscore."
+            },
+            "uuid": {
+              "type": "string",
+              "description": "The area's map item: area- and the slug of its name, unique in the file. A row of the items table names it."
+            },
+            "preActiveS": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 3600,
+              "description": "How long before a period starts the area is pre-active, in seconds: TopSky's TIMES, else the category's CATEGORYDEF_TIMES, else Areas_PreActiveTime from TopSkySettings.txt, else 600."
             },
             "kind": {
               "type": "string",

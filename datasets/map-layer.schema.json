@@ -23,8 +23,8 @@
       "properties": {
         "kind": {
           "type": "string",
-          "enum": ["sector-file", "topsky-maps", "authored"],
-          "description": "sector-file: written by neoradar-cli from the .sct and .ese. topsky-maps: written by neoradar-cli from TopSkyMaps.txt or TopSkyMapsLocal.txt. authored: written by hand or by another tool, which the converter never overwrites."
+          "enum": ["sector-file", "topsky-maps", "topsky-areas", "authored"],
+          "description": "sector-file: written by neoradar-cli from the .sct and .ese. topsky-maps: written by neoradar-cli from TopSkyMaps.txt or TopSkyMapsLocal.txt. topsky-areas: datasets/areas.geojson, written by neoradar-cli from TopSkyAreas.txt. authored: written by hand or by another tool, which the converter never overwrites."
         },
         "file": {
           "type": "string",
