@@ -69,7 +69,7 @@ checked out together, which is the intent: say in the change what the Configurat
 
 ## The expression catalogue mirror
 
-`@client`'s `ExpressionCatalog` (`Utils/Expressions/ExpressionCatalog.cs`, exactly 289
+`@client`'s `ExpressionCatalog` (`Utils/Expressions/ExpressionCatalog.cs`, exactly 291
 entries) is THE whitelist for a tag `itemName`, a list column and an `&ref`. Every key is mirrored
 THREE times here, as a `const` or `enum` member in `expressions.schema.json`, `labels.schema.json`
 and `lists.schema.json`, and `SystemsSchemaDriftTests` does not check enums, so a key added to the
@@ -79,8 +79,8 @@ catalogue's `Add("...")` names; the result must be empty in all three. The 2026-
 work added `sectorIndicator`, `minutesToSectorExit`, `nextControllerIsManual`, `sectorEntryLevel`,
 `sectorExitLevel`, `sectorEntryLevelSource`, `sectorExitLevelSource`, `coordinatedLevel` and
 `temporaryAltitude` this way; all three files list all 285 that a row of theirs can read. The
-four `session` keys (`myPosition`, `onlinePositions`, `arrivalRunways`, `departureRunways`) are the
-one exception: only a map item's `showWhen` reads them, never a label or a list, so they are in
+six `session` keys (`myPosition`, `onlinePositions`, `arrivalRunways`, `departureRunways`, `aupAreas`,
+`activeAreas`) are the one exception: only a map item's `showWhen` reads them, never a label or a list, so they are in
 `expressions.schema.json` alone, where an expression a `showWhen` names is written.
 
 ## What has no schema
