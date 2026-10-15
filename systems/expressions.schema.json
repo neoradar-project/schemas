@@ -1108,6 +1108,16 @@
                   }
                 ],
                 "description": "A time window, TopSky's activation schedule: [\"within\", zone, {from, to, days, start, end}]. A window that passes midnight stays until its end on the following day."
+              },
+              {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": [
+                  { "const": "unread" },
+                  { "type": "string", "description": "The source line as the vAcc wrote it." }
+                ],
+                "description": "[\"unread\", line]: a line neoradar-cli could not convert, kept so the author is told. It never holds, under a NOT too, and .dev package-check reports it as unreadable."
               }
             ]
           },
