@@ -177,8 +177,8 @@
               "properties": {
                 "color": { "$ref": "#/$defs/color" },
                 "opacity": { "type": "number", "minimum": 0, "maximum": 1 },
-                "hatch": { "type": "integer", "minimum": 0, "maximum": 52, "description": "A GDI+ HatchStyle (TopSky COORDPOLY:E0 to E52). Drawn as a half-opaque fill of color until hatches are drawn, which is a finding." },
-                "backgroundColor": { "$ref": "#/$defs/color", "description": "The background of a hatched fill (COLOR's third name). Not drawn yet." }
+                "hatch": { "type": "integer", "minimum": 0, "maximum": 52, "description": "A GDI+ HatchStyle (TopSky COORDPOLY:E0 to E52), drawn in color at its opacity over backgroundColor as GDI+ draws a HatchBrush: an 8x8 pattern repeated from the screen's top-left corner, one pattern pixel a logical pixel. A drawing's own. A value outside 0 to 52 fills the polygon plain and is warned about." },
+                "backgroundColor": { "$ref": "#/$defs/color", "description": "The background of a hatched fill (COLOR's third name), under the pattern's empty pixels. Transparent when absent, as TopSky draws it. Without a hatch it draws nothing." }
               },
               "additionalProperties": true
             },
