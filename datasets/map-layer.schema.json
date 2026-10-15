@@ -48,6 +48,11 @@
       "items": { "$ref": "#/$defs/tag" },
       "uniqueItems": true
     },
+    "conditions": {
+      "type": "object",
+      "description": "Named conditions that a showWhen in this file reads as \"$name\", before systems/expressions is looked at. neoradar-cli writes one for each condition that two or more items or drawings share, named when-<the uuid of the first item that uses it>. A name here that systems/expressions also defines is a finding.",
+      "additionalProperties": { "$ref": "../systems/expressions.schema.json#/properties/expressions/additionalProperties" }
+    },
     "items": {
       "type": "array",
       "description": "The item table: one row per uuid the features carry. A row no feature names, and a feature whose uuid has no row, are findings.",
@@ -95,7 +100,7 @@
           "description": "Draw order among the items of map layers, lower drawn first, whichever layer each sits in; drawings of one kind (fills, lines, points) are ordered among themselves. TopSky's LAYER; absent is 1, and TopSky draws its areas at 0."
         },
         "showWhen": {
-          "description": "A condition over the controller's session that shows the item by itself, which makes it automatic: Map Edit offers Auto, On and Off for it, and a profile row forces it on or, with show off, off. Absent, the item is manual and a profile alone decides, as before. [] always holds, which is TopSky's ACTIVE:1. The keys are the session ones (myPosition, onlinePositions, arrivalRunways, departureRunways, aupAreas, activeAreas), read with has and in, and a \"$name\" names an expression of systems/expressions. A condition the client cannot read never shows the item, and .dev package-check says why.",
+          "description": "A condition over the controller's session that shows the item by itself, which makes it automatic: Map Edit offers Auto, On and Off for it, and a profile row forces it on or, with show off, off. Absent, the item is manual and a profile alone decides, as before. [] always holds, which is TopSky's ACTIVE:1. The keys are the session ones (myPosition, myCallsignEntry, onlinePositions, onlineCallsigns, coveredPositions, arrivalRunways, departureRunways, aupAreas, activeAreas, preActiveAreas, shownItems), read with has and in. A \"$name\" names an entry of this file's conditions, else an expression of systems/expressions. A condition the client cannot read never shows the item, and .dev package-check says why.",
           "allOf": [
             {
               "$ref": "../systems/expressions.schema.json#/properties/expressions/additionalProperties"
@@ -106,7 +111,11 @@
           "type": "array",
           "items": { "type": "string", "minLength": 1 },
           "uniqueItems": true,
-          "description": "Uuids of other items, in any layer, drawn whenever this one is, whatever the profile says of them. TopSky's SCTFILEDATA, resolved by neoradar-cli to the sector-file items it names. An item may include items and draw nothing of its own. A uuid no layer holds is a finding."
+          "description": "Uuids of other items, in any layer, drawn whenever this one is, whatever the profile says of them. TopSky's SCTFILEDATA, resolved by neoradar-cli to the sector-file items it names; a TopSky map in one of the special folders (ARTCC HIGH, ARTCC, ARTCC LOW, GEO, SID, STAR, FREE TEXT) is included by the sector-file item of its name, and OTHER_MAP_ACT:= is included by the map that names it. An item may include items and draw nothing of its own. A uuid no layer holds is a finding."
+        },
+        "listed": {
+          "type": "boolean",
+          "description": "false leaves the item out of Map Edit's list. It still draws when its showWhen, an item including it or a profile row says so. TopSky's HIDDEN, and OVERRIDE_SCT_MAP on the item it names. Absent means listed."
         }
       },
       "additionalProperties": false
@@ -209,6 +218,10 @@
             "geodesic": {
               "type": "boolean",
               "description": "false draws a long oblique line as the Mercator chord instead of the great circle."
+            },
+            "showWhen": {
+              "description": "A condition over the controller's session that this drawing is also drawn under: the drawing shows while its item does and this holds. TopSky's FILTER_ID and FILTER_CALLSIGN. Read the same way as an item's showWhen, \"$name\" included. A drawing with no showWhen draws whenever its item does, and one whose condition cannot be read never draws.",
+              "allOf": [{ "$ref": "../systems/expressions.schema.json#/properties/expressions/additionalProperties" }]
             },
             "tags": {
               "type": "array",
