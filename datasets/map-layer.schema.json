@@ -50,7 +50,7 @@
     },
     "conditions": {
       "type": "object",
-      "description": "Named conditions that a showWhen in this file reads as \"$name\", before systems/expressions is looked at. neoradar-cli writes one for each condition that two or more items or drawings share, named when-<the uuid of the first item that uses it>. A name here that systems/expressions also defines is a finding.",
+      "description": "Named conditions that a showWhen in this file reads as \"$name\", before systems/expressions is looked at. neoradar-cli writes one for each condition that two or more items or drawings share, named when-<uuid> after the first item that uses it; a further shared condition first used by the same item is when-<uuid>-2, -3 and so on, in the order the file first uses them. A name here that systems/expressions also defines is a finding.",
       "additionalProperties": { "$ref": "../systems/expressions.schema.json#/properties/expressions/additionalProperties" }
     },
     "items": {
