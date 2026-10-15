@@ -930,6 +930,26 @@
                       },
                       {
                         "type": "string",
+                        "enum": [
+                          "areaName",
+                          "areaMapText",
+                          "areaCategory",
+                          "areaState",
+                          "areaSource",
+                          "areaAuto",
+                          "areaStartDate",
+                          "areaStartTime",
+                          "areaEndDate",
+                          "areaEndTime",
+                          "areaLowerFt",
+                          "areaUpperFt",
+                          "areaUserText",
+                          "areaAupId"
+                        ],
+                        "description": "An area list row, one area of datasets/areas.geojson as the client last judged it, which no other row reads: areaName, areaMapText (the label's text), areaCategory, areaState (0 inactive, 1 pre-active ahead of a period, 2 active), areaSource (0 none, 1 always, 2 a schedule, 3 the airspace use plan, 4 a condition with no times), areaAuto (1 when an entry activates it, 0 when only a hand could), areaStartDate, areaStartTime, areaEndDate and areaEndTime (the running or next period, UTC, yymmdd and HH:mm, empty with none known), areaLowerFt and areaUpperFt (feet, the period's else the area's, empty with none), areaUserText and areaAupId."
+                      },
+                      {
+                        "type": "string",
                         "pattern": "^plugin:[^:]+:.+$",
                         "description": "A plugin key: a tag item, written plugin:{plugin name}:TAG_{item name}, or an expression the plugin declares, written plugin:{plugin name}:EXP_{expression name}. As an itemName a tag item shows the plugin's value, or the item's default. As a condition key or an \"&key\" either reads what the plugin last pushed for the aircraft, else its default: a tag item's registered default, an expression's declared one. It reads empty while the plugin is not loaded and on a row that is no aircraft. A boolean expression reads \"1\" or \"0\"."
                       },
