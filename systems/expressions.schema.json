@@ -923,9 +923,10 @@
                           "arrivalRunways",
                           "departureRunways",
                           "aupAreas",
-                          "activeAreas"
+                          "activeAreas",
+                          "preActiveAreas"
                         ],
-                        "description": "The controller's session, which a map item's showWhen reads and no aircraft, controller, METAR or frequency row does: myPosition (the position id the local login claims, empty with none claimed), onlinePositions (the other online controllers' position ids), arrivalRunways and departureRunways (every active runway as ICAO and runway, EGLL09L), aupAreas (the ids the vAcc's airspace use plan books for now, as the server relays it) and activeAreas (the names of the datasets/areas.geojson areas active now). Each list is space-separated; read one with has or in."
+                        "description": "The controller's session, which a map item's showWhen reads and no aircraft, controller, METAR or frequency row does: myPosition (the position id the local login claims, empty with none claimed), onlinePositions (the other online controllers' position ids), arrivalRunways and departureRunways (every active runway as ICAO and runway, EGLL09L), aupAreas (the ids the vAcc's airspace use plan books for now, as the server relays it) activeAreas (the names of the datasets/areas.geojson areas active now) and preActiveAreas (those a period opens for within their pre-active time). An area name is one entry, each run of whitespace an underscore. Each list is space-separated; read one with has or in."
                       },
                       {
                         "type": "string",
