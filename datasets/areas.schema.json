@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "NeoRadar segregated and restricted areas",
-  "description": "datasets/areas.geojson: the danger, restricted, prohibited, temporary segregated and reserved areas a vAcc's proximity nets probe, with the level band and the activation rules of each. Written by `neoradar-cli topsky-convert` (and by `convert` when the package environment has a topsky/ folder) out of the vAcc's own TopSkyAreas.txt, so the two clients read one set and the file is never hand-edited. GEOMETRY AND LIMITS TRAVEL IN THE PACKAGE, ACTIVATION IS LIVE: an area's shape and levels change with the AIP cycle like every runway and sector line the package already carries, while whether it is active today comes from the public airspace use plan feed the package names in policy.json safetyNets.apw.aup and the controller may override. Coordinates are EPSG:3857 metres like every other GeoJSON in datasets/, so the same file can be listed in the manifest's mapLayers and drawn as the danger-area outlines it is; a file whose coordinates all fit inside longitude/latitude degree ranges is refused as WGS84. Absent file means no APW and no SAP, and the explainers say so.",
+  "description": "datasets/areas.geojson: the danger, restricted, prohibited, temporary segregated and reserved areas a vAcc's proximity nets probe, with the level band and the activation rules of each. Written by `neoradar-cli topsky-convert` (and by `convert` when the package environment has a topsky/ folder) out of the vAcc's own TopSkyAreas.txt, so the two clients read one set and the file is never hand-edited. GEOMETRY AND LIMITS TRAVEL IN THE PACKAGE, ACTIVATION IS LIVE: an area's shape and levels change with the AIP cycle like every runway and sector line the package already carries, while whether it is active today comes from the vAcc's airspace use plan notice, which the server fetches from the HTTP_AUP_URL of the vAcc's TopSkySettings.txt and relays to every controller of the vAcc alike. Coordinates are EPSG:3857 metres like every other GeoJSON in datasets/, so the same file can be listed in the manifest's mapLayers and drawn as the danger-area outlines it is; a file whose coordinates all fit inside longitude/latitude degree ranges is refused as WGS84. Absent file means no APW and no SAP, and the explainers say so.",
   "type": "object",
   "additionalProperties": false,
   "required": ["type", "features"],
@@ -77,7 +77,8 @@
             },
             "lowerFt": { "type": "number", "description": "The area's lowest level while this entry is what activates it, in place of the area's own; FEET." },
             "upperFt": { "type": "number", "description": "The area's highest level while this entry is what activates it; FEET." },
-            "userText": { "type": "string", "description": "Text shown while this entry is what activates the area." }
+            "userText": { "type": "string", "description": "Text shown while this entry is what activates the area." },
+            "aup": { "type": "string", "description": "The airspace use plan id this entry reads. While the entry activates the area, the notice period of that id supplies the limits in place of the area's own." }
           },
           "description": "The first entry whose when holds activates the area and supplies its limits."
         },
@@ -150,7 +151,7 @@
               "description": "The name to match in the airspace use plan feed, which is usually the area's own name. The feed's record may narrow the area's levels for that day's activation."
             }
           },
-          "description": "Active while the live airspace use plan feed carries a current record of this name. The feed is the package's to name in policy.json and the controller's to override; nothing here is compiled in."
+          "description": "Active while the live airspace use plan feed carries a current record of this name. The notice is the vAcc's, fetched by the server from the HTTP_AUP_URL of its TopSkySettings.txt; nothing here is compiled in."
         },
         {
           "type": "object",
