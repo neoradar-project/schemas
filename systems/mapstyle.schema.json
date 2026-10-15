@@ -749,13 +749,27 @@
             "type": "object",
             "properties": {
               "type": {
-                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/type"
+                "type": "string",
+                "enum": [
+                  "sprite",
+                  "circle",
+                  "square",
+                  "diamond",
+                  "cross",
+                  "shape"
+                ],
+                "default": "circle",
+                "description": "The built-in symbol, a sprite, or shape for the shape named by shape."
               },
               "size": {
                 "$ref": "#/properties/routeDraw/properties/pointStyle/properties/size"
               },
               "sprite": {
                 "$ref": "#/properties/routeDraw/properties/pointStyle/properties/sprite"
+              },
+              "shape": {
+                "type": "string",
+                "description": "With type shape: the name of a shape in systems/shapes.json, drawn at each point in its own colours and design units, growing with the display scale. A feature's own symbol is drawn in its place."
               },
               "fillColor": {
                 "$ref": "#/properties/routeDraw/properties/pointStyle/properties/fillColor"

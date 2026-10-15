@@ -127,9 +127,11 @@
                       "circle",
                       "square",
                       "diamond",
-                      "cross"
+                      "cross",
+                      "shape"
                     ],
-                    "default": "circle"
+                    "default": "circle",
+                    "description": "The built-in symbol, a sprite, or shape for the shape named by shape."
                   },
                   "size": {
                     "type": "number",
@@ -139,6 +141,10 @@
                   "sprite": {
                     "type": "string",
                     "description": "Name of the sprite defined in the sprite atlas"
+                  },
+                  "shape": {
+                    "type": "string",
+                    "description": "With type shape: the name of a shape in systems/shapes.json, drawn at each point in its own colours and design units, growing with the display scale. A feature's own symbol is drawn in its place."
                   },
                   "fillColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
