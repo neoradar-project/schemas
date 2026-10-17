@@ -170,6 +170,7 @@
                     "alertTct",
                     "alertMtcd",
                     "alertAfdas",
+                    "alertRimcas",
                     "alertEmergency",
                     "sectorExitPoint",
                     "sectorExitLevel",
@@ -743,8 +744,13 @@
                     },
                     {
                       "type": "string",
+                      "const": "alertRimcas",
+                      "description": "RIMCAS severity on this aircraft: 0 none, 1 info, 2 warning (Stage One), 3 alert (Stage Two). 0 while the system hides the kind or nothing runs it."
+                    },
+                    {
+                      "type": "string",
                       "const": "alertEmergency",
-                      "description": "3 while this aircraft squawks 7500, 7600 or 7700, else 0. alertText names the condition; policy.json safetyNets.emergencySquawk turns the net off."
+                      "description": "3 while this aircraft squawks an emergency code a radar receives (7500, 7600, 7700 and any policy.json safetyNets.emergencyCodes adds), else 0. alertText names the condition; safetyNets.emergencySquawk turns the net off."
                     },
                     {
                       "type": "string",

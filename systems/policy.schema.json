@@ -524,27 +524,6 @@
           "default": 40,
           "description": "vSMR's rule: an occupant faster than this and closing on another occupant is a Stage Two; slower is a Stage One."
         },
-        "sounds": {
-          "type": "object",
-          "description": "Sound ids from the package's sounds folder, played once per escalation; absent plays nothing. Each id is the name of a file in the package's sounds folder without its extension (stca is sounds/stca.wav, else sounds/stca.mp3), never a path. An id with no file is logged as a warning and plays nothing.",
-          "properties": {
-            "stageOne": {
-              "type": "string",
-              "description": "Played when a mobile first reaches Stage One."
-            },
-            "stageTwo": {
-              "type": "string",
-              "description": "Played when a mobile first reaches Stage Two."
-            },
-            "stageTwoRepeatS": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0,
-              "description": "While any Stage Two stands, the stageTwo sound plays again every this many seconds; 0 plays it once per escalation, as vSMR did. NOVA keeps sounding."
-            }
-          },
-          "additionalProperties": false
-        },
         "runways": {
           "type": "object",
           "description": "What each runway is monitored for, keyed \"EGLL 09L/27R\" or \"EGLL/09L\" (either designator names the pair). A runway with no entry gets unlistedRunways. Both flags off and the runway is not monitored at all.",
@@ -701,6 +680,12 @@
               "default": 0,
               "description": "Seconds between repeats of the alert sound while any unacknowledged alert-severity alert stands anywhere. 0 plays once per escalation, which is the default; NOVA keeps sounding, vSMR sounded once."
             },
+            "newEntryMinSeverity": {
+              "type": "string",
+              "enum": ["info", "warning", "alert"],
+              "default": "alert",
+              "description": "The lowest severity at which a new alert is a new alarm: one raised on an aircraft already alerting, under its highest alert, plays its own sound, asks again for an acknowledgement given to the alert above it, and ends a session mute. alert by default, the surface specifications' new ALARM."
+            },
             "perKind": {
               "type": "object",
               "description": "Replaces the severity sound for one kind, so MSAW can have its own tone.",
@@ -724,6 +709,19 @@
               "additionalProperties": {
                 "type": "string"
               }
+            }
+          },
+          "additionalProperties": false
+        },
+        "mute": {
+          "type": "object",
+          "description": "What the muteAlerts click action does. It silences the sounds of the kinds that are mutable (kinds.<kind>.mutable: every kind but emergency and rimcas unless authored), a new alert-severity alert anywhere ends it and plays, the end of the FSD session ends it, and it lapses by itself after expiresS. The colour, the blink and alertsMuted are the controller's cue that sound is off.",
+          "properties": {
+            "expiresS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 300,
+              "description": "Seconds a mute lasts before sound returns by itself. 0 never lapses. Five minutes by default: a mute quietens one nuisance episode and must not outlive it."
             }
           },
           "additionalProperties": false
@@ -787,21 +785,40 @@
             "tct",
             "mtcd"
           ],
-          "description": "Which kind alertKind and alertText report when several stand on one aircraft, highest first. Kinds left out follow the listed ones in the default order, so a partial list cannot hide one. Severity breaks a tie within a kind, then the net's own priority (BUST 40, CLAM 50). Use the per-kind keys instead where a system wants each net placed by hand."
+          "description": "Which kind alertKind and alertText report when several stand on one aircraft, highest first. Kinds left out follow the listed ones in the default order, so a partial list cannot hide one, and an emergency left out ranks above every listed kind. Severity breaks a tie within a kind, then the net's own priority (BUST 40, CLAM 50). Use the per-kind keys instead where a system wants each net placed by hand."
         },
         "emergencySquawk": {
           "type": "boolean",
           "default": true,
-          "description": "Raises an alert-severity Emergency on any aircraft squawking 7500, 7600 or 7700, with the condition and the code as alertText. Client-side and needs no server."
+          "description": "Raises an alert-severity Emergency on any aircraft squawking an emergency code (emergencyCodes: 7500, 7600 and 7700 unless the package adds one), with the code's words and the code as alertText. A code set while the transponder is on standby, or on a track only a primary radar sees, raises nothing. Client-side and needs no server."
+        },
+        "emergencyCodes": {
+          "type": "object",
+          "description": "Emergency codes by four-digit code, on top of 7500 HIJACK, 7600 RADIO FAILURE and 7700 EMERGENCY: the codes the emergency squawk net raises and the filter bypass reads. A code listed here is added, one of the three is reworded; none is taken away. The UK adds 7400 LST LNK.",
+          "propertyNames": {
+            "pattern": "^[0-7]{4}$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "description": "What alertText shows before the code: LST LNK reads LST LNK 7400."
+              }
+            },
+            "required": ["text"],
+            "additionalProperties": false
+          }
         },
         "bypassFilters": {
           "type": "object",
-          "description": "An alerted track is drawn whatever the view's filters say, which is TopSky's rule and the one safety matter in the presentation: an aircraft in conflict below the lower altitude filter is otherwise invisible. On by default, and it beats every filter including GND, PRIM and VFR, not just the altitude band. An emergency code (7500, 7600, 7700) always bypasses while this is on, whether or not emergencySquawk raised a net. .dev alert-info says when the bypass is what put the aircraft on screen.",
+          "description": "An alerted track is drawn whatever the view's filters say, which is TopSky's rule and the one safety matter in the presentation: an aircraft in conflict below the lower altitude filter is otherwise invisible. On by default, and it beats every filter including GND, PRIM and VFR, not just the altitude band. An emergency code (safetyNets.emergencyCodes) always bypasses, whether or not this is on and whether or not emergencySquawk raised a net, unless the transponder is on standby or only a primary radar sees the track. .dev alert-info says when the bypass is what put the aircraft on screen.",
           "properties": {
             "enabled": {
               "type": "boolean",
               "default": true,
-              "description": "False lets the view filters hide an alerted track. Turn it off knowing what that costs."
+              "description": "False lets the view filters hide an alerted track, but never one squawking an emergency code. Turn it off knowing what that costs."
             },
             "minSeverity": {
               "type": "string",
@@ -2516,6 +2533,10 @@
                 "type": "boolean",
                 "default": true,
                 "description": "Whether the controller's inhibitAlerts switches this client net off for an aircraft. The TCT simulations say a controller should not be able to suppress TCT; a system that agrees authors false. Never on emergency or rimcas."
+              },
+              "mutable": {
+                "type": "boolean",
+                "description": "Whether muteAlerts silences this kind's sounds. Absent is false for emergency and rimcas, which always sound, and true for every other kind."
               }
             },
             "additionalProperties": false
