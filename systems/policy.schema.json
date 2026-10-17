@@ -1347,6 +1347,30 @@
               "default": "mostConservative",
               "description": "How the regions matching one track combine: mostConservative takes the widest minimum (and the earliest alert time) of every matching region, firstInFile the first matching region that names each setting, as TopSky reads its areas file. With mostConservative a tighter region can never narrow a wider one it sits inside."
             },
+            "noCfl": {
+              "type": "object",
+              "description": "The second vertical hypothesis (NETALERT 15's multi-hypothesis): where levelOffAtCfl stops a track at its cleared level inside the lookahead, the pair is judged again as if neither aircraft stops there, on minima no wider than these, and a conflict on either alerts. It catches a bust through the clearance before it happens, which levelOffAtCfl alone alerts only once it has; VATSIM does not guarantee a cleared level. The narrower minima keep it to serious busts with real lateral erosion. Absent is off; an empty object is on at the defaults.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False keeps the section as documentation without judging the second hypothesis."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 1.5,
+                  "description": "The lateral minimum of the second hypothesis, never wider than the pair's own."
+                },
+                "verticalFt": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 500,
+                  "description": "The vertical minimum of the second hypothesis, never wider than the pair's own."
+                }
+              },
+              "additionalProperties": false
+            },
             "cflLeave": {
               "type": "object",
               "description": "The Blind Spots study's most efficient barrier (PB5): a level aircraft whose cleared level differs by more than atLevelFt may start towards it any time within leaveLevelS at minFpm to maxFpm, so STCA judges the pair on that band before the crew moves. Off unless authored.",
