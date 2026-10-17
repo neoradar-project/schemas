@@ -521,27 +521,6 @@
           "default": 40,
           "description": "vSMR's rule: an occupant faster than this and closing on another occupant is a Stage Two; slower is a Stage One."
         },
-        "sounds": {
-          "type": "object",
-          "description": "Sound ids from the package's sounds folder, played once per escalation; absent plays nothing. Each id is the name of a file in the package's sounds folder without its extension (stca is sounds/stca.wav, else sounds/stca.mp3), never a path. An id with no file is logged as a warning and plays nothing.",
-          "properties": {
-            "stageOne": {
-              "type": "string",
-              "description": "Played when a mobile first reaches Stage One."
-            },
-            "stageTwo": {
-              "type": "string",
-              "description": "Played when a mobile first reaches Stage Two."
-            },
-            "stageTwoRepeatS": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0,
-              "description": "While any Stage Two stands, the stageTwo sound plays again every this many seconds; 0 plays it once per escalation, as vSMR did. NOVA keeps sounding."
-            }
-          },
-          "additionalProperties": false
-        },
         "runways": {
           "type": "object",
           "description": "What each runway is monitored for, keyed \"EGLL 09L/27R\" or \"EGLL/09L\" (either designator names the pair). A runway with no entry gets unlistedRunways. Both flags off and the runway is not monitored at all.",
