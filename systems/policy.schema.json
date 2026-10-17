@@ -808,7 +808,26 @@
         "emergencySquawk": {
           "type": "boolean",
           "default": true,
-          "description": "Raises an alert-severity Emergency on any aircraft squawking 7500, 7600 or 7700, with the condition and the code as alertText. Client-side and needs no server."
+          "description": "Raises an alert-severity Emergency on any aircraft squawking an emergency code (emergencyCodes: 7500, 7600 and 7700 unless the package adds one), with the code's words and the code as alertText. A code set while the transponder is on standby, or on a track only a primary radar sees, raises nothing. Client-side and needs no server."
+        },
+        "emergencyCodes": {
+          "type": "object",
+          "description": "Emergency codes by four-digit code, on top of 7500 HIJACK, 7600 RADIO FAILURE and 7700 EMERGENCY: the codes the emergency squawk net raises and the filter bypass reads. A code listed here is added, one of the three is reworded; none is taken away. The UK adds 7400 LST LNK.",
+          "propertyNames": {
+            "pattern": "^[0-7]{4}$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "description": "What alertText shows before the code: LST LNK reads LST LNK 7400."
+              }
+            },
+            "required": ["text"],
+            "additionalProperties": false
+          }
         },
         "bypassFilters": {
           "type": "object",
