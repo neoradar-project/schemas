@@ -831,12 +831,12 @@
         },
         "bypassFilters": {
           "type": "object",
-          "description": "An alerted track is drawn whatever the view's filters say, which is TopSky's rule and the one safety matter in the presentation: an aircraft in conflict below the lower altitude filter is otherwise invisible. On by default, and it beats every filter including GND, PRIM and VFR, not just the altitude band. An emergency code (7500, 7600, 7700) always bypasses while this is on, whether or not emergencySquawk raised a net. .dev alert-info says when the bypass is what put the aircraft on screen.",
+          "description": "An alerted track is drawn whatever the view's filters say, which is TopSky's rule and the one safety matter in the presentation: an aircraft in conflict below the lower altitude filter is otherwise invisible. On by default, and it beats every filter including GND, PRIM and VFR, not just the altitude band. An emergency code (safetyNets.emergencyCodes) always bypasses, whether or not this is on and whether or not emergencySquawk raised a net, unless the transponder is on standby or only a primary radar sees the track. .dev alert-info says when the bypass is what put the aircraft on screen.",
           "properties": {
             "enabled": {
               "type": "boolean",
               "default": true,
-              "description": "False lets the view filters hide an alerted track. Turn it off knowing what that costs."
+              "description": "False lets the view filters hide an alerted track, but never one squawking an emergency code. Turn it off knowing what that costs."
             },
             "minSeverity": {
               "type": "string",
