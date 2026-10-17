@@ -1103,7 +1103,37 @@
               "description": "The separation minima anywhere no region rule matches. En-route values by default.",
               "properties": {
                 "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 5 },
-                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 1000 }
+                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 1000 },
+                "vertical2000Ft": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 2000,
+                  "description": "G159's [2000] vertical value, taken in place of verticalFt by a pair rvsm puts on the 2000 ft standard."
+                }
+              },
+              "additionalProperties": false
+            },
+            "rvsm": {
+              "type": "object",
+              "description": "G159's pair rule for the [2000] vertical value: a pair takes vertical2000Ft when both aircraft are above upperFl, or both are above lowerFl and either is not RVSM approved, and verticalFt otherwise. Approval is read from the filed equipment: W in ICAO item 10a, or the FAA suffixes H, W, Z and L. Absent is on at the defaults.",
+              "properties": {
+                "lowerFl": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "default": 285,
+                  "description": "Strictly above this a non-RVSM aircraft is on the 2000 ft standard (G159's LowerSeparationFlightLevel). 285 puts FL290 above it. Must be below upperFl."
+                },
+                "upperFl": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "default": 415,
+                  "description": "Strictly above this every pair is on the 2000 ft standard (G159's UpperSeparationFlightLevel, the top of RVSM airspace). 415 starts at FL420."
+                },
+                "unknownApproved": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether an aircraft whose filed equipment says nothing about RVSM (no plan, an unparsed type field) counts as approved. False is G159's rule, unknown counted not approved; true is a stated VATSIM adaptation for blank or wrong equipment fields."
+                }
               },
               "additionalProperties": false
             },
@@ -1127,7 +1157,8 @@
                     "description": "Applies at or above this flight level, for example 410 for the 2000 ft band."
                   },
                   "lateralNm": { "type": "number", "exclusiveMinimum": 0 },
-                  "verticalFt": { "type": "number", "exclusiveMinimum": 0 }
+                  "verticalFt": { "type": "number", "exclusiveMinimum": 0 },
+                  "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "description": "The [2000] vertical value in this region; see rvsm." }
                 },
                 "additionalProperties": false
               }
