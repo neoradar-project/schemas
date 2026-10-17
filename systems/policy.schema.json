@@ -1100,14 +1100,15 @@
             },
             "defaultRegion": {
               "type": "object",
-              "description": "The separation minima anywhere no region rule matches. En-route values by default.",
+              "description": "The minima anywhere no region rule matches on that axis. The defaults are TopSky's thresholds (G159 Part 3 section 3.6: somewhat less than the separation standard), so with no buffer a pair exactly on a standard reads clear.",
               "properties": {
-                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 5 },
-                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 1000 },
+                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 2.75, "description": "At or below upperLateralAboveFt (TopSky STCA_LinPred_Sep_Lat_L)." },
+                "upperLateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 4.5, "description": "Above upperLateralAboveFt (TopSky STCA_LinPred_Sep_Lat_U). Only the default region takes it; a region rule selects its band with aboveFl." },
+                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 750, "description": "On the 1000 ft standard (TopSky STCA_LinPred_Sep_Vert_L)." },
                 "vertical2000Ft": {
                   "type": "number",
                   "exclusiveMinimum": 0,
-                  "default": 2000,
+                  "default": 1750,
                   "description": "G159's [2000] vertical value, taken in place of verticalFt by a pair rvsm puts on the 2000 ft standard."
                 }
               },
@@ -1165,12 +1166,12 @@
             },
             "buffers": {
               "type": "object",
-              "description": "The uncertainty allowance, added on top of the minima and growing with time. Deterministic rather than a probability of loss, which nobody here would ever calibrate. Note that the buffer is why an aircraft levelling off EXACTLY at the vertical minimum still reads as a conflict.",
+              "description": "An uncertainty allowance added on top of the minima and growing with time. None by default, because the default minima are already TopSky's thresholds inside the standard; a system authoring the standard itself as its minima would need one, and a buffer is why an aircraft levelling off exactly on a minimum reads as a conflict.",
               "properties": {
-                "lateralNm": { "type": "number", "minimum": 0, "default": 0.2 },
-                "lateralNmPerMin": { "type": "number", "minimum": 0, "default": 0.3 },
-                "verticalFt": { "type": "number", "minimum": 0, "default": 100 },
-                "verticalFtPerMin": { "type": "number", "minimum": 0, "default": 200 }
+                "lateralNm": { "type": "number", "minimum": 0, "default": 0 },
+                "lateralNmPerMin": { "type": "number", "minimum": 0, "default": 0 },
+                "verticalFt": { "type": "number", "minimum": 0, "default": 0 },
+                "verticalFtPerMin": { "type": "number", "minimum": 0, "default": 0 }
               },
               "additionalProperties": false
             },
@@ -1351,7 +1352,7 @@
               "type": "number",
               "minimum": 0,
               "default": 9500,
-              "description": "Above this pressure altitude a track takes the upper lateral values of fastDiverging and currentProximity, and a pair takes them when either aircraft does (TopSky's STCA_Sep_Lat_SepLevel)."
+              "description": "Above this pressure altitude a track takes defaultRegion.upperLateralNm and the upper lateral values of fastDiverging and currentProximity; a pair takes the upper fastDiverging and currentProximity values when either aircraft does (TopSky's STCA_Sep_Lat_SepLevel)."
             },
             "fastDiverging": {
               "type": "object",
