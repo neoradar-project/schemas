@@ -169,6 +169,7 @@
                           "positionAgeMs",
                           "isInCoverage",
                           "radarCoverage",
+                          "previousSquawk",
                           "zoneTags",
                           "zoneCount",
                           "surfaceOwnershipState",
@@ -618,6 +619,11 @@
                               "type": "string",
                               "const": "radarCoverage",
                               "description": "Which sensor kinds see the position, as summed flags: 1 primary, 2 secondary, 4 Mode S. 7 without a dataset."
+                            },
+                            {
+                              "type": "string",
+                              "const": "previousSquawk",
+                              "description": "The code this track transmitted before its current one; empty until the code changes"
                             },
                             {
                               "type": "string",
