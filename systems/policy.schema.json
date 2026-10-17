@@ -1025,18 +1025,37 @@
               "type": "number",
               "exclusiveMinimum": 0,
               "default": 2,
-              "description": "Step of the sampled path, which is taken when either track is turning or levelling off inside the window. Two straight tracks use a closed form and never sample."
+              "description": "Step of the sampled paths: round a turn, and the straight line when either track levels off inside the window, may leave its level for its cleared level, or has a turn rate that cannot be known. Two straight tracks otherwise use a closed form and never sample."
             },
             "levelOffAtCfl": {
               "type": "boolean",
               "default": true,
               "description": "Assume an aircraft stops climbing or descending at its cleared level, which is the largest single nuisance reduction available. Its blind spot is the aircraft that does not stop, so the net carries its own per-aircraft guard: a track that has transited its cleared level by more than 300 ft and is still going keeps the observed rate whatever this says. False turns the assumption off for every aircraft; nothing can pin it on past the guard."
             },
-            "confirmS": {
-              "type": "number",
+            "warningS": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 90,
+              "description": "A confirmed conflict alerts once its predicted loss of separation is no more than this many seconds away, G159's warning time (TopSky 90 upper, 80 lower). Absent is 90, or lookaheadS where that is shorter; more than lookaheadS is refused."
+            },
+            "imminentS": {
+              "type": "integer",
               "minimum": 0,
+              "default": 50,
+              "description": "A conflict whose loss is no more than this many seconds away alerts on the cycle it is first seen, without waiting for conflictCount (G159's imminent time; TopSky 50). A pair already inside its minima is imminent. Absent is 50, or warningS where that is shorter; more than warningS is refused."
+            },
+            "conflictCount": {
+              "type": "integer",
+              "minimum": 1,
               "default": 2,
-              "description": "Seconds a conflict must hold before it is raised. Seconds rather than cycles on purpose: the sweep is 2 Hz and many pilot clients send a position every five, so two consecutive cycles can be one sample seen twice."
+              "description": "How many of the last cycleCount checks must find the conflict before it alerts (G159's M of N; TopSky 2). Only a check that sees a new position report from either aircraft counts: the sweep is 2 Hz and many pilot clients report every five seconds, so one report seen on successive sweeps is one sample. Must not exceed cycleCount."
+            },
+            "cycleCount": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16,
+              "default": 4,
+              "description": "How many of the most recent counting checks conflictCount is judged over (G159's N; TopSky 4)."
             },
             "clearS": {
               "type": "number",
@@ -1059,14 +1078,63 @@
               "type": "number",
               "exclusiveMinimum": 0,
               "default": 1.5,
-              "description": "Above this a track is turning and its pairs take the sampled path. A track whose rate cannot be known at all is always sampled, with its lateral minimum widened."
+              "description": "At or above this a track with a known turn rate is turning, and its pairs are also predicted round the turn (turning). A track whose rate cannot be known at all is predicted straight, sampled, with its lateral minimum widened."
+            },
+            "turning": {
+              "type": "object",
+              "description": "The turning prediction, G159's turning filter. Every pair is always judged on the straight line; a pair with a turning track is ALSO judged round the turn, for timeS and on lateralNm, and a conflict on either path alerts. Absent is on at the defaults.",
+              "properties": {
+                "timeS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 70,
+                  "description": "How long the turn is predicted (G159 70 to 90 s, TopSky's Turn_React 70). Absent is 70, or lookaheadS where that is shorter; more than lookaheadS is refused."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "The lateral minimum round the turn (G159 1.5 to 2.5 nm in a TMA, 3.0 to 4.0 en route; TopSky 2 and 3). It never widens the pair's own minimum. Absent is the pair's own minimum."
+                }
+              },
+              "additionalProperties": false
             },
             "defaultRegion": {
               "type": "object",
-              "description": "The separation minima anywhere no region rule matches. En-route values by default.",
+              "description": "The minima anywhere no region rule matches on that axis. The defaults are TopSky's thresholds (G159 Part 3 section 3.6: somewhat less than the separation standard), so with no buffer a pair exactly on a standard reads clear.",
               "properties": {
-                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 5 },
-                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 1000 }
+                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 2.75, "description": "At or below upperLateralAboveFt (TopSky STCA_LinPred_Sep_Lat_L)." },
+                "upperLateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 4.5, "description": "Above upperLateralAboveFt (TopSky STCA_LinPred_Sep_Lat_U). Only the default region takes it; a region rule selects its band with aboveFl." },
+                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 750, "description": "On the 1000 ft standard (TopSky STCA_LinPred_Sep_Vert_L)." },
+                "vertical2000Ft": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 1750,
+                  "description": "G159's [2000] vertical value, taken in place of verticalFt by a pair rvsm puts on the 2000 ft standard."
+                }
+              },
+              "additionalProperties": false
+            },
+            "rvsm": {
+              "type": "object",
+              "description": "G159's pair rule for the [2000] vertical value: a pair takes vertical2000Ft when both aircraft are above upperFl, or both are above lowerFl and either is not RVSM approved, and verticalFt otherwise. Approval is read from the filed equipment: W in ICAO item 10a, or the FAA suffixes H, W, Z and L. Absent is on at the defaults.",
+              "properties": {
+                "lowerFl": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "default": 285,
+                  "description": "Strictly above this a non-RVSM aircraft is on the 2000 ft standard (G159's LowerSeparationFlightLevel). 285 puts FL290 above it. Must be below upperFl."
+                },
+                "upperFl": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "default": 415,
+                  "description": "Strictly above this every pair is on the 2000 ft standard (G159's UpperSeparationFlightLevel, the top of RVSM airspace). 415 starts at FL420."
+                },
+                "unknownApproved": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether an aircraft whose filed equipment says nothing about RVSM (no plan, an unparsed type field) counts as approved. False is G159's rule, unknown counted not approved; true is a stated VATSIM adaptation for blank or wrong equipment fields."
+                }
               },
               "additionalProperties": false
             },
@@ -1090,19 +1158,20 @@
                     "description": "Applies at or above this flight level, for example 410 for the 2000 ft band."
                   },
                   "lateralNm": { "type": "number", "exclusiveMinimum": 0 },
-                  "verticalFt": { "type": "number", "exclusiveMinimum": 0 }
+                  "verticalFt": { "type": "number", "exclusiveMinimum": 0 },
+                  "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "description": "The [2000] vertical value in this region; see rvsm." }
                 },
                 "additionalProperties": false
               }
             },
             "buffers": {
               "type": "object",
-              "description": "The uncertainty allowance, added on top of the minima and growing with time. Deterministic rather than a probability of loss, which nobody here would ever calibrate. Note that the buffer is why an aircraft levelling off EXACTLY at the vertical minimum still reads as a conflict.",
+              "description": "An uncertainty allowance added on top of the minima and growing with time. None by default, because the default minima are already TopSky's thresholds inside the standard; a system authoring the standard itself as its minima would need one, and a buffer is why an aircraft levelling off exactly on a minimum reads as a conflict.",
               "properties": {
-                "lateralNm": { "type": "number", "minimum": 0, "default": 0.2 },
-                "lateralNmPerMin": { "type": "number", "minimum": 0, "default": 0.3 },
-                "verticalFt": { "type": "number", "minimum": 0, "default": 100 },
-                "verticalFtPerMin": { "type": "number", "minimum": 0, "default": 200 }
+                "lateralNm": { "type": "number", "minimum": 0, "default": 0 },
+                "lateralNmPerMin": { "type": "number", "minimum": 0, "default": 0 },
+                "verticalFt": { "type": "number", "minimum": 0, "default": 0 },
+                "verticalFtPerMin": { "type": "number", "minimum": 0, "default": 0 }
               },
               "additionalProperties": false
             },
@@ -1154,7 +1223,7 @@
             },
             "parallel": {
               "type": "array",
-              "description": "Runway pairs worked at the same time. The package names them because nothing in the data says which runways an aerodrome operates simultaneously. One aircraft in each normal operating zone, each tracking within finalApproach.courseToleranceDeg of its own approach course, is the operation working rather than a conflict. A pair naming a runway no monitored strip carries is reported by .dev stca-info rather than silently matching nothing.",
+              "description": "Runway pairs worked at the same time. The package names them because nothing in the data says which runways an aerodrome operates simultaneously. A pair applies only while the aerodrome's runway selection has BOTH runways active for arrivals. One aircraft in each normal operating zone, each landing at the aerodrome (on that zone's runway when it filed one), each tracking within courseToleranceDeg of its own approach course and the two at least minSepNm apart, is the operation working rather than a conflict. A pair naming a runway no monitored strip carries, or one not landing on both, is reported by .dev stca-info rather than silently matching nothing.",
               "items": {
                 "type": "object",
                 "required": ["icao", "left", "right"],
@@ -1205,6 +1274,18 @@
                   "ntzZoneTag": {
                     "type": "string",
                     "description": "A zones.geojson tag for the no transgression zone between the two. This is the one piece of approach geometry that turns the net ON: a track inside it is exactly what simultaneous operations forbid, so NO generated region may silence a pair while either aircraft is in there."
+                  },
+                  "minSepNm": {
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 0.33,
+                    "description": "Two aircraft closer than this are a conflict whatever zones they are in (TopSky's SOIR MinSep)."
+                  },
+                  "courseToleranceDeg": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "default": 10,
+                    "description": "How far off its own zone's approach course a track may be and still fly the operation (TopSky's STCA_NOZ_Delta_HDG). The final approach corridor keeps its own finalApproach.courseToleranceDeg."
                   }
                 }
               }
@@ -1278,6 +1359,64 @@
               ],
               "default": "mostConservative",
               "description": "How the regions matching one track combine: mostConservative takes the widest minimum (and the earliest alert time) of every matching region, firstInFile the first matching region that names each setting, as TopSky reads its areas file. With mostConservative a tighter region can never narrow a wider one it sits inside."
+            },
+            "upperLateralAboveFt": {
+              "type": "number",
+              "minimum": 0,
+              "default": 9500,
+              "description": "Above this pressure altitude a track takes defaultRegion.upperLateralNm and the upper lateral values of fastDiverging and currentProximity; a pair takes the upper fastDiverging and currentProximity values when either aircraft does (TopSky's STCA_Sep_Lat_SepLevel)."
+            },
+            "fastDiverging": {
+              "type": "object",
+              "description": "G159's fast-diverging conditions, TopSky's values, judged on the two aircraft as they are now. Laterally: opening at lateralKt or more and at least lateralNm apart (upperLateralNm above upperLateralAboveFt), so the straight-line and current proximity filters find nothing this cycle; the turning prediction still runs. Vertically: diverging at verticalFpm or more and at least verticalFt apart (vertical2000Ft on the 2000 ft standard), so no filter finds anything. A pair already inside its minima and opening fast clears instead of alerting to the end of its window. Absent is on at the defaults.",
+              "properties": {
+                "enabled": { "type": "boolean", "default": true, "description": "False switches both tests off." },
+                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 1.5, "description": "Lateral distance apart at or below upperLateralAboveFt (TopSky STCA_FastDiv_Sep_Lat_L)." },
+                "upperLateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 2.5, "description": "Lateral distance apart above it (STCA_FastDiv_Sep_Lat_U)." },
+                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 650, "description": "Vertical distance apart on the 1000 ft standard (STCA_FastDiv_Sep_Vert_L)." },
+                "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "default": 1600, "description": "Vertical distance apart on the 2000 ft standard, which rvsm decides (STCA_FastDiv_Sep_Vert_U)." },
+                "lateralKt": { "type": "number", "exclusiveMinimum": 0, "default": 200, "description": "Opening speed (STCA_FastDiv_Vel_Lat)." },
+                "verticalFpm": { "type": "number", "exclusiveMinimum": 0, "default": 1000, "description": "Vertical diverging rate (STCA_FastDiv_Vel_Vert)." }
+              },
+              "additionalProperties": false
+            },
+            "currentProximity": {
+              "type": "object",
+              "description": "G159's current proximity filter, TopSky's values: a pair closer than lateralNm (upperLateralNm above upperLateralAboveFt) and verticalFt (vertical2000Ft on the 2000 ft standard) now is a hit, confirmed on its own conflictCount of cycleCount reports with no warning time, so a pair close but closing too slowly for the prediction to alert is still raised. Inside one final-approach corridor its lateral is no wider than finalApproach.lateralNm. Absent is on at the defaults.",
+              "properties": {
+                "enabled": { "type": "boolean", "default": true, "description": "False switches the filter off." },
+                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 2.85, "description": "At or below upperLateralAboveFt (TopSky STCA_CurrProx_Sep_Lat_L; G159 2.0 to 2.85 in a TMA)." },
+                "upperLateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 4.75, "description": "Above it (STCA_CurrProx_Sep_Lat_U; G159 3.0 to 4.75)." },
+                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 800, "description": "On the 1000 ft standard (G159 700 to 800)." },
+                "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "default": 1800, "description": "On the 2000 ft standard (G159 1700 to 1800)." },
+                "conflictCount": { "type": "integer", "minimum": 1, "default": 2, "description": "Hits needed of the last cycleCount checks with a new report. Must not exceed cycleCount." },
+                "cycleCount": { "type": "integer", "minimum": 1, "maximum": 16, "default": 3, "description": "How many counting checks conflictCount is judged over." }
+              },
+              "additionalProperties": false
+            },
+            "noCfl": {
+              "type": "object",
+              "description": "The second vertical hypothesis (NETALERT 15's multi-hypothesis): where levelOffAtCfl stops a track at its cleared level inside the lookahead, the pair is judged again as if neither aircraft stops there, on minima no wider than these, and a conflict on either alerts. It catches a bust through the clearance before it happens, which levelOffAtCfl alone alerts only once it has; VATSIM does not guarantee a cleared level. The narrower minima keep it to serious busts with real lateral erosion. Absent is off; an empty object is on at the defaults.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False keeps the section as documentation without judging the second hypothesis."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 1.5,
+                  "description": "The lateral minimum of the second hypothesis, never wider than the pair's own."
+                },
+                "verticalFt": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 500,
+                  "description": "The vertical minimum of the second hypothesis, never wider than the pair's own."
+                }
+              },
+              "additionalProperties": false
             },
             "cflLeave": {
               "type": "object",
