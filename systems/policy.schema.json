@@ -93,9 +93,6 @@
           "type": "boolean",
           "description": "A code-correlated track drops to uncorrelated when it changes to a code that is not the assigned or an emergency code."
         },
-        "manualDecorrelationIsSticky": {
-          "type": "boolean"
-        },
         "duplicates": {
           "type": "object",
           "properties": {
