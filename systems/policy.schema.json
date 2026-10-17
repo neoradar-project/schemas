@@ -698,6 +698,12 @@
               "default": 0,
               "description": "Seconds between repeats of the alert sound while any unacknowledged alert-severity alert stands anywhere. 0 plays once per escalation, which is the default; NOVA keeps sounding, vSMR sounded once."
             },
+            "newEntryMinSeverity": {
+              "type": "string",
+              "enum": ["info", "warning", "alert"],
+              "default": "alert",
+              "description": "The lowest severity at which a new alert is a new alarm: one raised on an aircraft already alerting, under its highest alert, plays its own sound, asks again for an acknowledgement given to the alert above it, and ends a session mute. alert by default, the surface specifications' new ALARM."
+            },
             "perKind": {
               "type": "object",
               "description": "Replaces the severity sound for one kind, so MSAW can have its own tone.",
