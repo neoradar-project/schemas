@@ -744,7 +744,7 @@
                     {
                       "type": "string",
                       "const": "alertEmergency",
-                      "description": "3 while this aircraft squawks 7500, 7600 or 7700, else 0. alertText names the condition; policy.json safetyNets.emergencySquawk turns the net off."
+                      "description": "3 while this aircraft squawks an emergency code a radar receives (7500, 7600, 7700 and any policy.json safetyNets.emergencyCodes adds), else 0. alertText names the condition; safetyNets.emergencySquawk turns the net off."
                     },
                     {
                       "type": "string",
