@@ -803,7 +803,7 @@
             "tct",
             "mtcd"
           ],
-          "description": "Which kind alertKind and alertText report when several stand on one aircraft, highest first. Kinds left out follow the listed ones in the default order, so a partial list cannot hide one. Severity breaks a tie within a kind, then the net's own priority (BUST 40, CLAM 50). Use the per-kind keys instead where a system wants each net placed by hand."
+          "description": "Which kind alertKind and alertText report when several stand on one aircraft, highest first. Kinds left out follow the listed ones in the default order, so a partial list cannot hide one, and an emergency left out ranks above every listed kind. Severity breaks a tie within a kind, then the net's own priority (BUST 40, CLAM 50). Use the per-kind keys instead where a system wants each net placed by hand."
         },
         "emergencySquawk": {
           "type": "boolean",
