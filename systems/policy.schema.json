@@ -383,6 +383,12 @@
               "default": 200,
               "description": "An airborne mobile climbing faster than this over the strip is an overflight."
             },
+            "maxAglFt": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 400,
+              "description": "An airborne mobile higher than this above the runway is not on it: the local altitude below which an aircraft over the strip is a conflict object. A position that reports no height above ground reads its true altitude less the runway's threshold elevation."
+            },
             "oppositeDirectionDeg": {
               "type": "number",
               "minimum": 0,
@@ -439,7 +445,7 @@
               "type": "integer",
               "minimum": 1,
               "default": 3000,
-              "description": "Higher than this above the field and a mobile is not on an approach yet."
+              "description": "Higher than this above the field and a mobile is not on an approach yet. A position that reports no height above ground reads its true altitude less the runway's threshold elevation."
             },
             "countdownS": {
               "type": "array",
