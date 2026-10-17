@@ -1223,7 +1223,7 @@
             },
             "parallel": {
               "type": "array",
-              "description": "Runway pairs worked at the same time. The package names them because nothing in the data says which runways an aerodrome operates simultaneously. One aircraft in each normal operating zone, each tracking within finalApproach.courseToleranceDeg of its own approach course, is the operation working rather than a conflict. A pair naming a runway no monitored strip carries is reported by .dev stca-info rather than silently matching nothing.",
+              "description": "Runway pairs worked at the same time. The package names them because nothing in the data says which runways an aerodrome operates simultaneously. A pair applies only while the aerodrome's runway selection has BOTH runways active for arrivals. One aircraft in each normal operating zone, each landing at the aerodrome (on that zone's runway when it filed one), each tracking within courseToleranceDeg of its own approach course and the two at least minSepNm apart, is the operation working rather than a conflict. A pair naming a runway no monitored strip carries, or one not landing on both, is reported by .dev stca-info rather than silently matching nothing.",
               "items": {
                 "type": "object",
                 "required": ["icao", "left", "right"],
@@ -1274,6 +1274,18 @@
                   "ntzZoneTag": {
                     "type": "string",
                     "description": "A zones.geojson tag for the no transgression zone between the two. This is the one piece of approach geometry that turns the net ON: a track inside it is exactly what simultaneous operations forbid, so NO generated region may silence a pair while either aircraft is in there."
+                  },
+                  "minSepNm": {
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 0.33,
+                    "description": "Two aircraft closer than this are a conflict whatever zones they are in (TopSky's SOIR MinSep)."
+                  },
+                  "courseToleranceDeg": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "default": 10,
+                    "description": "How far off its own zone's approach course a track may be and still fly the operation (TopSky's STCA_NOZ_Delta_HDG). The final approach corridor keeps its own finalApproach.courseToleranceDeg."
                   }
                 }
               }
