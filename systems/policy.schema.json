@@ -1347,6 +1347,40 @@
               "default": "mostConservative",
               "description": "How the regions matching one track combine: mostConservative takes the widest minimum (and the earliest alert time) of every matching region, firstInFile the first matching region that names each setting, as TopSky reads its areas file. With mostConservative a tighter region can never narrow a wider one it sits inside."
             },
+            "upperLateralAboveFt": {
+              "type": "number",
+              "minimum": 0,
+              "default": 9500,
+              "description": "Above this pressure altitude a track takes the upper lateral values of fastDiverging and currentProximity, and a pair takes them when either aircraft does (TopSky's STCA_Sep_Lat_SepLevel)."
+            },
+            "fastDiverging": {
+              "type": "object",
+              "description": "G159's fast-diverging conditions, TopSky's values, judged on the two aircraft as they are now. Laterally: opening at lateralKt or more and at least lateralNm apart (upperLateralNm above upperLateralAboveFt), so the straight-line and current proximity filters find nothing this cycle; the turning prediction still runs. Vertically: diverging at verticalFpm or more and at least verticalFt apart (vertical2000Ft on the 2000 ft standard), so no filter finds anything. A pair already inside its minima and opening fast clears instead of alerting to the end of its window. Absent is on at the defaults.",
+              "properties": {
+                "enabled": { "type": "boolean", "default": true, "description": "False switches both tests off." },
+                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 1.5, "description": "Lateral distance apart at or below upperLateralAboveFt (TopSky STCA_FastDiv_Sep_Lat_L)." },
+                "upperLateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 2.5, "description": "Lateral distance apart above it (STCA_FastDiv_Sep_Lat_U)." },
+                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 650, "description": "Vertical distance apart on the 1000 ft standard (STCA_FastDiv_Sep_Vert_L)." },
+                "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "default": 1600, "description": "Vertical distance apart on the 2000 ft standard, which rvsm decides (STCA_FastDiv_Sep_Vert_U)." },
+                "lateralKt": { "type": "number", "exclusiveMinimum": 0, "default": 200, "description": "Opening speed (STCA_FastDiv_Vel_Lat)." },
+                "verticalFpm": { "type": "number", "exclusiveMinimum": 0, "default": 1000, "description": "Vertical diverging rate (STCA_FastDiv_Vel_Vert)." }
+              },
+              "additionalProperties": false
+            },
+            "currentProximity": {
+              "type": "object",
+              "description": "G159's current proximity filter, TopSky's values: a pair closer than lateralNm (upperLateralNm above upperLateralAboveFt) and verticalFt (vertical2000Ft on the 2000 ft standard) now is a hit, confirmed on its own conflictCount of cycleCount reports with no warning time, so a pair close but closing too slowly for the prediction to alert is still raised. Inside one final-approach corridor its lateral is no wider than finalApproach.lateralNm. Absent is on at the defaults.",
+              "properties": {
+                "enabled": { "type": "boolean", "default": true, "description": "False switches the filter off." },
+                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 2.85, "description": "At or below upperLateralAboveFt (TopSky STCA_CurrProx_Sep_Lat_L; G159 2.0 to 2.85 in a TMA)." },
+                "upperLateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 4.75, "description": "Above it (STCA_CurrProx_Sep_Lat_U; G159 3.0 to 4.75)." },
+                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 800, "description": "On the 1000 ft standard (G159 700 to 800)." },
+                "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "default": 1800, "description": "On the 2000 ft standard (G159 1700 to 1800)." },
+                "conflictCount": { "type": "integer", "minimum": 1, "default": 2, "description": "Hits needed of the last cycleCount checks with a new report. Must not exceed cycleCount." },
+                "cycleCount": { "type": "integer", "minimum": 1, "maximum": 16, "default": 3, "description": "How many counting checks conflictCount is judged over." }
+              },
+              "additionalProperties": false
+            },
             "noCfl": {
               "type": "object",
               "description": "The second vertical hypothesis (NETALERT 15's multi-hypothesis): where levelOffAtCfl stops a track at its cleared level inside the lookahead, the pair is judged again as if neither aircraft stops there, on minima no wider than these, and a conflict on either alerts. It catches a bust through the clearance before it happens, which levelOffAtCfl alone alerts only once it has; VATSIM does not guarantee a cleared level. The narrower minima keep it to serious busts with real lateral erosion. Absent is off; an empty object is on at the defaults.",
