@@ -1032,11 +1032,30 @@
               "default": true,
               "description": "Assume an aircraft stops climbing or descending at its cleared level, which is the largest single nuisance reduction available. Its blind spot is the aircraft that does not stop, so the net carries its own per-aircraft guard: a track that has transited its cleared level by more than 300 ft and is still going keeps the observed rate whatever this says. False turns the assumption off for every aircraft; nothing can pin it on past the guard."
             },
-            "confirmS": {
-              "type": "number",
+            "warningS": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 90,
+              "description": "A confirmed conflict alerts once its predicted loss of separation is no more than this many seconds away, G159's warning time (TopSky 90 upper, 80 lower). Absent is 90, or lookaheadS where that is shorter; more than lookaheadS is refused."
+            },
+            "imminentS": {
+              "type": "integer",
               "minimum": 0,
+              "default": 50,
+              "description": "A conflict whose loss is no more than this many seconds away alerts on the cycle it is first seen, without waiting for conflictCount (G159's imminent time; TopSky 50). A pair already inside its minima is imminent. Absent is 50, or warningS where that is shorter; more than warningS is refused."
+            },
+            "conflictCount": {
+              "type": "integer",
+              "minimum": 1,
               "default": 2,
-              "description": "Seconds a conflict must hold before it is raised. Seconds rather than cycles on purpose: the sweep is 2 Hz and many pilot clients send a position every five, so two consecutive cycles can be one sample seen twice."
+              "description": "How many of the last cycleCount checks must find the conflict before it alerts (G159's M of N; TopSky 2). Only a check that sees a new position report from either aircraft counts: the sweep is 2 Hz and many pilot clients report every five seconds, so one report seen on successive sweeps is one sample. Must not exceed cycleCount."
+            },
+            "cycleCount": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16,
+              "default": 4,
+              "description": "How many of the most recent counting checks conflictCount is judged over (G159's N; TopSky 4)."
             },
             "clearS": {
               "type": "number",
