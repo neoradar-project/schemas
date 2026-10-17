@@ -931,6 +931,23 @@
               "minimum": 0,
               "default": 30,
               "description": "Within this distance of the route's last point, the destination, the net says nothing, for the same reason on arrival. TopSky's 30 NM. 0 turns the inhibit off."
+            },
+            "scope": {
+              "type": "string",
+              "enum": ["ownedOrConcerned", "allVisible"],
+              "default": "ownedOrConcerned",
+              "description": "Whose traffic the net judges. ownedOrConcerned, the default, is this controller's own and the traffic its attention tiers name (concerned, notified, an incoming or outgoing transfer, an intruder), as the sector controlling a flight is warned; another controller's flight is not judged, sounded or lifted through the view filters. allVisible judges every aircraft the client holds."
+            },
+            "flightRules": {
+              "type": "string",
+              "enum": ["all", "ifr", "vfr"],
+              "default": "ifr",
+              "description": "Which flights the net judges, TopSky's VFR switch. ifr, the default, leaves out a flight that filed VFR; an unfiled rule counts as IFR here. vfr judges filed VFR flights alone."
+            },
+            "uncontrolled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Whether a track no controller tracks is judged. On by default for RAM, as TopSky judges an uncontrolled track's route."
             }
           },
           "additionalProperties": false
@@ -1524,6 +1541,12 @@
               "default": 300,
               "description": "How far beyond the cleared level, in feet, the aircraft must be before the net raises."
             },
+            "rvsmTriggerFt": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 200,
+              "description": "triggerFt for a cleared level from FL290 to FL410, the RVSM band, where EUROCONTROL's level bust is 200 ft rather than 300. clearFt is held no wider than it there."
+            },
             "clearFt": {
               "type": "integer",
               "minimum": 0,
@@ -1540,13 +1563,24 @@
               "type": "integer",
               "minimum": 0,
               "default": 60,
-              "description": "Seconds after the cleared level changes during which the net does not raise, so a new clearance is not an alert before the crew has reacted. It holds off a raise only; clearing is unaffected."
+              "description": "Seconds after the cleared level changes during which the net does not raise while the track is still level, so a new clearance is not an alert before the crew has reacted. The window ends for that clearance as soon as the track climbs or descends, or drifts away from the new level. It holds off a raise only. A new cleared level clears a standing alert at once only when the aircraft is within clearFt of it or closing on it; otherwise the alert stands, worded with the new level."
             },
-            "transitionAltitudeFt": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 6000,
-              "description": "The highest cleared level that is an altitude on QNH: at or below it the net compares true altitude and words the level A060, above it pressure altitude and FL350. 0 means 6000."
+            "scope": {
+              "type": "string",
+              "enum": ["ownedOrConcerned", "allVisible"],
+              "default": "ownedOrConcerned",
+              "description": "Whose traffic the net judges. ownedOrConcerned, the default, is this controller's own and the traffic its attention tiers name (concerned, notified, an incoming or outgoing transfer, an intruder), as the sector controlling a flight is warned; another controller's flight is not judged, sounded or lifted through the view filters. allVisible judges every aircraft the client holds."
+            },
+            "flightRules": {
+              "type": "string",
+              "enum": ["all", "ifr", "vfr"],
+              "default": "ifr",
+              "description": "Which flights the net judges, TopSky's VFR switch. ifr, the default, leaves out a flight that filed VFR; an unfiled rule counts as IFR here. vfr judges filed VFR flights alone."
+            },
+            "uncontrolled": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether a track no controller tracks is judged. Off by default, as TopSky's CLAM leaves an uncontrolled track alone."
             }
           },
           "additionalProperties": false
@@ -1566,6 +1600,12 @@
               "default": 300,
               "description": "How far off the cleared level, in feet, the aircraft must be before the net raises."
             },
+            "rvsmTriggerFt": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 200,
+              "description": "triggerFt for a cleared level from FL290 to FL410, the RVSM band, where EUROCONTROL's level bust is 200 ft rather than 300. clearFt is held no wider than it there."
+            },
             "clearFt": {
               "type": "integer",
               "minimum": 0,
@@ -1582,16 +1622,33 @@
               "type": "integer",
               "minimum": 0,
               "default": 60,
-              "description": "Seconds after the cleared level changes during which the net does not raise, so a new clearance is not an alert before the crew has reacted. It holds off a raise only; clearing is unaffected."
+              "description": "Seconds after the cleared level changes during which the net does not raise while the track is still level, so a new clearance is not an alert before the crew has reacted. The window ends for that clearance as soon as the track climbs or descends, or drifts away from the new level. It holds off a raise only. A new cleared level clears a standing alert at once only when the aircraft is within clearFt of it or closing on it; otherwise the alert stands, worded with the new level."
             },
-            "transitionAltitudeFt": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 6000,
-              "description": "The highest cleared level that is an altitude on QNH: at or below it the net compares true altitude and words the level A060, above it pressure altitude and FL350. 0 means 6000."
+            "scope": {
+              "type": "string",
+              "enum": ["ownedOrConcerned", "allVisible"],
+              "default": "ownedOrConcerned",
+              "description": "Whose traffic the net judges. ownedOrConcerned, the default, is this controller's own and the traffic its attention tiers name (concerned, notified, an incoming or outgoing transfer, an intruder), as the sector controlling a flight is warned; another controller's flight is not judged, sounded or lifted through the view filters. allVisible judges every aircraft the client holds."
+            },
+            "flightRules": {
+              "type": "string",
+              "enum": ["all", "ifr", "vfr"],
+              "default": "ifr",
+              "description": "Which flights the net judges, TopSky's VFR switch. ifr, the default, leaves out a flight that filed VFR; an unfiled rule counts as IFR here. vfr judges filed VFR flights alone."
+            },
+            "uncontrolled": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether a track no controller tracks is judged. Off by default, as TopSky's CLAM leaves an uncontrolled track alone."
             }
           },
           "additionalProperties": false
+        },
+        "transitionAltitudeFt": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 6000,
+          "description": "The highest cleared level that is an altitude on QNH, one value for the whole system and every net that compares a cleared level: at or below it BUST and CLAM judge the altitude the QNH of the nearest airport METAR the client holds gives the aircraft's pressure altitude (its true altitude when no METAR within 100 NM has one, or its pilot client relays no pressure altitude, which is logged once) and word the level A060, above it its pressure altitude and FL350. A cleared level carries no altitude or flight level marker on the wire, so this alone decides which it is."
         },
         "tct": {
           "type": "object",
