@@ -579,7 +579,7 @@
             },
             "lateralDeg": {
               "type": "number",
-              "exclusiveMinimum": 0,
+              "minimum": 0.1,
               "maximum": 45,
               "default": 3,
               "description": "Half angle of the wedge either side of the extended centreline, widening from the threshold. NOVA's number."
@@ -629,7 +629,7 @@
                   },
                   "lateralDeg": {
                     "type": "number",
-                    "exclusiveMinimum": 0,
+                    "minimum": 0.1,
                     "maximum": 45,
                     "description": "This end's lateral half angle."
                   },
@@ -770,6 +770,7 @@
           },
           "uniqueItems": true,
           "default": [
+            "emergency",
             "rimcas",
             "stca",
             "msaw",
@@ -777,7 +778,6 @@
             "apw",
             "aiw",
             "ram",
-            "emergency",
             "clam",
             "holdIntrusion",
             "afdas",
@@ -1197,6 +1197,7 @@
             },
             "floorFt": {
               "type": "number",
+              "minimum": 0,
               "default": 1000,
               "description": "No track below this pressure altitude takes part, TopSky's STCA_Floor: aerodrome traffic converging on a runway is the procedure, and the final approach corridors and runway monitoring watch it there."
             },
@@ -1337,6 +1338,7 @@
             },
             "floorFt": {
               "type": "integer",
+              "minimum": 0,
               "description": "No alert below this pressure altitude, TopSky's AIW_Floor (1000 in TopSky). Absent is no floor."
             },
             "scope": {
@@ -1377,6 +1379,7 @@
             },
             "inhibitAfterCflChangeSeconds": {
               "type": "integer",
+              "minimum": 0,
               "default": 60,
               "description": "Seconds after the cleared level changes during which the net does not raise, so a new clearance is not an alert before the crew has reacted. It holds off a raise only; clearing is unaffected."
             },
@@ -1418,6 +1421,7 @@
             },
             "inhibitAfterCflChangeSeconds": {
               "type": "integer",
+              "minimum": 0,
               "default": 60,
               "description": "Seconds after the cleared level changes during which the net does not raise, so a new clearance is not an alert before the crew has reacted. It holds off a raise only; clearing is unaffected."
             },
@@ -1675,7 +1679,7 @@
                       "minRatio": {
                         "type": "number",
                         "minimum": 0,
-                        "exclusiveMaximum": 1,
+                        "maximum": 0.99,
                         "default": 0.5
                       },
                       "maxRatio": {
@@ -1771,7 +1775,7 @@
                         "type": "number",
                         "exclusiveMinimum": 0,
                         "maximum": 600,
-                        "description": "Blind Spot window here, TopSky's BS_Warn."
+                        "description": "Blind Spot window here, TopSky's BS_Warn. Never shorter than the pair's warningS plus cadenceS times confirmChecks."
                       },
                       "vertical": {
                         "type": "object",
@@ -1807,7 +1811,7 @@
                           "minRatio": {
                             "type": "number",
                             "minimum": 0,
-                            "exclusiveMaximum": 1,
+                            "maximum": 0.99,
                             "default": 0.5
                           },
                           "maxRatio": {
@@ -2178,7 +2182,7 @@
                 "minRatio": {
                   "type": "number",
                   "minimum": 0,
-                  "exclusiveMaximum": 1,
+                  "maximum": 0.99,
                   "default": 0.5
                 },
                 "maxRatio": {
@@ -2265,7 +2269,7 @@
                   "exclusiveMinimum": 0,
                   "maximum": 600,
                   "default": 180,
-                  "description": "A conflict starting within this many seconds colours the entry. The Blind Spots study's events fit three minutes; TopSky's setting default is 120."
+                  "description": "A conflict starting within this many seconds colours the entry. The Blind Spots study's events fit three minutes; TopSky's setting default is 120. For each pair the window is at least the pair's warningS plus cadenceS times confirmChecks (and at most lookaheadS), so a level shown clear cannot raise a TCT once issued. Absent is 180, or lookaheadS where that is shorter."
                 },
                 "agedS": {
                   "type": "number",
@@ -2341,7 +2345,7 @@
                     "minRatio": {
                       "type": "number",
                       "minimum": 0,
-                      "exclusiveMaximum": 1,
+                      "maximum": 0.99,
                       "default": 0.5
                     },
                     "maxRatio": {
