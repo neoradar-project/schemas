@@ -1025,7 +1025,7 @@
               "type": "number",
               "exclusiveMinimum": 0,
               "default": 2,
-              "description": "Step of the sampled path, which is taken when either track is turning or levelling off inside the window. Two straight tracks use a closed form and never sample."
+              "description": "Step of the sampled paths: round a turn, and the straight line when either track levels off inside the window, may leave its level for its cleared level, or has a turn rate that cannot be known. Two straight tracks otherwise use a closed form and never sample."
             },
             "levelOffAtCfl": {
               "type": "boolean",
@@ -1078,7 +1078,25 @@
               "type": "number",
               "exclusiveMinimum": 0,
               "default": 1.5,
-              "description": "Above this a track is turning and its pairs take the sampled path. A track whose rate cannot be known at all is always sampled, with its lateral minimum widened."
+              "description": "At or above this a track with a known turn rate is turning, and its pairs are also predicted round the turn (turning). A track whose rate cannot be known at all is predicted straight, sampled, with its lateral minimum widened."
+            },
+            "turning": {
+              "type": "object",
+              "description": "The turning prediction, G159's turning filter. Every pair is always judged on the straight line; a pair with a turning track is ALSO judged round the turn, for timeS and on lateralNm, and a conflict on either path alerts. Absent is on at the defaults.",
+              "properties": {
+                "timeS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 70,
+                  "description": "How long the turn is predicted (G159 70 to 90 s, TopSky's Turn_React 70). Absent is 70, or lookaheadS where that is shorter; more than lookaheadS is refused."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "The lateral minimum round the turn (G159 1.5 to 2.5 nm in a TMA, 3.0 to 4.0 en route; TopSky 2 and 3). It never widens the pair's own minimum. Absent is the pair's own minimum."
+                }
+              },
+              "additionalProperties": false
             },
             "defaultRegion": {
               "type": "object",
