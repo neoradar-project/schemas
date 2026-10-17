@@ -1446,7 +1446,7 @@
           "type": "integer",
           "minimum": 1,
           "default": 6000,
-          "description": "The highest cleared level that is an altitude on QNH, one value for the whole system and every net that compares a cleared level: at or below it BUST and CLAM judge the aircraft's altitude and word the level A060, above it its pressure altitude and FL350. A cleared level carries no altitude or flight level marker on the wire, so this alone decides which it is."
+          "description": "The highest cleared level that is an altitude on QNH, one value for the whole system and every net that compares a cleared level: at or below it BUST and CLAM judge the altitude the QNH of the nearest airport METAR the client holds gives the aircraft's pressure altitude (its true altitude when no METAR within 100 NM has one, or its pilot client relays no pressure altitude, which is logged once) and word the level A060, above it its pressure altitude and FL350. A cleared level carries no altitude or flight level marker on the wire, so this alone decides which it is."
         },
         "tct": {
           "type": "object",
