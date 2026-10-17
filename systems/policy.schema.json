@@ -1407,7 +1407,7 @@
               "type": "integer",
               "minimum": 0,
               "default": 60,
-              "description": "Seconds after the cleared level changes during which the net does not raise, so a new clearance is not an alert before the crew has reacted. It holds off a raise only; clearing is unaffected."
+              "description": "Seconds after the cleared level changes during which the net does not raise while the track is still level, so a new clearance is not an alert before the crew has reacted. The window ends for that clearance as soon as the track climbs or descends, or drifts away from the new level. It holds off a raise only. A new cleared level clears a standing alert at once only when the aircraft is within clearFt of it or closing on it; otherwise the alert stands, worded with the new level."
             }
           },
           "additionalProperties": false
@@ -1449,7 +1449,7 @@
               "type": "integer",
               "minimum": 0,
               "default": 60,
-              "description": "Seconds after the cleared level changes during which the net does not raise, so a new clearance is not an alert before the crew has reacted. It holds off a raise only; clearing is unaffected."
+              "description": "Seconds after the cleared level changes during which the net does not raise while the track is still level, so a new clearance is not an alert before the crew has reacted. The window ends for that clearance as soon as the track climbs or descends, or drifts away from the new level. It holds off a raise only. A new cleared level clears a standing alert at once only when the aircraft is within clearFt of it or closing on it; otherwise the alert stands, worded with the new level."
             }
           },
           "additionalProperties": false
