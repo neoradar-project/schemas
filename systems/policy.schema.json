@@ -1385,6 +1385,12 @@
               "default": 300,
               "description": "How far beyond the cleared level, in feet, the aircraft must be before the net raises."
             },
+            "rvsmTriggerFt": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 200,
+              "description": "triggerFt for a cleared level from FL290 to FL410, the RVSM band, where EUROCONTROL's level bust is 200 ft rather than 300. clearFt is held no wider than it there."
+            },
             "clearFt": {
               "type": "integer",
               "minimum": 0,
@@ -1420,6 +1426,12 @@
               "minimum": 1,
               "default": 300,
               "description": "How far off the cleared level, in feet, the aircraft must be before the net raises."
+            },
+            "rvsmTriggerFt": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 200,
+              "description": "triggerFt for a cleared level from FL290 to FL410, the RVSM band, where EUROCONTROL's level bust is 200 ft rather than 300. clearFt is held no wider than it there."
             },
             "clearFt": {
               "type": "integer",
