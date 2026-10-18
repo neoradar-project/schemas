@@ -402,6 +402,12 @@
               "default": 5,
               "description": "Below this an occupant is standing: lined up, holding or stopped crossing. Under pairs notBehind, two occupants conflict (rules.occupants) only when one moving has the other AHEAD of it, EUROCONTROL-SPEC-171's 'not behind', so a conditional line-up behind a departure's roll is no conflict."
             },
+            "entryLookaheadS": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10,
+              "description": "How far ahead a mobile on the ground is predicted along its track for rules.predictedEntry, seconds. The sources leave it local and give no value; 10 s covers the under 6 s a mobile takes from a close holding point to the runway at 15 kt."
+            },
             "pairs": {
               "type": "string",
               "enum": ["notBehind", "any"],
@@ -520,6 +526,16 @@
               "type": "boolean",
               "default": true,
               "description": "A mobile inside a zone tagged strip.restrictedZoneTag is alerted at stages.restrictedArea."
+            },
+            "oppositeArrivals": {
+              "type": "boolean",
+              "default": true,
+              "description": "Two arrivals to opposite ends of one strip, both within stageOneS of their thresholds, are alerted at stages.oppositeArrivals (EUROCONTROL-SPEC-171 SAFE-250, SPEC-202 RMCA-050)."
+            },
+            "predictedEntry": {
+              "type": "boolean",
+              "default": true,
+              "description": "A mobile on the ground moving at movingKts or more, outside the strip, whose track carries it inside within occupancy.entryLookaheadS, is alerted with every arrival within stageOneS at stages.predictedEntry (SPEC-171 SAFE-260, SPEC-202 RMCA-060). Departures are not yet a class of their own, so only arrivals are judged against it."
             }
           },
           "additionalProperties": false
@@ -575,6 +591,18 @@
               "enum": ["stageOne", "stageTwo"],
               "default": "stageTwo",
               "description": "A mobile inside a restricted area (SPEC-202 CMAC-120: ALARM when in it)."
+            },
+            "oppositeArrivals": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "Two arrivals to opposite ends of one strip, both inside stageOneS (SESAR SOL02: ALARM)."
+            },
+            "predictedEntry": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageOne",
+              "description": "A mobile predicted into the strip while an arrival is inside stageOneS, and that arrival: INFORMATION before it enters, after which the occupant rules take over."
             }
           },
           "additionalProperties": false
