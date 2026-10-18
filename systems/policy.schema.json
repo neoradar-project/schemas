@@ -641,44 +641,103 @@
         },
         "approachFunnel": {
           "type": "object",
-          "description": "AFDAS, NOVA's approach funnel deviation net, evaluated on the client: an aircraft on final left, right, above or below the funnel to the runway in use, raised as a warning-severity Afdas naming the side and as an alert past twice the tolerance. It rides RIMCAS's own arrival detection, so it judges only an aircraft already lined up with a monitored runway end and reaching its strip. A net of its own: absent means off even with runwayMonitoring authored. The glidepath band needs a threshold elevation, which open-navdata.db carries for most but not all runways; an end without one is judged on the lateral axis alone and .dev afdas-info names it.",
+          "description": "AFDAS, the approach path monitor of the EUROCONTROL APM guidelines (G162 Part III), evaluated on the client. An airborne track qualifies on final to a monitored runway end inside the lateral area within onFinalTrackDeg of the course, and from then on is alerted below the lower slope (under the joining altitude), above the upper slope if authored, and laterally, each raised after confirmCycles new reports as one alert naming the side (LO before L or R before HI). A plan's destination and arrival runway, where it has them, are the only ones it is judged against. It judges the QNH altitude: the aircraft's pressure altitude on the QNH of the nearest airport METAR the client holds, else its true altitude. A net of its own: absent means off even with runwayMonitoring authored. The vertical axes need a threshold elevation, which open-navdata.db carries for most but not all runways; an end without one is judged on the lateral axis alone and .dev afdas-info names it.",
           "properties": {
             "enabled": {
               "type": "boolean",
               "default": true,
               "description": "False stops the funnel evaluating. Use safetyNets.show.afdas instead to keep it evaluating and hide it on this system."
             },
-            "lateralDeg": {
+            "fromNm": {
               "type": "number",
-              "minimum": 0.1,
-              "maximum": 45,
-              "default": 3,
-              "description": "Half angle of the wedge either side of the extended centreline, widening from the threshold. NOVA's number."
+              "minimum": 0,
+              "default": 2,
+              "description": "Nearest distance from the touchdown point that is monitored; inside it the aircraft is landing and the band is within the surveillance's own error (EUROCONTROL G162 MINDISTANCE 2)."
+            },
+            "toNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 10,
+              "description": "Furthest distance from the touchdown point that is monitored, the extent of the lateral area too. Must exceed fromNm. 10 is the NOVA 9000 AFDAS range."
             },
             "glidepathDeg": {
               "type": "number",
               "minimum": 0.5,
               "maximum": 15,
               "default": 3,
-              "description": "Nominal glidepath the vertical band is centred on. Override it per end for a steep approach rather than raising it here."
+              "description": "Nominal glidepath, the path the explainer reports heights against; it must lie between lowerSlopeDeg and upperSlopeDeg. Raise it per end for a steep approach, with the slopes."
             },
-            "verticalFt": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 150,
-              "description": "Half depth of the band around the glidepath, in feet."
-            },
-            "fromNm": {
+            "lowerSlopeDeg": {
               "type": "number",
               "minimum": 0,
+              "maximum": 15,
               "default": 2,
-              "description": "Nearest distance from the threshold the funnel judges. Inside it the aircraft is landing and the wedge has narrowed to nothing useful."
+              "description": "Below this angle up from the touchdown point, and under joiningAltitudeFt, a monitored aircraft is low (G162 LOWERSLOPE 2)."
             },
-            "toNm": {
+            "upperSlopeDeg": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 30,
+              "default": 4,
+              "description": "Above this angle up from the touchdown point a monitored aircraft is high, when alertAbove is on (G162 UPPERSLOPE 4)."
+            },
+            "joiningAltitudeFt": {
               "type": "number",
               "exclusiveMinimum": 0,
-              "default": 10,
-              "description": "Furthest distance from the threshold the funnel judges. Must exceed fromNm. Beyond it an aircraft is still being turned onto final, which is the main nuisance this window prevents."
+              "description": "The altitude aircraft join the glidepath level at: at or above it nothing is low, so a volume can reach past the point where the lower slope meets the joining level. Absent, the lower slope is the floor all the way out (G162 JOININGHEIGHT)."
+            },
+            "lateralStartNm": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0,
+              "description": "Half width of the lateral area at the touchdown point, widening by lateralSlopeDeg each side along the course."
+            },
+            "lateralSlopeDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 45,
+              "default": 20,
+              "description": "Half angle the lateral area widens by each side of the course. 20 is half of G162's 40 degree HORIZONTALANGLE wedge. It and lateralStartNm cannot both be 0."
+            },
+            "onFinalTrackDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180,
+              "default": 20,
+              "description": "A track inside the lateral area within this of the course qualifies on final and is monitored from then on; a lateral alert held by trackDeviationDeg clears at this or less. TopSky's 20."
+            },
+            "trackDeviationDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180,
+              "default": 30,
+              "description": "A monitored track more than this off the course raises a lateral alert, held while it stays more than onFinalTrackDeg off. Must exceed onFinalTrackDeg. TopSky's 30."
+            },
+            "missedApproachFpm": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 500,
+              "description": "A monitored aircraft climbing faster than this is going around: monitoring stops and its alert goes, until it qualifies again. TopSky's 500."
+            },
+            "overflightAltitudeFt": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "At or above this altitude an aircraft is overflying and not monitored. Absent, no altitude stops monitoring."
+            },
+            "alertBelow": {
+              "type": "boolean",
+              "default": true,
+              "description": "Alert a monitored aircraft below the lower slope (G162 ActivateBelowGlideSlope)."
+            },
+            "alertAbove": {
+              "type": "boolean",
+              "default": false,
+              "description": "Alert a monitored aircraft above the upper slope (G162 ActivateAboveGlideSlope). Off by default: many systems alert below the path only."
+            },
+            "alertLateral": {
+              "type": "boolean",
+              "default": true,
+              "description": "Alert a monitored aircraft that leaves the lateral area, or turns more than trackDeviationDeg off the course (G162 ActivateHorizontalDeviation). The alert on leaving the area stays until it climbs away or leaves the range."
             },
             "confirmCycles": {
               "type": "integer",
@@ -689,26 +748,69 @@
             },
             "ends": {
               "type": "object",
-              "description": "Per runway END overrides, keyed \"EGLC/27\". A steep approach needs its own glidepath; anything the entry does not name inherits the section's value.",
+              "description": "Per runway END, keyed \"EGLC/27\": its own approach volume, its final approach course and its touchdown point. Anything the entry does not name is the section's value.",
               "additionalProperties": {
                 "type": "object",
                 "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "False takes this end out of the net: EUROCONTROL APM-14's inhibition for a runway."
+                  },
+                  "fromNm": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Nearest distance from the touchdown point that is monitored; inside it the aircraft is landing and the band is within the surveillance's own error (EUROCONTROL G162 MINDISTANCE 2)."
+                  },
+                  "toNm": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "description": "Furthest distance from the touchdown point that is monitored, the extent of the lateral area too. Must exceed fromNm. 10 is the NOVA 9000 AFDAS range."
+                  },
                   "glidepathDeg": {
                     "type": "number",
                     "minimum": 0.5,
                     "maximum": 15,
-                    "description": "This end's nominal glidepath, for example 5.5 at London City."
+                    "description": "Nominal glidepath, the path the explainer reports heights against; it must lie between lowerSlopeDeg and upperSlopeDeg. Raise it per end for a steep approach, with the slopes."
                   },
-                  "lateralDeg": {
+                  "lowerSlopeDeg": {
                     "type": "number",
-                    "minimum": 0.1,
-                    "maximum": 45,
-                    "description": "This end's lateral half angle."
+                    "minimum": 0,
+                    "maximum": 15,
+                    "description": "Below this angle up from the touchdown point, and under joiningAltitudeFt, a monitored aircraft is low (G162 LOWERSLOPE 2)."
                   },
-                  "verticalFt": {
+                  "upperSlopeDeg": {
+                    "type": "number",
+                    "minimum": 0.5,
+                    "maximum": 30,
+                    "description": "Above this angle up from the touchdown point a monitored aircraft is high, when alertAbove is on (G162 UPPERSLOPE 4)."
+                  },
+                  "joiningAltitudeFt": {
                     "type": "number",
                     "exclusiveMinimum": 0,
-                    "description": "This end's vertical half depth."
+                    "description": "The altitude aircraft join the glidepath level at: at or above it nothing is low, so a volume can reach past the point where the lower slope meets the joining level. Absent, the lower slope is the floor all the way out (G162 JOININGHEIGHT)."
+                  },
+                  "lateralStartNm": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Half width of the lateral area at the touchdown point, widening by lateralSlopeDeg each side along the course."
+                  },
+                  "lateralSlopeDeg": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 45,
+                    "description": "Half angle the lateral area widens by each side of the course. 20 is half of G162's 40 degree HORIZONTALANGLE wedge. It and lateralStartNm cannot both be 0."
+                  },
+                  "courseDeg": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 360,
+                    "description": "The final approach course, degrees true, where it is not the runway's own bearing (an offset localiser or a published offset course). Absent, the runway's bearing from the navdata."
+                  },
+                  "touchdownM": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Metres the touchdown point lies past the landing threshold, along the runway; the path and the distances start there. Absent, 0: the threshold."
                   }
                 },
                 "additionalProperties": false
