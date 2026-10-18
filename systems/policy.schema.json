@@ -964,8 +964,8 @@
             "bufferFt": {
               "type": "number",
               "minimum": 0,
-              "default": 100,
-              "description": "HYSTERESIS, not a margin: the trigger is the minimum LESS this and the clear is the minimum PLUS it, because an aircraft cruising at exactly the minimum wobbles either side of it and would otherwise flap. TopSky's UK number."
+              "default": 300,
+              "description": "HYSTERESIS, not a margin: the trigger is the minimum LESS this and the clear is the minimum PLUS it, because an aircraft cruising at exactly the minimum wobbles either side of it and would otherwise flap. The default 300 is TopSky's stock MSAW_Buffer_IFR and inside the several hundred feet EUROCONTROL's MSAW guidance allows below a minimum; the UK authors its own 100."
             },
             "lookaheadS": {
               "type": "number",
