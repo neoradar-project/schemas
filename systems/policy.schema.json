@@ -947,7 +947,7 @@
             "uncontrolled": {
               "type": "boolean",
               "default": true,
-              "description": "Whether a track no controller tracks is judged. On by default for RAM, as TopSky judges an uncontrolled track's route."
+              "description": "Whether an uncontrolled flight is judged: a flight that filed VFR and no controller tracks. An IFR or unfiled flight is judged tracked or not, so this matters only where flightRules admits VFR. On by default for RAM, as TopSky's RAM_Uncontrolled."
             }
           },
           "additionalProperties": false
@@ -1580,7 +1580,7 @@
             "uncontrolled": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a track no controller tracks is judged. Off by default, as TopSky's CLAM leaves an uncontrolled track alone."
+              "description": "Whether an uncontrolled flight is judged: a flight that filed VFR and no controller tracks. An IFR or unfiled flight is judged tracked or not, so this matters only where flightRules admits VFR. Off by default, as TopSky's CLAM_Uncontrolled."
             }
           },
           "additionalProperties": false
@@ -1639,7 +1639,7 @@
             "uncontrolled": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a track no controller tracks is judged. Off by default, as TopSky's CLAM leaves an uncontrolled track alone."
+              "description": "Whether an uncontrolled flight is judged: a flight that filed VFR and no controller tracks. An IFR or unfiled flight is judged tracked or not, so this matters only where flightRules admits VFR. Off by default, as TopSky's CLAM_Uncontrolled."
             }
           },
           "additionalProperties": false
