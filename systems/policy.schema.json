@@ -971,7 +971,7 @@
               "type": "number",
               "minimum": 0,
               "default": 0,
-              "description": "How far ahead the current vertical rate is projected, seconds; 0, the default, is no prediction, as TopSky. Only a DESCENT predicts, and the predicted altitude is judged against the minimum at the point the aircraft reaches along its track. A straight-line descent goes through the ground inside 2 NM of any runway, so author it with runwayMonitoring for the corridor inhibit."
+              "description": "How far ahead the current vertical rate is projected, seconds; 0, the default, is no prediction, as TopSky. Only a DESCENT predicts, and the predicted altitude is judged against the minimum at the point the aircraft reaches along its track. A straight-line descent goes through the ground inside 2 NM of any runway, so a lookahead wants the surface to carry funnels along every final."
             },
             "cadenceS": {
               "type": "number",
@@ -984,24 +984,6 @@
               "minimum": 1,
               "default": 2,
               "description": "Cadence windows the aircraft must stay below the trigger before the net raises. Clearing is immediate."
-            },
-            "inhibitBelowFtOnFinal": {
-              "type": "number",
-              "minimum": 0,
-              "default": 1500,
-              "description": "Inside a monitored runway's corridor and below this height above the threshold, the net says nothing: an aircraft on short final is under every minimum by design. Needs runwayMonitoring for the runway ends; with none there are no corridors and nothing is inhibited."
-            },
-            "corridorRangeNm": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 15,
-              "description": "How far the approach and departure corridor runs either side of a monitored runway end."
-            },
-            "corridorXteNm": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 2,
-              "description": "Half width of that corridor either side of the extended centreline."
             },
             "flightRules": {
               "type": "string",
