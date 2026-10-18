@@ -981,7 +981,7 @@
         },
         "msaw": {
           "type": "object",
-          "description": "Minimum safe altitude warning, evaluated on the client against the package's own datasets/msaw.geojson. Unlike stca this net is ON wherever that file exists: its figures are the vAcc's own published surface rather than a tuning nobody has done, so absent means every default below. WITH NO SURFACE THE NET IS SILENT RATHER THAN CLEAN, and .dev msaw-info says which of the two it is instead of reporting every aircraft above a minimum. Raises an alert-severity Msaw with the minimum as alertText, and publishes the minimum under each aircraft as the msaFt expression whether or not it alerts.",
+          "description": "Minimum safe altitude warning, evaluated on the client against the package's own datasets/msaw.geojson. Unlike stca this net is ON wherever that file exists: its figures are the vAcc's own published surface rather than a tuning nobody has done, so absent means every default below. WITH NO SURFACE THE NET IS SILENT RATHER THAN CLEAN, and .dev msaw-info says which of the two it is instead of reporting every aircraft above a minimum. Raises an alert-severity Msaw with the minimum as alertText, and publishes the minimum under each aircraft as the msaFt expression whether or not it alerts. It judges the altitude an altimeter set to QNH reads, as TopSky and EUROCONTROL's MSAW reference do: the pressure altitude corrected by the QNH of the nearest airport METAR within 100 NM, the frame a cleared altitude is flown in; with no such METAR, or a pilot client that relays no pressure difference, the true altitude. An approach-clearance inhibit (TopSky's MSAW_AppInhibit) is authored as safetyNets.kinds.msaw.exclude.when over clearedFlightLevel, 2 for a visual approach and 1 for an ILS, never under safetyNets.exclude, which would take the approach out of AFDAS as well.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -991,44 +991,51 @@
             "bufferFt": {
               "type": "number",
               "minimum": 0,
-              "default": 100,
-              "description": "HYSTERESIS, not a margin: the trigger is the minimum LESS this and the clear is the minimum PLUS it, because an aircraft cruising at exactly the minimum wobbles either side of it and would otherwise flap. TopSky's UK number."
+              "default": 300,
+              "description": "The trigger is the minimum LESS this, for an IFR flight. A raised alert clears at the minimum plus clearFt, so an aircraft cruising at exactly the minimum neither raises nor, once raised, flaps. The default 300 is TopSky's stock MSAW_Buffer_IFR and inside the several hundred feet EUROCONTROL's MSAW guidance allows below a minimum; the UK authors its own 100."
             },
             "lookaheadS": {
               "type": "number",
               "minimum": 0,
               "default": 0,
-              "description": "How far ahead the current vertical rate is projected, seconds; 0, the default, is no prediction, as TopSky. Only a DESCENT predicts, and the predicted altitude is judged against the minimum at the point the aircraft reaches along its track. A straight-line descent goes through the ground inside 2 NM of any runway, so author it with runwayMonitoring for the corridor inhibit."
+              "description": "How far ahead the path is predicted, seconds; 0, the default, is no prediction, as TopSky. Authored, the aircraft is stepped every predictionStepS along its ground track at its current vertical rate, a climb, level flight and a descent alike, and every step is judged against the minimum at its own point; a step in an msaFt 0 area is skipped and the next one judged. No cleared level caps or replaces the predicted altitude. A straight-line descent goes through the ground inside 2 NM of any runway, so a lookahead wants the surface to carry funnels along every final."
+            },
+            "predictionStepS": {
+              "type": "number",
+              "minimum": 1,
+              "default": 5,
+              "description": "Seconds between the predicted points along the path when lookaheadS is authored, the last point at lookaheadS. Five is one report interval: 0.4 NM at 300 kt, inside the half to one NM cells EUROCONTROL's MSAW guidance sizes a terrain grid by, so a cell that size is not stepped over below 360 kt; the guidance finds 1 s steps feasible for a finer surface, which is the least the client takes."
             },
             "cadenceS": {
               "type": "number",
               "exclusiveMinimum": 0,
               "default": 5,
-              "description": "Seconds between evaluations inside the 2 Hz sweep. Five is how often a pilot client sends a position, so confirmCycles counts independent samples."
+              "description": "Seconds between evaluations inside the 2 Hz sweep. Five is how often a pilot client sends a position; an evaluation that sees no new report counts for nothing in the confirmation."
             },
             "confirmCycles": {
               "type": "integer",
               "minimum": 1,
               "default": 2,
-              "description": "Cadence windows the aircraft must stay below the trigger before the net raises. Clearing is immediate."
+              "description": "Hits among the last cycleCount evaluations with a new report that confirm a PREDICTED infringement, EUROCONTROL's TerrainConflictCount (2 or 3 advised); a miss in between does not reset the count. An aircraft already below the trigger, or predicted below it within imminentS, raises at once."
             },
-            "inhibitBelowFtOnFinal": {
+            "clearFt": {
               "type": "number",
               "minimum": 0,
-              "default": 1500,
-              "description": "Inside a monitored runway's corridor and below this height above the threshold, the net says nothing: an aircraft on short final is under every minimum by design. Needs runwayMonitoring for the runway ends; with none there are no corridors and nothing is inhibited."
+              "default": 0,
+              "description": "Height above the minimum at which a raised alert clears, held for one more new report so a single report at the minimum does not end it. 0, the default, clears at the minimum, as BUST and CLAM take their own clearFt; with bufferFt it makes the band in which a raised alert holds and a clear track stays clear."
             },
-            "corridorRangeNm": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 15,
-              "description": "How far the approach and departure corridor runs either side of a monitored runway end."
+            "cycleCount": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16,
+              "default": 4,
+              "description": "How many of the latest evaluations with a new report confirmCycles is counted over, EUROCONTROL's TerrainCycleCount (4 or 5 advised). It may not be less than confirmCycles."
             },
-            "corridorXteNm": {
+            "imminentS": {
               "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 2,
-              "description": "Half width of that corridor either side of the extended centreline."
+              "minimum": 0,
+              "default": 0,
+              "description": "A predicted infringement this many seconds ahead or sooner raises at once, with no confirmation, EUROCONTROL's TerrainImminentTime. 0, the default, makes only an actual infringement imminent; it matters only with a lookahead."
             },
             "flightRules": {
               "type": "string",
@@ -1039,13 +1046,19 @@
             "uncontrolled": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a track no controller holds is judged. Off, as TopSky's MSAW_Uncontrolled: the surface is a controller's vectoring minimum, and a VFR flight under the TMA is below it all day."
+              "description": "Whether a VFR flight no controller holds is judged. Off, as TopSky's MSAW_Uncontrolled: the surface is a controller's vectoring minimum, and a VFR flight under the TMA is below it all day. An IFR or unfiled flight is judged whether or not anyone tracks it."
             },
             "bufferVfrFt": {
               "type": "number",
               "minimum": 0,
               "default": 300,
               "description": "bufferFt for VFR flights, TopSky's MSAW_Buffer_VFR."
+            },
+            "soundScope": {
+              "type": "string",
+              "enum": ["ownedOrConcerned", "allVisible"],
+              "default": "allVisible",
+              "description": "Who HEARS an MSAW alert, on STCA's vocabulary. allVisible, the default, sounds every one, as before. ownedOrConcerned sounds only an aircraft this controller owns or its attention tiers name, because EUROCONTROL's MSAW hazard assessment found an alert addressed to every position disturbs the room; the alert still shows, colours and lists everywhere, and only the sound is held. safetyNets.kinds.msaw.sound still overrides it."
             }
           },
           "additionalProperties": false
