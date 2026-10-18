@@ -977,13 +977,26 @@
               "type": "number",
               "exclusiveMinimum": 0,
               "default": 5,
-              "description": "Seconds between evaluations inside the 2 Hz sweep. Five is how often a pilot client sends a position, so confirmCycles counts independent samples."
+              "description": "Seconds between evaluations inside the 2 Hz sweep. Five is how often a pilot client sends a position; an evaluation that sees no new report counts for nothing in the confirmation."
             },
             "confirmCycles": {
               "type": "integer",
               "minimum": 1,
               "default": 2,
-              "description": "Cadence windows the aircraft must stay below the trigger before the net raises. Clearing is immediate."
+              "description": "Hits among the last cycleCount evaluations with a new report that confirm a PREDICTED infringement, EUROCONTROL's TerrainConflictCount (2 or 3 advised); a miss in between does not reset the count. An aircraft already below the trigger, or predicted below it within imminentS, raises at once."
+            },
+            "cycleCount": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16,
+              "default": 4,
+              "description": "How many of the latest evaluations with a new report confirmCycles is counted over, EUROCONTROL's TerrainCycleCount (4 or 5 advised). It may not be less than confirmCycles."
+            },
+            "imminentS": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0,
+              "description": "A predicted infringement this many seconds ahead or sooner raises at once, with no confirmation, EUROCONTROL's TerrainImminentTime. 0, the default, makes only an actual infringement imminent; it matters only with a lookahead."
             },
             "flightRules": {
               "type": "string",
