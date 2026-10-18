@@ -899,14 +899,15 @@
             "confirmCycles": {
               "type": "integer",
               "minimum": 1,
+              "maximum": 16,
               "default": 2,
-              "description": "Cycles beyond triggerNm before the net raises. A cycle is cadenceS, so the default is 40 seconds of sustained deviation. Clearing needs no confirmation."
+              "description": "New position reports in a row beyond triggerNm before the net raises; a check that sees no new report counts nothing. At one report every 5 seconds the default raises 5 to 10 seconds after the deviation crosses the trigger. Clearing needs no confirmation."
             },
             "cadenceS": {
               "type": "integer",
               "minimum": 1,
-              "default": 20,
-              "description": "Seconds between evaluations. The net rides the 2 Hz position batch and skips the batches inside this window, so this is also what one confirmation cycle is worth."
+              "default": 5,
+              "description": "Seconds between checks. The net rides the 2 Hz position batch and skips the batches inside this window; the default checks every report a pilot client sends every 5 seconds, as the route deviation check compares on each track update."
             },
             "maxDeviationNm": {
               "type": "number",
