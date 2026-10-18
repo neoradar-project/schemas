@@ -746,6 +746,12 @@
               "minimum": 0,
               "default": 1,
               "description": "Nautical miles a pairwise alert's predicted closest lateral distance must shrink after the click before the acknowledgement is spent, TopSky's de-acknowledge on a separation decrease: an STCA acknowledged at 2.8 NM that closes to 1.8 NM sounds and asks again, and opening back out does not re-acknowledge it. 0 turns the rule off; a new other aircraft re-arms either way. STCA and TCT carry a predicted distance; any other pairwise alert keeps the kind-and-severity rule."
+            },
+            "pairs": {
+              "type": "string",
+              "enum": ["both", "one"],
+              "default": "both",
+              "description": "What acknowledging one aircraft of a pairwise alert (STCA, TCT) does to the other. both acknowledges the same alert on the other aircraft too, while it is that aircraft's highest, so the partner stops blinking and repeating with it; one leaves the other end to be acknowledged on its own."
             }
           },
           "additionalProperties": false
