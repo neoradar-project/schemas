@@ -1035,8 +1035,8 @@
             "lookaheadS": {
               "type": "integer",
               "exclusiveMinimum": 0,
-              "default": 90,
-              "description": "How far ahead a conflict is predicted. Longer sees more and cries wolf more; 90 seconds is the tactical horizon STCA is for, and TCT is the five minute tool."
+              "default": 120,
+              "description": "How far ahead a conflict is predicted. Absent is 120, 30 seconds past the default warningS, so a conflict's confirmation has built by the time it comes inside warningS and it alerts on the first report there; a hit beyond warningS counts toward the confirmation but never alerts. Longer sees more and cries wolf more, and TCT is the five minute tool."
             },
             "sampleS": {
               "type": "number",
