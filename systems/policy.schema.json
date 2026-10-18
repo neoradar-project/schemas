@@ -971,7 +971,7 @@
               "type": "number",
               "minimum": 0,
               "default": 0,
-              "description": "How far ahead the path is predicted, seconds; 0, the default, is no prediction, as TopSky. Authored, the aircraft is stepped every predictionStepS along its ground track at its current vertical rate, level flight and a descent alike, and every step is judged against the minimum at its own point; a step in an msaFt 0 area is skipped and the next one judged. A climb inside the 300 ft/min level band is flown level, and a faster climb is judged where it is. No cleared level caps or replaces the predicted altitude. A straight-line descent goes through the ground inside 2 NM of any runway, so a lookahead wants the surface to carry funnels along every final."
+              "description": "How far ahead the path is predicted, seconds; 0, the default, is no prediction, as TopSky. Authored, the aircraft is stepped every predictionStepS along its ground track at its current vertical rate, a climb, level flight and a descent alike, and every step is judged against the minimum at its own point; a step in an msaFt 0 area is skipped and the next one judged. No cleared level caps or replaces the predicted altitude. A straight-line descent goes through the ground inside 2 NM of any runway, so a lookahead wants the surface to carry funnels along every final."
             },
             "predictionStepS": {
               "type": "number",
