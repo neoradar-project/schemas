@@ -2136,7 +2136,7 @@
             "uncontrolledPairs": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a pair nobody controls is probed: TCT_Inhibit_Uncontrolled, on, so false."
+              "description": "Whether a pair of two uncontrolled flights is probed: TCT_Inhibit_Uncontrolled, on, so false. An uncontrolled flight is a VFR one nobody tracks; an IFR flight, or one with no plan, counts as controlled, tracked or not."
             },
             "uncorrelatedPairs": {
               "type": "boolean",
