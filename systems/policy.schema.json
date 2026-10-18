@@ -1035,8 +1035,8 @@
             "lookaheadS": {
               "type": "integer",
               "exclusiveMinimum": 0,
-              "default": 90,
-              "description": "How far ahead a conflict is predicted. Longer sees more and cries wolf more; 90 seconds is the tactical horizon STCA is for, and TCT is the five minute tool."
+              "default": 120,
+              "description": "How far ahead a conflict is predicted. Absent is 120, 30 seconds past the default warningS, so a conflict's confirmation has built by the time it comes inside warningS and it alerts on the first report there; a hit beyond warningS counts toward the confirmation but never alerts. Longer sees more and cries wolf more, and TCT is the five minute tool."
             },
             "sampleS": {
               "type": "number",
@@ -1200,11 +1200,11 @@
             "parallelApproachZoneTag": {
               "type": "string",
               "default": "stca-parallel",
-              "description": "A zone tag that suppresses a pair when BOTH aircraft are inside it, which is what parallel approaches look like. One inside and one crossing overhead is still a conflict."
+              "description": "A zone tag that suppresses a pair when BOTH aircraft are inside it, on one course within 10 degrees of each other and at least 0.33 nm apart (the parallel defaults), which is what parallel approaches look like. One inside and one crossing overhead, a pair head on or crossing, a pair closer than that, and a pair with either aircraft in a parallel operation's no transgression zone are still judged. The zone knows no runway or side, so a parallel operation is the precise tool."
             },
             "finalApproach": {
               "type": "object",
-              "description": "The final-approach corridor, generated behind EVERY monitored landing end from the runway ends runway monitoring already resolves, so authoring an empty object gets the behaviour at every airport in the package with nothing drawn. Inside a corridor two aircraft landing in trail are flying the approach and the net holds its tongue; every other pair in there is judged against lateralNm instead of the region's own minimum. ABSENT IS OFF, because a corridor silences alerts. IT NEEDS policy.json runwayMonitoring: the geometry comes from those strips, so a system authoring this and no runway monitoring generates nothing, which .dev stca-info says in those words.",
+              "description": "The final-approach corridor, generated behind EVERY monitored landing end from the runway ends runway monitoring already resolves, so authoring an empty object gets the behaviour at every airport in the package with nothing drawn. Inside a corridor two aircraft landing in trail on the course, where the wake rule allows it (the nearer no heavy, super or B757, the further the same category or heavier), are judged against lateralNm instead of the region's own minimum; every other pair in there keeps the region's minimum. Nothing is silenced: an approach that should raise nothing is an authored exclusion zone. ABSENT IS OFF, because a corridor lowers the minimum. IT NEEDS policy.json runwayMonitoring: the geometry comes from those strips, so a system authoring this and no runway monitoring generates nothing, which .dev stca-info says in those words.",
               "properties": {
                 "enabled": {
                   "type": "boolean",
@@ -1227,13 +1227,13 @@
                   "type": "number",
                   "exclusiveMinimum": 0,
                   "default": 2.5,
-                  "description": "The lateral minimum inside the corridor, which replaces the region's where it is smaller. It never widens one: a corridor reduces separation on final, it does not tighten the net."
+                  "description": "The lateral minimum for a wake-compatible pair in trail on one final, on the prediction and on current proximity, which replaces the region's where it is smaller. It never widens one: a corridor reduces separation on final, it does not tighten the net."
                 },
                 "courseToleranceDeg": {
                   "type": "number",
                   "exclusiveMinimum": 0,
                   "default": 10,
-                  "description": "How far off the approach course a track may be and still count as flying it. A track crossing the corridor is in it but not on the course, so it is never silenced."
+                  "description": "How far off the approach course a track may be and still count as flying it. A track crossing the corridor is in it but not on the course, so it keeps the region's minimum."
                 }
               },
               "additionalProperties": false
