@@ -954,7 +954,7 @@
         },
         "msaw": {
           "type": "object",
-          "description": "Minimum safe altitude warning, evaluated on the client against the package's own datasets/msaw.geojson. Unlike stca this net is ON wherever that file exists: its figures are the vAcc's own published surface rather than a tuning nobody has done, so absent means every default below. WITH NO SURFACE THE NET IS SILENT RATHER THAN CLEAN, and .dev msaw-info says which of the two it is instead of reporting every aircraft above a minimum. Raises an alert-severity Msaw with the minimum as alertText, and publishes the minimum under each aircraft as the msaFt expression whether or not it alerts.",
+          "description": "Minimum safe altitude warning, evaluated on the client against the package's own datasets/msaw.geojson. Unlike stca this net is ON wherever that file exists: its figures are the vAcc's own published surface rather than a tuning nobody has done, so absent means every default below. WITH NO SURFACE THE NET IS SILENT RATHER THAN CLEAN, and .dev msaw-info says which of the two it is instead of reporting every aircraft above a minimum. Raises an alert-severity Msaw with the minimum as alertText, and publishes the minimum under each aircraft as the msaFt expression whether or not it alerts. It judges the altitude an altimeter set to QNH reads, as TopSky and EUROCONTROL's MSAW reference do: the pressure altitude corrected by the QNH of the nearest airport METAR within 100 NM, the frame a cleared altitude is flown in; with no such METAR, or a pilot client that relays no pressure difference, the true altitude.",
           "properties": {
             "enabled": {
               "type": "boolean",
