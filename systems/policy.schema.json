@@ -1344,7 +1344,7 @@
               "type": "number",
               "minimum": 0,
               "default": 1000,
-              "description": "No track below this pressure altitude takes part, TopSky's STCA_Floor: aerodrome traffic converging on a runway is the procedure, and the final approach corridors and runway monitoring watch it there."
+              "description": "No track below this altitude takes part, TopSky's STCA_Floor: at or below the transition altitude it is an altitude on QNH, above it a pressure altitude. Aerodrome traffic converging on a runway is the procedure, and the final approach corridors and runway monitoring watch it there."
             },
             "maxTrackAgeS": {
               "type": "number",
@@ -2147,7 +2147,7 @@
               "type": "number",
               "minimum": 0,
               "default": 1000,
-              "description": "TopSky's TCT_Floor: no track below this pressure altitude takes part."
+              "description": "TopSky's TCT_Floor: no track below this altitude takes part; at or below the transition altitude it is an altitude on QNH, above it a pressure altitude."
             },
             "minSpeedKts": {
               "type": "number",
@@ -2163,7 +2163,7 @@
             "uncontrolledPairs": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a pair nobody controls is probed: TCT_Inhibit_Uncontrolled, on, so false."
+              "description": "Whether a pair of two uncontrolled flights is probed: TCT_Inhibit_Uncontrolled, on, so false. An uncontrolled flight is a VFR one nobody tracks; an IFR flight, or one with no plan, counts as controlled, tracked or not."
             },
             "uncorrelatedPairs": {
               "type": "boolean",
