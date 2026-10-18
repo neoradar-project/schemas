@@ -943,6 +943,12 @@
               "minimum": 0,
               "default": 1,
               "description": "Nautical miles a pairwise alert's predicted closest lateral distance must shrink after the click before the acknowledgement is spent, TopSky's de-acknowledge on a separation decrease: an STCA acknowledged at 2.8 NM that closes to 1.8 NM sounds and asks again, and opening back out does not re-acknowledge it. 0 turns the rule off; a new other aircraft re-arms either way. STCA and TCT carry a predicted distance; any other pairwise alert keeps the kind-and-severity rule."
+            },
+            "pairs": {
+              "type": "string",
+              "enum": ["both", "one"],
+              "default": "both",
+              "description": "What acknowledging one aircraft of a pairwise alert (STCA, TCT) does to the other. both acknowledges the same alert on the other aircraft too, while it is that aircraft's highest, so the partner stops blinking and repeating with it; one leaves the other end to be acknowledged on its own."
             }
           },
           "additionalProperties": false
@@ -972,13 +978,13 @@
             "rimcas",
             "stca",
             "msaw",
+            "afdas",
             "bust",
             "apw",
             "aiw",
-            "ram",
             "clam",
+            "ram",
             "holdIntrusion",
-            "afdas",
             "tct",
             "mtcd"
           ],
@@ -1022,6 +1028,28 @@
               "enum": ["info", "warning", "alert"],
               "default": "warning",
               "description": "The lowest severity that lifts a track out of the filters. warning covers RAM, AIW and RIMCAS Stage One; alert restricts it to STCA, MSAW, BUST, RIMCAS Stage Two and the emergency squawk; info includes the planning nets, which is usually too much."
+            },
+            "kinds": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "bust",
+                  "clam",
+                  "ram",
+                  "msaw",
+                  "apw",
+                  "aiw",
+                  "holdIntrusion",
+                  "mtcd",
+                  "tct",
+                  "rimcas",
+                  "stca",
+                  "afdas",
+                  "emergency"
+                ]
+              },
+              "description": "The kinds whose alerts lift a track out of the filters, each at or above minSeverity. Absent, or empty, is every kind. Whichever kinds are named, a pairwise alert of a named kind (STCA, TCT) lifts both of its aircraft at any severity, so a TCT in its warning band and the other aircraft of a conflict are never left to the filters. TopSky lifts emergency, stca, msaw, afdas, apw, aiw and tct, and never clam, ram or mtcd: the safety nets, not the monitoring aids. An emergency code bypasses whatever this says."
             }
           },
           "additionalProperties": false
