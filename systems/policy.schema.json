@@ -594,8 +594,9 @@
             "confirmCycles": {
               "type": "integer",
               "minimum": 1,
-              "default": 4,
-              "description": "Sweeps outside the funnel before it raises. The sweep is the 2 Hz position batch, so the default is two seconds. Coming back inside clears at once."
+              "maximum": 16,
+              "default": 2,
+              "description": "Distinct position reports outside the funnel before it raises; a sweep that sees no new report does not count, so one legacy report seen on several sweeps is one. Coming back inside clears at once."
             },
             "ends": {
               "type": "object",
