@@ -1026,6 +1026,12 @@
               "minimum": 0,
               "default": 300,
               "description": "bufferFt for VFR flights, TopSky's MSAW_Buffer_VFR."
+            },
+            "soundScope": {
+              "type": "string",
+              "enum": ["ownedOrConcerned", "allVisible"],
+              "default": "allVisible",
+              "description": "Who HEARS an MSAW alert, on STCA's vocabulary. allVisible, the default, sounds every one, as before. ownedOrConcerned sounds only an aircraft this controller owns or its attention tiers name, because EUROCONTROL's MSAW hazard assessment found an alert addressed to every position disturbs the room; the alert still shows, colours and lists everywhere, and only the sound is held. safetyNets.kinds.msaw.sound still overrides it."
             }
           },
           "additionalProperties": false
