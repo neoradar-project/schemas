@@ -1204,7 +1204,7 @@
             },
             "finalApproach": {
               "type": "object",
-              "description": "The final-approach corridor, generated behind EVERY monitored landing end from the runway ends runway monitoring already resolves, so authoring an empty object gets the behaviour at every airport in the package with nothing drawn. Inside a corridor two aircraft landing in trail are flying the approach and the net holds its tongue; every other pair in there is judged against lateralNm instead of the region's own minimum. ABSENT IS OFF, because a corridor silences alerts. IT NEEDS policy.json runwayMonitoring: the geometry comes from those strips, so a system authoring this and no runway monitoring generates nothing, which .dev stca-info says in those words.",
+              "description": "The final-approach corridor, generated behind EVERY monitored landing end from the runway ends runway monitoring already resolves, so authoring an empty object gets the behaviour at every airport in the package with nothing drawn. Inside a corridor two aircraft landing in trail on the course, where the wake rule allows it (the nearer no heavy, super or B757, the further the same category or heavier), are judged against lateralNm instead of the region's own minimum; every other pair in there keeps the region's minimum. Nothing is silenced: an approach that should raise nothing is an authored exclusion zone. ABSENT IS OFF, because a corridor lowers the minimum. IT NEEDS policy.json runwayMonitoring: the geometry comes from those strips, so a system authoring this and no runway monitoring generates nothing, which .dev stca-info says in those words.",
               "properties": {
                 "enabled": {
                   "type": "boolean",
@@ -1227,13 +1227,13 @@
                   "type": "number",
                   "exclusiveMinimum": 0,
                   "default": 2.5,
-                  "description": "The lateral minimum inside the corridor, which replaces the region's where it is smaller. It never widens one: a corridor reduces separation on final, it does not tighten the net."
+                  "description": "The lateral minimum for a wake-compatible pair in trail on one final, on the prediction and on current proximity, which replaces the region's where it is smaller. It never widens one: a corridor reduces separation on final, it does not tighten the net."
                 },
                 "courseToleranceDeg": {
                   "type": "number",
                   "exclusiveMinimum": 0,
                   "default": 10,
-                  "description": "How far off the approach course a track may be and still count as flying it. A track crossing the corridor is in it but not on the course, so it is never silenced."
+                  "description": "How far off the approach course a track may be and still count as flying it. A track crossing the corridor is in it but not on the course, so it keeps the region's minimum."
                 }
               },
               "additionalProperties": false
