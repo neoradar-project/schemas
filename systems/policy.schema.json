@@ -965,7 +965,7 @@
               "type": "number",
               "minimum": 0,
               "default": 300,
-              "description": "HYSTERESIS, not a margin: the trigger is the minimum LESS this and the clear is the minimum PLUS it, because an aircraft cruising at exactly the minimum wobbles either side of it and would otherwise flap. The default 300 is TopSky's stock MSAW_Buffer_IFR and inside the several hundred feet EUROCONTROL's MSAW guidance allows below a minimum; the UK authors its own 100."
+              "description": "The trigger is the minimum LESS this, for an IFR flight. A raised alert clears at the minimum plus clearFt, so an aircraft cruising at exactly the minimum neither raises nor, once raised, flaps. The default 300 is TopSky's stock MSAW_Buffer_IFR and inside the several hundred feet EUROCONTROL's MSAW guidance allows below a minimum; the UK authors its own 100."
             },
             "lookaheadS": {
               "type": "number",
@@ -984,6 +984,12 @@
               "minimum": 1,
               "default": 2,
               "description": "Hits among the last cycleCount evaluations with a new report that confirm a PREDICTED infringement, EUROCONTROL's TerrainConflictCount (2 or 3 advised); a miss in between does not reset the count. An aircraft already below the trigger, or predicted below it within imminentS, raises at once."
+            },
+            "clearFt": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0,
+              "description": "Height above the minimum at which a raised alert clears, held for one more new report so a single report at the minimum does not end it. 0, the default, clears at the minimum, as BUST and CLAM take their own clearFt; with bufferFt it makes the band in which a raised alert holds and a clear track stays clear."
             },
             "cycleCount": {
               "type": "integer",
