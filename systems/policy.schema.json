@@ -419,7 +419,7 @@
               "type": "integer",
               "minimum": 1,
               "default": 300,
-              "description": "How far ahead along the track an approach is searched for, seconds. Must reach stageOneS."
+              "description": "How far ahead along the track an approach is searched for, seconds. Must reach stageOneS and stageOneLvpS."
             },
             "alignmentDeg": {
               "type": "number",
@@ -454,7 +454,7 @@
                 "minimum": 1
               },
               "default": [60, 45, 30, 15],
-              "description": "The Impending Arrival Window rows, seconds from the strip, largest first and strictly descending. An approach beyond the first row plus fifteen seconds is not listed."
+              "description": "The Impending Arrival Window rows, seconds from the landing threshold, largest first and strictly descending. An approach beyond the first row plus fifteen seconds is not listed."
             },
             "countdownLvpS": {
               "type": "array",
@@ -468,20 +468,26 @@
             "stageOneS": {
               "type": "integer",
               "minimum": 1,
-              "default": 45,
-              "description": "An arrival this close to a strip with an occupant is a Stage One for both."
+              "default": 30,
+              "description": "An arrival this many seconds or less from the landing threshold of a strip with an occupant is a Stage One for both. 30 is the EUROCONTROL-SPEC-171 SAFE-280 and SPEC-202 RMCA-070 example, and Edinburgh's figure. Also the window in which an arrival to a closed runway is alerted."
             },
             "stageTwoS": {
               "type": "integer",
               "minimum": 1,
-              "default": 20,
-              "description": "An arrival this close to a strip with an occupant is a Stage Two for both. Must be below stageOneS."
+              "default": 15,
+              "description": "An arrival this many seconds or less from the landing threshold of a strip with an occupant is a Stage Two for both. 15 is the specification's example. Must be below stageOneS."
+            },
+            "stageOneLvpS": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 45,
+              "description": "stageOneS while low visibility procedures are in force. 45 is the specification's low-visibility example; no UK unit's own value is published."
             },
             "stageTwoLvpS": {
               "type": "integer",
               "minimum": 1,
               "default": 30,
-              "description": "stageTwoS while low visibility procedures are in force. Must be below stageOneS."
+              "description": "stageTwoS while low visibility procedures are in force. 30 is the specification's low-visibility example. Must be below stageOneLvpS."
             }
           },
           "additionalProperties": false
