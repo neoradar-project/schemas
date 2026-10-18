@@ -402,6 +402,12 @@
               "default": 5,
               "description": "Below this an occupant is standing: lined up, holding or stopped crossing. Under pairs notBehind, two occupants conflict (rules.occupants) only when one moving has the other AHEAD of it, EUROCONTROL-SPEC-171's 'not behind', so a conditional line-up behind a departure's roll is no conflict."
             },
+            "entryLookaheadS": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10,
+              "description": "How far ahead a mobile on the ground is predicted along its track for rules.predictedEntry, seconds. The sources leave it local and give no value; 10 s covers the under 6 s a mobile takes from a close holding point to the runway at 15 kt."
+            },
             "pairs": {
               "type": "string",
               "enum": ["notBehind", "any"],
@@ -419,7 +425,7 @@
               "type": "integer",
               "minimum": 1,
               "default": 300,
-              "description": "How far ahead along the track an approach is searched for, seconds. Must reach stageOneS."
+              "description": "How far ahead along the track an approach is searched for, seconds. Must reach stageOneS and stageOneLvpS."
             },
             "alignmentDeg": {
               "type": "number",
@@ -454,7 +460,7 @@
                 "minimum": 1
               },
               "default": [60, 45, 30, 15],
-              "description": "The Impending Arrival Window rows, seconds from the strip, largest first and strictly descending. An approach beyond the first row plus fifteen seconds is not listed."
+              "description": "The Impending Arrival Window rows, seconds from the landing threshold, largest first and strictly descending. An approach beyond the first row plus fifteen seconds is not listed."
             },
             "countdownLvpS": {
               "type": "array",
@@ -468,20 +474,31 @@
             "stageOneS": {
               "type": "integer",
               "minimum": 1,
-              "default": 45,
-              "description": "An arrival this close to a strip with an occupant is a Stage One for both."
+              "default": 30,
+              "description": "An arrival this many seconds or less from the landing threshold of a strip with an occupant is a Stage One for both. 30 is the EUROCONTROL-SPEC-171 SAFE-280 and SPEC-202 RMCA-070 example, and Edinburgh's figure. Also the window in which an arrival to a closed runway is alerted."
             },
             "stageTwoS": {
               "type": "integer",
               "minimum": 1,
-              "default": 20,
-              "description": "An arrival this close to a strip with an occupant is a Stage Two for both. Must be below stageOneS."
+              "default": 15,
+              "description": "An arrival this many seconds or less from the landing threshold of a strip with an occupant is a Stage Two for both. 15 is the specification's example. Must be below stageOneS."
+            },
+            "stageOneLvpS": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 45,
+              "description": "stageOneS while low visibility procedures are in force. 45 is the specification's low-visibility example; no UK unit's own value is published."
             },
             "stageTwoLvpS": {
               "type": "integer",
               "minimum": 1,
               "default": 30,
-              "description": "stageTwoS while low visibility procedures are in force. Must be below stageOneS."
+              "description": "stageTwoS while low visibility procedures are in force. 30 is the specification's low-visibility example. Must be below stageOneLvpS."
+            },
+            "oppositeArrivalsS": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Two arrivals to opposite ends of one strip are alerted when both are this many seconds or less from their thresholds (rules.oppositeArrivals). Absent, the Stage One window in force: stageOneS, stageOneLvpS in low visibility. lookaheadS must reach it."
             }
           },
           "additionalProperties": false
@@ -503,17 +520,94 @@
             "closedRunway": {
               "type": "boolean",
               "default": true,
-              "description": "Any mobile on, or approaching within stageOneS, a runway the controller closed (.dev rimcas-close) is a Stage Two."
+              "description": "Any mobile on a runway the controller closed (.dev rimcas-close), or an arrival to it within stageOneS, is alerted at its stages.closedRunwayOccupant and stages.closedRunwayApproach stage."
             },
             "oppositeDirection": {
               "type": "boolean",
               "default": true,
-              "description": "Two moving occupants head-on along one strip are a Stage Two with their own reason, ahead of the general two-on-the-runway rule."
+              "description": "Two moving occupants head-on along one strip are alerted with their own reason, raised before the general two-on-the-runway rule."
             },
             "restrictedArea": {
               "type": "boolean",
               "default": true,
-              "description": "A mobile inside a zone tagged strip.restrictedZoneTag is a Stage Two."
+              "description": "A mobile inside a zone tagged strip.restrictedZoneTag is alerted at stages.restrictedArea."
+            },
+            "oppositeArrivals": {
+              "type": "boolean",
+              "default": true,
+              "description": "Two arrivals to opposite ends of one strip, both within stageOneS of their thresholds, are alerted at stages.oppositeArrivals (EUROCONTROL-SPEC-171 SAFE-250, SPEC-202 RMCA-050)."
+            },
+            "predictedEntry": {
+              "type": "boolean",
+              "default": true,
+              "description": "A mobile on the ground moving at movingKts or more, outside the strip, whose track carries it inside within occupancy.entryLookaheadS, is alerted with every arrival within stageOneS at stages.predictedEntry (SPEC-171 SAFE-260, SPEC-202 RMCA-060). Departures are not yet a class of their own, so only arrivals are judged against it."
+            }
+          },
+          "additionalProperties": false
+        },
+        "stages": {
+          "type": "object",
+          "description": "The stage each scenario and case raises: stageOne (INFORMATION, a caution) or stageTwo (ALARM). EUROCONTROL-SPEC-171 and SPEC-202 leave stage assignment local; every default is SPEC-202's, which differs from the old fixed stages only for an arrival to a closed runway.",
+          "properties": {
+            "occupants": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageOne",
+              "description": "Two on one strip, not closing fast."
+            },
+            "occupantsClosing": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "Two on one strip, one faster than stageTwoSpeedKts closing on the other."
+            },
+            "arrivalApproaching": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageOne",
+              "description": "An arrival within stageOneS of the threshold of a strip with an occupant."
+            },
+            "arrivalImminent": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "An arrival within stageTwoS of the threshold of a strip with an occupant."
+            },
+            "closedRunwayOccupant": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "A mobile on a closed runway (SPEC-202 CMAC-060: ALARM when on it)."
+            },
+            "closedRunwayApproach": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageOne",
+              "description": "An arrival within stageOneS of a closed runway's threshold (SPEC-202 CMAC-060: INFORMATION while foreseen)."
+            },
+            "oppositeDirection": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "Two moving occupants head-on along one strip."
+            },
+            "restrictedArea": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "A mobile inside a restricted area (SPEC-202 CMAC-120: ALARM when in it)."
+            },
+            "oppositeArrivals": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "Two arrivals to opposite ends of one strip, both inside stageOneS (SESAR SOL02: ALARM)."
+            },
+            "predictedEntry": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageOne",
+              "description": "A mobile predicted into the strip while an arrival is inside stageOneS, and that arrival: INFORMATION before it enters, after which the occupant rules take over."
             }
           },
           "additionalProperties": false
@@ -552,73 +646,176 @@
         },
         "approachFunnel": {
           "type": "object",
-          "description": "AFDAS, NOVA's approach funnel deviation net, evaluated on the client: an aircraft on final left, right, above or below the funnel to the runway in use, raised as a warning-severity Afdas naming the side and as an alert past twice the tolerance. It rides RIMCAS's own arrival detection, so it judges only an aircraft already lined up with a monitored runway end and reaching its strip. A net of its own: absent means off even with runwayMonitoring authored. The glidepath band needs a threshold elevation, which open-navdata.db carries for most but not all runways; an end without one is judged on the lateral axis alone and .dev afdas-info names it.",
+          "description": "AFDAS, the approach path monitor of the EUROCONTROL APM guidelines (G162 Part III), evaluated on the client. An airborne track qualifies on final to a monitored runway end inside the lateral area within onFinalTrackDeg of the course, and from then on is alerted below the lower slope (under the joining altitude), above the upper slope if authored, and laterally, each raised after confirmCycles new reports as one alert naming the side (LO before L or R before HI). A plan's destination and arrival runway, where it has them, are the only ones it is judged against. It judges the QNH altitude: the aircraft's pressure altitude on the QNH of the nearest airport METAR the client holds, else its true altitude. A net of its own: absent means off even with runwayMonitoring authored. The vertical axes need a threshold elevation, which open-navdata.db carries for most but not all runways; an end without one is judged on the lateral axis alone and .dev afdas-info names it.",
           "properties": {
             "enabled": {
               "type": "boolean",
               "default": true,
               "description": "False stops the funnel evaluating. Use safetyNets.show.afdas instead to keep it evaluating and hide it on this system."
             },
-            "lateralDeg": {
+            "fromNm": {
               "type": "number",
-              "minimum": 0.1,
-              "maximum": 45,
-              "default": 3,
-              "description": "Half angle of the wedge either side of the extended centreline, widening from the threshold. NOVA's number."
+              "minimum": 0,
+              "default": 2,
+              "description": "Nearest distance from the touchdown point that is monitored; inside it the aircraft is landing and the band is within the surveillance's own error (EUROCONTROL G162 MINDISTANCE 2)."
+            },
+            "toNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "default": 10,
+              "description": "Furthest distance from the touchdown point that is monitored, the extent of the lateral area too. Must exceed fromNm. 10 is the NOVA 9000 AFDAS range."
             },
             "glidepathDeg": {
               "type": "number",
               "minimum": 0.5,
               "maximum": 15,
               "default": 3,
-              "description": "Nominal glidepath the vertical band is centred on. Override it per end for a steep approach rather than raising it here."
+              "description": "Nominal glidepath, the path the explainer reports heights against; it must lie between lowerSlopeDeg and upperSlopeDeg. Raise it per end for a steep approach, with the slopes."
             },
-            "verticalFt": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 150,
-              "description": "Half depth of the band around the glidepath, in feet."
-            },
-            "fromNm": {
+            "lowerSlopeDeg": {
               "type": "number",
               "minimum": 0,
+              "maximum": 15,
               "default": 2,
-              "description": "Nearest distance from the threshold the funnel judges. Inside it the aircraft is landing and the wedge has narrowed to nothing useful."
+              "description": "Below this angle up from the touchdown point, and under joiningAltitudeFt, a monitored aircraft is low (G162 LOWERSLOPE 2)."
             },
-            "toNm": {
+            "upperSlopeDeg": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 30,
+              "default": 4,
+              "description": "Above this angle up from the touchdown point a monitored aircraft is high, when alertAbove is on (G162 UPPERSLOPE 4)."
+            },
+            "joiningAltitudeFt": {
               "type": "number",
               "exclusiveMinimum": 0,
-              "default": 10,
-              "description": "Furthest distance from the threshold the funnel judges. Must exceed fromNm. Beyond it an aircraft is still being turned onto final, which is the main nuisance this window prevents."
+              "description": "The altitude aircraft join the glidepath level at: at or above it nothing is low, so a volume can reach past the point where the lower slope meets the joining level. Absent, the lower slope is the floor all the way out (G162 JOININGHEIGHT)."
+            },
+            "lateralStartNm": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0,
+              "description": "Half width of the lateral area at the touchdown point, widening by lateralSlopeDeg each side along the course."
+            },
+            "lateralSlopeDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 45,
+              "default": 20,
+              "description": "Half angle the lateral area widens by each side of the course. 20 is half of G162's 40 degree HORIZONTALANGLE wedge. It and lateralStartNm cannot both be 0."
+            },
+            "onFinalTrackDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180,
+              "default": 20,
+              "description": "A track inside the lateral area within this of the course qualifies on final and is monitored from then on; a lateral alert held by trackDeviationDeg clears at this or less. TopSky's 20."
+            },
+            "trackDeviationDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180,
+              "default": 30,
+              "description": "A monitored track more than this off the course raises a lateral alert, held while it stays more than onFinalTrackDeg off. Must exceed onFinalTrackDeg. TopSky's 30."
+            },
+            "missedApproachFpm": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 500,
+              "description": "A monitored aircraft climbing faster than this is going around: monitoring stops and its alert goes, until it qualifies again. TopSky's 500."
+            },
+            "overflightAltitudeFt": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "At or above this altitude an aircraft is overflying and not monitored. Absent, no altitude stops monitoring."
+            },
+            "alertBelow": {
+              "type": "boolean",
+              "default": true,
+              "description": "Alert a monitored aircraft below the lower slope (G162 ActivateBelowGlideSlope)."
+            },
+            "alertAbove": {
+              "type": "boolean",
+              "default": false,
+              "description": "Alert a monitored aircraft above the upper slope (G162 ActivateAboveGlideSlope). Off by default: many systems alert below the path only."
+            },
+            "alertLateral": {
+              "type": "boolean",
+              "default": true,
+              "description": "Alert a monitored aircraft that leaves the lateral area, or turns more than trackDeviationDeg off the course (G162 ActivateHorizontalDeviation). The alert on leaving the area stays until it climbs away or leaves the range."
             },
             "confirmCycles": {
               "type": "integer",
               "minimum": 1,
-              "default": 4,
-              "description": "Sweeps outside the funnel before it raises. The sweep is the 2 Hz position batch, so the default is two seconds. Coming back inside clears at once."
+              "maximum": 16,
+              "default": 2,
+              "description": "Distinct position reports outside the funnel before it raises; a sweep that sees no new report does not count, so one legacy report seen on several sweeps is one. Coming back inside clears at once."
             },
             "ends": {
               "type": "object",
-              "description": "Per runway END overrides, keyed \"EGLC/27\". A steep approach needs its own glidepath; anything the entry does not name inherits the section's value.",
+              "description": "Per runway END, keyed \"EGLC/27\": its own approach volume, its final approach course and its touchdown point. Anything the entry does not name is the section's value.",
               "additionalProperties": {
                 "type": "object",
                 "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "False takes this end out of the net: EUROCONTROL APM-14's inhibition for a runway."
+                  },
+                  "fromNm": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Nearest distance from the touchdown point that is monitored; inside it the aircraft is landing and the band is within the surveillance's own error (EUROCONTROL G162 MINDISTANCE 2)."
+                  },
+                  "toNm": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "description": "Furthest distance from the touchdown point that is monitored, the extent of the lateral area too. Must exceed fromNm. 10 is the NOVA 9000 AFDAS range."
+                  },
                   "glidepathDeg": {
                     "type": "number",
                     "minimum": 0.5,
                     "maximum": 15,
-                    "description": "This end's nominal glidepath, for example 5.5 at London City."
+                    "description": "Nominal glidepath, the path the explainer reports heights against; it must lie between lowerSlopeDeg and upperSlopeDeg. Raise it per end for a steep approach, with the slopes."
                   },
-                  "lateralDeg": {
+                  "lowerSlopeDeg": {
                     "type": "number",
-                    "minimum": 0.1,
-                    "maximum": 45,
-                    "description": "This end's lateral half angle."
+                    "minimum": 0,
+                    "maximum": 15,
+                    "description": "Below this angle up from the touchdown point, and under joiningAltitudeFt, a monitored aircraft is low (G162 LOWERSLOPE 2)."
                   },
-                  "verticalFt": {
+                  "upperSlopeDeg": {
+                    "type": "number",
+                    "minimum": 0.5,
+                    "maximum": 30,
+                    "description": "Above this angle up from the touchdown point a monitored aircraft is high, when alertAbove is on (G162 UPPERSLOPE 4)."
+                  },
+                  "joiningAltitudeFt": {
                     "type": "number",
                     "exclusiveMinimum": 0,
-                    "description": "This end's vertical half depth."
+                    "description": "The altitude aircraft join the glidepath level at: at or above it nothing is low, so a volume can reach past the point where the lower slope meets the joining level. Absent, the lower slope is the floor all the way out (G162 JOININGHEIGHT)."
+                  },
+                  "lateralStartNm": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Half width of the lateral area at the touchdown point, widening by lateralSlopeDeg each side along the course."
+                  },
+                  "lateralSlopeDeg": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 45,
+                    "description": "Half angle the lateral area widens by each side of the course. 20 is half of G162's 40 degree HORIZONTALANGLE wedge. It and lateralStartNm cannot both be 0."
+                  },
+                  "courseDeg": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 360,
+                    "description": "The final approach course, degrees true, where it is not the runway's own bearing (an offset localiser or a published offset course). Absent, the runway's bearing from the navdata."
+                  },
+                  "touchdownM": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Metres the touchdown point lies past the landing threshold, along the runway; the path and the distances start there. Absent, 0: the threshold."
                   }
                 },
                 "additionalProperties": false
