@@ -509,17 +509,72 @@
             "closedRunway": {
               "type": "boolean",
               "default": true,
-              "description": "Any mobile on, or approaching within stageOneS, a runway the controller closed (.dev rimcas-close) is a Stage Two."
+              "description": "Any mobile on a runway the controller closed (.dev rimcas-close), or an arrival to it within stageOneS, is alerted at its stages.closedRunwayOccupant and stages.closedRunwayApproach stage."
             },
             "oppositeDirection": {
               "type": "boolean",
               "default": true,
-              "description": "Two moving occupants head-on along one strip are a Stage Two with their own reason, ahead of the general two-on-the-runway rule."
+              "description": "Two moving occupants head-on along one strip are alerted with their own reason, raised before the general two-on-the-runway rule."
             },
             "restrictedArea": {
               "type": "boolean",
               "default": true,
-              "description": "A mobile inside a zone tagged strip.restrictedZoneTag is a Stage Two."
+              "description": "A mobile inside a zone tagged strip.restrictedZoneTag is alerted at stages.restrictedArea."
+            }
+          },
+          "additionalProperties": false
+        },
+        "stages": {
+          "type": "object",
+          "description": "The stage each scenario and case raises: stageOne (INFORMATION, a caution) or stageTwo (ALARM). EUROCONTROL-SPEC-171 and SPEC-202 leave stage assignment local; every default is SPEC-202's, which differs from the old fixed stages only for an arrival to a closed runway.",
+          "properties": {
+            "occupants": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageOne",
+              "description": "Two on one strip, not closing fast."
+            },
+            "occupantsClosing": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "Two on one strip, one faster than stageTwoSpeedKts closing on the other."
+            },
+            "arrivalApproaching": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageOne",
+              "description": "An arrival within stageOneS of the threshold of a strip with an occupant."
+            },
+            "arrivalImminent": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "An arrival within stageTwoS of the threshold of a strip with an occupant."
+            },
+            "closedRunwayOccupant": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "A mobile on a closed runway (SPEC-202 CMAC-060: ALARM when on it)."
+            },
+            "closedRunwayApproach": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageOne",
+              "description": "An arrival within stageOneS of a closed runway's threshold (SPEC-202 CMAC-060: INFORMATION while foreseen)."
+            },
+            "oppositeDirection": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "Two moving occupants head-on along one strip."
+            },
+            "restrictedArea": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "A mobile inside a restricted area (SPEC-202 CMAC-120: ALARM when in it)."
             }
           },
           "additionalProperties": false
