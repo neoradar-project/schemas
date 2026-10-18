@@ -948,6 +948,19 @@
               "type": "boolean",
               "default": true,
               "description": "Whether an uncontrolled flight is judged: a flight that filed VFR and no controller tracks. An IFR or unfiled flight is judged tracked or not, so this matters only where flightRules admits VFR. On by default for RAM, as TopSky's RAM_Uncontrolled."
+            },
+            "waypointRadiusNm": {
+              "type": "number",
+              "minimum": 0,
+              "default": 5,
+              "description": "Within this distance of either end of the leg being flown, where the route turns there by waypointMinTurnDeg or more, the net does not raise: an aircraft anticipating a fly-by turn cuts inside the corner. The route's first and last points have no leg beyond them and always count as a turn. It stops a raise only and never clears a standing alert. TopSky's Wpt_Radius, 5 NM. 0 turns it off."
+            },
+            "waypointMinTurnDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180,
+              "default": 10,
+              "description": "The smallest change of course at a leg end that counts as a turn for waypointRadiusNm. TopSky's Wpt_MinTurn, 10 degrees."
             }
           },
           "additionalProperties": false
