@@ -1317,7 +1317,7 @@
               "type": "number",
               "minimum": 0,
               "default": 1000,
-              "description": "No track below this pressure altitude takes part, TopSky's STCA_Floor: aerodrome traffic converging on a runway is the procedure, and the final approach corridors and runway monitoring watch it there."
+              "description": "No track below this altitude takes part, TopSky's STCA_Floor: at or below the transition altitude it is an altitude on QNH, above it a pressure altitude. Aerodrome traffic converging on a runway is the procedure, and the final approach corridors and runway monitoring watch it there."
             },
             "maxTrackAgeS": {
               "type": "number",
@@ -2120,7 +2120,7 @@
               "type": "number",
               "minimum": 0,
               "default": 1000,
-              "description": "TopSky's TCT_Floor: no track below this pressure altitude takes part."
+              "description": "TopSky's TCT_Floor: no track below this altitude takes part; at or below the transition altitude it is an altitude on QNH, above it a pressure altitude."
             },
             "minSpeedKts": {
               "type": "number",
