@@ -494,6 +494,11 @@
               "minimum": 1,
               "default": 30,
               "description": "stageTwoS while low visibility procedures are in force. 30 is the specification's low-visibility example. Must be below stageOneLvpS."
+            },
+            "oppositeArrivalsS": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Two arrivals to opposite ends of one strip are alerted when both are this many seconds or less from their thresholds (rules.oppositeArrivals). Absent, the Stage One window in force: stageOneS, stageOneLvpS in low visibility. lookaheadS must reach it."
             }
           },
           "additionalProperties": false
