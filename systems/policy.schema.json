@@ -1012,7 +1012,7 @@
             "uncontrolled": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a track no controller holds is judged. Off, as TopSky's MSAW_Uncontrolled: the surface is a controller's vectoring minimum, and a VFR flight under the TMA is below it all day."
+              "description": "Whether a VFR flight no controller holds is judged. Off, as TopSky's MSAW_Uncontrolled: the surface is a controller's vectoring minimum, and a VFR flight under the TMA is below it all day. An IFR or unfiled flight is judged whether or not anyone tracks it."
             },
             "bufferVfrFt": {
               "type": "number",
