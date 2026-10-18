@@ -899,14 +899,15 @@
             "confirmCycles": {
               "type": "integer",
               "minimum": 1,
+              "maximum": 16,
               "default": 2,
-              "description": "Cycles beyond triggerNm before the net raises. A cycle is cadenceS, so the default is 40 seconds of sustained deviation. Clearing needs no confirmation."
+              "description": "New position reports in a row beyond triggerNm before the net raises; a check that sees no new report counts nothing. At one report every 5 seconds the default raises 5 to 10 seconds after the deviation crosses the trigger. Clearing needs no confirmation."
             },
             "cadenceS": {
               "type": "integer",
               "minimum": 1,
-              "default": 20,
-              "description": "Seconds between evaluations. The net rides the 2 Hz position batch and skips the batches inside this window, so this is also what one confirmation cycle is worth."
+              "default": 5,
+              "description": "Seconds between checks. The net rides the 2 Hz position batch and skips the batches inside this window; the default checks every report a pilot client sends every 5 seconds, as the route deviation check compares on each track update."
             },
             "maxDeviationNm": {
               "type": "number",
@@ -947,7 +948,33 @@
             "uncontrolled": {
               "type": "boolean",
               "default": true,
-              "description": "Whether a track no controller tracks is judged. On by default for RAM, as TopSky judges an uncontrolled track's route."
+              "description": "Whether an uncontrolled flight is judged: a flight that filed VFR and no controller tracks. An IFR or unfiled flight is judged tracked or not, so this matters only where flightRules admits VFR. On by default for RAM, as TopSky's RAM_Uncontrolled."
+            },
+            "waypointRadiusNm": {
+              "type": "number",
+              "minimum": 0,
+              "default": 5,
+              "description": "Within this distance of either end of the leg being flown, where the route turns there by waypointMinTurnDeg or more, the net does not raise: an aircraft anticipating a fly-by turn cuts inside the corner. The route's first and last points have no leg beyond them and always count as a turn. It stops a raise only and never clears a standing alert. TopSky's Wpt_Radius, 5 NM. 0 turns it off."
+            },
+            "waypointMinTurnDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180,
+              "default": 10,
+              "description": "The smallest change of course at a leg end that counts as a turn for waypointRadiusNm. TopSky's Wpt_MinTurn, 10 degrees."
+            },
+            "directTrackErrorDeg": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 180,
+              "default": 5,
+              "description": "On a direct-to the server has folded into the expansion, the net judges the direct until the aircraft is within waypointRadiusNm of its fix, where a direct alert clears, and the legs after: it raises when the track is more than this off the bearing to the fix, outside that radius and after directDelayS, and clears inside the same fraction of it that clearNm is of triggerNm (4 degrees at the defaults). alertText then gives how far abeam of the fix the present track passes. TopSky's DCT_MaxTrkError, 5 degrees."
+            },
+            "directDelayS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 60,
+              "description": "Seconds from a direct-to being given in which the aircraft turns onto it and the direct does not raise; the first report on track to the fix ends it. TopSky's DCT_DelayTime, 60 s."
             }
           },
           "additionalProperties": false
@@ -1580,7 +1607,7 @@
             "uncontrolled": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a track no controller tracks is judged. Off by default, as TopSky's CLAM leaves an uncontrolled track alone."
+              "description": "Whether an uncontrolled flight is judged: a flight that filed VFR and no controller tracks. An IFR or unfiled flight is judged tracked or not, so this matters only where flightRules admits VFR. Off by default, as TopSky's CLAM_Uncontrolled."
             }
           },
           "additionalProperties": false
@@ -1639,7 +1666,7 @@
             "uncontrolled": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a track no controller tracks is judged. Off by default, as TopSky's CLAM leaves an uncontrolled track alone."
+              "description": "Whether an uncontrolled flight is judged: a flight that filed VFR and no controller tracks. An IFR or unfiled flight is judged tracked or not, so this matters only where flightRules admits VFR. Off by default, as TopSky's CLAM_Uncontrolled."
             }
           },
           "additionalProperties": false
