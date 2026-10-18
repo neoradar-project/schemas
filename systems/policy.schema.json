@@ -975,9 +975,9 @@
             },
             "predictionStepS": {
               "type": "number",
-              "exclusiveMinimum": 0,
+              "minimum": 1,
               "default": 5,
-              "description": "Seconds between the predicted points along the path when lookaheadS is authored, the last point at lookaheadS. Five is one report interval: 0.4 NM at 300 kt, inside the half to one NM cells EUROCONTROL's MSAW guidance sizes a terrain grid by, so a cell that size is not stepped over below 360 kt; the guidance finds 1 s steps feasible for a finer surface."
+              "description": "Seconds between the predicted points along the path when lookaheadS is authored, the last point at lookaheadS. Five is one report interval: 0.4 NM at 300 kt, inside the half to one NM cells EUROCONTROL's MSAW guidance sizes a terrain grid by, so a cell that size is not stepped over below 360 kt; the guidance finds 1 s steps feasible for a finer surface, which is the least the client takes."
             },
             "cadenceS": {
               "type": "number",
