@@ -1200,7 +1200,7 @@
             "parallelApproachZoneTag": {
               "type": "string",
               "default": "stca-parallel",
-              "description": "A zone tag that suppresses a pair when BOTH aircraft are inside it, which is what parallel approaches look like. One inside and one crossing overhead is still a conflict."
+              "description": "A zone tag that suppresses a pair when BOTH aircraft are inside it, on one course within 10 degrees of each other and at least 0.33 nm apart (the parallel defaults), which is what parallel approaches look like. One inside and one crossing overhead, a pair head on or crossing, a pair closer than that, and a pair with either aircraft in a parallel operation's no transgression zone are still judged. The zone knows no runway or side, so a parallel operation is the precise tool."
             },
             "finalApproach": {
               "type": "object",
