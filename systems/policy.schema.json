@@ -147,6 +147,62 @@
       },
       "additionalProperties": false
     },
+    "attention": {
+      "type": "object",
+      "description": "How this system decides which aircraft are your concern. Every key is optional; absent means the existing behaviour.",
+      "properties": {
+        "concerned": {
+          "type": "object",
+          "description": "Confirms the Concerned tier over the flight's trajectory builds, so a flight whose successive builds disagree about entering your airspace does not flicker. A build is one the server made, counted once however often it is evaluated. Absent means 1 of 1 both ways: every build's verdict is taken at once, which is the existing behaviour. Intruder and Notified are never confirmed.",
+          "properties": {
+            "enter": {
+              "type": "object",
+              "description": "When a flight not held Concerned becomes Concerned.",
+              "properties": {
+                "count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 1,
+                  "description": "Concerned is confirmed only when count of the last of trajectory builds of the flight enter your airspace. Must not exceed of."
+                },
+                "of": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 1,
+                  "description": "How many of the flight's latest trajectory builds count is taken from."
+                }
+              },
+              "additionalProperties": false
+            },
+            "leave": {
+              "type": "object",
+              "description": "When a flight held Concerned stops being Concerned.",
+              "properties": {
+                "count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 1,
+                  "description": "Concerned is released only when count of the last of trajectory builds of the flight do not enter your airspace. Must not exceed of."
+                },
+                "of": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 1,
+                  "description": "How many of the flight's latest trajectory builds count is taken from."
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "coordination": {
       "type": "object",
       "description": "How this system runs the coordination dialogue at a sector boundary. Absent means today's behaviour, which is that every level at a boundary is either the one the coordination table states or one a controller proposed by hand, and nothing is ever agreed without a dialogue.",
