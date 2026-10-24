@@ -966,7 +966,7 @@
               "type": "number",
               "minimum": 0,
               "default": 30,
-              "description": "Within this distance of the route's first point, the origin, the net says nothing: departures are vectored off the filed route whether or not the controller keyed the heading. TopSky's 30 NM. 0 turns the inhibit off."
+              "description": "Within this distance of the flight plan's departure airport the net says nothing: departures are vectored off the filed route whether or not the controller keyed the heading. Measured from the airport, never from the route's first point, which a folded direct-to moves to its fix; an airport the client's navdata does not place gets no inhibit. TopSky's 30 NM. 0 turns the inhibit off."
             },
             "inhibitNearDestinationNm": {
               "type": "number",
