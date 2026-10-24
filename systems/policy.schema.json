@@ -164,7 +164,7 @@
                   "minimum": 1,
                   "maximum": 10,
                   "default": 1,
-                  "description": "Concerned is confirmed only when count of the last of trajectory builds of the flight enter your airspace. Must not exceed of."
+                  "description": "Concerned is confirmed only when count of the last of trajectory builds of the flight enter your airspace. Must not exceed of. Needs of written beside it."
                 },
                 "of": {
                   "type": "integer",
@@ -173,6 +173,9 @@
                   "default": 1,
                   "description": "How many of the flight's latest trajectory builds count is taken from."
                 }
+              },
+              "dependencies": {
+                "count": ["of"]
               },
               "additionalProperties": false
             },
@@ -185,7 +188,7 @@
                   "minimum": 1,
                   "maximum": 10,
                   "default": 1,
-                  "description": "Concerned is released only when count of the last of trajectory builds of the flight do not enter your airspace. Must not exceed of."
+                  "description": "Concerned is released only when count of the last of trajectory builds of the flight do not enter your airspace. Must not exceed of. Needs of written beside it."
                 },
                 "of": {
                   "type": "integer",
@@ -194,6 +197,9 @@
                   "default": 1,
                   "description": "How many of the flight's latest trajectory builds count is taken from."
                 }
+              },
+              "dependencies": {
+                "count": ["of"]
               },
               "additionalProperties": false
             }
