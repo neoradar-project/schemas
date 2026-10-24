@@ -157,7 +157,7 @@
           "properties": {
             "enter": {
               "type": "object",
-              "description": "When a flight not held Concerned becomes Concerned.",
+              "description": "When a flight not held Concerned becomes Concerned. enter.count plus leave.count must exceed the larger of enter.of and leave.of, so that entering and leaving can never both hold over the same builds; a rule where they can is a load error.",
               "properties": {
                 "count": {
                   "type": "integer",
@@ -178,7 +178,7 @@
             },
             "leave": {
               "type": "object",
-              "description": "When a flight held Concerned stops being Concerned.",
+              "description": "When a flight held Concerned stops being Concerned. enter.count plus leave.count must exceed the larger of enter.of and leave.of, so that entering and leaving can never both hold over the same builds; a rule where they can is a load error.",
               "properties": {
                 "count": {
                   "type": "integer",
