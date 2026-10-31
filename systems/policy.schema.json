@@ -147,6 +147,68 @@
       },
       "additionalProperties": false
     },
+    "attention": {
+      "type": "object",
+      "description": "How this system decides which aircraft are your concern. Every key is optional; absent means the existing behaviour.",
+      "properties": {
+        "concerned": {
+          "type": "object",
+          "description": "Confirms the Concerned tier over the flight's trajectory builds, so a flight whose successive builds disagree about entering your airspace does not flicker. A build is one the server made, counted once however often it is evaluated. Absent means 1 of 1 both ways: every build's verdict is taken at once, which is the existing behaviour. Intruder and Notified are never confirmed.",
+          "properties": {
+            "enter": {
+              "type": "object",
+              "description": "When a flight not held Concerned becomes Concerned. enter.count plus leave.count must exceed the larger of enter.of and leave.of, so that entering and leaving can never both hold over the same builds; a rule where they can is a load error.",
+              "properties": {
+                "count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 1,
+                  "description": "Concerned is confirmed only when count of the last of trajectory builds of the flight enter your airspace. Must not exceed of. Needs of written beside it."
+                },
+                "of": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 1,
+                  "description": "How many of the flight's latest trajectory builds count is taken from."
+                }
+              },
+              "dependencies": {
+                "count": ["of"]
+              },
+              "additionalProperties": false
+            },
+            "leave": {
+              "type": "object",
+              "description": "When a flight held Concerned stops being Concerned. enter.count plus leave.count must exceed the larger of enter.of and leave.of, so that entering and leaving can never both hold over the same builds; a rule where they can is a load error.",
+              "properties": {
+                "count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 1,
+                  "description": "Concerned is released only when count of the last of trajectory builds of the flight do not enter your airspace. Must not exceed of. Needs of written beside it."
+                },
+                "of": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 1,
+                  "description": "How many of the flight's latest trajectory builds count is taken from."
+                }
+              },
+              "dependencies": {
+                "count": ["of"]
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "coordination": {
       "type": "object",
       "description": "How this system runs the coordination dialogue at a sector boundary. Absent means today's behaviour, which is that every level at a boundary is either the one the coordination table states or one a controller proposed by hand, and nothing is ever agreed without a dialogue.",
@@ -904,7 +966,7 @@
               "type": "number",
               "minimum": 0,
               "default": 30,
-              "description": "Within this distance of the route's first point, the origin, the net says nothing: departures are vectored off the filed route whether or not the controller keyed the heading. TopSky's 30 NM. 0 turns the inhibit off."
+              "description": "Within this distance of the flight plan's departure airport the net says nothing: departures are vectored off the filed route whether or not the controller keyed the heading. Measured from the airport, never from the route's first point, which a folded direct-to moves to its fix; an airport the client's navdata does not place gets no inhibit. TopSky's 30 NM. 0 turns the inhibit off."
             },
             "inhibitNearDestinationNm": {
               "type": "number",
