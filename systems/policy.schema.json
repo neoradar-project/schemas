@@ -973,6 +973,12 @@
               "minimum": 0,
               "default": 30,
               "description": "Within this distance of the route's last point, the destination, the net says nothing, for the same reason on arrival. TopSky's 30 NM. 0 turns the inhibit off."
+            },
+            "flightRules": {
+              "type": "string",
+              "enum": ["all", "ifr", "vfr"],
+              "default": "ifr",
+              "description": "Which flights the net watches, the same vocabulary as msaw and aiw. Absent is ifr: a VFR flight has no route to hold to, and EuroScope never raises RAM for a VFR plan. An unfiled rule satisfies neither ifr nor vfr, so it is out of both. all watches every flight with a route."
             }
           },
           "additionalProperties": false
@@ -1031,8 +1037,8 @@
             "flightRules": {
               "type": "string",
               "enum": ["all", "ifr", "vfr"],
-              "default": "all",
-              "description": "Which flights the net watches. An unfiled rule satisfies neither ifr nor vfr, so it is out of both."
+              "default": "ifr",
+              "description": "Which flights the net watches. An unfiled rule satisfies neither ifr nor vfr, so it is out of both. Absent is ifr: a VFR flight is not watched unless the system authors all."
             },
             "uncontrolled": {
               "type": "boolean",
