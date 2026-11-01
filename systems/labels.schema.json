@@ -237,6 +237,11 @@
                     },
                     {
                       "type": "string",
+                      "const": "isLocalFlight",
+                      "description": "Is the flight local: departure equals destination, or the destination is empty or ZZZZ?"
+                    },
+                    {
+                      "type": "string",
                       "const": "myCallsign",
                       "description": "The callsign of the user."
                     },
