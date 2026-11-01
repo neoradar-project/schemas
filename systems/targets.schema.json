@@ -166,7 +166,10 @@
                                           "scratchpad",
                                           "groundStatus",
                                           "clearanceQueuePosition",
-                                          "attentionState"
+                                          "attentionState",
+                                          "offPlanLevel",
+                                          "offPlanLateral",
+                                          "offPlanTiming"
                                         ]
                                       },
                                       {
@@ -600,6 +603,7 @@
                   },
                   "applyToAttentionStates": {
                     "type": "array",
+                    "description": "kPlannedToYouDeviating matches a flight that was planned to you and is now off that plan, whatever its attention state; a variant that does not name it sees the flight's own state.",
                     "items": {
                       "type": "string",
                       "enum": [
@@ -609,7 +613,8 @@
                         "kAssumed",
                         "kOutgoingTransfer",
                         "kIntruder",
-                        "kConcerned"
+                        "kConcerned",
+                        "kPlannedToYouDeviating"
                       ]
                     }
                   },
