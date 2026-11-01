@@ -92,8 +92,8 @@ The vAcc's pathRules override document (`pathRules.json` in a package environmen
 `server-dataset.json` under `pathRules`): one definition per row of `@server/internal/pathrules` (`rows`), with its
 unit, range and integer-ness, the three rows a runway may set in `airports` and `runways`, and the 25 settable rows in
 `rules`; the three leg picker rows are absent on purpose. Two copies of one vocabulary: a row added, renamed or
-re-ranged in the server's table is changed here and in `@cli/src/definitions/path-rules.schema.json` (a byte-for-byte
-copy, held equal by `@cli`'s `path-rules.test.ts` when both are checked out). The cross-row bounds depend on the
+re-ranged in the server's table is changed here and in `@cli/src/definitions/path-rules.schema.json` (a
+copy, held equal as JSON by `@cli`'s `path-rules.test.ts` when both are checked out). The cross-row bounds depend on the
 deployment's own values and stay the server's check. Not a package file: the client never reads it.
 
 ## What has no schema
