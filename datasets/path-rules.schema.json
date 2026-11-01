@@ -94,6 +94,12 @@
         },
         "heldLevelRoundingFt": {
           "$ref": "#/$defs/heldLevelRoundingFt"
+        },
+        "meaningfulRouteMinNm": {
+          "$ref": "#/$defs/meaningfulRouteMinNm"
+        },
+        "localFlightHorizonMinutes": {
+          "$ref": "#/$defs/localFlightHorizonMinutes"
         }
       }
     },
@@ -262,6 +268,16 @@
       "type": "integer",
       "exclusiveMinimum": 0,
       "description": "Rounding of a held level to the levels ATC assigns. Unit: ft."
+    },
+    "meaningfulRouteMinNm": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "The shortest expanded route that is a route. A shorter one (a circuit's fix on the field, a route that expands to a point) is flown as the direct leg from departure to destination, else the present ground track. Unit: nm."
+    },
+    "localFlightHorizonMinutes": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "How far the present ground track is projected for a flight with no usable route (a circuit, a local flight, an unresolved destination). Unit: min."
     }
   }
 }
