@@ -145,6 +145,10 @@
                           "groundStatus",
                           "clearanceQueuePosition",
                           "attentionState",
+                          "offPlanLevel",
+                          "offPlanLateral",
+                          "offPlanTiming",
+                          "plannedToYouDeviating",
                           "currentSector",
                           "currentController",
                           "nextSector",
@@ -260,6 +264,11 @@
                             "type": "string",
                             "const": "isMyArrival",
                             "description": "Is the flight an arrival (my active airport)?"
+                          },
+                          {
+                            "type": "string",
+                            "const": "isLocalFlight",
+                            "description": "Is the flight local: departure equals destination, or the destination is empty or ZZZZ?"
                           },
                           {
                             "type": "string",

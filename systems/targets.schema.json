@@ -166,7 +166,11 @@
                                           "scratchpad",
                                           "groundStatus",
                                           "clearanceQueuePosition",
-                                          "attentionState"
+                                          "attentionState",
+                                          "offPlanLevel",
+                                          "offPlanLateral",
+                                          "offPlanTiming",
+                                          "plannedToYouDeviating"
                                         ]
                                       },
                                       {
@@ -212,6 +216,11 @@
                                             "type": "string",
                                             "const": "isMyArrival",
                                             "description": "Is the flight an arrival (my active airport)?"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "isLocalFlight",
+                                            "description": "Is the flight local: departure equals destination, or the destination is empty or ZZZZ?"
                                           },
                                           {
                                             "type": "string",
@@ -595,6 +604,7 @@
                   },
                   "applyToAttentionStates": {
                     "type": "array",
+                    "description": "kPlannedToYouDeviating matches a flight that was planned to you and is now off that plan, only while neither its planned nor its expected path enters any airspace of ours, whatever its attention state otherwise; a variant that does not name it sees the flight's own state.",
                     "items": {
                       "type": "string",
                       "enum": [
@@ -604,7 +614,8 @@
                         "kAssumed",
                         "kOutgoingTransfer",
                         "kIntruder",
-                        "kConcerned"
+                        "kConcerned",
+                        "kPlannedToYouDeviating"
                       ]
                     }
                   },

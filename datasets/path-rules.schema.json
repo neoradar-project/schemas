@@ -1,0 +1,283 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeoRadar pathRules override document",
+  "description": "The vAcc's pathRules override document: the local values the server's predicted paths read, over the server's defaults. Authored as pathRules.json beside the package's config.json; `neoradar-cli convert` checks it against this schema and carries it in server-dataset.json under `pathRules`. Name only the rows the vAcc means to change; no file means today's values. A flight resolves the server's defaults, then `rules`, then `airports` for its destination, then `runways` for the runway it lands on. The server refuses a document whole, naming the key. The three leg picker rows (establishedCrossTrackNm, establishedHeadingDeg, nearerLegHeadingDeg) are the client's lockstep constants and are not settable. Not expressible here and checked by the server over its own deployment values: monitorConfirmBuilds not over monitorConfirmOfBuilds, nearRebuildSeconds not over farRebuildSeconds, farRebuildSeconds not over monitorCheckMaxSeconds, farRebuildSeconds not over the deployment's trajectoryStaleSeconds, on every layer the document produces.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "vacc"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Editor hint only. `neoradar-cli convert` drops it, because the server refuses unknown keys."
+    },
+    "vacc": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The vAcc this document is for: the package manifest namespace, any case. The server and the convert refuse any other."
+    },
+    "description": {
+      "type": "string",
+      "description": "Free text for the author."
+    },
+    "rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Rows for every flight of the vAcc. Any row except the global three.",
+      "properties": {
+        "levelBandFpm": {
+          "$ref": "#/$defs/levelBandFpm"
+        },
+        "heldLevelToleranceFt": {
+          "$ref": "#/$defs/heldLevelToleranceFt"
+        },
+        "agreedLevelToleranceFt": {
+          "$ref": "#/$defs/agreedLevelToleranceFt"
+        },
+        "adoptRouteFraction": {
+          "$ref": "#/$defs/adoptRouteFraction"
+        },
+        "adoptTodMinutes": {
+          "$ref": "#/$defs/adoptTodMinutes"
+        },
+        "offRouteNm": {
+          "$ref": "#/$defs/offRouteNm"
+        },
+        "finalApproachNm": {
+          "$ref": "#/$defs/finalApproachNm"
+        },
+        "glidePathDeg": {
+          "$ref": "#/$defs/glidePathDeg"
+        },
+        "approachPlatformFt": {
+          "$ref": "#/$defs/approachPlatformFt"
+        },
+        "rebuildLateralNm": {
+          "$ref": "#/$defs/rebuildLateralNm"
+        },
+        "rebuildCruiseFt": {
+          "$ref": "#/$defs/rebuildCruiseFt"
+        },
+        "rebuildClimbDescentFt": {
+          "$ref": "#/$defs/rebuildClimbDescentFt"
+        },
+        "nearRebuildSeconds": {
+          "$ref": "#/$defs/nearRebuildSeconds"
+        },
+        "farRebuildSeconds": {
+          "$ref": "#/$defs/farRebuildSeconds"
+        },
+        "monitorLevelCruiseFt": {
+          "$ref": "#/$defs/monitorLevelCruiseFt"
+        },
+        "monitorLevelClimbDescentFt": {
+          "$ref": "#/$defs/monitorLevelClimbDescentFt"
+        },
+        "monitorLateralNm": {
+          "$ref": "#/$defs/monitorLateralNm"
+        },
+        "monitorLongitudinalMinutes": {
+          "$ref": "#/$defs/monitorLongitudinalMinutes"
+        },
+        "monitorConfirmBuilds": {
+          "$ref": "#/$defs/monitorConfirmBuilds"
+        },
+        "monitorConfirmOfBuilds": {
+          "$ref": "#/$defs/monitorConfirmOfBuilds"
+        },
+        "monitorCheckMaxSeconds": {
+          "$ref": "#/$defs/monitorCheckMaxSeconds"
+        },
+        "observedDescentLookAheadMinutes": {
+          "$ref": "#/$defs/observedDescentLookAheadMinutes"
+        },
+        "heldLevelRoundingFt": {
+          "$ref": "#/$defs/heldLevelRoundingFt"
+        },
+        "meaningfulRouteMinNm": {
+          "$ref": "#/$defs/meaningfulRouteMinNm"
+        },
+        "localFlightHorizonMinutes": {
+          "$ref": "#/$defs/localFlightHorizonMinutes"
+        }
+      }
+    },
+    "airports": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Rows for flights landing at an airport, keyed by 4-character upper-case ICAO code. Only the rows a runway may set (finalApproachNm, glidePathDeg, approachPlatformFt); every other row is the vAcc's alone.",
+      "patternProperties": {
+        "^[A-Z0-9]{4}$": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Rows for flights landing at this airport.",
+          "properties": {
+            "finalApproachNm": {
+              "$ref": "#/$defs/finalApproachNm"
+            },
+            "glidePathDeg": {
+              "$ref": "#/$defs/glidePathDeg"
+            },
+            "approachPlatformFt": {
+              "$ref": "#/$defs/approachPlatformFt"
+            }
+          }
+        }
+      }
+    },
+    "runways": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Rows for flights landing on a runway, keyed ICAO/DESIGNATOR in upper case (EGLL/27L).",
+      "patternProperties": {
+        "^[A-Z0-9]{4}/[A-Z0-9]{1,3}$": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Rows for flights landing on this runway.",
+          "properties": {
+            "finalApproachNm": {
+              "$ref": "#/$defs/finalApproachNm"
+            },
+            "glidePathDeg": {
+              "$ref": "#/$defs/glidePathDeg"
+            },
+            "approachPlatformFt": {
+              "$ref": "#/$defs/approachPlatformFt"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "levelBandFpm": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Vertical rate under which an aircraft counts as level. Unit: ft/min."
+    },
+    "heldLevelToleranceFt": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "How far from a held level still counts as holding it. Unit: ft."
+    },
+    "agreedLevelToleranceFt": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "How far from an agreed level still counts as at it. Unit: ft."
+    },
+    "adoptRouteFraction": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 1,
+      "description": "Fraction of the route flown past which a level is adopted as the cruise. Unit: fraction of route."
+    },
+    "adoptTodMinutes": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Minutes before top of descent inside which a level is adopted as the cruise. Unit: min."
+    },
+    "offRouteNm": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Distance off the route beyond which a path is reduced confidence. Unit: nm."
+    },
+    "finalApproachNm": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Length of the final approach, from the threshold. Unit: nm."
+    },
+    "glidePathDeg": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "exclusiveMaximum": 90,
+      "description": "Glide path angle. Unit: deg."
+    },
+    "approachPlatformFt": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Height above the threshold of the approach platform. Unit: ft above threshold."
+    },
+    "rebuildLateralNm": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Lateral drift that rebuilds a path. Unit: nm."
+    },
+    "rebuildCruiseFt": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Level drift in the cruise that rebuilds a path. Unit: ft."
+    },
+    "rebuildClimbDescentFt": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Level drift in a climb or descent that rebuilds a path. Unit: ft."
+    },
+    "nearRebuildSeconds": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Rebuild cadence near the sector. Not over farRebuildSeconds. Unit: s."
+    },
+    "farRebuildSeconds": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Rebuild cadence far from the sector. Not over monitorCheckMaxSeconds. Unit: s."
+    },
+    "monitorLevelCruiseFt": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Monitoring level tolerance in level flight. Unit: ft."
+    },
+    "monitorLevelClimbDescentFt": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Monitoring level tolerance in a climb or descent. Unit: ft."
+    },
+    "monitorLateralNm": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Monitoring lateral tolerance. Unit: nm."
+    },
+    "monitorLongitudinalMinutes": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Monitoring timing tolerance. Unit: min."
+    },
+    "monitorConfirmBuilds": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Builds that must disagree to confirm a deviation. Not over monitorConfirmOfBuilds. Unit: builds."
+    },
+    "monitorConfirmOfBuilds": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Builds the confirmation looks over. Unit: builds."
+    },
+    "monitorCheckMaxSeconds": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "maximum": 60,
+      "description": "Longest gap between checks, at most 60. Unit: s."
+    },
+    "observedDescentLookAheadMinutes": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Minutes ahead an observed descent is looked along. Unit: min."
+    },
+    "heldLevelRoundingFt": {
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "description": "Rounding of a held level to the levels ATC assigns. Unit: ft."
+    },
+    "meaningfulRouteMinNm": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "The shortest expanded route that is a route. A shorter one (a circuit's fix on the field, a route that expands to a point) is flown as the direct leg from departure to destination, else the present ground track. Unit: nm."
+    },
+    "localFlightHorizonMinutes": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "How far the present ground track is projected for a flight with no usable route (a circuit, a local flight, an unresolved destination). Unit: min."
+    }
+  }
+}
