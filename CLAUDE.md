@@ -86,6 +86,16 @@ alone, where an expression a `showWhen` names is written. The fourteen `area` ke
 to `areaAupId`): only an `area` list's row reads them, so they are in `lists.schema.json` and
 `expressions.schema.json` and not in `labels.schema.json`.
 
+## datasets/path-rules.schema.json
+
+The vAcc's pathRules override document (`pathRules.json` in a package environment, carried in
+`server-dataset.json` under `pathRules`): one definition per row of `@server/internal/pathrules` (`rows`), with its
+unit, range and integer-ness, the three rows a runway may set in `airports` and `runways`, and the 23 settable rows in
+`rules`; the three leg picker rows are absent on purpose. Two copies of one vocabulary: a row added, renamed or
+re-ranged in the server's table is changed here and in `@cli/src/definitions/path-rules.schema.json` (a byte-for-byte
+copy, held equal by `@cli`'s `path-rules.test.ts` when both are checked out). The cross-row bounds depend on the
+deployment's own values and stay the server's check. Not a package file: the client never reads it.
+
 ## What has no schema
 
 `datasets/atc-data.json` and `server-dataset.json` have none. The per-volume
