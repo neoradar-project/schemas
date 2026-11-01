@@ -169,7 +169,8 @@
                                           "attentionState",
                                           "offPlanLevel",
                                           "offPlanLateral",
-                                          "offPlanTiming"
+                                          "offPlanTiming",
+                                          "plannedToYouDeviating"
                                         ]
                                       },
                                       {

@@ -122,6 +122,7 @@
                     "offPlanLevel",
                     "offPlanLateral",
                     "offPlanTiming",
+                    "plannedToYouDeviating",
                     "currentSector",
                     "currentController",
                     "nextSector",
