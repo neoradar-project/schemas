@@ -226,38 +226,38 @@
     "monitorLevelCruiseFt": {
       "type": "integer",
       "exclusiveMinimum": 0,
-      "description": "Monitoring level tolerance in level flight. Nothing reads it yet. Unit: ft."
+      "description": "Monitoring level tolerance in level flight. Unit: ft."
     },
     "monitorLevelClimbDescentFt": {
       "type": "integer",
       "exclusiveMinimum": 0,
-      "description": "Monitoring level tolerance in a climb or descent. Nothing reads it yet. Unit: ft."
+      "description": "Monitoring level tolerance in a climb or descent. Unit: ft."
     },
     "monitorLateralNm": {
       "type": "number",
       "exclusiveMinimum": 0,
-      "description": "Monitoring lateral tolerance. Nothing reads it yet. Unit: nm."
+      "description": "Monitoring lateral tolerance. Unit: nm."
     },
     "monitorLongitudinalMinutes": {
       "type": "number",
       "exclusiveMinimum": 0,
-      "description": "Monitoring timing tolerance. Nothing reads it yet. Unit: min."
+      "description": "Monitoring timing tolerance. Unit: min."
     },
     "monitorConfirmBuilds": {
       "type": "integer",
       "exclusiveMinimum": 0,
-      "description": "Builds that must disagree to confirm a deviation. Not over monitorConfirmOfBuilds. Nothing reads it yet. Unit: builds."
+      "description": "Builds that must disagree to confirm a deviation. Not over monitorConfirmOfBuilds. Unit: builds."
     },
     "monitorConfirmOfBuilds": {
       "type": "integer",
       "exclusiveMinimum": 0,
-      "description": "Builds the confirmation looks over. Nothing reads it yet. Unit: builds."
+      "description": "Builds the confirmation looks over. Unit: builds."
     },
     "monitorCheckMaxSeconds": {
       "type": "integer",
       "exclusiveMinimum": 0,
       "maximum": 60,
-      "description": "Longest gap between checks, at most 60. Nothing reads it yet. Unit: s."
+      "description": "Longest gap between checks, at most 60. Unit: s."
     },
     "observedDescentLookAheadMinutes": {
       "type": "integer",
