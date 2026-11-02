@@ -1813,14 +1813,15 @@
             "confirmCycles": {
               "type": "integer",
               "minimum": 1,
+              "maximum": 16,
               "default": 2,
-              "description": "Cycles inside or entering before the net raises. A cycle is cadenceS, so the default is 10 seconds. Leaving clears at once."
+              "description": "New position reports in a row inside or entering before the net raises; a check that sees no new report counts nothing. At one report every 5 seconds the default raises 5 to 10 seconds after the aircraft is first judged inside or entering. Leaving clears at once."
             },
             "cadenceS": {
               "type": "integer",
               "minimum": 1,
               "default": 5,
-              "description": "Seconds between evaluations. The net rides the 2 Hz position batch and skips the batches inside this window, so this is also what one confirmation cycle is worth; the default matches how often a pilot client sends a position."
+              "description": "Seconds between evaluations. The net rides the 2 Hz position batch and skips the batches inside this window, so a pilot client reporting less often than this is still counted once per report; the default matches how often a pilot client sends a position."
             },
             "controlledZoneTag": {
               "type": "string",
