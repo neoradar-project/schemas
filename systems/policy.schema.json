@@ -468,7 +468,7 @@
               "type": "integer",
               "minimum": 1,
               "default": 10,
-              "description": "How far ahead a mobile on the ground is predicted along its track for rules.predictedEntry, seconds. The sources leave it local and give no value; 10 s covers the under 6 s a mobile takes from a close holding point to the runway at 15 kt."
+              "description": "How far ahead a mobile on the ground is predicted along its track for rules.predictedEntry, seconds. No source gives this value; 10 s is a local choice that covers the under 6 s a mobile takes from a close holding point to the runway at 15 kt."
             },
             "pairs": {
               "type": "string",
