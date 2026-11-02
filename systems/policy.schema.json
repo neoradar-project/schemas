@@ -1516,12 +1516,12 @@
             "exclusionZoneTag": {
               "type": "string",
               "default": "stca-exclude",
-              "description": "A zone tag that takes a track out of the pair loop entirely, for airspace where converging traffic is the procedure. Whole tags only, so no spaces."
+              "description": "A zone tag inside which every pair of a track is still judged and kept silent, for airspace where converging traffic is the procedure: the confirmation runs on, so a pair leaving it into a conflict alerts on its first sweep outside. Whole tags only, so no spaces."
             },
             "parallelApproachZoneTag": {
               "type": "string",
               "default": "stca-parallel",
-              "description": "A zone tag that suppresses a pair when BOTH aircraft are inside it, on one course within 10 degrees of each other and at least 0.33 nm apart (the parallel defaults), which is what parallel approaches look like. One inside and one crossing overhead, a pair head on or crossing, a pair closer than that, and a pair with either aircraft in a parallel operation's no transgression zone are still judged. The zone knows no runway or side, so a parallel operation is the precise tool."
+              "description": "A zone tag that keeps a pair silent, still judged so that leaving the zone into a conflict alerts at once, when BOTH aircraft are inside it, on one course within 10 degrees of each other and at least 0.33 nm apart (the parallel defaults), which is what parallel approaches look like. One inside and one crossing overhead, a pair head on or crossing, a pair closer than that, and a pair with either aircraft in a parallel operation's no transgression zone are still judged. The zone knows no runway or side, so a parallel operation is the precise tool."
             },
             "finalApproach": {
               "type": "object",
@@ -1561,7 +1561,7 @@
             },
             "parallel": {
               "type": "array",
-              "description": "Runway pairs worked at the same time. The package names them because nothing in the data says which runways an aerodrome operates simultaneously. A pair applies only while the aerodrome's runway selection has BOTH runways active for arrivals. One aircraft in each normal operating zone, each landing at the aerodrome (on that zone's runway when it filed one), each tracking within courseToleranceDeg of its own approach course and the two at least minSepNm apart, is the operation working rather than a conflict. A pair naming a runway no monitored strip carries, or one not landing on both, is reported by .dev stca-info rather than silently matching nothing.",
+              "description": "Runway pairs worked at the same time. The package names them because nothing in the data says which runways an aerodrome operates simultaneously. A pair applies only while the aerodrome's runway selection has BOTH runways active for arrivals. One aircraft in each normal operating zone, each landing at the aerodrome (on that zone's runway when it filed one), each tracking within courseToleranceDeg of its own approach course and the two at least minSepNm apart, is the operation working rather than a conflict: the pair is still judged and kept silent, so one leaving its zone into a conflict alerts at once. A pair naming a runway no monitored strip carries, or one not landing on both, is reported by .dev stca-info rather than silently matching nothing.",
               "items": {
                 "type": "object",
                 "required": ["icao", "left", "right"],
@@ -1654,7 +1654,7 @@
             "uncontrolledPairs": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a pair neither of which any controller tracks alerts, TopSky's STCA_Uncontrolled. Off."
+              "description": "Whether a pair of two uncontrolled flights alerts, TopSky's STCA_Uncontrolled. Off. An uncontrolled flight is a VFR one nobody tracks; an IFR flight, or one with no plan, counts as controlled, tracked or not."
             },
             "sourceStates": {
               "type": "array",
