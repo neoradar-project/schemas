@@ -189,6 +189,7 @@
                           "alertCount",
                           "alertAcknowledged",
                           "alertsMuted",
+                          "alertsInhibited",
                           "alertTimeToConflictS",
                           "alertMissNm",
                           "alertStca",
