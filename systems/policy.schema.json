@@ -985,6 +985,19 @@
           },
           "additionalProperties": false
         },
+        "inhibit": {
+          "type": "object",
+          "description": "What the inhibitAlerts click action does. It switches this client's nets off for one aircraft (kinds.<kind>.inhibitable) until the controller lifts it, the aircraft goes, its pilot changes or the FSD session ends, and after expiresS when one is authored. alertsInhibited marks the aircraft and alertOtherInhibited the other aircraft of an alert. For STCA it is one of the two flags that silence a pair.",
+          "properties": {
+            "expiresS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "description": "Seconds an inhibit lasts before it lapses by itself. 0, the default, never lapses, so an inhibit stays until it is lifted. An inhibitor never reset after use is a fault-tree cause in the EUROCONTROL STCA guidance."
+            }
+          },
+          "additionalProperties": false
+        },
         "acknowledge": {
           "type": "object",
           "description": "What the acknowledgeAlert click action does. The colour always stays: acknowledging says the controller has seen the alert, not that it has gone, and a change of kind or severity re-arms it by itself. A pairwise alert also re-arms for good when the other aircraft changes or its predicted separation closes (rearmOnCpaDecreaseNm).",
@@ -1143,7 +1156,7 @@
         },
         "exclude": {
           "type": "object",
-          "description": "Aircraft NO client-side net looks at: STCA, TCT, RAM, AIW, MSAW, AFDAS, BUST and CLAM all skip them at their eligibility stage. An aircraft is excluded when a callsign pattern matches, or a squawk prefix matches, or the when condition holds; any one is enough. The duplicate-code detector in Correlation stops calling a code listed in squawks duplicated (TopSky's Airspace_No_DUPE_Codes); it reads squawks alone, never callsigns or when. The emergency squawk net and RIMCAS are never excluded. A controller's per-aircraft twin of this is the inhibitAlerts click action. Note that excluding the conspicuity codes silences AIW on exactly the traffic AIW exists to watch, the untracked VFR under a TMA, so list them only when that is what the vAcc wants.",
+          "description": "Aircraft the client-side nets leave out: TCT, RAM, AIW, MSAW, AFDAS, BUST and CLAM skip them at their eligibility stage, and STCA keeps them in its pair loop and silences a pair only when both aircraft are excluded or inhibited. An aircraft is excluded when a callsign pattern matches, or a squawk prefix matches, or the when condition holds; any one is enough. The duplicate-code detector in Correlation stops calling a code listed in squawks duplicated (TopSky's Airspace_No_DUPE_Codes); it reads squawks alone, never callsigns or when. The emergency squawk net and RIMCAS are never excluded. A controller's per-aircraft twin of this is the inhibitAlerts click action. Note that excluding the conspicuity codes silences AIW on exactly the traffic AIW exists to watch, the untracked VFR under a TMA, so list them only when that is what the vAcc wants.",
           "properties": {
             "callsigns": {
               "type": "array",
@@ -3050,7 +3063,7 @@
               "inhibitable": {
                 "type": "boolean",
                 "default": true,
-                "description": "Whether the controller's inhibitAlerts switches this client net off for an aircraft. The TCT simulations say a controller should not be able to suppress TCT; a system that agrees authors false. Never on emergency or rimcas."
+                "description": "Whether the controller's inhibitAlerts switches this client net off for an aircraft; for STCA, whether it counts toward the two flags that silence a pair. The TCT simulations say a controller should not be able to suppress TCT; a system that agrees authors false. Never on emergency or rimcas."
               },
               "mutable": {
                 "type": "boolean",
