@@ -193,6 +193,7 @@
                           "alertAcknowledged",
                           "alertsMuted",
                           "alertsInhibited",
+                          "alertOtherInhibited",
                           "alertTimeToConflictS",
                           "alertMissNm",
                           "alertStca",
