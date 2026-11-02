@@ -80,7 +80,7 @@
           "properties": {
             "msaFt": {
               "type": "integer",
-              "description": "Minimum safe altitude over this polygon, in feet AMSL. The MSAW net triggers below this minus safetyNets.msaw.bufferFt and clears above it plus the buffer, because an aircraft cruising at exactly the minimum wobbles. The converter warns on anything under 300 ft, which is what a dropped zero looks like."
+              "description": "Minimum safe altitude over this polygon, in feet AMSL. The MSAW net triggers below this minus safetyNets.msaw.bufferFt and clears at it plus safetyNets.msaw.clearFt, held for one more report, because an aircraft cruising at exactly the minimum wobbles. 0 EXCLUDES the polygon from the net, as an MSA of 0 makes an inhibit area in TopSky: a point whose first polygon is a 0 raises nothing, and a polygon behind it does not apply there. A negative value is skipped with a warning. The converter warns on anything under 300 ft, which is what a dropped zero looks like."
             },
             "source": {
               "type": "string",

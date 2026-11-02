@@ -93,9 +93,6 @@
           "type": "boolean",
           "description": "A code-correlated track drops to uncorrelated when it changes to a code that is not the assigned or an emergency code."
         },
-        "manualDecorrelationIsSticky": {
-          "type": "boolean"
-        },
         "duplicates": {
           "type": "object",
           "properties": {
@@ -448,6 +445,12 @@
               "default": 200,
               "description": "An airborne mobile climbing faster than this over the strip is an overflight."
             },
+            "maxAglFt": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 400,
+              "description": "An airborne mobile higher than this above the runway is not on it: the local altitude below which an aircraft over the strip is a conflict object. A position that reports no height above ground reads its true altitude less the runway's threshold elevation."
+            },
             "oppositeDirectionDeg": {
               "type": "number",
               "minimum": 0,
@@ -460,6 +463,12 @@
               "minimum": 0,
               "default": 5,
               "description": "Below this an occupant is standing: lined up, holding or stopped crossing. Under pairs notBehind, two occupants conflict (rules.occupants) only when one moving has the other AHEAD of it, EUROCONTROL-SPEC-171's 'not behind', so a conditional line-up behind a departure's roll is no conflict."
+            },
+            "entryLookaheadS": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10,
+              "description": "How far ahead a mobile on the ground is predicted along its track for rules.predictedEntry, seconds. No source gives this value; 10 s is a local choice that covers the under 6 s a mobile takes from a close holding point to the runway at 15 kt."
             },
             "pairs": {
               "type": "string",
@@ -478,7 +487,7 @@
               "type": "integer",
               "minimum": 1,
               "default": 300,
-              "description": "How far ahead along the track an approach is searched for, seconds. Must reach stageOneS."
+              "description": "How far ahead along the track an approach is searched for, seconds. Must reach stageOneS and stageOneLvpS."
             },
             "alignmentDeg": {
               "type": "number",
@@ -504,7 +513,7 @@
               "type": "integer",
               "minimum": 1,
               "default": 3000,
-              "description": "Higher than this above the field and a mobile is not on an approach yet."
+              "description": "Higher than this above the field and a mobile is not on an approach yet. A position that reports no height above ground reads its true altitude less the runway's threshold elevation."
             },
             "countdownS": {
               "type": "array",
@@ -513,7 +522,7 @@
                 "minimum": 1
               },
               "default": [60, 45, 30, 15],
-              "description": "The Impending Arrival Window rows, seconds from the strip, largest first and strictly descending. An approach beyond the first row plus fifteen seconds is not listed."
+              "description": "The Impending Arrival Window rows, seconds from the landing threshold, largest first and strictly descending. An approach beyond the first row plus fifteen seconds is not listed."
             },
             "countdownLvpS": {
               "type": "array",
@@ -527,20 +536,31 @@
             "stageOneS": {
               "type": "integer",
               "minimum": 1,
-              "default": 45,
-              "description": "An arrival this close to a strip with an occupant is a Stage One for both."
+              "default": 30,
+              "description": "An arrival this many seconds or less from the landing threshold of a strip with an occupant is a Stage One for both. 30 is the EUROCONTROL-SPEC-171 SAFE-280 and SPEC-202 RMCA-070 example, and Edinburgh's figure. Also the window in which an arrival to a closed runway is alerted."
             },
             "stageTwoS": {
               "type": "integer",
               "minimum": 1,
-              "default": 20,
-              "description": "An arrival this close to a strip with an occupant is a Stage Two for both. Must be below stageOneS."
+              "default": 15,
+              "description": "An arrival this many seconds or less from the landing threshold of a strip with an occupant is a Stage Two for both. 15 is the specification's example. Must be below stageOneS."
+            },
+            "stageOneLvpS": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 45,
+              "description": "stageOneS while low visibility procedures are in force. 45 is the specification's low-visibility example; no UK unit's own value is published."
             },
             "stageTwoLvpS": {
               "type": "integer",
               "minimum": 1,
               "default": 30,
-              "description": "stageTwoS while low visibility procedures are in force. Must be below stageOneS."
+              "description": "stageTwoS while low visibility procedures are in force. 30 is the specification's low-visibility example. Must be below stageOneLvpS."
+            },
+            "oppositeArrivalsS": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Two arrivals to opposite ends of one strip are alerted when both are this many seconds or less from their thresholds (rules.oppositeArrivals). Absent, the Stage One window in force: stageOneS, stageOneLvpS in low visibility. lookaheadS must reach it."
             }
           },
           "additionalProperties": false
@@ -562,17 +582,94 @@
             "closedRunway": {
               "type": "boolean",
               "default": true,
-              "description": "Any mobile on, or approaching within stageOneS, a runway the controller closed (.dev rimcas-close) is a Stage Two."
+              "description": "Any mobile on a runway the controller closed (.dev rimcas-close), or an arrival to it within stageOneS, is alerted at its stages.closedRunwayOccupant and stages.closedRunwayApproach stage."
             },
             "oppositeDirection": {
               "type": "boolean",
               "default": true,
-              "description": "Two moving occupants head-on along one strip are a Stage Two with their own reason, ahead of the general two-on-the-runway rule."
+              "description": "Two moving occupants head-on along one strip are alerted with their own reason, raised before the general two-on-the-runway rule."
             },
             "restrictedArea": {
               "type": "boolean",
               "default": true,
-              "description": "A mobile inside a zone tagged strip.restrictedZoneTag is a Stage Two."
+              "description": "A mobile inside a zone tagged strip.restrictedZoneTag is alerted at stages.restrictedArea."
+            },
+            "oppositeArrivals": {
+              "type": "boolean",
+              "default": true,
+              "description": "Two arrivals to opposite ends of one strip, both within stageOneS of their thresholds, are alerted at stages.oppositeArrivals (EUROCONTROL-SPEC-171 SAFE-250, SPEC-202 RMCA-050)."
+            },
+            "predictedEntry": {
+              "type": "boolean",
+              "default": true,
+              "description": "A mobile on the ground moving at movingKts or more, outside the strip, whose track carries it inside within occupancy.entryLookaheadS, is alerted with every arrival within stageOneS at stages.predictedEntry (SPEC-171 SAFE-260, SPEC-202 RMCA-060). Departures are not yet a class of their own, so only arrivals are judged against it."
+            }
+          },
+          "additionalProperties": false
+        },
+        "stages": {
+          "type": "object",
+          "description": "The stage each scenario and case raises: stageOne (INFORMATION, a caution) or stageTwo (ALARM). EUROCONTROL-SPEC-171 and SPEC-202 leave stage assignment local; every default is SPEC-202's, which differs from the old fixed stages only for an arrival to a closed runway.",
+          "properties": {
+            "occupants": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageOne",
+              "description": "Two on one strip, not closing fast."
+            },
+            "occupantsClosing": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "Two on one strip, one faster than stageTwoSpeedKts closing on the other."
+            },
+            "arrivalApproaching": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageOne",
+              "description": "An arrival within stageOneS of the threshold of a strip with an occupant."
+            },
+            "arrivalImminent": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "An arrival within stageTwoS of the threshold of a strip with an occupant."
+            },
+            "closedRunwayOccupant": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "A mobile on a closed runway (SPEC-202 CMAC-060: ALARM when on it)."
+            },
+            "closedRunwayApproach": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageOne",
+              "description": "An arrival within stageOneS of a closed runway's threshold (SPEC-202 CMAC-060: INFORMATION while foreseen)."
+            },
+            "oppositeDirection": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "Two moving occupants head-on along one strip."
+            },
+            "restrictedArea": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "A mobile inside a restricted area (SPEC-202 CMAC-120: ALARM when in it)."
+            },
+            "oppositeArrivals": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageTwo",
+              "description": "Two arrivals to opposite ends of one strip, both inside stageOneS (SESAR SOL02: ALARM)."
+            },
+            "predictedEntry": {
+              "type": "string",
+              "enum": ["stageOne", "stageTwo"],
+              "default": "stageOne",
+              "description": "A mobile predicted into the strip while an arrival is inside stageOneS, and that arrival: INFORMATION before it enters, after which the occupant rules take over."
             }
           },
           "additionalProperties": false
@@ -582,27 +679,6 @@
           "minimum": 0,
           "default": 40,
           "description": "vSMR's rule: an occupant faster than this and closing on another occupant is a Stage Two; slower is a Stage One."
-        },
-        "sounds": {
-          "type": "object",
-          "description": "Sound ids from the package's sounds folder, played once per escalation; absent plays nothing. Each id is the name of a file in the package's sounds folder without its extension (stca is sounds/stca.wav, else sounds/stca.mp3), never a path. An id with no file is logged as a warning and plays nothing.",
-          "properties": {
-            "stageOne": {
-              "type": "string",
-              "description": "Played when a mobile first reaches Stage One."
-            },
-            "stageTwo": {
-              "type": "string",
-              "description": "Played when a mobile first reaches Stage Two."
-            },
-            "stageTwoRepeatS": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0,
-              "description": "While any Stage Two stands, the stageTwo sound plays again every this many seconds; 0 plays it once per escalation, as vSMR did. NOVA keeps sounding."
-            }
-          },
-          "additionalProperties": false
         },
         "runways": {
           "type": "object",
@@ -632,73 +708,176 @@
         },
         "approachFunnel": {
           "type": "object",
-          "description": "AFDAS, NOVA's approach funnel deviation net, evaluated on the client: an aircraft on final left, right, above or below the funnel to the runway in use, raised as a warning-severity Afdas naming the side and as an alert past twice the tolerance. It rides RIMCAS's own arrival detection, so it judges only an aircraft already lined up with a monitored runway end and reaching its strip. A net of its own: absent means off even with runwayMonitoring authored. The glidepath band needs a threshold elevation, which open-navdata.db carries for most but not all runways; an end without one is judged on the lateral axis alone and .dev afdas-info names it.",
+          "description": "AFDAS, the approach path monitor of the EUROCONTROL APM guidelines (G162 Part III), evaluated on the client. An airborne track qualifies on final to a monitored runway end inside the lateral area within onFinalTrackDeg of the course, and from then on is alerted below the lower slope (under the joining altitude), above the upper slope if authored, and laterally, each raised after confirmCycles new reports as one alert naming the side (LO before L or R before HI). A plan's destination and arrival runway, where it has them, are the only ones it is judged against. It judges the QNH altitude: the aircraft's pressure altitude on the QNH of the nearest airport METAR the client holds, else its true altitude. A net of its own: absent means off even with runwayMonitoring authored. The vertical axes need a threshold elevation, which open-navdata.db carries for most but not all runways; an end without one is judged on the lateral axis alone and .dev afdas-info names it.",
           "properties": {
             "enabled": {
               "type": "boolean",
               "default": true,
               "description": "False stops the funnel evaluating. Use safetyNets.show.afdas instead to keep it evaluating and hide it on this system."
             },
-            "lateralDeg": {
+            "fromNm": {
+              "type": "number",
+              "minimum": 0,
+              "default": 2,
+              "description": "Nearest distance from the touchdown point that is monitored; inside it the aircraft is landing and the band is within the surveillance's own error (EUROCONTROL G162 MINDISTANCE 2)."
+            },
+            "toNm": {
               "type": "number",
               "exclusiveMinimum": 0,
-              "maximum": 45,
-              "default": 3,
-              "description": "Half angle of the wedge either side of the extended centreline, widening from the threshold. NOVA's number."
+              "default": 10,
+              "description": "Furthest distance from the touchdown point that is monitored, the extent of the lateral area too. Must exceed fromNm. 10 is the NOVA 9000 AFDAS range."
             },
             "glidepathDeg": {
               "type": "number",
               "minimum": 0.5,
               "maximum": 15,
               "default": 3,
-              "description": "Nominal glidepath the vertical band is centred on. Override it per end for a steep approach rather than raising it here."
+              "description": "Nominal glidepath, the path the explainer reports heights against; it must lie between lowerSlopeDeg and upperSlopeDeg. Raise it per end for a steep approach, with the slopes."
             },
-            "verticalFt": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 150,
-              "description": "Half depth of the band around the glidepath, in feet."
-            },
-            "fromNm": {
+            "lowerSlopeDeg": {
               "type": "number",
               "minimum": 0,
+              "maximum": 15,
               "default": 2,
-              "description": "Nearest distance from the threshold the funnel judges. Inside it the aircraft is landing and the wedge has narrowed to nothing useful."
+              "description": "Below this angle up from the touchdown point, and under joiningAltitudeFt, a monitored aircraft is low (G162 LOWERSLOPE 2)."
             },
-            "toNm": {
+            "upperSlopeDeg": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 30,
+              "default": 4,
+              "description": "Above this angle up from the touchdown point a monitored aircraft is high, when alertAbove is on (G162 UPPERSLOPE 4)."
+            },
+            "joiningAltitudeFt": {
               "type": "number",
               "exclusiveMinimum": 0,
-              "default": 10,
-              "description": "Furthest distance from the threshold the funnel judges. Must exceed fromNm. Beyond it an aircraft is still being turned onto final, which is the main nuisance this window prevents."
+              "description": "The altitude aircraft join the glidepath level at: at or above it nothing is low, so a volume can reach past the point where the lower slope meets the joining level. Absent, the lower slope is the floor all the way out (G162 JOININGHEIGHT)."
+            },
+            "lateralStartNm": {
+              "type": "number",
+              "minimum": 0,
+              "default": 0,
+              "description": "Half width of the lateral area at the touchdown point, widening by lateralSlopeDeg each side along the course."
+            },
+            "lateralSlopeDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 45,
+              "default": 20,
+              "description": "Half angle the lateral area widens by each side of the course. 20 is half of G162's 40 degree HORIZONTALANGLE wedge. It and lateralStartNm cannot both be 0."
+            },
+            "onFinalTrackDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180,
+              "default": 20,
+              "description": "A track inside the lateral area within this of the course qualifies on final and is monitored from then on; a lateral alert held by trackDeviationDeg clears at this or less. TopSky's 20."
+            },
+            "trackDeviationDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180,
+              "default": 30,
+              "description": "A monitored track more than this off the course raises a lateral alert, held while it stays more than onFinalTrackDeg off. Must exceed onFinalTrackDeg. TopSky's 30."
+            },
+            "missedApproachFpm": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 500,
+              "description": "A monitored aircraft climbing faster than this is going around: monitoring stops and its alert goes, until it qualifies again. TopSky's 500."
+            },
+            "overflightAltitudeFt": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "At or above this altitude an aircraft is overflying and not monitored. Absent, no altitude stops monitoring."
+            },
+            "alertBelow": {
+              "type": "boolean",
+              "default": true,
+              "description": "Alert a monitored aircraft below the lower slope (G162 ActivateBelowGlideSlope)."
+            },
+            "alertAbove": {
+              "type": "boolean",
+              "default": false,
+              "description": "Alert a monitored aircraft above the upper slope (G162 ActivateAboveGlideSlope). Off by default: many systems alert below the path only."
+            },
+            "alertLateral": {
+              "type": "boolean",
+              "default": true,
+              "description": "Alert a monitored aircraft that leaves the lateral area, or turns more than trackDeviationDeg off the course (G162 ActivateHorizontalDeviation). The alert on leaving the area stays until it climbs away or leaves the range."
             },
             "confirmCycles": {
               "type": "integer",
               "minimum": 1,
-              "default": 4,
-              "description": "Sweeps outside the funnel before it raises. The sweep is the 2 Hz position batch, so the default is two seconds. Coming back inside clears at once."
+              "maximum": 16,
+              "default": 2,
+              "description": "Distinct position reports outside the funnel before it raises; a sweep that sees no new report does not count, so one legacy report seen on several sweeps is one. Coming back inside clears at once."
             },
             "ends": {
               "type": "object",
-              "description": "Per runway END overrides, keyed \"EGLC/27\". A steep approach needs its own glidepath; anything the entry does not name inherits the section's value.",
+              "description": "Per runway END, keyed \"EGLC/27\": its own approach volume, its final approach course and its touchdown point. Anything the entry does not name is the section's value.",
               "additionalProperties": {
                 "type": "object",
                 "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "False takes this end out of the net: EUROCONTROL APM-14's inhibition for a runway."
+                  },
+                  "fromNm": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Nearest distance from the touchdown point that is monitored; inside it the aircraft is landing and the band is within the surveillance's own error (EUROCONTROL G162 MINDISTANCE 2)."
+                  },
+                  "toNm": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "description": "Furthest distance from the touchdown point that is monitored, the extent of the lateral area too. Must exceed fromNm. 10 is the NOVA 9000 AFDAS range."
+                  },
                   "glidepathDeg": {
                     "type": "number",
                     "minimum": 0.5,
                     "maximum": 15,
-                    "description": "This end's nominal glidepath, for example 5.5 at London City."
+                    "description": "Nominal glidepath, the path the explainer reports heights against; it must lie between lowerSlopeDeg and upperSlopeDeg. Raise it per end for a steep approach, with the slopes."
                   },
-                  "lateralDeg": {
+                  "lowerSlopeDeg": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 15,
+                    "description": "Below this angle up from the touchdown point, and under joiningAltitudeFt, a monitored aircraft is low (G162 LOWERSLOPE 2)."
+                  },
+                  "upperSlopeDeg": {
+                    "type": "number",
+                    "minimum": 0.5,
+                    "maximum": 30,
+                    "description": "Above this angle up from the touchdown point a monitored aircraft is high, when alertAbove is on (G162 UPPERSLOPE 4)."
+                  },
+                  "joiningAltitudeFt": {
                     "type": "number",
                     "exclusiveMinimum": 0,
+                    "description": "The altitude aircraft join the glidepath level at: at or above it nothing is low, so a volume can reach past the point where the lower slope meets the joining level. Absent, the lower slope is the floor all the way out (G162 JOININGHEIGHT)."
+                  },
+                  "lateralStartNm": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Half width of the lateral area at the touchdown point, widening by lateralSlopeDeg each side along the course."
+                  },
+                  "lateralSlopeDeg": {
+                    "type": "number",
+                    "minimum": 0,
                     "maximum": 45,
-                    "description": "This end's lateral half angle."
+                    "description": "Half angle the lateral area widens by each side of the course. 20 is half of G162's 40 degree HORIZONTALANGLE wedge. It and lateralStartNm cannot both be 0."
                   },
-                  "verticalFt": {
+                  "courseDeg": {
                     "type": "number",
-                    "exclusiveMinimum": 0,
-                    "description": "This end's vertical half depth."
+                    "minimum": 0,
+                    "maximum": 360,
+                    "description": "The final approach course, degrees true, where it is not the runway's own bearing (an offset localiser or a published offset course). Absent, the runway's bearing from the navdata."
+                  },
+                  "touchdownM": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "Metres the touchdown point lies past the landing threshold, along the runway; the path and the distances start there. Absent, 0: the threshold."
                   }
                 },
                 "additionalProperties": false
@@ -760,6 +939,12 @@
               "default": 0,
               "description": "Seconds between repeats of the alert sound while any unacknowledged alert-severity alert stands anywhere. 0 plays once per escalation, which is the default; NOVA keeps sounding, vSMR sounded once."
             },
+            "newEntryMinSeverity": {
+              "type": "string",
+              "enum": ["info", "warning", "alert"],
+              "default": "alert",
+              "description": "The lowest severity at which a new alert is a new alarm: one raised on an aircraft already alerting, under its highest alert, plays its own sound, asks again for an acknowledgement given to the alert above it, and ends a session mute. alert by default, the surface specifications' new ALARM."
+            },
             "perKind": {
               "type": "object",
               "description": "Replaces the severity sound for one kind, so MSAW can have its own tone.",
@@ -787,6 +972,32 @@
           },
           "additionalProperties": false
         },
+        "mute": {
+          "type": "object",
+          "description": "What the muteAlerts click action does. It silences the sounds of the kinds that are mutable (kinds.<kind>.mutable: every kind but emergency and rimcas unless authored), a new alert-severity alert anywhere ends it and plays, the end of the FSD session ends it, and it lapses by itself after expiresS. The colour, the blink and alertsMuted are the controller's cue that sound is off.",
+          "properties": {
+            "expiresS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 300,
+              "description": "Seconds a mute lasts before sound returns by itself. 0 never lapses. Five minutes by default: a mute quietens one nuisance episode and must not outlive it."
+            }
+          },
+          "additionalProperties": false
+        },
+        "inhibit": {
+          "type": "object",
+          "description": "What the inhibitAlerts click action does. It switches this client's nets off for one aircraft (kinds.<kind>.inhibitable) until the controller lifts it, the aircraft goes, its pilot changes or the FSD session ends, and after expiresS when one is authored. alertsInhibited marks the aircraft and alertOtherInhibited the other aircraft of an alert. For STCA it is one of the two flags that silence a pair.",
+          "properties": {
+            "expiresS": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "description": "Seconds an inhibit lasts before it lapses by itself. 0, the default, never lapses, so an inhibit stays until it is lifted. An inhibitor never reset after use is a fault-tree cause in the EUROCONTROL STCA guidance."
+            }
+          },
+          "additionalProperties": false
+        },
         "acknowledge": {
           "type": "object",
           "description": "What the acknowledgeAlert click action does. The colour always stays: acknowledging says the controller has seen the alert, not that it has gone, and a change of kind or severity re-arms it by itself. A pairwise alert also re-arms for good when the other aircraft changes or its predicted separation closes (rearmOnCpaDecreaseNm).",
@@ -807,6 +1018,12 @@
               "minimum": 0,
               "default": 1,
               "description": "Nautical miles a pairwise alert's predicted closest lateral distance must shrink after the click before the acknowledgement is spent, TopSky's de-acknowledge on a separation decrease: an STCA acknowledged at 2.8 NM that closes to 1.8 NM sounds and asks again, and opening back out does not re-acknowledge it. 0 turns the rule off; a new other aircraft re-arms either way. STCA and TCT carry a predicted distance; any other pairwise alert keeps the kind-and-severity rule."
+            },
+            "pairs": {
+              "type": "string",
+              "enum": ["both", "one"],
+              "default": "both",
+              "description": "What acknowledging one aircraft of a pairwise alert (STCA, TCT) does to the other. both acknowledges the same alert on the other aircraft too, while it is that aircraft's highest, so the partner stops blinking and repeating with it; one leaves the other end to be acknowledged on its own."
             }
           },
           "additionalProperties": false
@@ -832,41 +1049,82 @@
           },
           "uniqueItems": true,
           "default": [
+            "emergency",
             "rimcas",
             "stca",
             "msaw",
+            "afdas",
             "bust",
             "apw",
             "aiw",
-            "ram",
-            "emergency",
             "clam",
+            "ram",
             "holdIntrusion",
-            "afdas",
             "tct",
             "mtcd"
           ],
-          "description": "Which kind alertKind and alertText report when several stand on one aircraft, highest first. Kinds left out follow the listed ones in the default order, so a partial list cannot hide one. Severity breaks a tie within a kind, then the net's own priority (BUST 40, CLAM 50). Use the per-kind keys instead where a system wants each net placed by hand."
+          "description": "Which kind alertKind and alertText report when several stand on one aircraft, highest first. Kinds left out follow the listed ones in the default order, so a partial list cannot hide one, and an emergency left out ranks above every listed kind. Severity breaks a tie within a kind, then the age of the alert. Use the per-kind keys instead where a system wants each net placed by hand."
         },
         "emergencySquawk": {
           "type": "boolean",
           "default": true,
-          "description": "Raises an alert-severity Emergency on any aircraft squawking 7500, 7600 or 7700, with the condition and the code as alertText. Client-side and needs no server."
+          "description": "Raises an alert-severity Emergency on any aircraft squawking an emergency code (emergencyCodes: 7500, 7600 and 7700 unless the package adds one), with the code's words and the code as alertText. A code set while the transponder is on standby, or on a track only a primary radar sees, raises nothing. Client-side and needs no server."
+        },
+        "emergencyCodes": {
+          "type": "object",
+          "description": "Emergency codes by four-digit code, on top of 7500 HIJACK, 7600 RADIO FAILURE and 7700 EMERGENCY: the codes the emergency squawk net raises and the filter bypass reads. A code listed here is added, one of the three is reworded; none is taken away. The UK adds 7400 LST LNK.",
+          "propertyNames": {
+            "pattern": "^[0-7]{4}$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "description": "What alertText shows before the code: LST LNK reads LST LNK 7400."
+              }
+            },
+            "required": ["text"],
+            "additionalProperties": false
+          }
         },
         "bypassFilters": {
           "type": "object",
-          "description": "An alerted track is drawn whatever the view's filters say, which is TopSky's rule and the one safety matter in the presentation: an aircraft in conflict below the lower altitude filter is otherwise invisible. On by default, and it beats every filter including GND, PRIM and VFR, not just the altitude band. An emergency code (7500, 7600, 7700) always bypasses while this is on, whether or not emergencySquawk raised a net. .dev alert-info says when the bypass is what put the aircraft on screen.",
+          "description": "An alerted track is drawn whatever the view's filters say, which is TopSky's rule and the one safety matter in the presentation: an aircraft in conflict below the lower altitude filter is otherwise invisible. On by default, and it beats every filter including GND, PRIM and VFR, not just the altitude band. An emergency code (safetyNets.emergencyCodes) always bypasses, whether or not this is on and whether or not emergencySquawk raised a net, unless the transponder is on standby or only a primary radar sees the track. .dev alert-info says when the bypass is what put the aircraft on screen.",
           "properties": {
             "enabled": {
               "type": "boolean",
               "default": true,
-              "description": "False lets the view filters hide an alerted track. Turn it off knowing what that costs."
+              "description": "False lets the view filters hide an alerted track, but never one squawking an emergency code. Turn it off knowing what that costs."
             },
             "minSeverity": {
               "type": "string",
               "enum": ["info", "warning", "alert"],
               "default": "warning",
               "description": "The lowest severity that lifts a track out of the filters. warning covers RAM, AIW and RIMCAS Stage One; alert restricts it to STCA, MSAW, BUST, RIMCAS Stage Two and the emergency squawk; info includes the planning nets, which is usually too much."
+            },
+            "kinds": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "bust",
+                  "clam",
+                  "ram",
+                  "msaw",
+                  "apw",
+                  "aiw",
+                  "holdIntrusion",
+                  "mtcd",
+                  "tct",
+                  "rimcas",
+                  "stca",
+                  "afdas",
+                  "emergency"
+                ]
+              },
+              "description": "The kinds whose alerts lift a track out of the filters, each at or above minSeverity. Absent, or empty, is every kind. Whichever kinds are named, a pairwise alert of a named kind (STCA, TCT) lifts both of its aircraft at any severity, so a TCT in its warning band and the other aircraft of a conflict are never left to the filters. TopSky lifts emergency, stca, msaw, afdas, apw, aiw and tct, and never clam, ram or mtcd: the safety nets, not the monitoring aids. An emergency code bypasses whatever this says."
             }
           },
           "additionalProperties": false
@@ -898,7 +1156,7 @@
         },
         "exclude": {
           "type": "object",
-          "description": "Aircraft NO client-side net looks at: STCA, TCT, RAM, AIW, MSAW, AFDAS, BUST and CLAM all skip them at their eligibility stage. An aircraft is excluded when a callsign pattern matches, or a squawk prefix matches, or the when condition holds; any one is enough. The duplicate-code detector in Correlation stops calling a code listed in squawks duplicated (TopSky's Airspace_No_DUPE_Codes); it reads squawks alone, never callsigns or when. The emergency squawk net and RIMCAS are never excluded. A controller's per-aircraft twin of this is the inhibitAlerts click action. Note that excluding the conspicuity codes silences AIW on exactly the traffic AIW exists to watch, the untracked VFR under a TMA, so list them only when that is what the vAcc wants.",
+          "description": "Aircraft the client-side nets leave out: TCT, RAM, AIW, MSAW, AFDAS, BUST and CLAM skip them at their eligibility stage, and STCA keeps them in its pair loop and silences a pair only when both aircraft are excluded or inhibited. An aircraft is excluded when a callsign pattern matches, or a squawk prefix matches, or the when condition holds; any one is enough. The duplicate-code detector in Correlation stops calling a code listed in squawks duplicated (TopSky's Airspace_No_DUPE_Codes); it reads squawks alone, never callsigns or when. The emergency squawk net and RIMCAS are never excluded. A controller's per-aircraft twin of this is the inhibitAlerts click action. Note that excluding the conspicuity codes silences AIW on exactly the traffic AIW exists to watch, the untracked VFR under a TMA, so list them only when that is what the vAcc wants.",
           "properties": {
             "callsigns": {
               "type": "array",
@@ -941,14 +1199,15 @@
             "confirmCycles": {
               "type": "integer",
               "minimum": 1,
+              "maximum": 16,
               "default": 2,
-              "description": "Cycles beyond triggerNm before the net raises. A cycle is cadenceS, so the default is 40 seconds of sustained deviation. Clearing needs no confirmation."
+              "description": "New position reports in a row beyond triggerNm before the net raises; a check that sees no new report counts nothing. At one report every 5 seconds the default raises 5 to 10 seconds after the deviation crosses the trigger. Clearing needs no confirmation."
             },
             "cadenceS": {
               "type": "integer",
               "minimum": 1,
-              "default": 20,
-              "description": "Seconds between evaluations. The net rides the 2 Hz position batch and skips the batches inside this window, so this is also what one confirmation cycle is worth."
+              "default": 5,
+              "description": "Seconds between checks. The net rides the 2 Hz position batch and skips the batches inside this window; the default checks every report a pilot client sends every 5 seconds, as the route deviation check compares on each track update."
             },
             "maxDeviationNm": {
               "type": "number",
@@ -974,18 +1233,49 @@
               "default": 30,
               "description": "Within this distance of the route's last point, the destination, the net says nothing, for the same reason on arrival. TopSky's 30 NM. 0 turns the inhibit off."
             },
+            "scope": {
+              "type": "string",
+              "enum": ["ownedOrConcerned", "allVisible"],
+              "default": "ownedOrConcerned",
+              "description": "Whose traffic the net judges. ownedOrConcerned, the default, is this controller's own and the traffic its attention tiers name (concerned, notified, an incoming or outgoing transfer, an intruder), as the sector controlling a flight is warned; another controller's flight is not judged, sounded or lifted through the view filters. allVisible judges every aircraft the client holds."
+            },
             "flightRules": {
               "type": "string",
               "enum": ["all", "ifr", "vfr"],
               "default": "ifr",
-              "description": "Which flights the net watches, the same vocabulary as msaw and aiw. Absent is ifr: a VFR flight has no route to hold to, and EuroScope never raises RAM for a VFR plan. An unfiled rule satisfies neither ifr nor vfr, so it is out of both. all watches every flight with a route."
+              "description": "Which flights the net judges, TopSky's VFR switch, on the vocabulary bust and clam share. ifr, the default, leaves out a flight that filed VFR and one that filed no rule, which bust and clam judge as IFR: neither has a route to hold to, and EuroScope never raises RAM for a VFR plan. vfr judges filed VFR flights alone. all judges every flight with a route."
+            },
+            "uncontrolled": {
+              "type": "boolean",
+              "default": true,
+              "description": "Whether an uncontrolled flight is judged: a flight that filed VFR and no controller tracks. An IFR flight, and an unfiled one where flightRules admits it, is judged tracked or not, so this matters only where flightRules admits VFR. On by default for RAM, as TopSky's RAM_Uncontrolled."
+            },
+            "waypointRadiusNm": {
+              "type": "number",
+              "minimum": 0,
+              "default": 5,
+              "description": "Within this distance of either end of the leg being flown, where the route turns there by waypointMinTurnDeg or more, the net does not raise: an aircraft anticipating a fly-by turn cuts inside the corner. The route's first and last points have no leg beyond them and always count as a turn. It stops a raise only and never clears a standing alert. TopSky's Wpt_Radius, 5 NM. 0 turns it off."
+            },
+            "waypointMinTurnDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180,
+              "default": 10,
+              "description": "The smallest change of course at a leg end that counts as a turn for waypointRadiusNm. TopSky's Wpt_MinTurn, 10 degrees."
+            },
+            "directTrackErrorDeg": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 180,
+              "default": 5,
+              "description": "On a direct-to the server has folded into the expansion, the turn onto it is done once the track is within this of the bearing to the fix, and the direct is measured from there; until then, for at most 120 s from the fold, the net does not raise. An aircraft that was on track to the fix holds the passed-fix guard until it is back within clearNm of the route after the fix. TopSky's DCT_MaxTrkError, 5 degrees."
             }
           },
           "additionalProperties": false
         },
         "msaw": {
           "type": "object",
-          "description": "Minimum safe altitude warning, evaluated on the client against the package's own datasets/msaw.geojson. Unlike stca this net is ON wherever that file exists: its figures are the vAcc's own published surface rather than a tuning nobody has done, so absent means every default below. WITH NO SURFACE THE NET IS SILENT RATHER THAN CLEAN, and .dev msaw-info says which of the two it is instead of reporting every aircraft above a minimum. Raises an alert-severity Msaw with the minimum as alertText, and publishes the minimum under each aircraft as the msaFt expression whether or not it alerts.",
+          "description": "Minimum safe altitude warning, evaluated on the client against the package's own datasets/msaw.geojson. Unlike stca this net is ON wherever that file exists: its figures are the vAcc's own published surface rather than a tuning nobody has done, so absent means every default below. WITH NO SURFACE THE NET IS SILENT RATHER THAN CLEAN, and .dev msaw-info says which of the two it is instead of reporting every aircraft above a minimum. Raises an alert-severity Msaw with the minimum as alertText, and publishes the minimum under each aircraft as the msaFt expression whether or not it alerts. It judges the altitude an altimeter set to QNH reads, as TopSky and EUROCONTROL's MSAW reference do: the pressure altitude corrected by the QNH of the nearest airport METAR within 100 NM, the frame a cleared altitude is flown in; with no such METAR, or a pilot client that relays no pressure difference, the true altitude. An approach-clearance inhibit (TopSky's MSAW_AppInhibit) is authored as safetyNets.kinds.msaw.exclude.when over clearedFlightLevel, 2 for a visual approach and 1 for an ILS, never under safetyNets.exclude, which would take the approach out of AFDAS as well.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -995,44 +1285,51 @@
             "bufferFt": {
               "type": "number",
               "minimum": 0,
-              "default": 100,
-              "description": "HYSTERESIS, not a margin: the trigger is the minimum LESS this and the clear is the minimum PLUS it, because an aircraft cruising at exactly the minimum wobbles either side of it and would otherwise flap. TopSky's UK number."
+              "default": 300,
+              "description": "The trigger is the minimum LESS this, for an IFR flight. A raised alert clears at the minimum plus clearFt, so an aircraft cruising at exactly the minimum neither raises nor, once raised, flaps. The default 300 is TopSky's stock MSAW_Buffer_IFR and inside the several hundred feet EUROCONTROL's MSAW guidance allows below a minimum; the UK authors its own 100."
             },
             "lookaheadS": {
               "type": "number",
               "minimum": 0,
               "default": 0,
-              "description": "How far ahead the current vertical rate is projected, seconds; 0, the default, is no prediction, as TopSky. Only a DESCENT predicts, and the predicted altitude is judged against the minimum at the point the aircraft reaches along its track. A straight-line descent goes through the ground inside 2 NM of any runway, so author it with runwayMonitoring for the corridor inhibit."
+              "description": "How far ahead the path is predicted, seconds; 0, the default, is no prediction, as TopSky. Authored, the aircraft is stepped every predictionStepS along its ground track at its current vertical rate, a climb, level flight and a descent alike, and every step is judged against the minimum at its own point; a step in an msaFt 0 area is skipped and the next one judged. No cleared level caps or replaces the predicted altitude. A straight-line descent goes through the ground inside 2 NM of any runway, so a lookahead wants the surface to carry funnels along every final."
+            },
+            "predictionStepS": {
+              "type": "number",
+              "minimum": 1,
+              "default": 5,
+              "description": "Seconds between the predicted points along the path when lookaheadS is authored, the last point at lookaheadS. Five is one report interval: 0.4 NM at 300 kt, inside the half to one NM cells EUROCONTROL's MSAW guidance sizes a terrain grid by, so a cell that size is not stepped over below 360 kt; the guidance finds 1 s steps feasible for a finer surface, which is the least the client takes."
             },
             "cadenceS": {
               "type": "number",
               "exclusiveMinimum": 0,
               "default": 5,
-              "description": "Seconds between evaluations inside the 2 Hz sweep. Five is how often a pilot client sends a position, so confirmCycles counts independent samples."
+              "description": "Seconds between evaluations inside the 2 Hz sweep. Five is how often a pilot client sends a position; an evaluation that sees no new report counts for nothing in the confirmation."
             },
             "confirmCycles": {
               "type": "integer",
               "minimum": 1,
               "default": 2,
-              "description": "Cadence windows the aircraft must stay below the trigger before the net raises. Clearing is immediate."
+              "description": "Hits among the last cycleCount evaluations with a new report that confirm a PREDICTED infringement, EUROCONTROL's TerrainConflictCount (2 or 3 advised); a miss in between does not reset the count. An aircraft already below the trigger, or predicted below it within imminentS, raises at once."
             },
-            "inhibitBelowFtOnFinal": {
+            "clearFt": {
               "type": "number",
               "minimum": 0,
-              "default": 1500,
-              "description": "Inside a monitored runway's corridor and below this height above the threshold, the net says nothing: an aircraft on short final is under every minimum by design. Needs runwayMonitoring for the runway ends; with none there are no corridors and nothing is inhibited."
+              "default": 0,
+              "description": "Height above the minimum at which a raised alert clears, held for one more new report so a single report at the minimum does not end it. 0, the default, clears at the minimum, as BUST and CLAM take their own clearFt; with bufferFt it makes the band in which a raised alert holds and a clear track stays clear."
             },
-            "corridorRangeNm": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 15,
-              "description": "How far the approach and departure corridor runs either side of a monitored runway end."
+            "cycleCount": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16,
+              "default": 4,
+              "description": "How many of the latest evaluations with a new report confirmCycles is counted over, EUROCONTROL's TerrainCycleCount (4 or 5 advised). It may not be less than confirmCycles."
             },
-            "corridorXteNm": {
+            "imminentS": {
               "type": "number",
-              "exclusiveMinimum": 0,
-              "default": 2,
-              "description": "Half width of that corridor either side of the extended centreline."
+              "minimum": 0,
+              "default": 0,
+              "description": "A predicted infringement this many seconds ahead or sooner raises at once, with no confirmation, EUROCONTROL's TerrainImminentTime. 0, the default, makes only an actual infringement imminent; it matters only with a lookahead."
             },
             "flightRules": {
               "type": "string",
@@ -1043,13 +1340,19 @@
             "uncontrolled": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a track no controller holds is judged. Off, as TopSky's MSAW_Uncontrolled: the surface is a controller's vectoring minimum, and a VFR flight under the TMA is below it all day."
+              "description": "Whether a VFR flight no controller holds is judged. Off, as TopSky's MSAW_Uncontrolled: the surface is a controller's vectoring minimum, and a VFR flight under the TMA is below it all day. An IFR flight, and an unfiled one under flightRules all, is judged whether or not anyone tracks it."
             },
             "bufferVfrFt": {
               "type": "number",
               "minimum": 0,
               "default": 300,
               "description": "bufferFt for VFR flights, TopSky's MSAW_Buffer_VFR."
+            },
+            "soundScope": {
+              "type": "string",
+              "enum": ["ownedOrConcerned", "allVisible"],
+              "default": "allVisible",
+              "description": "Who HEARS an MSAW alert, on STCA's vocabulary. allVisible, the default, sounds every one, as before. ownedOrConcerned sounds only an aircraft this controller owns or its attention tiers name, because EUROCONTROL's MSAW hazard assessment found an alert addressed to every position disturbs the room; the alert still shows, colours and lists everywhere, and only the sound is held. safetyNets.kinds.msaw.sound still overrides it."
             }
           },
           "additionalProperties": false
@@ -1066,25 +1369,44 @@
             "lookaheadS": {
               "type": "integer",
               "exclusiveMinimum": 0,
-              "default": 90,
-              "description": "How far ahead a conflict is predicted. Longer sees more and cries wolf more; 90 seconds is the tactical horizon STCA is for, and TCT is the five minute tool."
+              "default": 120,
+              "description": "How far ahead a conflict is predicted. Absent is 120, 30 seconds past the default warningS, so a conflict's confirmation has built by the time it comes inside warningS and it alerts on the first report there; a hit beyond warningS counts toward the confirmation but never alerts. Longer sees more and cries wolf more, and TCT is the five minute tool."
             },
             "sampleS": {
               "type": "number",
               "exclusiveMinimum": 0,
               "default": 2,
-              "description": "Step of the sampled path, which is taken when either track is turning or levelling off inside the window. Two straight tracks use a closed form and never sample."
+              "description": "Step of the sampled paths: round a turn, and the straight line when either track levels off inside the window, may leave its level for its cleared level, or has a turn rate that cannot be known. Two straight tracks otherwise use a closed form and never sample."
             },
             "levelOffAtCfl": {
               "type": "boolean",
               "default": true,
               "description": "Assume an aircraft stops climbing or descending at its cleared level, which is the largest single nuisance reduction available. Its blind spot is the aircraft that does not stop, so the net carries its own per-aircraft guard: a track that has transited its cleared level by more than 300 ft and is still going keeps the observed rate whatever this says. False turns the assumption off for every aircraft; nothing can pin it on past the guard."
             },
-            "confirmS": {
-              "type": "number",
+            "warningS": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "default": 90,
+              "description": "A confirmed conflict alerts once its predicted loss of separation is no more than this many seconds away, G159's warning time (TopSky 90 upper, 80 lower). Absent is 90, or lookaheadS where that is shorter; more than lookaheadS is refused."
+            },
+            "imminentS": {
+              "type": "integer",
               "minimum": 0,
+              "default": 50,
+              "description": "A conflict whose loss is no more than this many seconds away alerts on the cycle it is first seen, without waiting for conflictCount (G159's imminent time; TopSky 50). A pair already inside its minima is imminent. Absent is 50, or warningS where that is shorter; more than warningS is refused."
+            },
+            "conflictCount": {
+              "type": "integer",
+              "minimum": 1,
               "default": 2,
-              "description": "Seconds a conflict must hold before it is raised. Seconds rather than cycles on purpose: the sweep is 2 Hz and many pilot clients send a position every five, so two consecutive cycles can be one sample seen twice."
+              "description": "How many of the last cycleCount checks must find the conflict before it alerts (G159's M of N; TopSky 2). Only a check that sees a new position report from either aircraft counts: the sweep is 2 Hz and many pilot clients report every five seconds, so one report seen on successive sweeps is one sample. Must not exceed cycleCount."
+            },
+            "cycleCount": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16,
+              "default": 4,
+              "description": "How many of the most recent counting checks conflictCount is judged over (G159's N; TopSky 4)."
             },
             "clearS": {
               "type": "number",
@@ -1107,14 +1429,63 @@
               "type": "number",
               "exclusiveMinimum": 0,
               "default": 1.5,
-              "description": "Above this a track is turning and its pairs take the sampled path. A track whose rate cannot be known at all is always sampled, with its lateral minimum widened."
+              "description": "At or above this a track with a known turn rate is turning, and its pairs are also predicted round the turn (turning). A track whose rate cannot be known at all is predicted straight, sampled, with its lateral minimum widened."
+            },
+            "turning": {
+              "type": "object",
+              "description": "The turning prediction, G159's turning filter. Every pair is always judged on the straight line; a pair with a turning track is ALSO judged round the turn, for timeS and on lateralNm, and a conflict on either path alerts. Absent is on at the defaults.",
+              "properties": {
+                "timeS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 70,
+                  "description": "How long the turn is predicted (G159 70 to 90 s, TopSky's Turn_React 70). Absent is 70, or lookaheadS where that is shorter; more than lookaheadS is refused."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "The lateral minimum round the turn (G159 1.5 to 2.5 nm in a TMA, 3.0 to 4.0 en route; TopSky 2 and 3). It never widens the pair's own minimum. Absent is the pair's own minimum."
+                }
+              },
+              "additionalProperties": false
             },
             "defaultRegion": {
               "type": "object",
-              "description": "The separation minima anywhere no region rule matches. En-route values by default.",
+              "description": "The minima anywhere no region rule matches on that axis. The defaults are TopSky's thresholds (G159 Part 3 section 3.6: somewhat less than the separation standard), so with no buffer a pair exactly on a standard reads clear.",
               "properties": {
-                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 5 },
-                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 1000 }
+                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 2.75, "description": "At or below upperLateralAboveFt (TopSky STCA_LinPred_Sep_Lat_L)." },
+                "upperLateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 4.5, "description": "Above upperLateralAboveFt (TopSky STCA_LinPred_Sep_Lat_U). Only the default region takes it; a region rule selects its band with aboveFl." },
+                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 750, "description": "On the 1000 ft standard (TopSky STCA_LinPred_Sep_Vert_L)." },
+                "vertical2000Ft": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 1750,
+                  "description": "G159's [2000] vertical value, taken in place of verticalFt by a pair rvsm puts on the 2000 ft standard."
+                }
+              },
+              "additionalProperties": false
+            },
+            "rvsm": {
+              "type": "object",
+              "description": "G159's pair rule for the [2000] vertical value: a pair takes vertical2000Ft when both aircraft are above upperFl, or both are above lowerFl and either is not RVSM approved, and verticalFt otherwise. Approval is read from the filed equipment: W in ICAO item 10a, or the FAA suffixes H, W, Z and L. Absent is on at the defaults.",
+              "properties": {
+                "lowerFl": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "default": 285,
+                  "description": "Strictly above this a non-RVSM aircraft is on the 2000 ft standard (G159's LowerSeparationFlightLevel). 285 puts FL290 above it. Must be below upperFl."
+                },
+                "upperFl": {
+                  "type": "integer",
+                  "exclusiveMinimum": 0,
+                  "default": 415,
+                  "description": "Strictly above this every pair is on the 2000 ft standard (G159's UpperSeparationFlightLevel, the top of RVSM airspace). 415 starts at FL420."
+                },
+                "unknownApproved": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether an aircraft whose filed equipment says nothing about RVSM (no plan, an unparsed type field) counts as approved. False is G159's rule, unknown counted not approved; true is a stated VATSIM adaptation for blank or wrong equipment fields."
+                }
               },
               "additionalProperties": false
             },
@@ -1138,35 +1509,36 @@
                     "description": "Applies at or above this flight level, for example 410 for the 2000 ft band."
                   },
                   "lateralNm": { "type": "number", "exclusiveMinimum": 0 },
-                  "verticalFt": { "type": "number", "exclusiveMinimum": 0 }
+                  "verticalFt": { "type": "number", "exclusiveMinimum": 0 },
+                  "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "description": "The [2000] vertical value in this region; see rvsm." }
                 },
                 "additionalProperties": false
               }
             },
             "buffers": {
               "type": "object",
-              "description": "The uncertainty allowance, added on top of the minima and growing with time. Deterministic rather than a probability of loss, which nobody here would ever calibrate. Note that the buffer is why an aircraft levelling off EXACTLY at the vertical minimum still reads as a conflict.",
+              "description": "An uncertainty allowance added on top of the minima and growing with time. None by default, because the default minima are already TopSky's thresholds inside the standard; a system authoring the standard itself as its minima would need one, and a buffer is why an aircraft levelling off exactly on a minimum reads as a conflict.",
               "properties": {
-                "lateralNm": { "type": "number", "minimum": 0, "default": 0.2 },
-                "lateralNmPerMin": { "type": "number", "minimum": 0, "default": 0.3 },
-                "verticalFt": { "type": "number", "minimum": 0, "default": 100 },
-                "verticalFtPerMin": { "type": "number", "minimum": 0, "default": 200 }
+                "lateralNm": { "type": "number", "minimum": 0, "default": 0 },
+                "lateralNmPerMin": { "type": "number", "minimum": 0, "default": 0 },
+                "verticalFt": { "type": "number", "minimum": 0, "default": 0 },
+                "verticalFtPerMin": { "type": "number", "minimum": 0, "default": 0 }
               },
               "additionalProperties": false
             },
             "exclusionZoneTag": {
               "type": "string",
               "default": "stca-exclude",
-              "description": "A zone tag that takes a track out of the pair loop entirely, for airspace where converging traffic is the procedure. Whole tags only, so no spaces."
+              "description": "A zone tag inside which every pair of a track is still judged and kept silent, for airspace where converging traffic is the procedure: the confirmation runs on, so a pair leaving it into a conflict alerts on its first sweep outside. Whole tags only, so no spaces."
             },
             "parallelApproachZoneTag": {
               "type": "string",
               "default": "stca-parallel",
-              "description": "A zone tag that suppresses a pair when BOTH aircraft are inside it, which is what parallel approaches look like. One inside and one crossing overhead is still a conflict."
+              "description": "A zone tag that keeps a pair silent, still judged so that leaving the zone into a conflict alerts at once, when BOTH aircraft are inside it, on one course within 10 degrees of each other and at least 0.33 nm apart (the parallel defaults), which is what parallel approaches look like. One inside and one crossing overhead, a pair head on or crossing, a pair closer than that, and a pair with either aircraft in a parallel operation's no transgression zone are still judged. The zone knows no runway or side, so a parallel operation is the precise tool."
             },
             "finalApproach": {
               "type": "object",
-              "description": "The final-approach corridor, generated behind EVERY monitored landing end from the runway ends runway monitoring already resolves, so authoring an empty object gets the behaviour at every airport in the package with nothing drawn. Inside a corridor two aircraft landing in trail are flying the approach and the net holds its tongue; every other pair in there is judged against lateralNm instead of the region's own minimum. ABSENT IS OFF, because a corridor silences alerts. IT NEEDS policy.json runwayMonitoring: the geometry comes from those strips, so a system authoring this and no runway monitoring generates nothing, which .dev stca-info says in those words.",
+              "description": "The final-approach corridor, generated behind EVERY monitored landing end from the runway ends runway monitoring already resolves, so authoring an empty object gets the behaviour at every airport in the package with nothing drawn. Inside a corridor two aircraft landing in trail on the course, where the wake rule allows it (the nearer no heavy, super or B757, the further the same category or heavier), are judged against lateralNm instead of the region's own minimum; every other pair in there keeps the region's minimum. Nothing is silenced: an approach that should raise nothing is an authored exclusion zone. ABSENT IS OFF, because a corridor lowers the minimum. IT NEEDS policy.json runwayMonitoring: the geometry comes from those strips, so a system authoring this and no runway monitoring generates nothing, which .dev stca-info says in those words.",
               "properties": {
                 "enabled": {
                   "type": "boolean",
@@ -1189,20 +1561,20 @@
                   "type": "number",
                   "exclusiveMinimum": 0,
                   "default": 2.5,
-                  "description": "The lateral minimum inside the corridor, which replaces the region's where it is smaller. It never widens one: a corridor reduces separation on final, it does not tighten the net."
+                  "description": "The lateral minimum for a wake-compatible pair in trail on one final, on the prediction and on current proximity, which replaces the region's where it is smaller. It never widens one: a corridor reduces separation on final, it does not tighten the net."
                 },
                 "courseToleranceDeg": {
                   "type": "number",
                   "exclusiveMinimum": 0,
                   "default": 10,
-                  "description": "How far off the approach course a track may be and still count as flying it. A track crossing the corridor is in it but not on the course, so it is never silenced."
+                  "description": "How far off the approach course a track may be and still count as flying it. A track crossing the corridor is in it but not on the course, so it keeps the region's minimum."
                 }
               },
               "additionalProperties": false
             },
             "parallel": {
               "type": "array",
-              "description": "Runway pairs worked at the same time. The package names them because nothing in the data says which runways an aerodrome operates simultaneously. One aircraft in each normal operating zone, each tracking within finalApproach.courseToleranceDeg of its own approach course, is the operation working rather than a conflict. A pair naming a runway no monitored strip carries is reported by .dev stca-info rather than silently matching nothing.",
+              "description": "Runway pairs worked at the same time. The package names them because nothing in the data says which runways an aerodrome operates simultaneously. A pair applies only while the aerodrome's runway selection has BOTH runways active for arrivals. One aircraft in each normal operating zone, each landing at the aerodrome (on that zone's runway when it filed one), each tracking within courseToleranceDeg of its own approach course and the two at least minSepNm apart, is the operation working rather than a conflict: the pair is still judged and kept silent, so one leaving its zone into a conflict alerts at once. A pair naming a runway no monitored strip carries, or one not landing on both, is reported by .dev stca-info rather than silently matching nothing.",
               "items": {
                 "type": "object",
                 "required": ["icao", "left", "right"],
@@ -1253,6 +1625,18 @@
                   "ntzZoneTag": {
                     "type": "string",
                     "description": "A zones.geojson tag for the no transgression zone between the two. This is the one piece of approach geometry that turns the net ON: a track inside it is exactly what simultaneous operations forbid, so NO generated region may silence a pair while either aircraft is in there."
+                  },
+                  "minSepNm": {
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 0.33,
+                    "description": "Two aircraft closer than this are a conflict whatever zones they are in (TopSky's SOIR MinSep)."
+                  },
+                  "courseToleranceDeg": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "default": 10,
+                    "description": "How far off its own zone's approach course a track may be and still fly the operation (TopSky's STCA_NOZ_Delta_HDG). The final approach corridor keeps its own finalApproach.courseToleranceDeg."
                   }
                 }
               }
@@ -1265,8 +1649,9 @@
             },
             "floorFt": {
               "type": "number",
+              "minimum": 0,
               "default": 1000,
-              "description": "No track below this pressure altitude takes part, TopSky's STCA_Floor: aerodrome traffic converging on a runway is the procedure, and the final approach corridors and runway monitoring watch it there."
+              "description": "No track below this altitude takes part, TopSky's STCA_Floor: at or below the transition altitude it is an altitude on QNH, above it a pressure altitude. Aerodrome traffic converging on a runway is the procedure, and the final approach corridors and runway monitoring watch it there."
             },
             "maxTrackAgeS": {
               "type": "number",
@@ -1282,7 +1667,7 @@
             "uncontrolledPairs": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a pair neither of which any controller tracks alerts, TopSky's STCA_Uncontrolled. Off."
+              "description": "Whether a pair of two uncontrolled flights alerts, TopSky's STCA_Uncontrolled. Off. An uncontrolled flight is a VFR one nobody tracks; an IFR flight, or one with no plan, counts as controlled, tracked or not."
             },
             "sourceStates": {
               "type": "array",
@@ -1325,6 +1710,64 @@
               ],
               "default": "mostConservative",
               "description": "How the regions matching one track combine: mostConservative takes the widest minimum (and the earliest alert time) of every matching region, firstInFile the first matching region that names each setting, as TopSky reads its areas file. With mostConservative a tighter region can never narrow a wider one it sits inside."
+            },
+            "upperLateralAboveFt": {
+              "type": "number",
+              "minimum": 0,
+              "default": 9500,
+              "description": "Above this pressure altitude a track takes defaultRegion.upperLateralNm and the upper lateral values of fastDiverging and currentProximity; a pair takes the upper fastDiverging and currentProximity values when either aircraft does (TopSky's STCA_Sep_Lat_SepLevel)."
+            },
+            "fastDiverging": {
+              "type": "object",
+              "description": "G159's fast-diverging conditions, TopSky's values, judged on the two aircraft as they are now. Laterally: opening at lateralKt or more and at least lateralNm apart (upperLateralNm above upperLateralAboveFt), so the straight-line and current proximity filters find nothing this cycle; the turning prediction still runs. Vertically: diverging at verticalFpm or more and at least verticalFt apart (vertical2000Ft on the 2000 ft standard), so no filter finds anything. A pair already inside its minima and opening fast clears instead of alerting to the end of its window. Absent is on at the defaults.",
+              "properties": {
+                "enabled": { "type": "boolean", "default": true, "description": "False switches both tests off." },
+                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 1.5, "description": "Lateral distance apart at or below upperLateralAboveFt (TopSky STCA_FastDiv_Sep_Lat_L)." },
+                "upperLateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 2.5, "description": "Lateral distance apart above it (STCA_FastDiv_Sep_Lat_U)." },
+                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 650, "description": "Vertical distance apart on the 1000 ft standard (STCA_FastDiv_Sep_Vert_L)." },
+                "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "default": 1600, "description": "Vertical distance apart on the 2000 ft standard, which rvsm decides (STCA_FastDiv_Sep_Vert_U)." },
+                "lateralKt": { "type": "number", "exclusiveMinimum": 0, "default": 200, "description": "Opening speed (STCA_FastDiv_Vel_Lat)." },
+                "verticalFpm": { "type": "number", "exclusiveMinimum": 0, "default": 1000, "description": "Vertical diverging rate (STCA_FastDiv_Vel_Vert)." }
+              },
+              "additionalProperties": false
+            },
+            "currentProximity": {
+              "type": "object",
+              "description": "G159's current proximity filter, TopSky's values: a pair closer than lateralNm (upperLateralNm above upperLateralAboveFt) and verticalFt (vertical2000Ft on the 2000 ft standard) now is a hit, confirmed on its own conflictCount of cycleCount reports with no warning time, so a pair close but closing too slowly for the prediction to alert is still raised. Inside one final-approach corridor its lateral is no wider than finalApproach.lateralNm. Absent is on at the defaults.",
+              "properties": {
+                "enabled": { "type": "boolean", "default": true, "description": "False switches the filter off." },
+                "lateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 2.85, "description": "At or below upperLateralAboveFt (TopSky STCA_CurrProx_Sep_Lat_L; G159 2.0 to 2.85 in a TMA)." },
+                "upperLateralNm": { "type": "number", "exclusiveMinimum": 0, "default": 4.75, "description": "Above it (STCA_CurrProx_Sep_Lat_U; G159 3.0 to 4.75)." },
+                "verticalFt": { "type": "number", "exclusiveMinimum": 0, "default": 800, "description": "On the 1000 ft standard (G159 700 to 800)." },
+                "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "default": 1800, "description": "On the 2000 ft standard (G159 1700 to 1800)." },
+                "conflictCount": { "type": "integer", "minimum": 1, "default": 2, "description": "Hits needed of the last cycleCount checks with a new report. Must not exceed cycleCount." },
+                "cycleCount": { "type": "integer", "minimum": 1, "maximum": 16, "default": 3, "description": "How many counting checks conflictCount is judged over." }
+              },
+              "additionalProperties": false
+            },
+            "noCfl": {
+              "type": "object",
+              "description": "The second vertical hypothesis (NETALERT 15's multi-hypothesis): where levelOffAtCfl stops a track at its cleared level inside the lookahead, the pair is judged again as if neither aircraft stops there, on minima no wider than these, and a conflict on either alerts. It catches a bust through the clearance before it happens, which levelOffAtCfl alone alerts only once it has; VATSIM does not guarantee a cleared level. The narrower minima keep it to serious busts with real lateral erosion. Absent is off; an empty object is on at the defaults.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False keeps the section as documentation without judging the second hypothesis."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 1.5,
+                  "description": "The lateral minimum of the second hypothesis, never wider than the pair's own."
+                },
+                "verticalFt": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 500,
+                  "description": "The vertical minimum of the second hypothesis, never wider than the pair's own."
+                }
+              },
+              "additionalProperties": false
             },
             "cflLeave": {
               "type": "object",
@@ -1383,14 +1826,15 @@
             "confirmCycles": {
               "type": "integer",
               "minimum": 1,
+              "maximum": 16,
               "default": 2,
-              "description": "Cycles inside or entering before the net raises. A cycle is cadenceS, so the default is 10 seconds. Leaving clears at once."
+              "description": "New position reports in a row inside or entering before the net raises; a check that sees no new report counts nothing. At one report every 5 seconds the default raises 5 to 10 seconds after the aircraft is first judged inside or entering. Leaving clears at once."
             },
             "cadenceS": {
               "type": "integer",
               "minimum": 1,
               "default": 5,
-              "description": "Seconds between evaluations. The net rides the 2 Hz position batch and skips the batches inside this window, so this is also what one confirmation cycle is worth; the default matches how often a pilot client sends a position."
+              "description": "Seconds between evaluations. The net rides the 2 Hz position batch and skips the batches inside this window, so a pilot client reporting less often than this is still counted once per report; the default matches how often a pilot client sends a position."
             },
             "controlledZoneTag": {
               "type": "string",
@@ -1405,7 +1849,8 @@
             },
             "floorFt": {
               "type": "integer",
-              "description": "No alert below this pressure altitude, TopSky's AIW_Floor (1000 in TopSky). Absent is no floor."
+              "minimum": 0,
+              "description": "No alert below this altitude, TopSky's AIW_Floor (1000 in TopSky): at or below the transition altitude it is an altitude on QNH, above it a pressure altitude. Absent is no floor."
             },
             "scope": {
               "type": "string",
@@ -1431,6 +1876,12 @@
               "default": 300,
               "description": "How far beyond the cleared level, in feet, the aircraft must be before the net raises."
             },
+            "rvsmTriggerFt": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 200,
+              "description": "triggerFt for a cleared level from FL290 to FL410, the RVSM band, where EUROCONTROL's level bust is 200 ft rather than 300. clearFt is held no wider than it there."
+            },
             "clearFt": {
               "type": "integer",
               "minimum": 0,
@@ -1445,14 +1896,26 @@
             },
             "inhibitAfterCflChangeSeconds": {
               "type": "integer",
-              "default": 60,
-              "description": "Seconds after the cleared level changes during which the net does not raise, so a new clearance is not an alert before the crew has reacted. It holds off a raise only; clearing is unaffected."
-            },
-            "transitionAltitudeFt": {
-              "type": "integer",
               "minimum": 0,
-              "default": 6000,
-              "description": "The highest cleared level that is an altitude on QNH: at or below it the net compares true altitude and words the level A060, above it pressure altitude and FL350. 0 means 6000."
+              "default": 60,
+              "description": "Seconds after the cleared level changes during which the net does not raise while the track is still level, so a new clearance is not an alert before the crew has reacted. The window ends for that clearance as soon as the track climbs or descends, or drifts away from the new level. It holds off a raise only. A new cleared level clears a standing alert at once only when the aircraft is within clearFt of it or closing on it; otherwise the alert stands, worded with the new level."
+            },
+            "scope": {
+              "type": "string",
+              "enum": ["ownedOrConcerned", "allVisible"],
+              "default": "ownedOrConcerned",
+              "description": "Whose traffic the net judges. ownedOrConcerned, the default, is this controller's own and the traffic its attention tiers name (concerned, notified, an incoming or outgoing transfer, an intruder), as the sector controlling a flight is warned; another controller's flight is not judged, sounded or lifted through the view filters. allVisible judges every aircraft the client holds."
+            },
+            "flightRules": {
+              "type": "string",
+              "enum": ["all", "ifr", "vfr"],
+              "default": "ifr",
+              "description": "Which flights the net judges, TopSky's VFR switch. ifr, the default, leaves out a flight that filed VFR; an unfiled rule counts as IFR here. vfr judges filed VFR flights alone."
+            },
+            "uncontrolled": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether an uncontrolled flight is judged: a flight that filed VFR and no controller tracks. An IFR or unfiled flight is judged tracked or not, so this matters only where flightRules admits VFR. Off by default, as TopSky's CLAM_Uncontrolled."
             }
           },
           "additionalProperties": false
@@ -1472,6 +1935,12 @@
               "default": 300,
               "description": "How far off the cleared level, in feet, the aircraft must be before the net raises."
             },
+            "rvsmTriggerFt": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 200,
+              "description": "triggerFt for a cleared level from FL290 to FL410, the RVSM band, where EUROCONTROL's level bust is 200 ft rather than 300. clearFt is held no wider than it there."
+            },
             "clearFt": {
               "type": "integer",
               "minimum": 0,
@@ -1486,17 +1955,35 @@
             },
             "inhibitAfterCflChangeSeconds": {
               "type": "integer",
-              "default": 60,
-              "description": "Seconds after the cleared level changes during which the net does not raise, so a new clearance is not an alert before the crew has reacted. It holds off a raise only; clearing is unaffected."
-            },
-            "transitionAltitudeFt": {
-              "type": "integer",
               "minimum": 0,
-              "default": 6000,
-              "description": "The highest cleared level that is an altitude on QNH: at or below it the net compares true altitude and words the level A060, above it pressure altitude and FL350. 0 means 6000."
+              "default": 60,
+              "description": "Seconds after the cleared level changes during which the net does not raise while the track is still level, so a new clearance is not an alert before the crew has reacted. The window ends for that clearance as soon as the track climbs or descends, or drifts away from the new level. It holds off a raise only. A new cleared level clears a standing alert at once only when the aircraft is within clearFt of it or closing on it; otherwise the alert stands, worded with the new level."
+            },
+            "scope": {
+              "type": "string",
+              "enum": ["ownedOrConcerned", "allVisible"],
+              "default": "ownedOrConcerned",
+              "description": "Whose traffic the net judges. ownedOrConcerned, the default, is this controller's own and the traffic its attention tiers name (concerned, notified, an incoming or outgoing transfer, an intruder), as the sector controlling a flight is warned; another controller's flight is not judged, sounded or lifted through the view filters. allVisible judges every aircraft the client holds."
+            },
+            "flightRules": {
+              "type": "string",
+              "enum": ["all", "ifr", "vfr"],
+              "default": "ifr",
+              "description": "Which flights the net judges, TopSky's VFR switch. ifr, the default, leaves out a flight that filed VFR; an unfiled rule counts as IFR here. vfr judges filed VFR flights alone."
+            },
+            "uncontrolled": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether an uncontrolled flight is judged: a flight that filed VFR and no controller tracks. An IFR or unfiled flight is judged tracked or not, so this matters only where flightRules admits VFR. Off by default, as TopSky's CLAM_Uncontrolled."
             }
           },
           "additionalProperties": false
+        },
+        "transitionAltitudeFt": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 6000,
+          "description": "The highest cleared level that is an altitude on QNH, one value for the whole system and every net that compares a cleared level: at or below it BUST and CLAM judge the altitude the QNH of the nearest airport METAR the client holds gives the aircraft's pressure altitude (its true altitude when no METAR within 100 NM has one, or its pilot client relays no pressure altitude, which is logged once) and word the level A060, above it its pressure altitude and FL350. A cleared level carries no altitude or flight level marker on the wire, so this alone decides which it is."
         },
         "tct": {
           "type": "object",
@@ -1743,7 +2230,7 @@
                       "minRatio": {
                         "type": "number",
                         "minimum": 0,
-                        "exclusiveMaximum": 1,
+                        "maximum": 0.99,
                         "default": 0.5
                       },
                       "maxRatio": {
@@ -1839,7 +2326,7 @@
                         "type": "number",
                         "exclusiveMinimum": 0,
                         "maximum": 600,
-                        "description": "Blind Spot window here, TopSky's BS_Warn."
+                        "description": "Blind Spot window here, TopSky's BS_Warn. Never shorter than the pair's warningS plus cadenceS times confirmChecks."
                       },
                       "vertical": {
                         "type": "object",
@@ -1875,7 +2362,7 @@
                           "minRatio": {
                             "type": "number",
                             "minimum": 0,
-                            "exclusiveMaximum": 1,
+                            "maximum": 0.99,
                             "default": 0.5
                           },
                           "maxRatio": {
@@ -1968,7 +2455,7 @@
               "type": "number",
               "minimum": 0,
               "default": 1000,
-              "description": "TopSky's TCT_Floor: no track below this pressure altitude takes part."
+              "description": "TopSky's TCT_Floor: no track below this altitude takes part; at or below the transition altitude it is an altitude on QNH, above it a pressure altitude."
             },
             "minSpeedKts": {
               "type": "number",
@@ -1984,7 +2471,7 @@
             "uncontrolledPairs": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a pair nobody controls is probed: TCT_Inhibit_Uncontrolled, on, so false."
+              "description": "Whether a pair of two uncontrolled flights is probed: TCT_Inhibit_Uncontrolled, on, so false. An uncontrolled flight is a VFR one nobody tracks; an IFR flight, or one with no plan, counts as controlled, tracked or not."
             },
             "uncorrelatedPairs": {
               "type": "boolean",
@@ -2246,7 +2733,7 @@
                 "minRatio": {
                   "type": "number",
                   "minimum": 0,
-                  "exclusiveMaximum": 1,
+                  "maximum": 0.99,
                   "default": 0.5
                 },
                 "maxRatio": {
@@ -2333,7 +2820,7 @@
                   "exclusiveMinimum": 0,
                   "maximum": 600,
                   "default": 180,
-                  "description": "A conflict starting within this many seconds colours the entry. The Blind Spots study's events fit three minutes; TopSky's setting default is 120."
+                  "description": "A conflict starting within this many seconds colours the entry. The Blind Spots study's events fit three minutes; TopSky's setting default is 120. For each pair the window is at least the pair's warningS plus cadenceS times confirmChecks (and at most lookaheadS), so a level shown clear cannot raise a TCT once issued. Absent is 180, or lookaheadS where that is shorter."
                 },
                 "agedS": {
                   "type": "number",
@@ -2409,7 +2896,7 @@
                     "minRatio": {
                       "type": "number",
                       "minimum": 0,
-                      "exclusiveMaximum": 1,
+                      "maximum": 0.99,
                       "default": 0.5
                     },
                     "maxRatio": {
@@ -2576,7 +3063,11 @@
               "inhibitable": {
                 "type": "boolean",
                 "default": true,
-                "description": "Whether the controller's inhibitAlerts switches this client net off for an aircraft. The TCT simulations say a controller should not be able to suppress TCT; a system that agrees authors false. Never on emergency or rimcas."
+                "description": "Whether the controller's inhibitAlerts switches this client net off for an aircraft; for STCA, whether it counts toward the two flags that silence a pair. The TCT simulations say a controller should not be able to suppress TCT; a system that agrees authors false. Never on emergency or rimcas."
+              },
+              "mutable": {
+                "type": "boolean",
+                "description": "Whether muteAlerts silences this kind's sounds. Absent is false for emergency and rimcas, which always sound, and true for every other kind."
               }
             },
             "additionalProperties": false
