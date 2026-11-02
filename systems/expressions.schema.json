@@ -191,6 +191,7 @@
                           "alertsMuted",
                           "alertsInhibited",
                           "alertOtherInhibited",
+                          "alertSilenced",
                           "alertTimeToConflictS",
                           "alertMissNm",
                           "netStatusStca",
