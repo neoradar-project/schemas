@@ -144,6 +144,68 @@
       },
       "additionalProperties": false
     },
+    "attention": {
+      "type": "object",
+      "description": "How this system decides which aircraft are your concern. Every key is optional; absent means the existing behaviour.",
+      "properties": {
+        "concerned": {
+          "type": "object",
+          "description": "Confirms the Concerned tier over the flight's trajectory builds, so a flight whose successive builds disagree about entering your airspace does not flicker. A build is one the server made, counted once however often it is evaluated. Absent means 1 of 1 both ways: every build's verdict is taken at once, which is the existing behaviour. Intruder and Notified are never confirmed.",
+          "properties": {
+            "enter": {
+              "type": "object",
+              "description": "When a flight not held Concerned becomes Concerned. enter.count plus leave.count must exceed the larger of enter.of and leave.of, so that entering and leaving can never both hold over the same builds; a rule where they can is a load error.",
+              "properties": {
+                "count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 1,
+                  "description": "Concerned is confirmed only when count of the last of trajectory builds of the flight enter your airspace. Must not exceed of. Needs of written beside it."
+                },
+                "of": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 1,
+                  "description": "How many of the flight's latest trajectory builds count is taken from."
+                }
+              },
+              "dependencies": {
+                "count": ["of"]
+              },
+              "additionalProperties": false
+            },
+            "leave": {
+              "type": "object",
+              "description": "When a flight held Concerned stops being Concerned. enter.count plus leave.count must exceed the larger of enter.of and leave.of, so that entering and leaving can never both hold over the same builds; a rule where they can is a load error.",
+              "properties": {
+                "count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 1,
+                  "description": "Concerned is released only when count of the last of trajectory builds of the flight do not enter your airspace. Must not exceed of. Needs of written beside it."
+                },
+                "of": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 10,
+                  "default": 1,
+                  "description": "How many of the flight's latest trajectory builds count is taken from."
+                }
+              },
+              "dependencies": {
+                "count": ["of"]
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "coordination": {
       "type": "object",
       "description": "How this system runs the coordination dialogue at a sector boundary. Absent means today's behaviour, which is that every level at a boundary is either the one the coordination table states or one a controller proposed by hand, and nothing is ever agreed without a dialogue.",
@@ -1150,7 +1212,7 @@
               "type": "number",
               "minimum": 0,
               "default": 30,
-              "description": "Within this distance of the route's first point, the origin, the net says nothing: departures are vectored off the filed route whether or not the controller keyed the heading. TopSky's 30 NM. 0 turns the inhibit off."
+              "description": "Within this distance of the flight plan's departure airport the net says nothing: departures are vectored off the filed route whether or not the controller keyed the heading. Measured from the airport, never from the route's first point, which a folded direct-to moves to its fix; an airport the client's navdata does not place gets no inhibit. TopSky's 30 NM. 0 turns the inhibit off."
             },
             "inhibitNearDestinationNm": {
               "type": "number",
@@ -1168,12 +1230,12 @@
               "type": "string",
               "enum": ["all", "ifr", "vfr"],
               "default": "ifr",
-              "description": "Which flights the net judges, TopSky's VFR switch. ifr, the default, leaves out a flight that filed VFR; an unfiled rule counts as IFR here. vfr judges filed VFR flights alone."
+              "description": "Which flights the net judges, TopSky's VFR switch, on the vocabulary bust and clam share. ifr, the default, leaves out a flight that filed VFR and one that filed no rule, which bust and clam judge as IFR: neither has a route to hold to, and EuroScope never raises RAM for a VFR plan. vfr judges filed VFR flights alone. all judges every flight with a route."
             },
             "uncontrolled": {
               "type": "boolean",
               "default": true,
-              "description": "Whether an uncontrolled flight is judged: a flight that filed VFR and no controller tracks. An IFR or unfiled flight is judged tracked or not, so this matters only where flightRules admits VFR. On by default for RAM, as TopSky's RAM_Uncontrolled."
+              "description": "Whether an uncontrolled flight is judged: a flight that filed VFR and no controller tracks. An IFR flight, and an unfiled one where flightRules admits it, is judged tracked or not, so this matters only where flightRules admits VFR. On by default for RAM, as TopSky's RAM_Uncontrolled."
             },
             "waypointRadiusNm": {
               "type": "number",
@@ -1187,19 +1249,6 @@
               "maximum": 180,
               "default": 10,
               "description": "The smallest change of course at a leg end that counts as a turn for waypointRadiusNm. TopSky's Wpt_MinTurn, 10 degrees."
-            },
-            "directTrackErrorDeg": {
-              "type": "number",
-              "exclusiveMinimum": 0,
-              "maximum": 180,
-              "default": 5,
-              "description": "On a direct-to the server has folded into the expansion, the net judges the direct until the aircraft is within waypointRadiusNm of its fix, where a direct alert clears, and the legs after: it raises when the track is more than this off the bearing to the fix, outside that radius and after directDelayS, and clears inside the same fraction of it that clearNm is of triggerNm (4 degrees at the defaults). alertText then gives how far abeam of the fix the present track passes. TopSky's DCT_MaxTrkError, 5 degrees."
-            },
-            "directDelayS": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 60,
-              "description": "Seconds from a direct-to being given in which the aircraft turns onto it and the direct does not raise; the first report on track to the fix ends it. TopSky's DCT_DelayTime, 60 s."
             }
           },
           "additionalProperties": false
@@ -1265,13 +1314,13 @@
             "flightRules": {
               "type": "string",
               "enum": ["all", "ifr", "vfr"],
-              "default": "all",
-              "description": "Which flights the net watches. An unfiled rule satisfies neither ifr nor vfr, so it is out of both."
+              "default": "ifr",
+              "description": "Which flights the net watches. An unfiled rule satisfies neither ifr nor vfr, so it is out of both. Absent is ifr: a VFR flight is not watched unless the system authors all."
             },
             "uncontrolled": {
               "type": "boolean",
               "default": false,
-              "description": "Whether a VFR flight no controller holds is judged. Off, as TopSky's MSAW_Uncontrolled: the surface is a controller's vectoring minimum, and a VFR flight under the TMA is below it all day. An IFR or unfiled flight is judged whether or not anyone tracks it."
+              "description": "Whether a VFR flight no controller holds is judged. Off, as TopSky's MSAW_Uncontrolled: the surface is a controller's vectoring minimum, and a VFR flight under the TMA is below it all day. An IFR flight, and an unfiled one under flightRules all, is judged whether or not anyone tracks it."
             },
             "bufferVfrFt": {
               "type": "number",
