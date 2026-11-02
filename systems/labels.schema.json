@@ -2167,7 +2167,7 @@
     },
     "attentionStates": {
       "type": "array",
-      "description": "Restricts this variant to aircraft in one of the listed attention states. Omit to apply regardless of attention state. kPlannedToYouDeviating matches a flight that was planned to you and is now off that plan, only while neither its planned nor its expected path enters any airspace of ours, whatever its attention state otherwise; a variant that does not name it sees the flight's own state.",
+      "description": "Restricts this variant to aircraft in one of the listed attention states. Omit to apply regardless of attention state. kPlannedToYouDeviating matches a flight that was planned to you and is now off that plan, only while the flight is not Concerned (the confirmed verdict) and never on the ground, whatever its attention state otherwise; a variant that does not name it sees the flight's own state.",
       "items": {
         "type": "string",
         "enum": [
