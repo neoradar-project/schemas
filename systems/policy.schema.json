@@ -1837,7 +1837,7 @@
             "floorFt": {
               "type": "integer",
               "minimum": 0,
-              "description": "No alert below this pressure altitude, TopSky's AIW_Floor (1000 in TopSky). Absent is no floor."
+              "description": "No alert below this altitude, TopSky's AIW_Floor (1000 in TopSky): at or below the transition altitude it is an altitude on QNH, above it a pressure altitude. Absent is no floor."
             },
             "scope": {
               "type": "string",
