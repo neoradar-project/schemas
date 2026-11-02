@@ -92,6 +92,9 @@
         "monitorLevelGraceSeconds": {
           "$ref": "#/$defs/monitorLevelGraceSeconds"
         },
+        "monitorLevelFloorFt": {
+          "$ref": "#/$defs/monitorLevelFloorFt"
+        },
         "observedDescentLookAheadMinutes": {
           "$ref": "#/$defs/observedDescentLookAheadMinutes"
         },
@@ -267,6 +270,11 @@
       "minimum": 0,
       "maximum": 60,
       "description": "How long after a new cleared level rebuilds the planned path a level deviation sets no state, so a pilot slow to start the climb or descent raises nothing; the path is still rebuilt on a confirmed deviation. 0 for none. Unit: s."
+    },
+    "monitorLevelFloorFt": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Height over the destination below which an aircraft on approach to it sets no level state and a held one ends; on approach is within the flight's finalApproachNm of the route's end at the destination with the planned path ahead not climbing, so a climb-out is still monitored. Unit: ft above the destination."
     },
     "observedDescentLookAheadMinutes": {
       "type": "integer",
