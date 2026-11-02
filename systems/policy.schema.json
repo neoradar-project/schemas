@@ -1249,6 +1249,13 @@
               "maximum": 180,
               "default": 10,
               "description": "The smallest change of course at a leg end that counts as a turn for waypointRadiusNm. TopSky's Wpt_MinTurn, 10 degrees."
+            },
+            "directTrackErrorDeg": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 180,
+              "default": 5,
+              "description": "On a direct-to the server has folded into the expansion, the turn onto it is done once the track is within this of the bearing to the fix, and the direct is measured from there; until then, for at most 120 s from the fold, the net does not raise. An aircraft that was on track to the fix holds the passed-fix guard until it is back within clearNm of the route after the fix. TopSky's DCT_MaxTrkError, 5 degrees."
             }
           },
           "additionalProperties": false
