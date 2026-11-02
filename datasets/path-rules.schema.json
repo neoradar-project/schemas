@@ -89,6 +89,9 @@
         "monitorCheckMaxSeconds": {
           "$ref": "#/$defs/monitorCheckMaxSeconds"
         },
+        "monitorLevelGraceSeconds": {
+          "$ref": "#/$defs/monitorLevelGraceSeconds"
+        },
         "observedDescentLookAheadMinutes": {
           "$ref": "#/$defs/observedDescentLookAheadMinutes"
         },
@@ -258,6 +261,12 @@
       "exclusiveMinimum": 0,
       "maximum": 60,
       "description": "Longest gap between checks, at most 60. Unit: s."
+    },
+    "monitorLevelGraceSeconds": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 60,
+      "description": "How long after a new cleared level rebuilds the planned path a level deviation sets no state, so a pilot slow to start the climb or descent raises nothing; the path is still rebuilt on a confirmed deviation. 0 for none. Unit: s."
     },
     "observedDescentLookAheadMinutes": {
       "type": "integer",
