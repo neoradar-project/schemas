@@ -106,6 +106,13 @@
                 "network"
               ],
               "description": "network needs the server; without it the check degrades to local."
+            },
+            "ignoreCodes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/squawkCodeOrRange"
+              },
+              "description": "Codes the duplicate-code call skips, as literals (\"4521\") or inclusive ranges (\"4530-4537\"), in addition to the built-in conspicuity codes 1000, 2000, 7000 and 7010 (TopSky's Airspace_No_DUPE_Codes, tier 3). Only the DUPE call reads it; the aircraft stay in every safety net, which safetyNets.exclude.squawks would not do. Absent: no extra code."
             }
           },
           "additionalProperties": false
