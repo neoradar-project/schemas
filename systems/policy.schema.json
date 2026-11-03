@@ -1531,11 +1531,6 @@
               "default": "stca-exclude",
               "description": "A zone tag inside which every pair of a track is still judged and kept silent, for airspace where converging traffic is the procedure: the confirmation runs on, so a pair leaving it into a conflict alerts on its first sweep outside. Whole tags only, so no spaces."
             },
-            "parallelApproachZoneTag": {
-              "type": "string",
-              "default": "stca-parallel",
-              "description": "A zone tag that keeps a pair silent, still judged so that leaving the zone into a conflict alerts at once, when BOTH aircraft are inside it, on one course within 10 degrees of each other and at least 0.33 nm apart (the parallel defaults), which is what parallel approaches look like. One inside and one crossing overhead, a pair head on or crossing, a pair closer than that, and a pair with either aircraft in a parallel operation's no transgression zone are still judged. The zone knows no runway or side, so a parallel operation is the precise tool."
-            },
             "finalApproach": {
               "type": "object",
               "description": "The final-approach corridor, generated behind EVERY monitored landing end from the runway ends runway monitoring already resolves, so authoring an empty object gets the behaviour at every airport in the package with nothing drawn. Inside a corridor two aircraft landing in trail on the course, where the wake rule allows it (the nearer no heavy, super or B757, the further the same category or heavier), are judged against lateralNm instead of the region's own minimum; every other pair in there keeps the region's minimum. Nothing is silenced: an approach that should raise nothing is an authored exclusion zone. ABSENT IS OFF, because a corridor lowers the minimum. IT NEEDS policy.json runwayMonitoring: the geometry comes from those strips, so a system authoring this and no runway monitoring generates nothing, which .dev stca-info says in those words.",
