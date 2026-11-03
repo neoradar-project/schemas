@@ -2994,7 +2994,7 @@
             },
             "blindSpot": {
               "type": "object",
-              "description": "TopSky's Blind Spot function on TCT's predictor: the CFL menu's levels, and the heading and direct-to menus' entries, probed once as the menu opens and coloured conflict, crossed level, clear or unknown, aged after agedS. On whenever safetyNets.tct is authored, independent of safetyNets.show.tct. Null minima and band keep TCT's.",
+              "description": "TopSky's Blind Spot function on TCT's predictor: the CFL menu's levels, and the heading and direct-to menus' entries, probed as the menu opens and again every cadenceS while it is open, and coloured conflict, crossed level, clear or unknown. On whenever safetyNets.tct is authored, independent of safetyNets.show.tct. Null minima and band keep TCT's.",
               "properties": {
                 "enabled": {
                   "type": "boolean",
@@ -3012,12 +3012,6 @@
                   "maximum": 600,
                   "default": 180,
                   "description": "A conflict starting within this many seconds colours the entry. The Blind Spots study's events fit three minutes; TopSky's setting default is 120. For each pair the window is at least the pair's warningS plus cadenceS times confirmChecks (and at most lookaheadS), so a level shown clear cannot raise a TCT once issued. Absent is 180, or lookaheadS where that is shorter."
-                },
-                "agedS": {
-                  "type": "number",
-                  "exclusiveMinimum": 0,
-                  "default": 10,
-                  "description": "Seconds after which every bar turns the aged colour; never probed again while the menu stays open."
                 },
                 "reversalReactionS": {
                   "type": "number",
