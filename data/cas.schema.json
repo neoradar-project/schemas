@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "NeoRadar controlled airspace limits",
-  "description": "data/cas.json in a vAcc's sector source, beside topsky/ and euroscope_data/: the class and the vertical limits of the controlled airspace the sector file draws, which the sector file itself never carries. The shapes come from the sector file: each entry names an [ARTCC HIGH] or [ARTCC LOW] group of the .sct, `neoradar-cli convert` joins that group's line segments into the faces they enclose, gives each face the limits of the volume that holds it, and writes datasets/cas.geojson (`@schemas/datasets/cas.schema.json`) into the package, where the airspace infringement net reads it. Optional: no file means no CAS dataset, and the net keeps its zones or the online sectors. Written by hand from the AIP, each entry naming its source; the vAcc's copy is the master. Checked by `convert` and refused before anything is written: a name the sector file does not draw, a volume point that lies in none of its group's faces, two volumes in one face, and more than one volume with no point. A face no volume claims is left out and named in neoradar-cli.log.",
+  "description": "data/cas.json in a vAcc's sector source, beside topsky/ and euroscope_data/: the class and the vertical limits of the controlled airspace the sector file draws, which the sector file itself never carries. The shapes come from the sector file: each entry names an [ARTCC HIGH] or [ARTCC LOW] group of the .sct, `neoradar-cli convert` joins that group's line segments into the faces they enclose, gives each face the limits of the volume that holds it, and writes datasets/cas.geojson (`@schemas/datasets/cas.schema.json`) into the package, where the airspace infringement net reads it. Optional: no file means no CAS dataset, and the net keeps its zones or the online sectors. Written by hand from the AIP, each entry naming its source; the vAcc's copy is the master. Checked by `convert` and refused before anything is written: a name the sector file does not draw, a volume point that lies in none of its group's faces, two volumes in one face, more than one volume with no point, and a volume with no point in a group that draws more than one face. A face no volume claims is left out and named in neoradar-cli.log.",
   "type": "object",
   "additionalProperties": false,
   "required": ["airspace"],
@@ -54,7 +54,7 @@
           "minItems": 2,
           "maxItems": 2,
           "items": { "type": "number" },
-          "description": "[latitude, longitude] in decimal degrees, WGS84: a point inside the face of the group this volume is. Needed when the group draws more than one face; an entry whose one volume has no point gives its limits to every face of the group."
+          "description": "[latitude, longitude] in decimal degrees, WGS84: a point inside the face of the group this volume is. Needed when the group draws more than one face; a volume with no point is refused there, and stands for the one face of a group that draws one."
         },
         "class": {
           "enum": ["A", "B", "C", "D", "E"],

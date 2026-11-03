@@ -422,9 +422,9 @@
               "uniqueItems": true,
               "items": {
                 "type": "string",
-                "enum": ["msaw", "aiw", "apw", "sap", "clamRam"]
+                "enum": ["msaw", "aiw", "apw", "sap", "clamRam", "tct"]
               },
-              "description": "Nets switched OFF for an aircraft strictly inside this area, at its current position and level, while the area is active: aiw (no infringement is judged), clamRam (CLAM and RAM judge and stay silent) and apw (APW does not watch this area). msaw and sap are read by no net yet. A limit above the transition altitude is a flight level."
+              "description": "Nets switched OFF for an aircraft strictly inside this area, at its current position and level, while the area is active: aiw (no infringement is judged), clamRam (CLAM and RAM judge and stay silent) and apw (APW does not watch this area). msaw and sap are read by no net yet. tct is the exception: a TCT pair with either aircraft inside is still judged and kept silent, so it alerts on the first check outside. A limit above the transition altitude is a flight level."
             },
             "apwBufferLatNm": { "$ref": "#/$defs/buffer" },
             "apwBufferVertFt": { "$ref": "#/$defs/buffer" },
