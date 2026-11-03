@@ -656,10 +656,6 @@
         "unknownColour": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
           "description": "The probe could not judge it."
-        },
-        "agedColour": {
-          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "Every bar once the probe is older than blindSpot.agedS."
         }
       },
       "additionalProperties": false

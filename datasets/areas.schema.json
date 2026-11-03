@@ -422,9 +422,9 @@
               "uniqueItems": true,
               "items": {
                 "type": "string",
-                "enum": ["msaw", "aiw", "apw", "sap", "clamRam"]
+                "enum": ["msaw", "aiw", "apw", "sap", "clamRam", "tct"]
               },
-              "description": "Nets that are switched OFF for an aircraft inside this area while it is active. The general form of an exclusion zone: a package draws one area and every listed net honours it at its eligibility stage."
+              "description": "Nets that are switched OFF for an aircraft inside this area while it is active. The general form of an exclusion zone: a package draws one area and every listed net honours it at its eligibility stage. tct is the exception: a TCT pair with either aircraft inside is still judged and kept silent, so it alerts on the first check outside."
             },
             "apwBufferLatNm": { "$ref": "#/$defs/buffer" },
             "apwBufferVertFt": { "$ref": "#/$defs/buffer" },
