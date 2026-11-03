@@ -2025,7 +2025,7 @@
       },
       "autoOpenWhen": {
         "$ref": "#/items/properties/filterExpressions",
-        "description": "With autoOpen, only a row this condition holds for opens the list and holds it open, read as filterExpressions is, over the list's own rows; the other rows are still shown. TopSky's Lost List Setup B is autoOpen with autoOpenWhen [\"==\", \"lostChecked\", \"0\"]: it opens while a lost flight's row is unchecked and closes once every row is checked. Absent: every row counts."
+        "description": "With autoOpen, only a row this condition holds for opens the list and holds it open, read as filterExpressions is, over the list's own rows; the other rows are still shown. TopSky's Lost List Setup B is autoOpen with autoOpenWhen [\"==\", \"lostChecked\", \"0\"]: it opens while a lost flight's row is unchecked and may be closed once every row is checked; it never closes itself. Absent: every row counts."
       },
       "style": {
         "type": "object",
