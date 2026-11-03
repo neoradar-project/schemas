@@ -1819,6 +1819,157 @@
                 }
               },
               "additionalProperties": false
+            },
+            "turnTest": {
+              "type": "object",
+              "description": "G159's standard turn test (option I, Part 3 section 2.16.4; TopSky's turn model): a predicted conflict that is not imminent waits to be raised while one aircraft's escape turn after reactionS, right or left at rateDegS for 180 degrees with the other flying its own track, would keep lateralNm (upperLateralNm above upperLateralAboveFt), scaled by the regions as every lateral value is. Each of the four scenarios starts afresh from the two positions after the reaction, where TopSky's carries on from the last. Its hits still count, so the report on which no turn clears it raises it at once; a raised pair is never lowered by it. ABSENT IS OFF, because G159 warns it can cut warning time; an authored empty object is on at TopSky's values.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False switches it off and keeps the section."
+                },
+                "reactionS": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 70,
+                  "description": "Before the turn starts; a conflict whose lateral entry is no later than this is never held. TopSky's STCA_Turn_React."
+                },
+                "rateDegS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 2,
+                  "description": "The standard turn rate, TopSky's STCA_Turn_Rate."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 2,
+                  "description": "The separation the turn must keep at or below upperLateralAboveFt, TopSky's STCA_Turn_Sep_Lat_L."
+                },
+                "upperLateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 3,
+                  "description": "The same above it, TopSky's STCA_Turn_Sep_Lat_U."
+                },
+                "stepS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 5,
+                  "description": "Step of the turn's path, TopSky's STCA_LinPred_PredictionStep."
+                }
+              },
+              "additionalProperties": false
+            },
+            "levelOffTest": {
+              "type": "object",
+              "description": "G159's level-off test (option I; TopSky's level-off model, which TopSky runs only without its cleared level step model): for a pair neither of which is levelled off at its cleared level by levelOffAtCfl, a predicted conflict that is not imminent waits while the faster aircraft levelling off relative to the other after reactionS (both, after doubleReactionS, when one climbs and one descends), slowing at rateFpmPerS, would leave them on the same sides and at least verticalFt apart (vertical2000Ft on the 2000 ft standard), scaled by the regions. Held as the turn test is. ABSENT IS OFF; an authored empty object is on at TopSky's values.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False switches it off and keeps the section."
+                },
+                "reactionS": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 70,
+                  "description": "TopSky's STCA_LevelOff_React_Single."
+                },
+                "doubleReactionS": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 80,
+                  "description": "When one climbs and the other descends, TopSky's STCA_LevelOff_React_Double."
+                },
+                "rateFpmPerS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 300,
+                  "description": "How fast the vertical rate falls, ft/min each second, TopSky's STCA_LevelOff_Rate."
+                },
+                "verticalFt": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 700,
+                  "description": "TopSky's STCA_LevelOff_Sep_Vert_L."
+                },
+                "vertical2000Ft": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 1600,
+                  "description": "On the 2000 ft standard, TopSky's STCA_LevelOff_Sep_Vert_U."
+                }
+              },
+              "additionalProperties": false
+            },
+            "safeCrossing": {
+              "type": "object",
+              "description": "G159's safe crossing test (option J, Part 3 section 2.16.5.3; TopSky's Safe veto): a current proximity hit is no hit while the tracks cross at an angle between minAngleDeg and maxAngleDeg, one aircraft is past the point where the track lines cross, and the separation when the other reaches it (or now, both being past) is over lateralNm (upperLateralNm above upperLateralAboveFt), scaled by the regions. Current proximity only, as G159 and TopSky have it. ABSENT IS OFF; an authored empty object is on at TopSky's values.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False switches it off and keeps the section."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 2.5,
+                  "description": "TopSky's STCA_CurrProx_Sep_Lat_L_Safe."
+                },
+                "upperLateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 4.0,
+                  "description": "TopSky's STCA_CurrProx_Sep_Lat_U_Safe."
+                },
+                "minAngleDeg": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 45,
+                  "description": "Strictly above this angle between the tracks."
+                },
+                "maxAngleDeg": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 180,
+                  "default": 135,
+                  "description": "Strictly below this angle."
+                }
+              },
+              "additionalProperties": false
+            },
+            "diverging": {
+              "type": "object",
+              "description": "G159's diverging parameter (Part 3 section 2.13.4, Table 6: 1.75 to 3.0 nm en route, 1.5 to 2.0 in a TMA; TopSky's LinPred_Sep_Lat_Div): a pair opening faster than openingKt now is predicted on lateralNm (upperLateralNm above upperLateralAboveFt), scaled by the regions, where that is smaller than its own minimum; it changes the outcome only for a pair already inside its minimum and leaving it. ABSENT IS OFF; an authored empty object is on at TopSky's values.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False switches it off and keeps the section."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 2,
+                  "description": "TopSky's STCA_LinPred_Sep_Lat_L_Div."
+                },
+                "upperLateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 3,
+                  "description": "TopSky's STCA_LinPred_Sep_Lat_U_Div."
+                },
+                "openingKt": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 5,
+                  "description": "Opening faster than this, TopSky's hard-coded 5 kt."
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
