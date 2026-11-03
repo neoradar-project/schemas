@@ -2005,6 +2005,53 @@
           },
           "additionalProperties": false
         },
+        "apw": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Area proximity warning, evaluated on the client on TopSky's template: an aircraft inside, or predicted to enter, an ACTIVE segregated area of datasets/areas.geojson (kind tsa, never pre-active, not one whose inhibits name apw). Its straight-line path at its ground speed and smoothed vertical rate is stepped every stepS to lookaheadS; an area is met within its band widened by the vertical buffer (each limit's own: the upper value for a limit above 28,500 ft, else by flight rules), a limit above the transition altitude where the aircraft is read as a flight level, and within the lateral buffer by the true distance to the area (the upper value above bufferLat.sepLevelFt of predicted altitude, else by flight rules); an area's apwBufferLatNm and apwBufferVertFt replace the buffers here. Inside, or an entry within imminentS, raises at once; else confirmCycles new reports in a row predicting an entry within lookaheadS raise once it is within warningS. Inside is an alert, an entry ahead a warning naming the area and the seconds to it. Silent unless safetyNets.kinds.apw.sound is on, as TopSky's APW_AlertSound is off. A standing alert holds through one report with no entry predicted. ABSENT IS OFF: the net does not run until a system authors the section, and with no datasets/areas.geojson it does nothing. Not built yet: a flight cleared to hold in an area left out (it waits for the hold state). .dev apw-info explains a verdict.",
+          "properties": {
+            "enabled": { "type": "boolean", "default": true, "description": "False keeps the section and stops the net." },
+            "lookaheadS": { "type": "integer", "minimum": 0, "maximum": 300, "default": 75, "description": "How far ahead the path is stepped, TopSky's APW_PredictionTime. EUROCONTROL's APW guidance allows over 60 s only well clear of routes." },
+            "stepS": { "type": "integer", "minimum": 1, "maximum": 60, "default": 5, "description": "Seconds between predicted points; TopSky steps 15." },
+            "warningS": { "type": "integer", "minimum": 0, "default": 60, "description": "A confirmed entry is shown only once it is this close, TopSky's APW_WarningTime; at most lookaheadS." },
+            "imminentS": { "type": "integer", "minimum": 0, "default": 30, "description": "An entry this close, or inside, raises with no confirmation, TopSky's APW_WarningTime_Imm; at most warningS." },
+            "confirmCycles": { "type": "integer", "minimum": 1, "maximum": 16, "default": 3, "description": "New position reports in a row predicting an entry within lookaheadS, TopSky's APW_ConflictCount; a check with no new report counts nothing." },
+            "cadenceS": { "type": "integer", "minimum": 1, "default": 5, "description": "Seconds between evaluations." },
+            "categories": { "type": "array", "items": { "type": "string" }, "uniqueItems": true, "description": "The area categories watched (DANGER, TRA, AARA...). Absent watches every segregated area; an area with no category is watched only when this is absent." },
+            "flightRules": { "type": "string", "enum": ["all", "ifr", "vfr"], "default": "all", "description": "Which flights are judged; unfiled counts as VFR. TopSky's APW_VFR 1 judges both." },
+            "uncorrelated": { "type": "boolean", "default": false, "description": "Whether an uncorrelated track with Mode C is judged, TopSky's APW_Uncorrelated." },
+            "uncontrolled": { "type": "boolean", "default": true, "description": "Whether a VFR flight no controller tracks is judged, TopSky's APW_Uncontrolled 2." },
+            "scope": { "type": "string", "enum": ["ownedOrConcerned", "allVisible"], "default": "ownedOrConcerned", "description": "Whose traffic is judged, TopSky's APW_Filter 1: the viewer's own and traffic concerning it. Author this or sourceStates." },
+            "sourceStates": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "enum": ["kUnconcerned", "kNotified", "kIncomingTransfer", "kAssumed", "kOutgoingTransfer", "kIntruder", "kConcerned"] },
+              "description": "The attention states judged, in place of scope."
+            },
+            "bufferLat": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Lateral buffers, TopSky's APW_Buffer_Lat_* defaults (the UK's NODE authors 24500, 2.5, 1.5, 0).",
+              "properties": {
+                "sepLevelFt": { "type": "integer", "minimum": 0, "default": 9500, "description": "Above this predicted pressure altitude the upper buffer applies." },
+                "aboveNm": { "type": "number", "minimum": 0, "default": 5 },
+                "belowIfrNm": { "type": "number", "minimum": 0, "default": 3 },
+                "belowVfrNm": { "type": "number", "minimum": 0, "default": 3 }
+              }
+            },
+            "bufferVert": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Vertical buffers, FEET, TopSky's APW_Buffer_Vert_* defaults.",
+              "properties": {
+                "upperFt": { "type": "integer", "minimum": 0, "default": 1700, "description": "For an area limit above 28,500 ft." },
+                "ifrFt": { "type": "integer", "minimum": 0, "default": 700 },
+                "vfrFt": { "type": "integer", "minimum": 0, "default": 300 }
+              }
+            }
+          }
+        },
         "aiw": {
           "type": "object",
           "description": "Airspace infringement warning, evaluated on the client: a track with Mode C, correlated or not (an uncorrelated one is unknown traffic tied to no plan), that no controller is tracking and that is off any discrete code ATC assigned it, inside controlled airspace, which is the most common real incident on VATSIM. Controlled airspace is, first, zones tagged controlledZoneTag, which replace everything else; else the package's datasets/cas.geojson (built by neoradar-cli from the sector file's outlines and the vAcc's data/cas.json), judged strictly inside each volume, a limit in feet on the altitude on QNH and a flight level on the pressure altitude, and only where the point's owner by sector-file order is online (and ours under scope own); else every ACTIVE volume whose sector an online controller works. An active area may switch the net off (datasets/areas.geojson inhibits aiw, or safetyNets.kinds.aiw.inhibitInActiveAreas). A primary blip and a transponder on standby are never judged. It raises a warning-severity Aiw naming the airspace. 'Not on frequency' is deliberately not part of the rule: a pilot's tuned frequency is in neither the position stream nor the datafeed, so neither half can evaluate it. Absent is every default below, as an absent safetyNets section is. .dev aiw-info prints the airspace set it used.",
