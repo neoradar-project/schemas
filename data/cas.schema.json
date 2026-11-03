@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeoRadar controlled airspace limits",
+  "description": "data/cas.json in a vAcc's sector source, beside topsky/ and euroscope_data/: the class and the vertical limits of the controlled airspace the sector file draws, which the sector file itself never carries. The shapes come from the sector file: each entry names an [ARTCC HIGH] or [ARTCC LOW] group of the .sct, `neoradar-cli convert` joins that group's line segments into the faces they enclose, gives each face the limits of the volume that holds it, and writes datasets/cas.geojson (`@schemas/datasets/cas.schema.json`) into the package, where the airspace infringement net reads it. Optional: no file means no CAS dataset, and the net keeps its zones or the online sectors. Written by hand from the AIP, each entry naming its source; the vAcc's copy is the master. Checked by `convert` and refused before anything is written: a name the sector file does not draw, a volume point that lies in none of its group's faces, two volumes in one face, more than one volume with no point, and a volume with no point in a group that draws more than one face. A face no volume claims is left out and named in neoradar-cli.log.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["airspace"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Editor hint only."
+    },
+    "airspace": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/airspace" }
+    }
+  },
+  "$defs": {
+    "limit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uom"],
+      "properties": {
+        "value": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Feet for FT, hundreds of feet for FL; absent for SFC and UNL."
+        },
+        "uom": {
+          "enum": ["FT", "FL", "SFC", "UNL"],
+          "description": "FT: an altitude above mean sea level, judged on the QNH altitude. FL: a flight level, judged on the pressure altitude. SFC: the surface, as a lower limit. UNL: unlimited, as an upper limit."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "uom": { "enum": ["FT", "FL"] } } },
+          "then": { "required": ["value"] },
+          "else": { "not": { "required": ["value"] } }
+        }
+      ]
+    },
+    "volume": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["class", "lower", "upper"],
+      "properties": {
+        "part": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The part as the AIP names it (LONDON TMA 1). Absent, the volume takes the entry's name. It is what the alert text prints."
+        },
+        "at": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "type": "number" },
+          "description": "[latitude, longitude] in decimal degrees, WGS84: a point inside the face of the group this volume is. Needed when the group draws more than one face; a volume with no point is refused there, and stands for the one face of a group that draws one."
+        },
+        "class": {
+          "enum": ["A", "B", "C", "D", "E"],
+          "description": "The ICAO airspace class."
+        },
+        "lower": { "$ref": "#/$defs/limit" },
+        "upper": { "$ref": "#/$defs/limit" }
+      }
+    },
+    "airspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "source", "volumes"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The group's name exactly as the .sct writes it in [ARTCC HIGH] or [ARTCC LOW] (EGLL London Heathrow CTR)."
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Where the classes and limits were copied from, with its edition (UK AIP AD 2.EGLL AD 2.17, AIRAC 2026-10-29)."
+        },
+        "volumes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/volume" }
+        }
+      }
+    }
+  }
+}

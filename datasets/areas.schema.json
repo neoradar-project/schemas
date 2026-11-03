@@ -369,7 +369,7 @@
             "kind": {
               "type": "string",
               "enum": ["tsa", "stcaInhibit", "mtcdInhibit", "clamRamInhibit"],
-              "description": "What the area is for. tsa is a segregated or restricted area the proximity and route probes watch; the other three switch one net off inside themselves rather than raising anything, and a clamRamInhibit area is always active."
+              "description": "What the area is for. tsa is a segregated or restricted area APW watches; the other three switch one net off inside themselves while active rather than raising anything: stcaInhibit STCA (pairs judged and kept silent), clamRamInhibit CLAM and RAM, mtcdInhibit MTCD, which is not built. An inhibit area switches its net off only while its activation makes it active, as TopSky's code tests the state of a DD area too, so one with no activation entry never does."
             },
             "category": {
               "type": "string",
@@ -422,9 +422,9 @@
               "uniqueItems": true,
               "items": {
                 "type": "string",
-                "enum": ["msaw", "aiw", "apw", "sap", "clamRam"]
+                "enum": ["msaw", "aiw", "apw", "sap", "clamRam", "tct"]
               },
-              "description": "Nets that are switched OFF for an aircraft inside this area while it is active. The general form of an exclusion zone: a package draws one area and every listed net honours it at its eligibility stage."
+              "description": "Nets switched OFF for an aircraft strictly inside this area, at its current position and level, while the area is active: aiw (no infringement is judged), clamRam (CLAM and RAM judge and stay silent) and apw (APW does not watch this area). msaw and sap are read by no net yet. tct is the exception: a TCT pair with either aircraft inside is still judged and kept silent, so it alerts on the first check outside. A limit above the transition altitude is a flight level."
             },
             "apwBufferLatNm": { "$ref": "#/$defs/buffer" },
             "apwBufferVertFt": { "$ref": "#/$defs/buffer" },
