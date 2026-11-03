@@ -1002,6 +1002,18 @@
                       },
                       {
                         "type": "string",
+                        "enum": [
+                          "netName",
+                          "netStatus",
+                          "netMayOff",
+                          "netMaySound",
+                          "netSwitchedOff",
+                          "netSoundOff"
+                        ],
+                        "description": "A net list row, one safety net of the active system as the board judges it now, which no other row reads: netName (the policy.json kind name: stca, msaw, apw, aiw, tct, ram, clam, bust, afdas, rimcas, emergency, ntz), netStatus (0 off by the system, 1 on, 2 hidden by safetyNets.show, 3 meant to run and cannot, 4 switched off by this controller), netMayOff and netMaySound (1 where safetyNets.kinds.(net).controllerMay grants off or sound), netSwitchedOff and netSoundOff (1 while this controller has switched the net or its sound off and the system grants it)."
+                      },
+                      {
+                        "type": "string",
                         "pattern": "^plugin:[^:]+:.+$",
                         "description": "A plugin key: a tag item, written plugin:{plugin name}:TAG_{item name}, or an expression the plugin declares, written plugin:{plugin name}:EXP_{expression name}. As an itemName a tag item shows the plugin's value, or the item's default. As a condition key or an \"&key\" either reads what the plugin last pushed for the aircraft, else its default: a tag item's registered default, an expression's declared one. It reads empty while the plugin is not loaded and on a row that is no aircraft. A boolean expression reads \"1\" or \"0\"."
                       },
