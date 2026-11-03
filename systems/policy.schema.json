@@ -3340,6 +3340,27 @@
               "maximum": 20,
               "default": 5,
               "description": "Sets held at once; a track may sit in several. Another set past this replaces the oldest. 5 when absent, TopSky's Setup A value; UK TopSky (Setup B, COOPANS) holds 20."
+            },
+            "vsep": {
+              "type": "object",
+              "description": "VSEP, TopSky's vertical separation display on a RADARSEP set asked for with VSEP (the radarSeparationWithVsep click action): from the two aircraft's levels and current vertical rates, with no cleared level read, the points where their vertical distance falls below the band and rises above it again are marked on both lines with the distance between the aircraft there (\"v4.7\"), the lines run on past the closest point while the band holds, and \"v=\" beside the first aircraft says the band is not regained in the window. Both aircraft need Mode C; a set whose aircraft loses it is turned back to plain RADARSEP and the controller told.",
+              "properties": {
+                "separationFt": {
+                  "type": "integer",
+                  "minimum": 100,
+                  "maximum": 10000,
+                  "default": 1800,
+                  "description": "The vertical band in feet. 1800 when absent, TopSky's Setup B (COOPANS) Vector_MinSep_VertSep_Separation, the setup UK TopSky runs."
+                },
+                "extensionS": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 600,
+                  "default": 120,
+                  "description": "Seconds past the closest point VSEP still looks. 120 when absent, TopSky's Vector_MinSep_VertSep_Ext_Time."
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
