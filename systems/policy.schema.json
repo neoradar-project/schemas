@@ -3326,6 +3326,41 @@
       },
       "additionalProperties": false
     },
+    "separationTools": {
+      "type": "object",
+      "description": "The controller's separation tools, RADARSEP (radar separation, TopSky's SEP) and FPLSEP (flight plan separation). They are tools a controller asks for, not nets: nothing here raises an alert. Every key is optional and an absent one keeps the client's value.",
+      "properties": {
+        "radarSeparation": {
+          "type": "object",
+          "description": "RADARSEP: two radar tracks flown on along their great circles at their ground speeds, both moved to now by their reports' ages, and the first closest approach within 999 minutes (UK TopSky, Setup B).",
+          "properties": {
+            "maxSets": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 5,
+              "description": "Sets held at once; a track may sit in several. Another set past this replaces the oldest. 5 when absent, TopSky's Setup A value; UK TopSky (Setup B, COOPANS) holds 20."
+            }
+          },
+          "additionalProperties": false
+        },
+        "flightPlanSeparation": {
+          "type": "object",
+          "description": "FPLSEP: the least distance between two planned trajectories within the hour.",
+          "properties": {
+            "maxSets": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 5,
+              "description": "Sets held at once; a track may sit in several, the same pair once. Another set past this replaces the oldest. 5 when absent, TopSky's value."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "squawk": {
       "type": "object",
       "description": "The squawk provider chain: the package's priority per provider name, providers it disables, the reserved codes no provider may hand out, the circuit codes, and a first-party HTTP allocator. A provider the package does not name keeps what it declared.",
