@@ -2071,14 +2071,14 @@
             "verticalFt": {
               "type": "number",
               "exclusiveMinimum": 0,
-              "default": 750,
-              "description": "The gap between the two vertical bands under which an instant is in conflict."
+              "default": 1000,
+              "description": "The gap between the two vertical bands under which an instant is in conflict. The default is the NATS figure for the 1000 ft standard (TCT.NATS02.02, 5 NM / 1000 ft); TopSky uses 750, which a system may author. A region's verticalFt overrides it, and Blind Spot takes the same value unless blindSpot.verticalFt names another."
             },
             "verticalUpperFt": {
               "type": "number",
               "exclusiveMinimum": 0,
-              "default": 1500,
-              "description": "The same where both bands are at or above FL410."
+              "default": 2000,
+              "description": "The same where both bands are at or above verticalUpperFromFl: the 2000 ft standard there (TCT.NATS02.02). TopSky uses 1500."
             },
             "verticalUpperFromFl": {
               "type": "integer",
