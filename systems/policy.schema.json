@@ -1970,6 +1970,30 @@
                 }
               },
               "additionalProperties": false
+            },
+            "ntz": {
+              "type": "object",
+              "description": "The no transgression zone alert, ATMAS section 3.2.3.2's NTZ net, raised as its own kind (ntz, alertKind 14) beside STCA: an aircraft landing at a parallel operation's aerodrome inside a zone carrying that operation's ntzZoneTag is an alert, and one in a normal operating zone whose straight track enters the zone within preWarningS is a warning (the pre-warning). It rides STCA's sweep and its parallel operations, so it needs this section, parallel[] with an ntzZoneTag the package's zones carry, both runways landing and runwayMonitoring; otherwise netStatus reads unavailable and one System line says so. The NTZ does not lift floorFt, as TopSky's does; give an approach region its own floorFt. ABSENT IS OFF; an authored empty object raises the infringement alone.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False switches it off and keeps the section."
+                },
+                "preWarningS": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0,
+                  "description": "How far ahead the straight track is tested for an entry into the zone. ATMAS gives no value (a predefined interval) and PJ11 leaves the time trigger to each airport, so 0, no pre-warning, until the package authors one. At most lookaheadS."
+                },
+                "stepS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 1,
+                  "description": "Step of that test."
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
