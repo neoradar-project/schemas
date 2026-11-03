@@ -2007,7 +2007,7 @@
         },
         "aiw": {
           "type": "object",
-          "description": "Airspace infringement warning, evaluated on the client: a correlated track no controller is tracking, inside or about to enter controlled airspace, which is the most common real incident on VATSIM. The sector file carries no airspace class, so controlled airspace is every ACTIVE volume whose sector an online controller works, unless this package draws its own with zones tagged controlledZoneTag, which then replace the volume rule entirely. It raises a warning-severity Aiw naming the airspace. 'Not on frequency' is deliberately not part of the rule: a pilot's tuned frequency is in neither the position stream nor the datafeed, so neither half can evaluate it. Absent is every default below, as an absent safetyNets section is. .dev aiw-info prints the airspace set it used.",
+          "description": "Airspace infringement warning, evaluated on the client: a track with Mode C, correlated or not (an uncorrelated one is unknown traffic tied to no plan), that no controller is tracking and that is off any discrete code ATC assigned it, inside controlled airspace, which is the most common real incident on VATSIM. Controlled airspace is, first, zones tagged controlledZoneTag, which replace everything else; else the package's datasets/cas.geojson (built by neoradar-cli from the sector file's outlines and the vAcc's data/cas.json), judged strictly inside each volume, a limit in feet on the altitude on QNH and a flight level on the pressure altitude, and only where the point's owner by sector-file order is online (and ours under scope own); else every ACTIVE volume whose sector an online controller works. An active area may switch the net off (datasets/areas.geojson inhibits aiw, or safetyNets.kinds.aiw.inhibitInActiveAreas). A primary blip and a transponder on standby are never judged. It raises a warning-severity Aiw naming the airspace. 'Not on frequency' is deliberately not part of the rule: a pilot's tuned frequency is in neither the position stream nor the datafeed, so neither half can evaluate it. Absent is every default below, as an absent safetyNets section is. .dev aiw-info prints the airspace set it used.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -2017,15 +2017,15 @@
             "lookaheadS": {
               "type": "integer",
               "minimum": 0,
-              "default": 30,
-              "description": "How far ahead on the current track the net looks for an entry, TopSky's sampling. 0 monitors containment alone, which a system that dislikes predicted calls wants; the lookahead is also what keeps a track skimming a boundary from flapping, because clearing needs no confirmation."
+              "default": 0,
+              "description": "How far ahead on the current track the net looks for an entry, one point at the current level, TopSky's sampling (TopSky's own is 60). 0, the default, monitors containment alone, as EUROCONTROL's APW guidance (Part III 3.2.2) has it for unknown traffic: a straight-line call on a VFR that then turns away is noise."
             },
             "confirmCycles": {
               "type": "integer",
               "minimum": 1,
               "maximum": 16,
               "default": 2,
-              "description": "New position reports in a row inside or entering before the net raises; a check that sees no new report counts nothing. At one report every 5 seconds the default raises 5 to 10 seconds after the aircraft is first judged inside or entering. Leaving clears at once."
+              "description": "New position reports in a row predicting an entry before the net raises; a check that sees no new report counts nothing. A track inside raises on its first new report, as TopSky's AIW does. A standing alert holds through one report outside and clears on the second, so a track wobbling at a limit is one alert."
             },
             "cadenceS": {
               "type": "integer",
@@ -2053,7 +2053,7 @@
               "type": "string",
               "enum": ["all", "own"],
               "default": "all",
-              "description": "Whose airspace is watched, TopSky's AIW_Type. own watches only the volumes this controller, or a position it observes, works; ignored when the package draws controlled zones, which name nobody."
+              "description": "Whose airspace is watched, TopSky's AIW_Type. own watches only the volumes, and the CAS volumes over points, this controller, or a position it observes, works; ignored when the package draws controlled zones, which name nobody."
             }
           },
           "additionalProperties": false
