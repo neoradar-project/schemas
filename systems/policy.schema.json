@@ -912,6 +912,7 @@
               "apw",
               "aiw",
               "holdIntrusion",
+              "holdAdherence",
               "mtcd",
               "tct",
               "rimcas",
@@ -964,6 +965,7 @@
                   "apw",
                   "aiw",
                   "holdIntrusion",
+                  "holdAdherence",
                   "mtcd",
                   "tct",
                   "rimcas",
@@ -1046,6 +1048,7 @@
               "apw",
               "aiw",
               "holdIntrusion",
+              "holdAdherence",
               "mtcd",
               "tct",
               "rimcas",
@@ -1067,6 +1070,7 @@
             "clam",
             "ram",
             "holdIntrusion",
+            "holdAdherence",
             "tct",
             "mtcd"
           ],
@@ -1123,6 +1127,7 @@
                   "apw",
                   "aiw",
                   "holdIntrusion",
+                  "holdAdherence",
                   "mtcd",
                   "tct",
                   "rimcas",
@@ -2017,6 +2022,39 @@
             }
           },
           "additionalProperties": false
+        },
+        "holding": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Who reads as holding, for every hold-aware rule (the two hold nets, STCA's and TCT's excludeHoldingPairs, RAM's stand-down and APW's): a flight cleared to one of the vAcc's served holds (the assignHold menu, the scratchpad word H and the fix, or another controller through the server) and within captureNm of its fix, or cleared to hold at present position. Never the clearance alone: two flights cleared to different stacks and still en route are not holding. Absent is these defaults.",
+          "properties": {
+            "captureNm": { "type": "number", "exclusiveMinimum": 0, "default": 15, "description": "How near its hold's fix a flight cleared to it must be to read as holding; the NATS stack list's 15 NM from the stack reference." },
+            "cadenceS": { "type": "integer", "minimum": 1, "default": 5, "description": "Seconds between the hold nets' sweeps." }
+          }
+        },
+        "holdIntrusion": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Entry into a hold without clearance (CAT004's holding volume infringement, on MTCD2 3.3.2.1's rule): a flight not cleared to a hold, inside or predicted inside its pattern widened by lateralBufferNm, under verticalFt from the band its holders block (each holder's present and cleared level). The pattern is the served hold's racetrack at the flight's level (rate-one turns at the hold's speed limit, else the standard holding speed; the outbound leg's distance, else its time, else one minute to 14,000 ft and a minute and a half above), so it grows with level. A hold nobody holds at protects nothing. Its straight path at its ground speed and smoothed rate is stepped every stepS to lookaheadS: inside now raises at once, ahead after confirmCycles new reports. Inside the pattern itself at a blocked level is an alert, in the buffer or ahead a warning naming the fix and the seconds. Silent unless safetyNets.kinds.holdIntrusion.sound is on. Every number is local: no source gives one. ABSENT IS OFF; on with no served holds received or kept, it says once a session that it cannot run. .dev hold-info explains a verdict.",
+          "properties": {
+            "enabled": { "type": "boolean", "default": true, "description": "False keeps the section and stops the net." },
+            "lateralBufferNm": { "type": "number", "minimum": 0, "default": 2, "description": "How far outside the pattern still counts; ours." },
+            "verticalFt": { "type": "integer", "minimum": 1, "default": 1000, "description": "Under this many feet from the blocked band is a conflict; the vertical separation standard." },
+            "lookaheadS": { "type": "integer", "minimum": 0, "maximum": 300, "default": 60, "description": "How far ahead the path is stepped; 0 judges the present position alone." },
+            "stepS": { "type": "integer", "minimum": 1, "maximum": 60, "default": 5, "description": "Seconds between predicted points." },
+            "confirmCycles": { "type": "integer", "minimum": 1, "maximum": 16, "default": 2, "description": "New reports in a row predicting an entry before one ahead raises." }
+          }
+        },
+        "holdAdherence": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Holding adherence (CAT004's HAM): a flight cleared to a served hold that has been inside the pattern since its clearance, now outside it at its level by more than lateralToleranceNm, or outside the hold's levels by more than verticalToleranceFt, each limit in its own frame (FL against the pressure altitude, FT at or below the transition altitude against the altitude on QNH). A warning, HOLD and the fix and OUT or LVL; silent unless safetyNets.kinds.holdAdherence.sound is on. A hold at present position has no pattern and is not judged; neither is a flight still on its way in. ABSENT IS OFF; on with no served holds, it says once a session that it cannot run.",
+          "properties": {
+            "enabled": { "type": "boolean", "default": true, "description": "False keeps the section and stops the net." },
+            "lateralToleranceNm": { "type": "number", "minimum": 0, "default": 2, "description": "How far outside the pattern a holder may be; ours." },
+            "verticalToleranceFt": { "type": "integer", "minimum": 0, "default": 200, "description": "How far outside the hold's levels; CAP 493's 200 ft at a level." },
+            "confirmCycles": { "type": "integer", "minimum": 1, "maximum": 16, "default": 2, "description": "New reports in a row outside before it raises." }
+          }
         },
         "apw": {
           "type": "object",
@@ -3237,6 +3275,7 @@
               "apw",
               "aiw",
               "holdIntrusion",
+              "holdAdherence",
               "mtcd",
               "tct",
               "rimcas",
