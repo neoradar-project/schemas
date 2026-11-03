@@ -116,6 +116,7 @@
                     "ownedByCallsign",
                     "futureOwnerCallsign",
                     "scratchpad",
+                    "assignedHold",
                     "groundStatus",
                     "clearanceQueuePosition",
                     "attentionState",
@@ -141,6 +142,11 @@
                     "equipmentGrammar",
                     "trackId",
                     "isCoasting",
+                    "isLost",
+                    "lostTime",
+                    "lostReason",
+                    "lostChecked",
+                    "lostDestinationDistanceNm",
                     "positionAgeMs",
                     "isInCoverage",
                     "radarCoverage",
@@ -187,6 +193,7 @@
                     "alertClam",
                     "alertBust",
                     "alertHold",
+                    "alertHoldAdherence",
                     "alertTct",
                     "alertMtcd",
                     "alertAfdas",
@@ -605,6 +612,31 @@
                     },
                     {
                       "type": "string",
+                      "const": "isLost",
+                      "description": "A flight this controller tracks, once seen with radar, whose radar went: out of coverage, no SSR reply (standby or primary only), uncorrelated or coasting; TopSky's Lost List. It stays lost until the radar returns, the tracking ends or the aircraft leaves. 1 or 0."
+                    },
+                    {
+                      "type": "string",
+                      "const": "lostTime",
+                      "description": "When the flight was lost, UTC, HHmm; empty while it is not lost."
+                    },
+                    {
+                      "type": "string",
+                      "const": "lostReason",
+                      "description": "Why the flight was lost: 0 not lost, 1 out of coverage, 2 no SSR reply, 3 uncorrelated, 4 coasting."
+                    },
+                    {
+                      "type": "string",
+                      "const": "lostChecked",
+                      "description": "The controller checked the lost flight's row with the checkLostTrack click action. 1 or 0."
+                    },
+                    {
+                      "type": "string",
+                      "const": "lostDestinationDistanceNm",
+                      "description": "Whole nautical miles from where the flight was lost to its destination aerodrome; empty while it is not lost or either place is unknown. TopSky's optional 5 nm destination filter is a list filter on it."
+                    },
+                    {
+                      "type": "string",
                       "const": "positionAgeMs",
                       "description": "Milliseconds since the last position report"
                     },
@@ -752,6 +784,11 @@
                       "type": "string",
                       "const": "alertHold",
                       "description": "Hold intrusion severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
+                    },
+                    {
+                      "type": "string",
+                      "const": "alertHoldAdherence",
+                      "description": "Hold adherence severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
                     },
                     {
                       "type": "string",
@@ -1455,6 +1492,21 @@
             },
             {
               "type": "string",
+              "const": "invokeRadarSeparation",
+              "description": "TopSky's \"Invoke SEP tool\": start RADARSEP with this aircraft as the first pick; the next aircraft clicked makes the set, and until then the hovered aircraft is drawn as its preview. Available to an observer."
+            },
+            {
+              "type": "string",
+              "const": "invokeRadarSeparationWithVsep",
+              "description": "TopSky's \"Invoke SEP tool with VSEP\": as invokeRadarSeparation, the set drawing VSEP (policy.json separationTools.radarSeparation.vsep) when both aircraft have Mode C. Available to an observer."
+            },
+            {
+              "type": "string",
+              "const": "checkLostTrack",
+              "description": "Check this aircraft's Lost List row: the controller has seen that its radar went. The row stays until the radar returns, the tracking ends or the aircraft leaves; a list with autoOpen and autoOpenWhen on lostChecked may be closed once every row is checked. Available to an observer."
+            },
+            {
+              "type": "string",
               "const": "toggleManualAlert:missedApproach",
               "description": "Set the missed approach manual alert on this aircraft, or clear it when it is the one already set; several manual alerts can stand at once. Shared with every controller over the scratchpad and read back as manualAlert and manualAlerts. Needs a track this controller may edit."
             },
@@ -1567,6 +1619,11 @@
               "type": "string",
               "const": "directMenu",
               "description": "Opens the direct to menu."
+            },
+            {
+              "type": "string",
+              "const": "assignHold",
+              "description": "Opens the hold menu: the vAcc's served holds that fit the flight, on its route and serving its destination first, then present position and none. Sets the flight's assigned hold and flashes H and the fix on the scratchpad."
             },
             {
               "type": "string",

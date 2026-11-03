@@ -164,6 +164,7 @@
                                           "ownedByMe",
                                           "ownedByCallsign",
                                           "scratchpad",
+                                          "assignedHold",
                                           "groundStatus",
                                           "clearanceQueuePosition",
                                           "attentionState",
@@ -1086,6 +1087,11 @@
                       },
                       {
                         "type": "string",
+                        "const": "assignHold",
+                        "description": "Opens the hold menu: the vAcc's served holds that fit the flight, on its route and serving its destination first, then present position and none. Sets the flight's assigned hold and flashes H and the fix on the scratchpad."
+                      },
+                      {
+                        "type": "string",
                         "const": "copnAltitudeMenu",
                         "description": "Opens the COPN (sector entry) level coordination list."
                       },
@@ -1153,6 +1159,21 @@
                         "type": "string",
                         "const": "showTctLegs",
                         "description": "Show or hide this aircraft's TCT legs for the session: both predicted paths of its earliest tactical conflict to the closest point, in mapstyle tctLeg colours, with the minimum and the time to it on the other aircraft's leg. While shown, the pair's speed vectors and route legs hide unless either has an STCA. Available to an observer."
+                      },
+                      {
+                        "type": "string",
+                        "const": "invokeRadarSeparation",
+                        "description": "TopSky's \"Invoke SEP tool\": start RADARSEP with this aircraft as the first pick; the next aircraft clicked makes the set, and until then the hovered aircraft is drawn as its preview. Available to an observer."
+                      },
+                      {
+                        "type": "string",
+                        "const": "invokeRadarSeparationWithVsep",
+                        "description": "TopSky's \"Invoke SEP tool with VSEP\": as invokeRadarSeparation, the set drawing VSEP (policy.json separationTools.radarSeparation.vsep) when both aircraft have Mode C. Available to an observer."
+                      },
+                      {
+                        "type": "string",
+                        "const": "checkLostTrack",
+                        "description": "Check this aircraft's Lost List row: the controller has seen that its radar went. The row stays until the radar returns, the tracking ends or the aircraft leaves; a list with autoOpen and autoOpenWhen on lostChecked may be closed once every row is checked. Available to an observer."
                       },
                       {
                         "type": "string",
