@@ -917,7 +917,8 @@
               "rimcas",
               "stca",
               "afdas",
-              "emergency"
+              "emergency",
+              "ntz"
             ]
           },
           "additionalProperties": {
@@ -969,7 +970,8 @@
                   "rimcas",
                   "stca",
                   "afdas",
-                  "emergency"
+                  "emergency",
+                  "ntz"
                 ]
               },
               "additionalProperties": {
@@ -1051,7 +1053,8 @@
               "rimcas",
               "stca",
               "afdas",
-              "emergency"
+              "emergency",
+              "ntz"
             ]
           },
           "uniqueItems": true,
@@ -1059,6 +1062,7 @@
             "emergency",
             "rimcas",
             "stca",
+            "ntz",
             "msaw",
             "afdas",
             "bust",
@@ -1128,7 +1132,8 @@
                   "rimcas",
                   "stca",
                   "afdas",
-                  "emergency"
+                  "emergency",
+                  "ntz"
                 ]
               },
               "description": "The kinds whose alerts lift a track out of the filters, each at or above minSeverity. Absent, or empty, is every kind. Whichever kinds are named, a pairwise alert of a named kind (STCA, TCT) lifts both of its aircraft at any severity, so a TCT in its warning band and the other aircraft of a conflict are never left to the filters. TopSky lifts emergency, stca, msaw, afdas, apw, aiw and tct, and never clam, ram or mtcd: the safety nets, not the monitoring aids. An emergency code bypasses whatever this says."
@@ -3188,7 +3193,8 @@
               "rimcas",
               "stca",
               "afdas",
-              "emergency"
+              "emergency",
+              "ntz"
             ]
           },
           "additionalProperties": {
