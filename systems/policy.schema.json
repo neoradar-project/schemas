@@ -3259,6 +3259,11 @@
               "mutable": {
                 "type": "boolean",
                 "description": "Whether muteAlerts silences this kind's sounds. Absent is false for emergency and rimcas, which always sound, and true for every other kind."
+              },
+              "inhibitInActiveAreas": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether every ACTIVE segregated area (datasets/areas.geojson kind tsa) switches this net off for an aircraft strictly inside it, at its current position and level, a limit above the transition altitude read as a flight level: TopSky's STCA_Inhibit_ActiveAreas, AIW_Inhibit_ActiveAreas and Divergence_Inhibit_ActiveAreas. Read by stca, aiw, clam and ram. Without it only the areas that name the net switch it off: an area's inhibits (aiw, clamRam for clam and ram) or its kind (stcaInhibit, clamRamInhibit). STCA, CLAM and RAM keep judging inside and stay silent, so leaving the area alerts on the first report outside; AIW stops judging. Never on emergency or rimcas."
               }
             },
             "additionalProperties": false
