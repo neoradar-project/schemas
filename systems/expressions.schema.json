@@ -142,6 +142,7 @@
                           "ownedByCallsign",
                           "futureOwnerCallsign",
                           "scratchpad",
+                          "assignedHold",
                           "groundStatus",
                           "clearanceQueuePosition",
                           "attentionState",
