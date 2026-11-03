@@ -2314,7 +2314,7 @@
                   "inhibit": {
                     "type": "boolean",
                     "default": false,
-                    "description": "TopSky's NoTCT: TCT does not look at an aircraft inside this area. The first matching area naming inhibit decides."
+                    "description": "TopSky's NoTCT: a pair with either aircraft inside this area is still judged and confirmed, and kept silent (not shown, legs not drawn, alertSilenced reads 1), so it alerts on the first check outside. The first matching area naming inhibit decides."
                   },
                   "verticalUpperFt": {
                     "type": "number",
@@ -2672,7 +2672,7 @@
             "exclusionZoneTag": {
               "type": "string",
               "default": "",
-              "description": "A zones.geojson tag inside which TCT does not look at an aircraft, as STCA's exclusionZoneTag. Empty is none."
+              "description": "A zones.geojson tag inside which every pair of a track is still judged and kept silent, as STCA's exclusionZoneTag, so a pair leaving it into a conflict alerts on its first check outside. Empty is none."
             },
             "scope": {
               "type": "string",
