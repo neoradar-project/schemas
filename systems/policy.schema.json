@@ -3344,7 +3344,7 @@
             "yieldToAlerts": {
               "type": "boolean",
               "default": false,
-              "description": "TopSky Setup B (COOPANS): a set within a minute of its closest point, either aircraft in an STCA, AIW, APW, MSAW or AFDAS alert (AFDAS standing for TopSky's APM), is not drawn, and each alerted aircraft draws a minute of track in its speed vector colour instead, so the alert is not hidden under the tool. Off when absent: the set draws whatever the alerts."
+              "description": "TopSky Setup B (COOPANS): a set within a minute of its closest point, either aircraft in an STCA, NTZ, AIW, APW, MSAW or AFDAS alert (the NTZ raised on STCA's sweep as TopSky's STCA list holds it, AFDAS standing for TopSky's APM), is not drawn, and each alerted aircraft draws a minute of track in its speed vector colour instead, so the alert is not hidden under the tool. Off when absent: the set draws whatever the alerts."
             },
             "vsep": {
               "type": "object",
