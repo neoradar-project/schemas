@@ -3341,6 +3341,11 @@
               "default": 5,
               "description": "Sets held at once; a track may sit in several. Another set past this replaces the oldest. 5 when absent, TopSky's Setup A value; UK TopSky (Setup B, COOPANS) holds 20."
             },
+            "yieldToAlerts": {
+              "type": "boolean",
+              "default": false,
+              "description": "TopSky Setup B (COOPANS): a set within a minute of its closest point, either aircraft in an STCA, AIW, APW, MSAW or AFDAS alert (AFDAS standing for TopSky's APM), is not drawn, and each alerted aircraft draws a minute of track in its speed vector colour instead, so the alert is not hidden under the tool. Off when absent: the set draws whatever the alerts."
+            },
             "vsep": {
               "type": "object",
               "description": "VSEP, TopSky's vertical separation display on a RADARSEP set asked for with VSEP (the invokeRadarSeparationWithVsep click action): from the two aircraft's levels and current vertical rates, with no cleared level read, the points where their vertical distance falls below the band and rises above it again are marked on both lines with the distance between the aircraft there (\"v4.7\"), the lines run on past the closest point while the band holds, and \"v=\" beside the first aircraft says the band is not regained in the window. Both aircraft need Mode C; a set whose aircraft loses it is turned back to plain RADARSEP and the controller told.",
