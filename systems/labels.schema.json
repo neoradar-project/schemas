@@ -1888,6 +1888,103 @@
       },
       "additionalProperties": false
     },
+    "styleDefaults": {
+      "type": "object",
+      "description": "What every style variant of this section takes for a key it does not write itself. Each key is resolved on its own: the style variant's own value, then styleDefaults, then the client's built-in default. A tag no style variant styles is drawn with styleDefaults. It takes every key a style variant takes but the selectors (description, applyWhen, applyToAttentionStates, applyToFilterStates, applyToIsArrival, applyToIsDeparture), which are not allowed here. A rule or key is read for each aircraft as it would be written in the variant. textColorForState is taken whole: a variant that writes it reads none of the states written here. Absent, every variant is drawn as it is written.",
+      "properties": {
+        "font": {
+          "$ref": "#/$defs/styleVariant/properties/font"
+        },
+        "fontSize": {
+          "$ref": "#/$defs/styleVariant/properties/fontSize"
+        },
+        "fontWeight": {
+          "$ref": "#/$defs/styleVariant/properties/fontWeight"
+        },
+        "textWeight": {
+          "$ref": "#/$defs/styleVariant/properties/textWeight"
+        },
+        "textSharpness": {
+          "$ref": "#/$defs/styleVariant/properties/textSharpness"
+        },
+        "lineHeight": {
+          "$ref": "#/$defs/styleVariant/properties/lineHeight"
+        },
+        "textColor": {
+          "$ref": "#/$defs/styleVariant/properties/textColor"
+        },
+        "textColorForState": {
+          "$ref": "#/$defs/styleVariant/properties/textColorForState"
+        },
+        "backgroundColor": {
+          "$ref": "#/$defs/styleVariant/properties/backgroundColor"
+        },
+        "backgroundColorOpacity": {
+          "$ref": "#/$defs/styleVariant/properties/backgroundColorOpacity"
+        },
+        "roundedCorners": {
+          "$ref": "#/$defs/styleVariant/properties/roundedCorners"
+        },
+        "hoverBorderColor": {
+          "$ref": "#/$defs/styleVariant/properties/hoverBorderColor"
+        },
+        "leaderLineColor": {
+          "$ref": "#/$defs/styleVariant/properties/leaderLineColor"
+        },
+        "detailedLeaderLineColor": {
+          "$ref": "#/$defs/styleVariant/properties/detailedLeaderLineColor"
+        },
+        "detailedBackgroundColor": {
+          "$ref": "#/$defs/styleVariant/properties/detailedBackgroundColor"
+        },
+        "detailedBackgroundColorOpacity": {
+          "$ref": "#/$defs/styleVariant/properties/detailedBackgroundColorOpacity"
+        },
+        "detailedRoundedCorners": {
+          "$ref": "#/$defs/styleVariant/properties/detailedRoundedCorners"
+        },
+        "detailedTextColor": {
+          "$ref": "#/$defs/styleVariant/properties/detailedTextColor"
+        },
+        "detailedFontSize": {
+          "$ref": "#/$defs/styleVariant/properties/detailedFontSize"
+        },
+        "detailedFontWeight": {
+          "$ref": "#/$defs/styleVariant/properties/detailedFontWeight"
+        },
+        "tagItemPaddingY": {
+          "$ref": "#/$defs/styleVariant/properties/tagItemPaddingY"
+        },
+        "tagItemPaddingX": {
+          "$ref": "#/$defs/styleVariant/properties/tagItemPaddingX"
+        },
+        "tagContainerPaddingLeft": {
+          "$ref": "#/$defs/styleVariant/properties/tagContainerPaddingLeft"
+        },
+        "tagContainerPaddingRight": {
+          "$ref": "#/$defs/styleVariant/properties/tagContainerPaddingRight"
+        },
+        "tagContainerPaddingTop": {
+          "$ref": "#/$defs/styleVariant/properties/tagContainerPaddingTop"
+        },
+        "tagContainerPaddingBottom": {
+          "$ref": "#/$defs/styleVariant/properties/tagContainerPaddingBottom"
+        },
+        "detailedTagContainerPaddingLeft": {
+          "$ref": "#/$defs/styleVariant/properties/detailedTagContainerPaddingLeft"
+        },
+        "detailedTagContainerPaddingRight": {
+          "$ref": "#/$defs/styleVariant/properties/detailedTagContainerPaddingRight"
+        },
+        "detailedTagContainerPaddingTop": {
+          "$ref": "#/$defs/styleVariant/properties/detailedTagContainerPaddingTop"
+        },
+        "detailedTagContainerPaddingBottom": {
+          "$ref": "#/$defs/styleVariant/properties/detailedTagContainerPaddingBottom"
+        }
+      },
+      "additionalProperties": false
+    },
     "section": {
       "type": "object",
       "description": "One half of a labels config: the tag layouts in selection order plus the styles.",
@@ -1901,13 +1998,16 @@
         },
         "styleVariants": {
           "type": "array",
-          "description": "Tag styles in priority order. The first one whose selectors all pass is used.",
+          "description": "Tag styles in priority order. The first one whose selectors all pass is used. A key the variant does not write is taken from the section's styleDefaults.",
           "items": {
             "$ref": "#/$defs/styleVariant"
           }
         },
         "tagPositioning": {
           "$ref": "#/$defs/tagPositioning"
+        },
+        "styleDefaults": {
+          "$ref": "#/$defs/styleDefaults"
         }
       },
       "required": [
