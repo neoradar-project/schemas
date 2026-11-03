@@ -205,6 +205,7 @@
                           "netStatusBust",
                           "netStatusClam",
                           "netStatusAfdas",
+                          "netStatusNtz",
                           "netStatusRimcas",
                           "netStatusEmergency",
                           "alertStca",
@@ -218,6 +219,7 @@
                           "alertTct",
                           "alertMtcd",
                           "alertAfdas",
+                          "alertNtz",
                           "alertRimcas",
                           "alertEmergency",
                           "sectorExitPoint",
@@ -797,6 +799,11 @@
                             },
                             {
                               "type": "string",
+                              "const": "alertNtz",
+                              "description": "NTZ severity on this aircraft (3 inside a no transgression zone, 2 pre-warned): 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or nothing runs it."
+                            },
+                            {
+                              "type": "string",
                               "const": "alertRimcas",
                               "description": "RIMCAS severity on this aircraft: 0 none, 1 info, 2 warning (Stage One), 3 alert (Stage Two). 0 while the system hides the kind or nothing runs it."
                             },
@@ -813,7 +820,12 @@
                             {
                               "type": "string",
                               "const": "manualAlert",
-                              "description": "The controller-set manual alert on this aircraft, TopSky's three: 0 none, 1 missed approach, 2 inbound estimate, 3 irregular. Set with the toggleManualAlert click actions and shared with every controller over the scratchpad (/MISAP/, /INBEST/, /IRREG/, cleared by /MACLR/), so it travels with the flight; a package maps the code to its own words, usually on label line 0."
+                              "description": "The controller-set manual alert on this aircraft, TopSky's four: 0 none, 1 missed approach, 2 inbound estimate, 3 irregular, 4 weather. With several standing, the lowest code; manualAlerts names them all. Set with the toggleManualAlert click actions and shared with every controller over the scratchpad (/MISAP/, /INBEST/, /IRREG/, /WX/, cleared by /MACLR/), so it travels with the flight; a package maps the code to its own words, usually on label line 0."
+                            },
+                            {
+                              "type": "string",
+                              "const": "manualAlerts",
+                              "description": "Every manual alert standing on this aircraft, space-joined in code order (missedApproach inboundEstimate irregular weather). Test one with [\"contains\", \"manualAlerts\", \"weather\"]; manualAlert reads only the lowest."
                             },
                             {
                               "type": "string",
@@ -1667,17 +1679,22 @@
                       {
                         "type": "string",
                         "const": "toggleManualAlert:missedApproach",
-                        "description": "Set the missed approach manual alert on this aircraft, or clear it when it is the one already set; one manual alert stands at a time, so this replaces another. Shared with every controller over the scratchpad and read back as manualAlert. Needs a track this controller may edit."
+                        "description": "Set the missed approach manual alert on this aircraft, or clear it when it is the one already set; several manual alerts can stand at once. Shared with every controller over the scratchpad and read back as manualAlert and manualAlerts. Needs a track this controller may edit."
                       },
                       {
                         "type": "string",
                         "const": "toggleManualAlert:inboundEstimate",
-                        "description": "Set the inbound estimate manual alert on this aircraft, or clear it when it is the one already set; one manual alert stands at a time, so this replaces another. Shared with every controller over the scratchpad and read back as manualAlert. Needs a track this controller may edit."
+                        "description": "Set the inbound estimate manual alert on this aircraft, or clear it when it is the one already set; several manual alerts can stand at once. Shared with every controller over the scratchpad and read back as manualAlert and manualAlerts. Needs a track this controller may edit."
                       },
                       {
                         "type": "string",
                         "const": "toggleManualAlert:irregular",
-                        "description": "Set the irregular manual alert on this aircraft, or clear it when it is the one already set; one manual alert stands at a time, so this replaces another. Shared with every controller over the scratchpad and read back as manualAlert. Needs a track this controller may edit."
+                        "description": "Set the irregular manual alert on this aircraft, or clear it when it is the one already set; several manual alerts can stand at once. Shared with every controller over the scratchpad and read back as manualAlert and manualAlerts. Needs a track this controller may edit."
+                      },
+                      {
+                        "type": "string",
+                        "const": "toggleManualAlert:weather",
+                        "description": "Set the weather manual alert on this aircraft, or clear it when it is the one already set; several manual alerts can stand at once. Shared with every controller over the scratchpad and read back as manualAlert and manualAlerts. Needs a track this controller may edit."
                       },
                       {
                         "type": "string",
@@ -1942,6 +1959,11 @@
         "items": {
           "type": "string"
         }
+      },
+      "autoOpen": {
+        "type": "boolean",
+        "default": false,
+        "description": "Opens the list whenever it has rows, for any list type, and refuses to close it (the window's close and the lists menu) while it has some; a close while it has none is allowed and it opens again at its next row. Absent: the list opens and closes as the controller chooses."
       },
       "style": {
         "type": "object",

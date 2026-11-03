@@ -1157,17 +1157,22 @@
                       {
                         "type": "string",
                         "const": "toggleManualAlert:missedApproach",
-                        "description": "Set the missed approach manual alert on this aircraft, or clear it when it is the one already set; one manual alert stands at a time, so this replaces another. Shared with every controller over the scratchpad and read back as manualAlert. Needs a track this controller may edit."
+                        "description": "Set the missed approach manual alert on this aircraft, or clear it when it is the one already set; several manual alerts can stand at once. Shared with every controller over the scratchpad and read back as manualAlert and manualAlerts. Needs a track this controller may edit."
                       },
                       {
                         "type": "string",
                         "const": "toggleManualAlert:inboundEstimate",
-                        "description": "Set the inbound estimate manual alert on this aircraft, or clear it when it is the one already set; one manual alert stands at a time, so this replaces another. Shared with every controller over the scratchpad and read back as manualAlert. Needs a track this controller may edit."
+                        "description": "Set the inbound estimate manual alert on this aircraft, or clear it when it is the one already set; several manual alerts can stand at once. Shared with every controller over the scratchpad and read back as manualAlert and manualAlerts. Needs a track this controller may edit."
                       },
                       {
                         "type": "string",
                         "const": "toggleManualAlert:irregular",
-                        "description": "Set the irregular manual alert on this aircraft, or clear it when it is the one already set; one manual alert stands at a time, so this replaces another. Shared with every controller over the scratchpad and read back as manualAlert. Needs a track this controller may edit."
+                        "description": "Set the irregular manual alert on this aircraft, or clear it when it is the one already set; several manual alerts can stand at once. Shared with every controller over the scratchpad and read back as manualAlert and manualAlerts. Needs a track this controller may edit."
+                      },
+                      {
+                        "type": "string",
+                        "const": "toggleManualAlert:weather",
+                        "description": "Set the weather manual alert on this aircraft, or clear it when it is the one already set; several manual alerts can stand at once. Shared with every controller over the scratchpad and read back as manualAlert and manualAlerts. Needs a track this controller may edit."
                       },
                       {
                         "type": "string",

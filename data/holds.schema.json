@@ -1,0 +1,370 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeoRadar holds",
+  "description": "data/holds.geojson in a vAcc's sector source, beside topsky/ and euroscope_data/: the vAcc's holding patterns, a GeoJSON FeatureCollection (RFC 7946, WGS84 longitude and latitude) with one Point feature per hold at its fix. Field names follow AIXM 5.1 HoldingPattern where it has one. `neoradar-cli convert` checks it against this schema and carries it in server-dataset.json under `holds`; nothing of it goes in the package. Optional: no file means no holds are served. Written once by an importer (`neoradar-cli import-ukcp`) or by hand; the vAcc's copy is the master after that. Not expressible here and checked by `convert`: hold ids unique, and every `separatedHolds` entry names another hold of the file. A hold whose lower limit is above its upper limit is warned about and carried.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "type",
+    "sources",
+    "features"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Editor hint only. `neoradar-cli convert` drops it."
+    },
+    "type": {
+      "const": "FeatureCollection"
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Where the facts in this file came from, one entry per source. A GeoJSON foreign member.",
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/hold"
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What the facts were taken from: a document, a file or a data set."
+        },
+        "url": {
+          "type": "string",
+          "description": "Where that source can be found."
+        },
+        "version": {
+          "type": "string",
+          "description": "The edition, commit, AIRAC cycle or date of the source as read."
+        },
+        "licence": {
+          "type": "string",
+          "description": "The source's licence, where it states one. Only facts are taken from a source; no code or text."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Anything the author should know about what was taken and how."
+        }
+      }
+    },
+    "icao": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]{4}$",
+      "description": "An ICAO location indicator, four letters or digits, upper case."
+    },
+    "holdId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "A hold's id, unique in the file: lower-case letters, digits and single hyphens."
+    },
+    "level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "uom"
+      ],
+      "properties": {
+        "value": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "uom": {
+          "enum": [
+            "FT",
+            "FL"
+          ],
+          "description": "FL: a flight level, `value` in hundreds of feet. FT: feet, read as a controller reads a hold table, an altitude where it is at or below the transition altitude at the hold and the flight level of that many feet above it (7000 above a 6000 ft transition altitude is FL70)."
+        }
+      }
+    },
+    "hold": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "id",
+        "geometry",
+        "properties"
+      ],
+      "properties": {
+        "type": {
+          "const": "Feature"
+        },
+        "id": {
+          "$ref": "#/$defs/holdId"
+        },
+        "geometry": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "coordinates"
+          ],
+          "description": "The hold's fix.",
+          "properties": {
+            "type": {
+              "const": "Point"
+            },
+            "coordinates": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "description": "[longitude, latitude], WGS84 decimal degrees.",
+              "items": [
+                {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                }
+              ]
+            }
+          }
+        },
+        "properties": {
+          "$ref": "#/$defs/holdProperties"
+        }
+      }
+    },
+    "holdProperties": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fix",
+        "name",
+        "inboundCourse",
+        "turnDirection",
+        "lowerLimit",
+        "upperLimit"
+      ],
+      "properties": {
+        "fix": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The designator of the fix the hold is at, as the sector file names it."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The hold's name as a controller knows it (LAM, LOGAN (High), BIG)."
+        },
+        "usage": {
+          "enum": [
+            "en-route",
+            "terminal",
+            "approach"
+          ],
+          "description": "What the hold is for. Absent: not stated."
+        },
+        "servesAirports": {
+          "type": "array",
+          "uniqueItems": true,
+          "description": "The airports whose traffic the hold is for. Absent: not stated.",
+          "items": {
+            "$ref": "#/$defs/icao"
+          }
+        },
+        "inboundCourse": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "reference"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "exclusiveMaximum": 360,
+              "description": "Degrees."
+            },
+            "reference": {
+              "enum": [
+                "magnetic",
+                "true"
+              ]
+            }
+          }
+        },
+        "turnDirection": {
+          "enum": [
+            "left",
+            "right"
+          ]
+        },
+        "outboundLeg": {
+          "description": "The outbound leg, as a time or a distance. Absent: the standard timing for the level.",
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "timeMin"
+              ],
+              "properties": {
+                "timeMin": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Minutes."
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "distanceNm"
+              ],
+              "properties": {
+                "distanceNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Nautical miles."
+                }
+              }
+            }
+          ]
+        },
+        "lowerLimit": {
+          "$ref": "#/$defs/level",
+          "description": "The lowest level of the hold."
+        },
+        "upperLimit": {
+          "$ref": "#/$defs/level",
+          "description": "The highest level of the hold."
+        },
+        "speedLimitKt": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Indicated airspeed limit, knots. Absent: the standard limit for the level."
+        },
+        "minimumLevels": {
+          "type": "array",
+          "description": "Rules that keep the lowest usable level of the hold above an airport's live transition level. A level is unusable when any rule that applies refuses it.",
+          "items": {
+            "$ref": "#/$defs/minimumLevel"
+          }
+        },
+        "blockedLevels": {
+          "type": "array",
+          "description": "Levels never assigned in this hold.",
+          "items": {
+            "$ref": "#/$defs/level"
+          }
+        },
+        "separatedHolds": {
+          "type": "array",
+          "description": "Holds deemed separated from this one.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "hold",
+              "insertDistanceNm"
+            ],
+            "properties": {
+              "hold": {
+                "$ref": "#/$defs/holdId"
+              },
+              "insertDistanceNm": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Two aircraft at one level, one in each hold, are deemed separated only while more than this far apart, nautical miles."
+              }
+            }
+          }
+        },
+        "published": {
+          "type": "boolean",
+          "default": true,
+          "description": "False for a hold not in the AIP."
+        },
+        "aircraft": {
+          "enum": [
+            "all",
+            "propeller",
+            "jet"
+          ],
+          "default": "all",
+          "description": "Which aircraft may use the hold."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Free text for the author."
+        }
+      }
+    },
+    "minimumLevel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rule",
+        "airport",
+        "plusLevels"
+      ],
+      "description": "Read in order: when `whenRunway` is written and that runway is not in use, the rule refuses nothing; else a level below `floor` is refused; else, while the airport has a transition level, a level below it plus `plusLevels` thousands of feet is refused.",
+      "properties": {
+        "rule": {
+          "const": "transitionLevel",
+          "description": "The airport's live transition level (data/altimetry.json `airfields`) is the base. In the UK that is the minimum stack level (MSL)."
+        },
+        "airport": {
+          "$ref": "#/$defs/icao"
+        },
+        "plusLevels": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Thousands of feet above the transition level (UK: MSL+1 is 1)."
+        },
+        "floor": {
+          "$ref": "#/$defs/level",
+          "description": "A level the rule refuses anything below while it applies, whether or not the airport has a transition level."
+        },
+        "whenRunway": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "designator"
+          ],
+          "description": "The rule applies only while this runway of the airport is in use.",
+          "properties": {
+            "designator": {
+              "type": "string",
+              "pattern": "^(0[1-9]|[12][0-9]|3[0-6])[LCR]?$"
+            },
+            "use": {
+              "enum": [
+                "any",
+                "arrival",
+                "departure"
+              ],
+              "default": "any",
+              "description": "In use for what: `any` is either."
+            }
+          }
+        }
+      }
+    }
+  }
+}

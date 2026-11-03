@@ -106,6 +106,13 @@
                 "network"
               ],
               "description": "network needs the server; without it the check degrades to local."
+            },
+            "ignoreCodes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/squawkCodeOrRange"
+              },
+              "description": "Codes the duplicate-code call skips, as literals (\"4521\") or inclusive ranges (\"4530-4537\"), in addition to the built-in conspicuity codes 1000, 2000, 7000 and 7010 (TopSky's Airspace_No_DUPE_Codes, tier 3). Only the DUPE call reads it; the aircraft stay in every safety net, which safetyNets.exclude.squawks would not do. Absent: no extra code."
             }
           },
           "additionalProperties": false
@@ -708,7 +715,7 @@
         },
         "approachFunnel": {
           "type": "object",
-          "description": "AFDAS, the approach path monitor of the EUROCONTROL APM guidelines (G162 Part III), evaluated on the client. An airborne track qualifies on final to a monitored runway end inside the lateral area within onFinalTrackDeg of the course, and from then on is alerted below the lower slope (under the joining altitude), above the upper slope if authored, and laterally, each raised after confirmCycles new reports as one alert naming the side (LO before L or R before HI). A plan's destination and arrival runway, where it has them, are the only ones it is judged against. It judges the QNH altitude: the aircraft's pressure altitude on the QNH of the nearest airport METAR the client holds, else its true altitude. A net of its own: absent means off even with runwayMonitoring authored. The vertical axes need a threshold elevation, which open-navdata.db carries for most but not all runways; an end without one is judged on the lateral axis alone and .dev afdas-info names it.",
+          "description": "AFDAS, the approach path monitor of the EUROCONTROL APM guidelines (G162 Part III), evaluated on the client. An airborne track qualifies on final to a monitored runway end inside the lateral area within onFinalTrackDeg of the course, and from then on is alerted below the lower slope (under the joining altitude), above the upper slope if authored, and laterally, each raised after confirmCycles new reports as one alert naming the side (LO before L or R before HI). The end a track is judged on is the plan's arrival runway when it names one, else one of the destination's ends the session's runway selection lands on, else (no selection) any monitored end; among those the end it qualifies on with the least cross-track. The runways list says which ends are MONITORED, the runway selection says which one a flight is judged against, so a parallel pair is not mixed up. It judges the QNH altitude: the aircraft's pressure altitude on the QNH of the nearest airport METAR the client holds, else its true altitude. A net of its own: absent means off even with runwayMonitoring authored. The vertical axes need a threshold elevation, which open-navdata.db carries for most but not all runways; an end without one is judged on the lateral axis alone and .dev afdas-info names it.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -1389,6 +1396,11 @@
               "default": 90,
               "description": "A confirmed conflict alerts once its predicted loss of separation is no more than this many seconds away, G159's warning time (TopSky 90 upper, 80 lower). Absent is 90, or lookaheadS where that is shorter; more than lookaheadS is refused."
             },
+            "lowerWarningS": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "description": "The warning time at or below upperLateralAboveFt, TopSky's lower band (STCA_WarningTime_L, 80 against 90 above). Absent is warningS, one time for every band, which is what a system authoring neither has always had. A pair takes the upper band's time when either aircraft is above upperLateralAboveFt."
+            },
             "imminentS": {
               "type": "integer",
               "minimum": 0,
@@ -1491,7 +1503,7 @@
             },
             "regions": {
               "type": "array",
-              "description": "Per-airspace minima. A Volume carries no tags, so a rule selects on sector id globs, a zones.geojson tag, an altitude band, or any combination; every selector it names must hold. A rule OVERRIDES the default on the axes it names and leaves the others alone, and where several rules match one track the most conservative of each axis wins. Two aircraft in different regions take the most conservative of the two, so a tighter TMA region can never silence a conflict the en-route region beside it would have raised.",
+              "description": "Per-airspace minima. A rule's lateralNm and verticals also SCALE every other value of the net for its tracks, as TopSky's STCA areas do: current proximity, fast diverging and the turning lateral by the rule's lateral over the default region's value for the band (2.75 nm in a TMA is 0.61 of the 4.5 nm upper band), the vertical values likewise, and a pair takes the larger scale of its two aircraft. A Volume carries no tags, so a rule selects on sector id globs, a zones.geojson tag, an altitude band, or any combination; every selector it names must hold. A rule OVERRIDES the default on the axes it names and leaves the others alone, and where several rules match one track the most conservative of each axis wins. Two aircraft in different regions take the most conservative of the two, so a tighter TMA region can never silence a conflict the en-route region beside it would have raised.",
               "items": {
                 "type": "object",
                 "properties": {
@@ -1510,7 +1522,17 @@
                   },
                   "lateralNm": { "type": "number", "exclusiveMinimum": 0 },
                   "verticalFt": { "type": "number", "exclusiveMinimum": 0 },
-                  "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "description": "The [2000] vertical value in this region; see rvsm." }
+                  "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "description": "The [2000] vertical value in this region; see rvsm." },
+                  "warningS": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "The warning time in this region, in either band, as a TopSky STCA_AREA's STCA_ALERT_TIMES. From imminentS to lookaheadS. A pair takes the longer of its two aircraft's times, each the region's where one names it, else its band's."
+                  },
+                  "floorFt": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "The floor in this region in place of floorFt, lower or higher, judged in the same frame: an altitude on QNH at or below the transition altitude. G159 Part 3 section 2.3 gives each STCA region its own floor; this is how an approach region over parallel runways reaches below the global floor, where TopSky lifts its floor for a no transgression zone instead. Overlapping regions take the lowest under mostConservative, the first naming one under firstInFile."
+                  }
                 },
                 "additionalProperties": false
               }
@@ -1530,11 +1552,6 @@
               "type": "string",
               "default": "stca-exclude",
               "description": "A zone tag inside which every pair of a track is still judged and kept silent, for airspace where converging traffic is the procedure: the confirmation runs on, so a pair leaving it into a conflict alerts on its first sweep outside. Whole tags only, so no spaces."
-            },
-            "parallelApproachZoneTag": {
-              "type": "string",
-              "default": "stca-parallel",
-              "description": "A zone tag that keeps a pair silent, still judged so that leaving the zone into a conflict alerts at once, when BOTH aircraft are inside it, on one course within 10 degrees of each other and at least 0.33 nm apart (the parallel defaults), which is what parallel approaches look like. One inside and one crossing overhead, a pair head on or crossing, a pair closer than that, and a pair with either aircraft in a parallel operation's no transgression zone are still judged. The zone knows no runway or side, so a parallel operation is the precise tool."
             },
             "finalApproach": {
               "type": "object",
@@ -1669,6 +1686,11 @@
               "default": false,
               "description": "Whether a pair of two uncontrolled flights alerts, TopSky's STCA_Uncontrolled. Off. An uncontrolled flight is a VFR one nobody tracks; an IFR flight, or one with no plan, counts as controlled, tracked or not."
             },
+            "formationMarker": {
+              "type": "string",
+              "pattern": "^[^ ]*$",
+              "description": "The flight plan remarks marker that names a formation, TopSky's System_FPL_F18_Formation_Text: after a blank (or at the start of the remarks) the marker, then the members joined by '+' up to the next blank, for example FOR/LYNX31+LYNX32 in the leader's plan. Two members of one formation are never paired, as TopSky leaves them out of STCA. A TopSky-only rule: absent or empty is off, and TopSky ships with no marker."
+            },
             "sourceStates": {
               "type": "array",
               "minItems": 1,
@@ -1801,6 +1823,181 @@
                   "minimum": 0,
                   "default": 200,
                   "description": "Within this of the cleared level the aircraft is already there."
+                }
+              },
+              "additionalProperties": false
+            },
+            "turnTest": {
+              "type": "object",
+              "description": "G159's standard turn test (option I, Part 3 section 2.16.4; TopSky's turn model): a predicted conflict that is not imminent waits to be raised while one aircraft's escape turn after reactionS, right or left at rateDegS for 180 degrees with the other flying its own track, would keep lateralNm (upperLateralNm above upperLateralAboveFt), scaled by the regions as every lateral value is. Each of the four scenarios starts afresh from the two positions after the reaction, where TopSky's carries on from the last. Its hits still count, so the report on which no turn clears it raises it at once; a raised pair is never lowered by it. ABSENT IS OFF, because G159 warns it can cut warning time; an authored empty object is on at TopSky's values.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False switches it off and keeps the section."
+                },
+                "reactionS": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 70,
+                  "description": "Before the turn starts; a conflict whose lateral entry is no later than this is never held. TopSky's STCA_Turn_React."
+                },
+                "rateDegS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 2,
+                  "description": "The standard turn rate, TopSky's STCA_Turn_Rate."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 2,
+                  "description": "The separation the turn must keep at or below upperLateralAboveFt, TopSky's STCA_Turn_Sep_Lat_L."
+                },
+                "upperLateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 3,
+                  "description": "The same above it, TopSky's STCA_Turn_Sep_Lat_U."
+                },
+                "stepS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 5,
+                  "description": "Step of the turn's path, TopSky's STCA_LinPred_PredictionStep."
+                }
+              },
+              "additionalProperties": false
+            },
+            "levelOffTest": {
+              "type": "object",
+              "description": "G159's level-off test (option I; TopSky's level-off model, which TopSky runs only without its cleared level step model): for a pair neither of which is levelled off at its cleared level by levelOffAtCfl, a predicted conflict that is not imminent waits while the faster aircraft levelling off relative to the other after reactionS (both, after doubleReactionS, when one climbs and one descends), slowing at rateFpmPerS, would leave them on the same sides and at least verticalFt apart (vertical2000Ft on the 2000 ft standard), scaled by the regions. Held as the turn test is. ABSENT IS OFF; an authored empty object is on at TopSky's values.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False switches it off and keeps the section."
+                },
+                "reactionS": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 70,
+                  "description": "TopSky's STCA_LevelOff_React_Single."
+                },
+                "doubleReactionS": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 80,
+                  "description": "When one climbs and the other descends, TopSky's STCA_LevelOff_React_Double."
+                },
+                "rateFpmPerS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 300,
+                  "description": "How fast the vertical rate falls, ft/min each second, TopSky's STCA_LevelOff_Rate."
+                },
+                "verticalFt": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 700,
+                  "description": "TopSky's STCA_LevelOff_Sep_Vert_L."
+                },
+                "vertical2000Ft": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 1600,
+                  "description": "On the 2000 ft standard, TopSky's STCA_LevelOff_Sep_Vert_U."
+                }
+              },
+              "additionalProperties": false
+            },
+            "safeCrossing": {
+              "type": "object",
+              "description": "G159's safe crossing test (option J, Part 3 section 2.16.5.3; TopSky's Safe veto): a current proximity hit is no hit while the tracks cross at an angle between minAngleDeg and maxAngleDeg, one aircraft is past the point where the track lines cross, and the separation when the other reaches it (or now, both being past) is over lateralNm (upperLateralNm above upperLateralAboveFt), scaled by the regions. Current proximity only, as G159 and TopSky have it. ABSENT IS OFF; an authored empty object is on at TopSky's values.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False switches it off and keeps the section."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 2.5,
+                  "description": "TopSky's STCA_CurrProx_Sep_Lat_L_Safe."
+                },
+                "upperLateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 4.0,
+                  "description": "TopSky's STCA_CurrProx_Sep_Lat_U_Safe."
+                },
+                "minAngleDeg": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 45,
+                  "description": "Strictly above this angle between the tracks."
+                },
+                "maxAngleDeg": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 180,
+                  "default": 135,
+                  "description": "Strictly below this angle."
+                }
+              },
+              "additionalProperties": false
+            },
+            "diverging": {
+              "type": "object",
+              "description": "G159's diverging parameter (Part 3 section 2.13.4, Table 6: 1.75 to 3.0 nm en route, 1.5 to 2.0 in a TMA; TopSky's LinPred_Sep_Lat_Div): a pair opening faster than openingKt now is predicted on lateralNm (upperLateralNm above upperLateralAboveFt), scaled by the regions, where that is smaller than its own minimum; it changes the outcome only for a pair already inside its minimum and leaving it. ABSENT IS OFF; an authored empty object is on at TopSky's values.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False switches it off and keeps the section."
+                },
+                "lateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 2,
+                  "description": "TopSky's STCA_LinPred_Sep_Lat_L_Div."
+                },
+                "upperLateralNm": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 3,
+                  "description": "TopSky's STCA_LinPred_Sep_Lat_U_Div."
+                },
+                "openingKt": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 5,
+                  "description": "Opening faster than this, TopSky's hard-coded 5 kt."
+                }
+              },
+              "additionalProperties": false
+            },
+            "ntz": {
+              "type": "object",
+              "description": "The no transgression zone alert, ATMAS section 3.2.3.2's NTZ net, raised as its own kind (ntz, alertKind 14) beside STCA: an aircraft landing at a parallel operation's aerodrome inside a zone carrying that operation's ntzZoneTag is an alert, and one in a normal operating zone whose straight track enters the zone within preWarningS is a warning (the pre-warning). It rides STCA's sweep and its parallel operations, so it needs this section, parallel[] with an ntzZoneTag the package's zones carry, both runways landing and runwayMonitoring; otherwise netStatus reads unavailable and one System line says so. The NTZ does not lift floorFt, as TopSky's does; give an approach region its own floorFt. ABSENT IS OFF; an authored empty object raises the infringement alone.",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "False switches it off and keeps the section."
+                },
+                "preWarningS": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 0,
+                  "description": "How far ahead the straight track is tested for an entry into the zone. ATMAS gives no value (a predefined interval) and PJ11 leaves the time trigger to each airport, so 0, no pre-warning, until the package authors one. At most lookaheadS."
+                },
+                "stepS": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "default": 1,
+                  "description": "Step of that test."
                 }
               },
               "additionalProperties": false
@@ -1979,12 +2176,6 @@
           },
           "additionalProperties": false
         },
-        "transitionAltitudeFt": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 6000,
-          "description": "The highest cleared level that is an altitude on QNH, one value for the whole system and every net that compares a cleared level: at or below it BUST and CLAM judge the altitude the QNH of the nearest airport METAR the client holds gives the aircraft's pressure altitude (its true altitude when no METAR within 100 NM has one, or its pilot client relays no pressure altitude, which is logged once) and word the level A060, above it its pressure altitude and FL350. A cleared level carries no altitude or flight level marker on the wire, so this alone decides which it is."
-        },
         "tct": {
           "type": "object",
           "description": "Tactical controller tool, evaluated on the client: TopSky's TCT, a five minute conflict probe built on STCA's pipeline. Laterally it follows an assigned heading after a modelled turn (then the ground track once the turn is complete), else the expanded route while the aircraft conforms to it, else the present ground track; vertically a band of rates towards the cleared level, never one line. A conflict starting within imminentS shows at once, one starting within warningS once confirmChecks of the last historyChecks checks found it; severity, wording, sound and the STCA yield are all keys here and in safetyNets.kinds.tct. regions are TopSky's TCT areas: each may override any setting, inhibit TCT, or with regionsOnly be the only places it runs. blindSpot is the menu probe built on it. OFF unless this section is authored, as STCA is. Every default is TopSky's. .dev tct-info prints the branch and band of an aircraft and every pair the last check looked at.",
@@ -2071,14 +2262,14 @@
             "verticalFt": {
               "type": "number",
               "exclusiveMinimum": 0,
-              "default": 750,
-              "description": "The gap between the two vertical bands under which an instant is in conflict."
+              "default": 1000,
+              "description": "The gap between the two vertical bands under which an instant is in conflict. The default is the NATS figure for the 1000 ft standard (TCT.NATS02.02, 5 NM / 1000 ft); TopSky uses 750, which a system may author. A region's verticalFt overrides it, and Blind Spot takes the same value unless blindSpot.verticalFt names another."
             },
             "verticalUpperFt": {
               "type": "number",
               "exclusiveMinimum": 0,
-              "default": 1500,
-              "description": "The same where both bands are at or above FL410."
+              "default": 2000,
+              "description": "The same where both bands are at or above verticalUpperFromFl: the 2000 ft standard there (TCT.NATS02.02). TopSky uses 1500."
             },
             "verticalUpperFromFl": {
               "type": "integer",
