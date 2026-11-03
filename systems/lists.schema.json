@@ -145,6 +145,7 @@
                           "ownedByCallsign",
                           "futureOwnerCallsign",
                           "scratchpad",
+                          "assignedHold",
                           "groundStatus",
                           "clearanceQueuePosition",
                           "attentionState",
@@ -221,6 +222,7 @@
                           "alertClam",
                           "alertBust",
                           "alertHold",
+                          "alertHoldAdherence",
                           "alertTct",
                           "alertMtcd",
                           "alertAfdas",
@@ -811,6 +813,11 @@
                               "type": "string",
                               "const": "alertHold",
                               "description": "Hold intrusion severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertHoldAdherence",
+                              "description": "Hold adherence severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or no net raises it yet."
                             },
                             {
                               "type": "string",
@@ -1847,6 +1854,11 @@
                       "type": "string",
                       "const": "directMenu",
                       "description": "Opens the direct to menu."
+                    },
+                    {
+                      "type": "string",
+                      "const": "assignHold",
+                      "description": "Opens the hold menu: the vAcc's served holds that fit the flight, on its route and serving its destination first, then present position and none. Sets the flight's assigned hold and flashes H and the fix on the scratchpad."
                     },
                     {
                       "type": "string",

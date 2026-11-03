@@ -164,6 +164,7 @@
                                           "ownedByMe",
                                           "ownedByCallsign",
                                           "scratchpad",
+                                          "assignedHold",
                                           "groundStatus",
                                           "clearanceQueuePosition",
                                           "attentionState",
@@ -1083,6 +1084,11 @@
                         "type": "string",
                         "const": "directMenu",
                         "description": "Opens the direct to menu."
+                      },
+                      {
+                        "type": "string",
+                        "const": "assignHold",
+                        "description": "Opens the hold menu: the vAcc's served holds that fit the flight, on its route and serving its destination first, then present position and none. Sets the flight's assigned hold and flashes H and the fix on the scratchpad."
                       },
                       {
                         "type": "string",
