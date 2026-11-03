@@ -142,6 +142,11 @@
                     "equipmentGrammar",
                     "trackId",
                     "isCoasting",
+                    "isLost",
+                    "lostTime",
+                    "lostReason",
+                    "lostChecked",
+                    "lostDestinationDistanceNm",
                     "positionAgeMs",
                     "isInCoverage",
                     "radarCoverage",
@@ -604,6 +609,31 @@
                       "type": "string",
                       "const": "isCoasting",
                       "description": "The position is older than the system's coasting window"
+                    },
+                    {
+                      "type": "string",
+                      "const": "isLost",
+                      "description": "A flight this controller tracks, once seen with radar, whose radar went: out of coverage, no SSR reply (standby or primary only), uncorrelated or coasting; TopSky's Lost List. It stays lost until the radar returns, the tracking ends or the aircraft leaves. 1 or 0."
+                    },
+                    {
+                      "type": "string",
+                      "const": "lostTime",
+                      "description": "When the flight was lost, UTC, HHmm; empty while it is not lost."
+                    },
+                    {
+                      "type": "string",
+                      "const": "lostReason",
+                      "description": "Why the flight was lost: 0 not lost, 1 out of coverage, 2 no SSR reply, 3 uncorrelated, 4 coasting."
+                    },
+                    {
+                      "type": "string",
+                      "const": "lostChecked",
+                      "description": "The controller checked the lost flight's row with the checkLostTrack click action. 1 or 0."
+                    },
+                    {
+                      "type": "string",
+                      "const": "lostDestinationDistanceNm",
+                      "description": "Whole nautical miles from where the flight was lost to its destination aerodrome; empty while it is not lost or either place is unknown. TopSky's optional 5 nm destination filter is a list filter on it."
                     },
                     {
                       "type": "string",
@@ -1459,6 +1489,21 @@
               "type": "string",
               "const": "showTctLegs",
               "description": "Show or hide this aircraft's TCT legs for the session: both predicted paths of its earliest tactical conflict to the closest point, in mapstyle tctLeg colours, with the minimum and the time to it on the other aircraft's leg. While shown, the pair's speed vectors and route legs hide unless either has an STCA. Available to an observer."
+            },
+            {
+              "type": "string",
+              "const": "invokeRadarSeparation",
+              "description": "TopSky's \"Invoke SEP tool\": start RADARSEP with this aircraft as the first pick; the next aircraft clicked makes the set, and until then the hovered aircraft is drawn as its preview. Available to an observer."
+            },
+            {
+              "type": "string",
+              "const": "invokeRadarSeparationWithVsep",
+              "description": "TopSky's \"Invoke SEP tool with VSEP\": as invokeRadarSeparation, the set drawing VSEP (policy.json separationTools.radarSeparation.vsep) when both aircraft have Mode C. Available to an observer."
+            },
+            {
+              "type": "string",
+              "const": "checkLostTrack",
+              "description": "Check this aircraft's Lost List row: the controller has seen that its radar went. The row stays until the radar returns, the tracking ends or the aircraft leaves; a list with autoOpen and autoOpenWhen on lostChecked may be closed once every row is checked. Available to an observer."
             },
             {
               "type": "string",

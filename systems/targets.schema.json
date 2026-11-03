@@ -1162,6 +1162,21 @@
                       },
                       {
                         "type": "string",
+                        "const": "invokeRadarSeparation",
+                        "description": "TopSky's \"Invoke SEP tool\": start RADARSEP with this aircraft as the first pick; the next aircraft clicked makes the set, and until then the hovered aircraft is drawn as its preview. Available to an observer."
+                      },
+                      {
+                        "type": "string",
+                        "const": "invokeRadarSeparationWithVsep",
+                        "description": "TopSky's \"Invoke SEP tool with VSEP\": as invokeRadarSeparation, the set drawing VSEP (policy.json separationTools.radarSeparation.vsep) when both aircraft have Mode C. Available to an observer."
+                      },
+                      {
+                        "type": "string",
+                        "const": "checkLostTrack",
+                        "description": "Check this aircraft's Lost List row: the controller has seen that its radar went. The row stays until the radar returns, the tracking ends or the aircraft leaves; a list with autoOpen and autoOpenWhen on lostChecked may be closed once every row is checked. Available to an observer."
+                      },
+                      {
+                        "type": "string",
                         "const": "toggleManualAlert:missedApproach",
                         "description": "Set the missed approach manual alert on this aircraft, or clear it when it is the one already set; several manual alerts can stand at once. Shared with every controller over the scratchpad and read back as manualAlert and manualAlerts. Needs a track this controller may edit."
                       },

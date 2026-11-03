@@ -918,7 +918,8 @@
               "rimcas",
               "stca",
               "afdas",
-              "emergency"
+              "emergency",
+              "ntz"
             ]
           },
           "additionalProperties": {
@@ -971,7 +972,8 @@
                   "rimcas",
                   "stca",
                   "afdas",
-                  "emergency"
+                  "emergency",
+                  "ntz"
                 ]
               },
               "additionalProperties": {
@@ -1054,7 +1056,8 @@
               "rimcas",
               "stca",
               "afdas",
-              "emergency"
+              "emergency",
+              "ntz"
             ]
           },
           "uniqueItems": true,
@@ -1062,6 +1065,7 @@
             "emergency",
             "rimcas",
             "stca",
+            "ntz",
             "msaw",
             "afdas",
             "bust",
@@ -1133,7 +1137,8 @@
                   "rimcas",
                   "stca",
                   "afdas",
-                  "emergency"
+                  "emergency",
+                  "ntz"
                 ]
               },
               "description": "The kinds whose alerts lift a track out of the filters, each at or above minSeverity. Absent, or empty, is every kind. Whichever kinds are named, a pairwise alert of a named kind (STCA, TCT) lifts both of its aircraft at any severity, so a TCT in its warning band and the other aircraft of a conflict are never left to the filters. TopSky lifts emergency, stca, msaw, afdas, apw, aiw and tct, and never clam, ram or mtcd: the safety nets, not the monitoring aids. An emergency code bypasses whatever this says."
@@ -3291,7 +3296,8 @@
               "rimcas",
               "stca",
               "afdas",
-              "emergency"
+              "emergency",
+              "ntz"
             ]
           },
           "additionalProperties": {
@@ -3367,10 +3373,78 @@
                 "type": "boolean",
                 "default": false,
                 "description": "Whether every ACTIVE segregated area (datasets/areas.geojson kind tsa) switches this net off for an aircraft strictly inside it, at its current position and level, a limit above the transition altitude read as a flight level: TopSky's STCA_Inhibit_ActiveAreas, AIW_Inhibit_ActiveAreas and Divergence_Inhibit_ActiveAreas. Read by stca, aiw, clam and ram. Without it only the areas that name the net switch it off: an area's inhibits (aiw, clamRam for clam and ram) or its kind (stcaInhibit, clamRamInhibit). STCA, CLAM and RAM keep judging inside and stay silent, so leaving the area alerts on the first report outside; AIW stops judging. Never on emergency or rimcas."
+              },
+              "controllerMay": {
+                "type": "array",
+                "items": { "enum": ["off", "sound"] },
+                "uniqueItems": true,
+                "default": [],
+                "description": "What a controller of this system may change for this net, chosen per controller and saved in their profile (radarData.safetyNetsOff and safetyNetsSoundOff): off switches the net off on their screen (no alert, no sound, no filter lift; netStatus reads 4), sound keeps its alerts silent. Absent grants nothing, which is how the safety nets proper (stca, msaw, apw, afdas, rimcas, emergency) should stay: a net's state is shown and not switched off casually (EUROCONTROL STCA guidelines, STCA-16). A choice a system does not grant is kept in the profile and ignored. An emergency squawk still lifts its track above the filters with the emergency net off."
               }
             },
             "additionalProperties": false
           }
+        }
+      },
+      "additionalProperties": false
+    },
+    "separationTools": {
+      "type": "object",
+      "description": "The controller's separation tools, RADARSEP (radar separation, TopSky's SEP) and FPLSEP (flight plan separation). They are tools a controller asks for, not nets: nothing here raises an alert. Every key is optional and an absent one keeps the client's value.",
+      "properties": {
+        "radarSeparation": {
+          "type": "object",
+          "description": "RADARSEP: two radar tracks flown on along their great circles at their ground speeds, both moved to now by their reports' ages, and the first closest approach within 999 minutes (UK TopSky, Setup B).",
+          "properties": {
+            "maxSets": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 5,
+              "description": "Sets held at once; a track may sit in several. Another set past this replaces the oldest. 5 when absent, TopSky's Setup A value; UK TopSky (Setup B, COOPANS) holds 20."
+            },
+            "yieldToAlerts": {
+              "type": "boolean",
+              "default": false,
+              "description": "TopSky Setup B (COOPANS): a set within a minute of its closest point, either aircraft in an STCA, NTZ, AIW, APW, MSAW or AFDAS alert (the NTZ raised on STCA's sweep as TopSky's STCA list holds it, AFDAS standing for TopSky's APM), is not drawn, and each alerted aircraft draws a minute of track in its speed vector colour instead, so the alert is not hidden under the tool. Off when absent: the set draws whatever the alerts."
+            },
+            "vsep": {
+              "type": "object",
+              "description": "VSEP, TopSky's vertical separation display on a RADARSEP set asked for with VSEP (the invokeRadarSeparationWithVsep click action): from the two aircraft's levels and current vertical rates, with no cleared level read, the points where their vertical distance falls below the band and rises above it again are marked on both lines with the distance between the aircraft there (\"v4.7\"), the lines run on past the closest point while the band holds, and \"v=\" beside the first aircraft says the band is not regained in the window. Both aircraft need Mode C; a set whose aircraft loses it is turned back to plain RADARSEP and the controller told.",
+              "properties": {
+                "separationFt": {
+                  "type": "integer",
+                  "minimum": 100,
+                  "maximum": 10000,
+                  "default": 1800,
+                  "description": "The vertical band in feet. 1800 when absent, TopSky's Setup B (COOPANS) Vector_MinSep_VertSep_Separation, the setup UK TopSky runs."
+                },
+                "extensionS": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 600,
+                  "default": 120,
+                  "description": "Seconds past the closest point VSEP still looks. 120 when absent, TopSky's Vector_MinSep_VertSep_Ext_Time."
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "flightPlanSeparation": {
+          "type": "object",
+          "description": "FPLSEP: the least distance between two planned trajectories within the hour.",
+          "properties": {
+            "maxSets": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 5,
+              "description": "Sets held at once; a track may sit in several, the same pair once. Another set past this replaces the oldest. 5 when absent, TopSky's value."
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
