@@ -1704,11 +1704,11 @@
               "default": false,
               "description": "Whether a pair of two uncontrolled flights alerts, TopSky's STCA_Uncontrolled. Off. An uncontrolled flight is a VFR one nobody tracks; an IFR flight, or one with no plan, counts as controlled, tracked or not."
             },
-            "excludeHoldingPairs": {
-              "type": "boolean",
-              "default": false,
-              "description": "True leaves out a pair holding at the same hold, TopSky's STCA_Holding 0: both cleared to one served hold and within safetyNets.holding.captureNm of its fix (two flights holding at present position share no hold). Off, as TopSky ships and as tier 1 keeps holders in STCA."
-            },
+            "excludeHoldingPairs": {
+              "type": "boolean",
+              "default": false,
+              "description": "True leaves out a pair holding at the same hold, TopSky's STCA_Holding 0: both cleared to one served hold and within safetyNets.holding.captureNm of its fix (two flights holding at present position share no hold). Off, as TopSky ships and as tier 1 keeps holders in STCA."
+            },
             "formationMarker": {
               "type": "string",
               "pattern": "^[^ ]*$",
