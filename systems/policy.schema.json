@@ -1520,6 +1520,11 @@
                     "type": "integer",
                     "exclusiveMinimum": 0,
                     "description": "The warning time in this region, in either band, as a TopSky STCA_AREA's STCA_ALERT_TIMES. From imminentS to lookaheadS. A pair takes the longer of its two aircraft's times, each the region's where one names it, else its band's."
+                  },
+                  "floorFt": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "The floor in this region in place of floorFt, lower or higher, judged in the same frame: an altitude on QNH at or below the transition altitude. G159 Part 3 section 2.3 gives each STCA region its own floor; this is how an approach region over parallel runways reaches below the global floor, where TopSky lifts its floor for a no transgression zone instead. Overlapping regions take the lowest under mostConservative, the first naming one under firstInFile."
                   }
                 },
                 "additionalProperties": false
