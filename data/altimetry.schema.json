@@ -1,0 +1,356 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeoRadar altimetry reference data",
+  "description": "data/altimetry.json in a vAcc's sector source, beside topsky/ and euroscope_data/: the facts the server needs to work out each airfield's and TMA's transition level, each altimeter setting region's regional pressure setting and the transition altitude areas. It has no shapes beyond the areas. `neoradar-cli convert` checks it against this schema and carries it in server-dataset.json under `altimetry`; nothing of it goes in the package. The file and every section are optional, and the server computes and streams only what a vAcc wrote: no file means today's behaviour and no notice. The transition level the server serves for each airfield and TMA is its minimum stack level by the vAcc's rule, and the holds' minimumLevels read it. Written once by an importer (`neoradar-cli import-ukcp`, `neoradar-cli import-topsky-altimetry`) or by hand; the vAcc's copy is the master after that. Not expressible here and checked by `convert`: table, airfield, TMA and region names unique; a table named by an airfield or TMA exists; a table whose bands add to the transition altitude is only named where a transition altitude is written; every band but the last has `belowHpa`, the last has none, and the bounds rise.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sources"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Editor hint only. `neoradar-cli convert` drops it."
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Where the facts in this file came from, one entry per source.",
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "transitionLevels": {
+      "type": "array",
+      "description": "The rules that give a transition level from a QNH, each a table by QNH. An airfield or TMA names the table it uses. The UK practice (above 1013 hPa the transition altitude plus 1000 ft, 978 to 1013 plus 2000 ft, below 978 plus 3000 ft), TopSky's QNHTL lines and a state's published table are each one table.",
+      "items": {
+        "$ref": "#/$defs/transitionLevelTable"
+      }
+    },
+    "airfields": {
+      "type": "array",
+      "description": "Airfields and their transition altitude and level. An airfield reads the FIRST entry, in file order, whose `icao` is its code or the first one to three letters of it, as TopSky reads its QNHTL lines.",
+      "items": {
+        "$ref": "#/$defs/airfield"
+      }
+    },
+    "tmas": {
+      "type": "array",
+      "description": "Terminal control areas whose transition level is set from the QNH of named airfields (UK: the LTMA from EGLL, the MTMA from EGCC, the STMA from EGPF).",
+      "items": {
+        "$ref": "#/$defs/tma"
+      }
+    },
+    "regions": {
+      "type": "array",
+      "description": "Altimeter setting regions. A region's regional pressure setting is the lowest QNH among its member airfields that report one, plus its adjustment, and never below 0. A UK practice; other vAccs leave it out.",
+      "items": {
+        "$ref": "#/$defs/region"
+      }
+    },
+    "areas": {
+      "type": "array",
+      "description": "Transition altitude areas. An aircraft inside an area reads its transition altitude instead of the system's one; the FIRST area in file order that holds the aircraft's current position wins, as TopSky's TA_CIRCLE and TA_POLYGON lines do. Outside every area, and with no areas, the system's one transition altitude stands.",
+      "items": {
+        "$ref": "#/$defs/area"
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What the facts were taken from: a document, a file or a data set."
+        },
+        "url": {
+          "type": "string",
+          "description": "Where that source can be found."
+        },
+        "version": {
+          "type": "string",
+          "description": "The edition, commit, AIRAC cycle or date of the source as read."
+        },
+        "licence": {
+          "type": "string",
+          "description": "The source's licence, where it states one. Only facts are taken from a source; no code or text."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Anything the author should know about what was taken and how."
+        }
+      }
+    },
+    "icao": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]{4}$",
+      "description": "An ICAO location indicator, four letters or digits, upper case."
+    },
+    "transitionLevelTable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "bands"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "The name an airfield or TMA uses for this table."
+        },
+        "description": {
+          "type": "string"
+        },
+        "bands": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Read in order: the first band whose `belowHpa` is above the QNH gives the level; the last band, which has no `belowHpa`, gives it for every higher QNH. A table of one band is a fixed transition level.",
+          "items": {
+            "$ref": "#/$defs/transitionLevelBand"
+          }
+        }
+      }
+    },
+    "transitionLevelBand": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "belowHpa": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "This band holds a QNH strictly below this value, in hectopascals. A table written in inches of mercury is converted to hectopascals unrounded, and so is a METAR read in inches."
+        },
+        "aboveTransitionAltitudeFt": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The transition level is the flight level this many feet above the transition altitude of the airfield or TMA reading the table (UK: 1000, 2000 or 3000)."
+        },
+        "flightLevel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 999,
+          "description": "The transition level itself, in hundreds of feet, whatever the transition altitude (TopSky's QNHTL)."
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "aboveTransitionAltitudeFt"
+          ]
+        },
+        {
+          "required": [
+            "flightLevel"
+          ]
+        }
+      ]
+    },
+    "transitionLevel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "table"
+      ],
+      "properties": {
+        "table": {
+          "type": "string",
+          "description": "The `id` of the transition level table used."
+        },
+        "lowestQnhOf": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "The airfields whose lowest reported QNH sets the level. Absent on an airfield: its own QNH. Required on a TMA, which reports none.",
+          "items": {
+            "$ref": "#/$defs/icao"
+          }
+        }
+      }
+    },
+    "qnh1013IsHigh": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether a QNH of exactly 1013 hPa counts as high pressure. False: it reads as below 1013 hPa, so a band ending at 1013 holds it. True or absent: it reads as it is."
+    },
+    "airfield": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "icao"
+      ],
+      "properties": {
+        "icao": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{1,4}$",
+          "description": "The airfield's ICAO code, or one to three first letters of codes, which make this entry every airfield so starting that no earlier entry names."
+        },
+        "transitionAltitudeFt": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 99999,
+          "description": "The airfield's transition altitude, feet. Required where the airfield's table adds to the transition altitude."
+        },
+        "qnh1013IsHigh": {
+          "$ref": "#/$defs/qnh1013IsHigh"
+        },
+        "transitionLevel": {
+          "$ref": "#/$defs/transitionLevel",
+          "description": "How the airfield's transition level is worked out. Absent: none is, and the server streams no transition level for this airfield. In the UK the minimum stack level is this transition level."
+        }
+      }
+    },
+    "tma": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "transitionAltitudeFt",
+        "transitionLevel"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The TMA's short name (UK: LTMA)."
+        },
+        "description": {
+          "type": "string",
+          "description": "The TMA's full name (UK: London TMA)."
+        },
+        "transitionAltitudeFt": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 99999,
+          "description": "The TMA's transition altitude, feet."
+        },
+        "qnh1013IsHigh": {
+          "$ref": "#/$defs/qnh1013IsHigh"
+        },
+        "transitionLevel": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/transitionLevel"
+            },
+            {
+              "required": [
+                "lowestQnhOf"
+              ]
+            }
+          ],
+          "description": "How the TMA's transition level is worked out, from the TMA's own transition altitude and 1013 rule and the QNH of the airfields named. In the UK the minimum stack level is this transition level."
+        }
+      }
+    },
+    "region": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "airfields",
+        "adjustmentHpa"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The region's name (UK: London, Skerry)."
+        },
+        "airfields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "The airfields whose QNH the region's setting is taken from.",
+          "items": {
+            "$ref": "#/$defs/icao"
+          }
+        },
+        "adjustmentHpa": {
+          "type": "integer",
+          "description": "Added to the lowest member QNH to give the regional pressure setting, hectopascals (UK: 0 where the setting is one airfield's QNH, else -1)."
+        }
+      }
+    },
+    "area": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transitionAltitudeFt"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Free text for the author."
+        },
+        "transitionAltitudeFt": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 99999,
+          "description": "The transition altitude inside the area, feet."
+        },
+        "circle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "center",
+            "radiusNm"
+          ],
+          "properties": {
+            "center": {
+              "$ref": "#/$defs/position"
+            },
+            "radiusNm": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "Nautical miles. A point strictly closer than this to the centre is inside."
+            }
+          }
+        },
+        "polygon": {
+          "type": "array",
+          "minItems": 3,
+          "description": "The polygon's vertices in order, not closed: the last joins the first.",
+          "items": {
+            "$ref": "#/$defs/position"
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "circle"
+          ]
+        },
+        {
+          "required": [
+            "polygon"
+          ]
+        }
+      ]
+    },
+    "position": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "[longitude, latitude], WGS84 decimal degrees, as GeoJSON writes a position (RFC 7946).",
+      "items": [
+        {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        }
+      ]
+    }
+  }
+}
