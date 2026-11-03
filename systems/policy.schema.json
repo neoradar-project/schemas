@@ -1979,12 +1979,6 @@
           },
           "additionalProperties": false
         },
-        "transitionAltitudeFt": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 6000,
-          "description": "The highest cleared level that is an altitude on QNH, one value for the whole system and every net that compares a cleared level: at or below it BUST and CLAM judge the altitude the QNH of the nearest airport METAR the client holds gives the aircraft's pressure altitude (its true altitude when no METAR within 100 NM has one, or its pilot client relays no pressure altitude, which is logged once) and word the level A060, above it its pressure altitude and FL350. A cleared level carries no altitude or flight level marker on the wire, so this alone decides which it is."
-        },
         "tct": {
           "type": "object",
           "description": "Tactical controller tool, evaluated on the client: TopSky's TCT, a five minute conflict probe built on STCA's pipeline. Laterally it follows an assigned heading after a modelled turn (then the ground track once the turn is complete), else the expanded route while the aircraft conforms to it, else the present ground track; vertically a band of rates towards the cleared level, never one line. A conflict starting within imminentS shows at once, one starting within warningS once confirmChecks of the last historyChecks checks found it; severity, wording, sound and the STCA yield are all keys here and in safetyNets.kinds.tct. regions are TopSky's TCT areas: each may override any setting, inhibit TCT, or with regionsOnly be the only places it runs. blindSpot is the menu probe built on it. OFF unless this section is authored, as STCA is. Every default is TopSky's. .dev tct-info prints the branch and band of an aircraft and every pair the last check looked at.",
