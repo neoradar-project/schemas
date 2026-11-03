@@ -3332,6 +3332,67 @@
       },
       "additionalProperties": false
     },
+    "separationTools": {
+      "type": "object",
+      "description": "The controller's separation tools, RADARSEP (radar separation, TopSky's SEP) and FPLSEP (flight plan separation). They are tools a controller asks for, not nets: nothing here raises an alert. Every key is optional and an absent one keeps the client's value.",
+      "properties": {
+        "radarSeparation": {
+          "type": "object",
+          "description": "RADARSEP: two radar tracks flown on along their great circles at their ground speeds, both moved to now by their reports' ages, and the first closest approach within 999 minutes (UK TopSky, Setup B).",
+          "properties": {
+            "maxSets": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 5,
+              "description": "Sets held at once; a track may sit in several. Another set past this replaces the oldest. 5 when absent, TopSky's Setup A value; UK TopSky (Setup B, COOPANS) holds 20."
+            },
+            "yieldToAlerts": {
+              "type": "boolean",
+              "default": false,
+              "description": "TopSky Setup B (COOPANS): a set within a minute of its closest point, either aircraft in an STCA, NTZ, AIW, APW, MSAW or AFDAS alert (the NTZ raised on STCA's sweep as TopSky's STCA list holds it, AFDAS standing for TopSky's APM), is not drawn, and each alerted aircraft draws a minute of track in its speed vector colour instead, so the alert is not hidden under the tool. Off when absent: the set draws whatever the alerts."
+            },
+            "vsep": {
+              "type": "object",
+              "description": "VSEP, TopSky's vertical separation display on a RADARSEP set asked for with VSEP (the invokeRadarSeparationWithVsep click action): from the two aircraft's levels and current vertical rates, with no cleared level read, the points where their vertical distance falls below the band and rises above it again are marked on both lines with the distance between the aircraft there (\"v4.7\"), the lines run on past the closest point while the band holds, and \"v=\" beside the first aircraft says the band is not regained in the window. Both aircraft need Mode C; a set whose aircraft loses it is turned back to plain RADARSEP and the controller told.",
+              "properties": {
+                "separationFt": {
+                  "type": "integer",
+                  "minimum": 100,
+                  "maximum": 10000,
+                  "default": 1800,
+                  "description": "The vertical band in feet. 1800 when absent, TopSky's Setup B (COOPANS) Vector_MinSep_VertSep_Separation, the setup UK TopSky runs."
+                },
+                "extensionS": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 600,
+                  "default": 120,
+                  "description": "Seconds past the closest point VSEP still looks. 120 when absent, TopSky's Vector_MinSep_VertSep_Ext_Time."
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "flightPlanSeparation": {
+          "type": "object",
+          "description": "FPLSEP: the least distance between two planned trajectories within the hour.",
+          "properties": {
+            "maxSets": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 5,
+              "description": "Sets held at once; a track may sit in several, the same pair once. Another set past this replaces the oldest. 5 when absent, TopSky's value."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
     "squawk": {
       "type": "object",
       "description": "The squawk provider chain: the package's priority per provider name, providers it disables, the reserved codes no provider may hand out, the circuit codes, and a first-party HTTP allocator. A provider the package does not name keeps what it declared.",
