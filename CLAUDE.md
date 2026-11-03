@@ -29,8 +29,8 @@ This block is identical in all six repos. Editing one copy alone is a break.
 ## What this repo is
 
 The JSON Schemas for the NeoRadar package format: `package/manifest.schema.json`,
-`profile.schema.json`, `systems/{expressions,labels,lists,mapstyle,shapes,targets}.schema.json`, and
-`injector/scenario.schema.json`. No
+`profile.schema.json`, `systems/{expressions,labels,lists,mapstyle,shapes,targets}.schema.json`,
+`injector/scenario.schema.json`, and the sector source's `data/` files. No
 code, no build, no tests. Consumers: source sector files (`@sectorsrc`) reference them by raw
 URL on `main` (`.../schemas/refs/heads/main/systems/targets.schema.json`), so authors' editors
 validate live; `@cli` builds those files into packages; `@client` parses the same files at load
@@ -95,6 +95,20 @@ unit, range and integer-ness (one row, monitorRaisesTimingState, a boolean), the
 re-ranged in the server's table is changed here and in `@cli/src/definitions/path-rules.schema.json` (a
 copy, held equal as JSON by `@cli`'s `path-rules.test.ts` when both are checked out). The cross-row bounds depend on the
 deployment's own values and stay the server's check. Not a package file: the client never reads it.
+
+## data/holds.schema.json and data/altimetry.schema.json
+
+The vAcc's reference data: `data/holds.geojson` and `data/altimetry.json` in the vAcc's sector
+source (`@sectorsrc`), beside `topsky/` and `euroscope_data/`. Not package files: the client never
+reads them from a package. `@cli`'s `convert` checks them against copies in
+`@cli/src/definitions/` (held equal as JSON by `@cli`'s `reference-data.test.ts` when both are
+checked out), plus the cross-references a schema cannot express (ids and names unique, a table or
+hold named exists, band bounds rising), and carries them in `server-dataset.json` under `holds`
+and `altimetry`; `@server` serves them. The holds are GeoJSON (RFC 7946, WGS84 longitude and
+latitude, not the packages' EPSG:3857) with AIXM 5.1 `HoldingPattern` names; altimetry is plain
+JSON. Every file and every `altimetry.json` section is optional, and each file names its sources.
+A field changed here is changed in the `@cli` copy, the `@cli` importers (`import-ukcp`,
+`import-topsky-altimetry`) and the `@server` reader together.
 
 ## What has no schema
 
