@@ -1276,6 +1276,19 @@
               "maximum": 180,
               "default": 5,
               "description": "On a direct-to the server has folded into the expansion, the turn onto it is done once the track is within this of the bearing to the fix, and the direct is measured from there; until then, for at most 120 s from the fold, the net does not raise. An aircraft that was on track to the fix holds the passed-fix guard until it is back within clearNm of the route after the fix. TopSky's DCT_MaxTrkError, 5 degrees."
+            },
+            "rejoinReactionS": {
+              "type": "number",
+              "minimum": 0,
+              "default": 10,
+              "description": "Seconds: after a heading is cancelled with no direct (resume own navigation), the fixed part of the time the net waits for the turn onto the rejoin to the first route fix ahead; the turn at rate one is added. Ended early once the track is within directTrackErrorDeg of the bearing to that fix; the rejoin is then measured from there. The sources (SOL27 OSED 3091) ask for a reaction buffer and give no value; 10 s, TCT's heading reaction, is our choice."
+            },
+            "rejoinMaxTurnDeg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180,
+              "default": 90,
+              "description": "The rejoin after a cancelled heading goes to the first route fix ahead whose bearing is within this of the aircraft's track (TPS2 3.3.6.7 leaves the amount local); with none, the route leg is measured as before. 90 degrees is our choice."
             }
           },
           "additionalProperties": false
