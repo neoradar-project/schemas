@@ -205,6 +205,7 @@
                           "netStatusBust",
                           "netStatusClam",
                           "netStatusAfdas",
+                          "netStatusNtz",
                           "netStatusRimcas",
                           "netStatusEmergency",
                           "alertStca",
@@ -218,6 +219,7 @@
                           "alertTct",
                           "alertMtcd",
                           "alertAfdas",
+                          "alertNtz",
                           "alertRimcas",
                           "alertEmergency",
                           "sectorExitPoint",
@@ -794,6 +796,11 @@
                               "type": "string",
                               "const": "alertAfdas",
                               "description": "AFDAS severity on this aircraft: 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or nothing runs it."
+                            },
+                            {
+                              "type": "string",
+                              "const": "alertNtz",
+                              "description": "NTZ severity on this aircraft (3 inside a no transgression zone, 2 pre-warned): 0 none, 1 info, 2 warning, 3 alert. 0 while the system hides the kind or nothing runs it."
                             },
                             {
                               "type": "string",
