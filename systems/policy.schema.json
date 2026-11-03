@@ -3343,7 +3343,7 @@
             },
             "vsep": {
               "type": "object",
-              "description": "VSEP, TopSky's vertical separation display on a RADARSEP set asked for with VSEP (the radarSeparationWithVsep click action): from the two aircraft's levels and current vertical rates, with no cleared level read, the points where their vertical distance falls below the band and rises above it again are marked on both lines with the distance between the aircraft there (\"v4.7\"), the lines run on past the closest point while the band holds, and \"v=\" beside the first aircraft says the band is not regained in the window. Both aircraft need Mode C; a set whose aircraft loses it is turned back to plain RADARSEP and the controller told.",
+              "description": "VSEP, TopSky's vertical separation display on a RADARSEP set asked for with VSEP (the invokeRadarSeparationWithVsep click action): from the two aircraft's levels and current vertical rates, with no cleared level read, the points where their vertical distance falls below the band and rises above it again are marked on both lines with the distance between the aircraft there (\"v4.7\"), the lines run on past the closest point while the band holds, and \"v=\" beside the first aircraft says the band is not regained in the window. Both aircraft need Mode C; a set whose aircraft loses it is turned back to plain RADARSEP and the controller told.",
               "properties": {
                 "separationFt": {
                   "type": "integer",
