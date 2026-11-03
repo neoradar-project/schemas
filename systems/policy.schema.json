@@ -106,6 +106,13 @@
                 "network"
               ],
               "description": "network needs the server; without it the check degrades to local."
+            },
+            "ignoreCodes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/squawkCodeOrRange"
+              },
+              "description": "Codes the duplicate-code call skips, as literals (\"4521\") or inclusive ranges (\"4530-4537\"), in addition to the built-in conspicuity codes 1000, 2000, 7000 and 7010 (TopSky's Airspace_No_DUPE_Codes, tier 3). Only the DUPE call reads it; the aircraft stay in every safety net, which safetyNets.exclude.squawks would not do. Absent: no extra code."
             }
           },
           "additionalProperties": false
@@ -708,7 +715,7 @@
         },
         "approachFunnel": {
           "type": "object",
-          "description": "AFDAS, the approach path monitor of the EUROCONTROL APM guidelines (G162 Part III), evaluated on the client. An airborne track qualifies on final to a monitored runway end inside the lateral area within onFinalTrackDeg of the course, and from then on is alerted below the lower slope (under the joining altitude), above the upper slope if authored, and laterally, each raised after confirmCycles new reports as one alert naming the side (LO before L or R before HI). A plan's destination and arrival runway, where it has them, are the only ones it is judged against. It judges the QNH altitude: the aircraft's pressure altitude on the QNH of the nearest airport METAR the client holds, else its true altitude. A net of its own: absent means off even with runwayMonitoring authored. The vertical axes need a threshold elevation, which open-navdata.db carries for most but not all runways; an end without one is judged on the lateral axis alone and .dev afdas-info names it.",
+          "description": "AFDAS, the approach path monitor of the EUROCONTROL APM guidelines (G162 Part III), evaluated on the client. An airborne track qualifies on final to a monitored runway end inside the lateral area within onFinalTrackDeg of the course, and from then on is alerted below the lower slope (under the joining altitude), above the upper slope if authored, and laterally, each raised after confirmCycles new reports as one alert naming the side (LO before L or R before HI). The end a track is judged on is the plan's arrival runway when it names one, else one of the destination's ends the session's runway selection lands on, else (no selection) any monitored end; among those the end it qualifies on with the least cross-track. The runways list says which ends are MONITORED, the runway selection says which one a flight is judged against, so a parallel pair is not mixed up. It judges the QNH altitude: the aircraft's pressure altitude on the QNH of the nearest airport METAR the client holds, else its true altitude. A net of its own: absent means off even with runwayMonitoring authored. The vertical axes need a threshold elevation, which open-navdata.db carries for most but not all runways; an end without one is judged on the lateral axis alone and .dev afdas-info names it.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -2261,14 +2268,14 @@
             "verticalFt": {
               "type": "number",
               "exclusiveMinimum": 0,
-              "default": 750,
-              "description": "The gap between the two vertical bands under which an instant is in conflict."
+              "default": 1000,
+              "description": "The gap between the two vertical bands under which an instant is in conflict. The default is the NATS figure for the 1000 ft standard (TCT.NATS02.02, 5 NM / 1000 ft); TopSky uses 750, which a system may author. A region's verticalFt overrides it, and Blind Spot takes the same value unless blindSpot.verticalFt names another."
             },
             "verticalUpperFt": {
               "type": "number",
               "exclusiveMinimum": 0,
-              "default": 1500,
-              "description": "The same where both bands are at or above FL410."
+              "default": 2000,
+              "description": "The same where both bands are at or above verticalUpperFromFl: the 2000 ft standard there (TCT.NATS02.02). TopSky uses 1500."
             },
             "verticalUpperFromFl": {
               "type": "integer",
