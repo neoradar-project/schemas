@@ -1389,6 +1389,11 @@
               "default": 90,
               "description": "A confirmed conflict alerts once its predicted loss of separation is no more than this many seconds away, G159's warning time (TopSky 90 upper, 80 lower). Absent is 90, or lookaheadS where that is shorter; more than lookaheadS is refused."
             },
+            "lowerWarningS": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "description": "The warning time at or below upperLateralAboveFt, TopSky's lower band (STCA_WarningTime_L, 80 against 90 above). Absent is warningS, one time for every band, which is what a system authoring neither has always had. A pair takes the upper band's time when either aircraft is above upperLateralAboveFt."
+            },
             "imminentS": {
               "type": "integer",
               "minimum": 0,
@@ -1491,7 +1496,7 @@
             },
             "regions": {
               "type": "array",
-              "description": "Per-airspace minima. A Volume carries no tags, so a rule selects on sector id globs, a zones.geojson tag, an altitude band, or any combination; every selector it names must hold. A rule OVERRIDES the default on the axes it names and leaves the others alone, and where several rules match one track the most conservative of each axis wins. Two aircraft in different regions take the most conservative of the two, so a tighter TMA region can never silence a conflict the en-route region beside it would have raised.",
+              "description": "Per-airspace minima. A rule's lateralNm and verticals also SCALE every other value of the net for its tracks, as TopSky's STCA areas do: current proximity, fast diverging and the turning lateral by the rule's lateral over the default region's value for the band (2.75 nm in a TMA is 0.61 of the 4.5 nm upper band), the vertical values likewise, and a pair takes the larger scale of its two aircraft. A Volume carries no tags, so a rule selects on sector id globs, a zones.geojson tag, an altitude band, or any combination; every selector it names must hold. A rule OVERRIDES the default on the axes it names and leaves the others alone, and where several rules match one track the most conservative of each axis wins. Two aircraft in different regions take the most conservative of the two, so a tighter TMA region can never silence a conflict the en-route region beside it would have raised.",
               "items": {
                 "type": "object",
                 "properties": {
@@ -1510,7 +1515,12 @@
                   },
                   "lateralNm": { "type": "number", "exclusiveMinimum": 0 },
                   "verticalFt": { "type": "number", "exclusiveMinimum": 0 },
-                  "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "description": "The [2000] vertical value in this region; see rvsm." }
+                  "vertical2000Ft": { "type": "number", "exclusiveMinimum": 0, "description": "The [2000] vertical value in this region; see rvsm." },
+                  "warningS": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "The warning time in this region, in either band, as a TopSky STCA_AREA's STCA_ALERT_TIMES. From imminentS to lookaheadS. A pair takes the longer of its two aircraft's times, each the region's where one names it, else its band's."
+                  }
                 },
                 "additionalProperties": false
               }
