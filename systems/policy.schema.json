@@ -1664,6 +1664,11 @@
               "default": false,
               "description": "Whether a pair of two uncontrolled flights alerts, TopSky's STCA_Uncontrolled. Off. An uncontrolled flight is a VFR one nobody tracks; an IFR flight, or one with no plan, counts as controlled, tracked or not."
             },
+            "formationMarker": {
+              "type": "string",
+              "pattern": "^[^ ]*$",
+              "description": "The flight plan remarks marker that names a formation, TopSky's System_FPL_F18_Formation_Text: after a blank (or at the start of the remarks) the marker, then the members joined by '+' up to the next blank, for example FOR/LYNX31+LYNX32 in the leader's plan. Two members of one formation are never paired, as TopSky leaves them out of STCA. A TopSky-only rule: absent or empty is off, and TopSky ships with no marker."
+            },
             "sourceStates": {
               "type": "array",
               "minItems": 1,
