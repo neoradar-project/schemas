@@ -170,6 +170,11 @@
                           "equipmentGrammar",
                           "trackId",
                           "isCoasting",
+                          "isLost",
+                          "lostTime",
+                          "lostReason",
+                          "lostChecked",
+                          "lostDestinationDistanceNm",
                           "positionAgeMs",
                           "isInCoverage",
                           "radarCoverage",
@@ -634,6 +639,31 @@
                             },
                             {
                               "type": "string",
+                              "const": "isLost",
+                              "description": "A flight this controller tracks, once seen with radar, whose radar went: out of coverage, no SSR reply (standby or primary only), uncorrelated or coasting; TopSky's Lost List. It stays lost until the radar returns, the tracking ends or the aircraft leaves. 1 or 0."
+                            },
+                            {
+                              "type": "string",
+                              "const": "lostTime",
+                              "description": "When the flight was lost, UTC, HHmm; empty while it is not lost."
+                            },
+                            {
+                              "type": "string",
+                              "const": "lostReason",
+                              "description": "Why the flight was lost: 0 not lost, 1 out of coverage, 2 no SSR reply, 3 uncorrelated, 4 coasting."
+                            },
+                            {
+                              "type": "string",
+                              "const": "lostChecked",
+                              "description": "The controller checked the lost flight's row with the checkLostTrack click action. 1 or 0."
+                            },
+                            {
+                              "type": "string",
+                              "const": "lostDestinationDistanceNm",
+                              "description": "Whole nautical miles from where the flight was lost to its destination aerodrome; empty while it is not lost or either place is unknown. TopSky's optional 5 nm destination filter is a list filter on it."
+                            },
+                            {
+                              "type": "string",
                               "const": "positionAgeMs",
                               "description": "Milliseconds since the last position report"
                             },
@@ -985,6 +1015,18 @@
                           "areaAupId"
                         ],
                         "description": "An area list row, one area of datasets/areas.geojson as the client last judged it, which no other row reads: areaName, areaMapText (the label's text), areaCategory, areaState (0 inactive, 1 pre-active ahead of a period, 2 active), areaSource (0 none, 1 always, 2 a schedule, 3 the airspace use plan, 4 a condition with no times), areaAuto (1 when an entry activates it, 0 when only a hand could), areaStartDate, areaStartTime, areaEndDate and areaEndTime (the running or next period, UTC, yymmdd and HH:mm, empty with none known), areaLowerFt and areaUpperFt (feet, the period's else the area's, empty with none), areaUserText and areaAupId."
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "netName",
+                          "netStatus",
+                          "netMayOff",
+                          "netMaySound",
+                          "netSwitchedOff",
+                          "netSoundOff"
+                        ],
+                        "description": "A net list row, one safety net of the active system as the board judges it now, which no other row reads: netName (the policy.json kind name: stca, msaw, apw, aiw, tct, ram, clam, bust, afdas, rimcas, emergency, ntz), netStatus (0 off by the system, 1 on, 2 hidden by safetyNets.show, 3 meant to run and cannot, 4 switched off by this controller), netMayOff and netMaySound (1 where safetyNets.kinds.(net).controllerMay grants off or sound), netSwitchedOff and netSoundOff (1 while this controller has switched the net or its sound off and the system grants it)."
                       },
                       {
                         "type": "string",
@@ -1688,6 +1730,11 @@
                       },
                       {
                         "type": "string",
+                        "const": "checkLostTrack",
+                        "description": "Check this aircraft's Lost List row: the controller has seen that its radar went. The row stays until the radar returns, the tracking ends or the aircraft leaves; a list with autoOpen and autoOpenWhen on lostChecked may be closed once every row is checked. Available to an observer."
+                      },
+                      {
+                        "type": "string",
                         "const": "toggleManualAlert:missedApproach",
                         "description": "Set the missed approach manual alert on this aircraft, or clear it when it is the one already set; several manual alerts can stand at once. Shared with every controller over the scratchpad and read back as manualAlert and manualAlerts. Needs a track this controller may edit."
                       },
@@ -1853,6 +1900,16 @@
                     },
                     {
                       "type": "string",
+                      "const": "toggleNet",
+                      "description": "A net list cell only: switches the row's net off on this controller's screen, or on again, where safetyNets.kinds.(net).controllerMay grants off; saved in the profile. Refused, and nothing changes, where it is not granted."
+                    },
+                    {
+                      "type": "string",
+                      "const": "toggleNetSound",
+                      "description": "A net list cell only: switches the row's net's sound off, or on again, where controllerMay grants sound; saved in the profile."
+                    },
+                    {
+                      "type": "string",
                       "const": "acknowledgeMetarUpdate",
                       "description": "Acknowledges the METAR update."
                     },
@@ -1954,7 +2011,8 @@
           "metar",
           "atc",
           "frequency",
-          "area"
+          "area",
+          "net"
         ],
         "default": "aircraft"
       },
@@ -1974,6 +2032,10 @@
         "type": "boolean",
         "default": false,
         "description": "Opens the list whenever it has rows, for any list type, and refuses to close it (the window's close and the lists menu) while it has some; a close while it has none is allowed and it opens again at its next row. Absent: the list opens and closes as the controller chooses."
+      },
+      "autoOpenWhen": {
+        "$ref": "#/items/properties/filterExpressions",
+        "description": "With autoOpen, only a row this condition holds for opens the list and holds it open, read as filterExpressions is, over the list's own rows; the other rows are still shown. TopSky's Lost List Setup B is autoOpen with autoOpenWhen [\"==\", \"lostChecked\", \"0\"]: it opens while a lost flight's row is unchecked and may be closed once every row is checked; it never closes itself. Absent: every row counts."
       },
       "style": {
         "type": "object",

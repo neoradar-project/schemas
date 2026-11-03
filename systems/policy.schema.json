@@ -3324,6 +3324,13 @@
                 "type": "boolean",
                 "default": false,
                 "description": "Whether every ACTIVE segregated area (datasets/areas.geojson kind tsa) switches this net off for an aircraft strictly inside it, at its current position and level, a limit above the transition altitude read as a flight level: TopSky's STCA_Inhibit_ActiveAreas, AIW_Inhibit_ActiveAreas and Divergence_Inhibit_ActiveAreas. Read by stca, aiw, clam and ram. Without it only the areas that name the net switch it off: an area's inhibits (aiw, clamRam for clam and ram) or its kind (stcaInhibit, clamRamInhibit). STCA, CLAM and RAM keep judging inside and stay silent, so leaving the area alerts on the first report outside; AIW stops judging. Never on emergency or rimcas."
+              },
+              "controllerMay": {
+                "type": "array",
+                "items": { "enum": ["off", "sound"] },
+                "uniqueItems": true,
+                "default": [],
+                "description": "What a controller of this system may change for this net, chosen per controller and saved in their profile (radarData.safetyNetsOff and safetyNetsSoundOff): off switches the net off on their screen (no alert, no sound, no filter lift; netStatus reads 4), sound keeps its alerts silent. Absent grants nothing, which is how the safety nets proper (stca, msaw, apw, afdas, rimcas, emergency) should stay: a net's state is shown and not switched off casually (EUROCONTROL STCA guidelines, STCA-16). A choice a system does not grant is kept in the profile and ignored. An emergency squawk still lifts its track above the filters with the emergency net off."
               }
             },
             "additionalProperties": false

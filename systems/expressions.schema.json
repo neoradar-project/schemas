@@ -167,6 +167,11 @@
                           "equipmentGrammar",
                           "trackId",
                           "isCoasting",
+                          "isLost",
+                          "lostTime",
+                          "lostReason",
+                          "lostChecked",
+                          "lostDestinationDistanceNm",
                           "positionAgeMs",
                           "isInCoverage",
                           "radarCoverage",
@@ -631,6 +636,31 @@
                             },
                             {
                               "type": "string",
+                              "const": "isLost",
+                              "description": "A flight this controller tracks, once seen with radar, whose radar went: out of coverage, no SSR reply (standby or primary only), uncorrelated or coasting; TopSky's Lost List. It stays lost until the radar returns, the tracking ends or the aircraft leaves. 1 or 0."
+                            },
+                            {
+                              "type": "string",
+                              "const": "lostTime",
+                              "description": "When the flight was lost, UTC, HHmm; empty while it is not lost."
+                            },
+                            {
+                              "type": "string",
+                              "const": "lostReason",
+                              "description": "Why the flight was lost: 0 not lost, 1 out of coverage, 2 no SSR reply, 3 uncorrelated, 4 coasting."
+                            },
+                            {
+                              "type": "string",
+                              "const": "lostChecked",
+                              "description": "The controller checked the lost flight's row with the checkLostTrack click action. 1 or 0."
+                            },
+                            {
+                              "type": "string",
+                              "const": "lostDestinationDistanceNm",
+                              "description": "Whole nautical miles from where the flight was lost to its destination aerodrome; empty while it is not lost or either place is unknown. TopSky's optional 5 nm destination filter is a list filter on it."
+                            },
+                            {
+                              "type": "string",
                               "const": "positionAgeMs",
                               "description": "Milliseconds since the last position report"
                             },
@@ -999,6 +1029,18 @@
                           "areaAupId"
                         ],
                         "description": "An area list row, one area of datasets/areas.geojson as the client last judged it, which no other row reads: areaName, areaMapText (the label's text), areaCategory, areaState (0 inactive, 1 pre-active ahead of a period, 2 active), areaSource (0 none, 1 always, 2 a schedule, 3 the airspace use plan, 4 a condition with no times), areaAuto (1 when an entry activates it, 0 when only a hand could), areaStartDate, areaStartTime, areaEndDate and areaEndTime (the running or next period, UTC, yymmdd and HH:mm, empty with none known), areaLowerFt and areaUpperFt (feet, the period's else the area's, empty with none), areaUserText and areaAupId."
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "netName",
+                          "netStatus",
+                          "netMayOff",
+                          "netMaySound",
+                          "netSwitchedOff",
+                          "netSoundOff"
+                        ],
+                        "description": "A net list row, one safety net of the active system as the board judges it now, which no other row reads: netName (the policy.json kind name: stca, msaw, apw, aiw, tct, ram, clam, bust, afdas, rimcas, emergency, ntz), netStatus (0 off by the system, 1 on, 2 hidden by safetyNets.show, 3 meant to run and cannot, 4 switched off by this controller), netMayOff and netMaySound (1 where safetyNets.kinds.(net).controllerMay grants off or sound), netSwitchedOff and netSoundOff (1 while this controller has switched the net or its sound off and the system grants it)."
                       },
                       {
                         "type": "string",

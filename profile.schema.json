@@ -90,6 +90,18 @@
           "items": { "type": "string" },
           "uniqueItems": true,
           "description": "labels.json toggleGroup names this view has blanked through the tagTogglesMenu click action, the vSMR fork's ASR tag toggles. Absent or empty shows every item."
+        },
+        "safetyNetsOff": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true,
+          "description": "Safety nets the controller switched off, by policy.json kind name (stca, clam, ...). Written by the client when the controller toggles a net in a net list; honoured only for a kind the active system's safetyNets.kinds.(kind).controllerMay grants off. Absent or empty switches nothing off."
+        },
+        "safetyNetsSoundOff": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true,
+          "description": "Safety nets whose sound the controller switched off, by policy.json kind name. Honoured only for a kind the active system grants sound. Absent or empty silences nothing."
         }
       },
       "additionalProperties": false
