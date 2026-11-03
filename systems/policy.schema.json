@@ -1704,6 +1704,11 @@
               "default": false,
               "description": "Whether a pair of two uncontrolled flights alerts, TopSky's STCA_Uncontrolled. Off. An uncontrolled flight is a VFR one nobody tracks; an IFR flight, or one with no plan, counts as controlled, tracked or not."
             },
+            "excludeHoldingPairs": {
+              "type": "boolean",
+              "default": false,
+              "description": "True leaves out a pair holding at the same hold, TopSky's STCA_Holding 0: both cleared to one served hold and within safetyNets.holding.captureNm of its fix (two flights holding at present position share no hold). Off, as TopSky ships and as tier 1 keeps holders in STCA."
+            },
             "formationMarker": {
               "type": "string",
               "pattern": "^[^ ]*$",
@@ -2059,7 +2064,7 @@
         "apw": {
           "type": "object",
           "additionalProperties": false,
-          "description": "Area proximity warning, evaluated on the client on TopSky's template: an aircraft inside, or predicted to enter, an ACTIVE segregated area of datasets/areas.geojson (kind tsa, never pre-active, not one whose inhibits name apw). Its straight-line path at its ground speed and smoothed vertical rate is stepped every stepS to lookaheadS; an area is met within its band widened by the vertical buffer (each limit's own: the upper value for a limit above 28,500 ft, else by flight rules), a limit above the transition altitude where the aircraft is read as a flight level, and within the lateral buffer by the true distance to the area (the upper value above bufferLat.sepLevelFt of predicted altitude, else by flight rules); an area's apwBufferLatNm and apwBufferVertFt replace the buffers here. Inside, or an entry within imminentS, raises at once; else confirmCycles new reports in a row predicting an entry within lookaheadS raise once it is within warningS. Inside is an alert, an entry ahead a warning naming the area and the seconds to it. Silent unless safetyNets.kinds.apw.sound is on, as TopSky's APW_AlertSound is off. A standing alert holds through one report with no entry predicted. ABSENT IS OFF: the net does not run until a system authors the section, and with no datasets/areas.geojson it does nothing. Not built yet: a flight cleared to hold in an area left out (it waits for the hold state). .dev apw-info explains a verdict.",
+          "description": "Area proximity warning, evaluated on the client on TopSky's template: an aircraft inside, or predicted to enter, an ACTIVE segregated area of datasets/areas.geojson (kind tsa, never pre-active, not one whose inhibits name apw). Its straight-line path at its ground speed and smoothed vertical rate is stepped every stepS to lookaheadS; an area is met within its band widened by the vertical buffer (each limit's own: the upper value for a limit above 28,500 ft, else by flight rules), a limit above the transition altitude where the aircraft is read as a flight level, and within the lateral buffer by the true distance to the area (the upper value above bufferLat.sepLevelFt of predicted altitude, else by flight rules); an area's apwBufferLatNm and apwBufferVertFt replace the buffers here. Inside, or an entry within imminentS, raises at once; else confirmCycles new reports in a row predicting an entry within lookaheadS raise once it is within warningS. Inside is an alert, an entry ahead a warning naming the area and the seconds to it. Silent unless safetyNets.kinds.apw.sound is on, as TopSky's APW_AlertSound is off. A standing alert holds through one report with no entry predicted. ABSENT IS OFF: the net does not run until a system authors the section, and with no datasets/areas.geojson it does nothing. A flight holding (safetyNets.holding) is left out of the area its hold is in: a served hold whose fix lies in the area, or present position in it; the other areas still judge it. .dev apw-info explains a verdict.",
           "properties": {
             "enabled": { "type": "boolean", "default": true, "description": "False keeps the section and stops the net." },
             "lookaheadS": { "type": "integer", "minimum": 0, "maximum": 300, "default": 75, "description": "How far ahead the path is stepped, TopSky's APW_PredictionTime. EUROCONTROL's APW guidance allows over 60 s only well clear of routes." },
@@ -2761,6 +2766,11 @@
               "type": "boolean",
               "default": false,
               "description": "Whether a pair of two uncontrolled flights is probed: TCT_Inhibit_Uncontrolled, on, so false. An uncontrolled flight is a VFR one nobody tracks; an IFR flight, or one with no plan, counts as controlled, tracked or not."
+            },
+            "excludeHoldingPairs": {
+              "type": "boolean",
+              "default": false,
+              "description": "True leaves out a pair holding at the same hold, TopSky's TCT_Inhibit_Holding 1: both cleared to one served hold and within safetyNets.holding.captureNm of its fix. Off, as TopSky ships; Blind Spot keeps holders either way, as tier 1 does."
             },
             "uncorrelatedPairs": {
               "type": "boolean",
