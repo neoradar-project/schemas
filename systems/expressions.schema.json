@@ -523,6 +523,11 @@
                             },
                             {
                               "type": "string",
+                              "const": "temporaryAltitudeIfDifferent",
+                              "description": "EuroScope item 32: the temporary altitude (ft) only while it differs from sectorEntryExitLevel, else blank."
+                            },
+                            {
+                              "type": "string",
                               "const": "coordinatedLevel",
                               "description": "Agreed COPX exit level (ft), else the filed cruise level."
                             },
