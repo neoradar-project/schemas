@@ -216,6 +216,7 @@
                     "firExitTime",
                     "coordinationState",
                     "coordinationKind",
+                    "coordinationSide",
                     "coordinationLevel",
                     "coordinationPoint",
                     "coordinationWith"
