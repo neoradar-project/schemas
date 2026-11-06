@@ -219,7 +219,8 @@
                     "coordinationSide",
                     "coordinationLevel",
                     "coordinationPoint",
-                    "coordinationWith"
+                    "coordinationWith",
+                    "coordinationNextController"
                   ]
                 },
                 {
