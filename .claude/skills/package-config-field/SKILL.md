@@ -1,6 +1,6 @@
 ---
 name: package-config-field
-description: Add or change a field in the NeoRadar package format end to end. Use when the user says add a config field, new mapstyle property, new targets property, new tag item property, extend the manifest, new option for a list column, why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor, or asks how a schema change reaches sector-file authors. Covers the schema-first ordering across @schemas @cli and @client, the parser plus writer round-trip rule that stops a field being silently dropped, the Configurator section wiring, the document model that saves YAML (lists, policy, targets, labels, mapstyle, expressions, shapes, the properties of the zones dataset, the manifest and a profile are edited as documents; no writer refuses YAML any more), the manifest keys the client writes itself and patches one at a time, and the mandatory rollout path for sector files that predate the field.
+description: Use when adding or changing a package format field end to end (add a config field, new mapstyle, targets, policy, tag item or profile property, extend the manifest, new option for a list column), or asking why is my package field ignored, why did the Configurator delete my field, why is the field red in my editor; or a new package file the client watches, a new Configurator section, or a sector-file rollout.
 ---
 
 > **Shared skill.** Copied verbatim into `@client`, `@cli`, `@schemas`. Editing one copy alone is a break, not a cleanup.
@@ -14,7 +14,7 @@ Cross-repo ordering, repo id resolution and the lockstep pairs are the
 `cross-repo-contract-change` skill's job. Read that first if you do not have all the checkouts.
 This skill is the field-level procedure inside that order.
 
-Comment style: root `CLAUDE.md` § Code style and comments.
+Comment style: root `CLAUDE.md` § Writing rules and `@client .claude/rules/csharp-style.md`.
 
 ---
 
@@ -32,7 +32,7 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `systems/shapes.{json,yaml}` | `@schemas/systems/shapes.schema.json` | **none** | `Package/ShapesConfig.cs` | `ShapesConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/expressions.{json,yaml}` | `@schemas/systems/expressions.schema.json` | **none** | `Package/ExpressionsConfig.cs` | `ExpressionsConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
 | `systems/lists.{json,yaml}` | `@schemas/systems/lists.schema.json` | **none** | `Package/ListsConfig.cs` | `ListsConfigWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): no model is serialised, so there is no writer leg |
-| `manifest.json` | `@schemas/package/manifest.schema.json` | `initPackage` (`@cli/src/commands/init-package.ts`), `indexer` (`@cli/src/commands/indexer.ts`) | `Package/PackageManifest.cs` | `ManifestWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a). The keys the client writes itself (`lastActiveProfile`, `plugins` and `lastOpened` while a package is in use; `ignorePaths`, `version`, `installedFiles` and `remoteSource` from the launcher) are set one at a time in the file's own text by `Package/ManifestKeyPatch` and are never edited in the section |
+| `manifest.json` | `@schemas/package/manifest.schema.json` | `initPackage` (`@cli/src/commands/init-package.ts`), `indexer` (`@cli/src/commands/indexer.ts`) | `Package/PackageManifest.cs` | `ManifestWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a). The keys the client writes itself (`lastActiveProfile` and `plugins` while a package is in use; `lastOpened`, `ignorePaths`, `installedFiles` and `remoteSource` from the launcher; `version` from an update) are set one at a time in the file's own text by `Package/ManifestKeyPatch`; all but `version` are never edited in the section, and `version`, which an update sets, is also a field of it |
 | `profiles/*.stp` | `@schemas/profile.schema.json` | `AsrFolderConverter.processFile` (`@cli/src/commands/converter/asr.ts`) | `Package/Profiles/Profile.cs` | `ProfileStorageService.Write`, which writes the edited `PackageDocument` as it stands (§4a) as the local copy, the package file or both. The radar's own save of a profile (`ProfileStore.SaveUserProfile`) sets the values that differ in the file's own text (`ProfileFileDifference`, §4): a profile key the model does not hold is kept |
 | `datasets/atc-data.json` | none | `AtcDataManager.writeAtcData` (`@cli/src/commands/converter/atc-data-parser.ts`) | `Package/AtcData.cs` | none |
 | `datasets/nse.json` | none | `@cli/src/helper/nse.ts` | `Package/EseDataset.cs` | none |
@@ -41,15 +41,17 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `datasets/radars.json` | `@schemas/datasets/radars.schema.json` | `writeRadarsDataset` (`@cli/src/helper/radars.ts`) | `Package/RadarsDataset.cs` | none |
 | `datasets/msaw.geojson` | `@schemas/datasets/msaw.schema.json` | `buildMsawDataset` (`@cli/src/commands/converter/topsky/topsky-msaw.ts`) | `Package/MsawDataset.cs` | none |
 | `datasets/areas.geojson` | `@schemas/datasets/areas.schema.json` | `buildAreasDataset` (`.../topsky/topsky-areas.ts`) | `Package/AreasDataset.cs` (name, category, `label` (its `x`, `y` and `text`), `preActiveS`, `uuid`, limits, `activation`: `when`, `lowerFt`, `upperFt`, `userText`, `aup`; `display`: the `active` and `preActive` looks and the reduced label's items; the geometry; and the file's own `display`: label font, colours, `aupUserText`), judged by `MapItems/AreaActivation/` and drawn by the desktop's `AreaDisplayModule`; its `origin` and `items` are a map layer header, read by `Package/Layers/LayerHeaderReader` | none: no section edits the file and nothing in the client writes it, so every byte stays; Map Edit shows its items as every layer's |
+| `datasets/cas.geojson` | `@schemas/datasets/cas.schema.json` | `writeControlledAirspace` (`@cli/src/commands/converter/cas.ts`), from the sector file and the vAcc's `data/cas.json` | `SafetyNets/Aiw/CasDataset.cs`, loaded by `Aiw/ControlledAirspaceStore` | none |
 | `datasets/stca-runways.json` | `@schemas/datasets/stca-runways.schema.json` | `buildStcaRunwaysDataset` (`.../topsky/topsky-stca.ts`) | not read by the client | none |
 | `server-dataset.json` | none | `@cli/src/helper/server-dataset.ts` (`areaActivation.aupUrl` from `TopSkySettings.txt` `HTTP_AUP_URL`) | not read by the client; `@server` imports it | none |
 
-`policy.json`, `targets.json`, `labels.json`, a mapstyle, the expressions file and the shapes file are edited as documents, as lists is (§4a): the section holds the file's own text, so the §4 erase-on-save hazard does not apply to them and the test in §8 is the schema test of §7a instead. A system with no policy file gets one at the first save that has something in it. Its sections are owned by the modules that consume them (`Correlation/CorrelationPolicySection.cs` is the model), not by `Package/`, so a new section is a property on `SystemPolicy` plus a section type and a `Resolve` beside the module that reads it.
+`policy.json`, `targets.json`, `labels.json`, a mapstyle, the expressions file and the shapes file are edited as documents, as lists is (§4a): the section holds the file's own text, so the §4 erase-on-save hazard does not apply to them and the test in §8 is the schema test of §7a instead. A system with no policy file gets one at the first save that has something in it. Its sections are owned by the modules that consume them (`Correlation/CorrelationPolicySection.cs` is the model), not by `Package/`, so a new section is a property on `SystemPolicy` plus a section type and a `Resolve` beside the module that reads it, called from both `SystemPolicies.Resolve` and `SystemPolicies.ResolveEachSection` (the load's, where a section that cannot be read is taken down alone: a net off, anything else on its absent default); a new safety net also adds its line to `ResolveSafetyNetsEachNet` and `EveryNetOff`.
 
 **The `systems/*` configs have no CLI leg.** `downloadBasePackage` (`@cli/src/commands/init-package.ts`)
 downloads the whole starter tree from the `neoradar-project/base-package` release and unzips it; the
-CLI never generates or rewrites a systems config. The only `$schema` keys it writes are on the four
-datasets it emits (`radars`, `msaw`, `areas`, `stca-runways`; `grep -rn '\$schema' @cli/src`), so a
+CLI never generates or rewrites a systems config. The only `$schema` keys it writes are on the five
+datasets it emits (`radars`, `msaw`, `areas`, `stca-runways`, `cas`) and the two reference data files its import
+commands write (`holds`, `altimetry`, schemas under `@schemas/data/`; `grep -rn '\$schema' @cli/src`), so a
 dataset schema that moves needs its constant there moved too. A new systems-config field therefore lands in
 `@schemas` + `@client` + optionally the base-package template, and the "emitter" step is a no-op.
 
@@ -63,7 +65,7 @@ labels schema **and** the lists schema and reaches two Configurator sections thr
 ## 2 · The order, and why it is not negotiable
 
 `@schemas` has no versioning and no pinned ref: sector files reference the raw URL on `main`,
-so a merge is instantly live for every author. Verified in the real sector files —
+so a merge is instantly live for every author. Verified in the real sector files:
 the `$schema` key of `@sectorsrc/UK-Sector-File/package/systems/*/targets.json` uses
 `.../schemas/refs/heads/main/systems/targets.schema.json`, and the YAML siblings use a
 `# yaml-language-server: $schema=.../schemas/main/systems/mapstyle.schema.json` first line.
@@ -73,7 +75,10 @@ Every root schema except `lists` sets **`additionalProperties: false`**:
 ```
 $ python -c "import json,glob; [print(f, json.load(open(f,encoding='utf-8')).get('additionalProperties','ABSENT')) for f in sorted(glob.glob('systems/*.json')+glob.glob('datasets/*.json'))]"
 datasets\areas.schema.json        False
+datasets\cas.schema.json          False
+datasets\map-layer.schema.json    False
 datasets\msaw.schema.json         False
+datasets\path-rules.schema.json   False
 datasets\radars.schema.json       False
 datasets\stca-runways.schema.json False
 datasets\zones.schema.json        False
@@ -91,14 +96,14 @@ schema edit is not documentation, it is the permission to use the field.
 
 Order:
 
-1. **`@schemas`** — add the property as **optional**. Widening is safe. Do not add it to
+1. **`@schemas`**: add the property as **optional**. Widening is safe. Do not add it to
    `required`; do not narrow or rename an existing property.
-2. **`@client` parser** — accept it, with the absent case producing the documented default.
-3. **`@client` writer** — round-trip it. See §4; skipping this deletes author data.
-4. **`@client` Configurator section** — expose it (optional, but a field with no UI is a field
+2. **`@client` parser**: accept it, with the absent case producing the documented default.
+3. **`@client` writer**: round-trip it. See §4; skipping this deletes author data.
+4. **`@client` Configurator section**: expose it (optional, but a field with no UI is a field
    nobody uses).
-5. **`@cli`** — only if §1 says there is an emitter for that file.
-6. **Rollout note** — §6. Mandatory, not optional.
+5. **`@cli`**: only if §1 says there is an emitter for that file.
+6. **Rollout note**: §6. Mandatory, not optional.
 
 ---
 
@@ -139,7 +144,7 @@ private DynamicProperty _color;
 public DynamicValue ParsedColor => _color.Parsed;
 ```
 
-Read it through `DynamicValueResolver` (the `tag-and-list-authoring` skill lists the readers; the
+Read it through `DynamicValueResolver` (the `@client` skill `tag-and-list-authoring` lists the readers; the
 typed ones take the property's name, for the warning an unreadable entry gets once) and never test
 the JSON for a leading `=` or `&` yourself: an inventory test fails a file that does. A field that
 is geometry, layout, controller-owned profile state, a safety-net threshold or a click gate stays a
@@ -160,8 +165,8 @@ only to read a draft as the loader will, and every write still goes through the 
 Validation is `DataAnnotations` via `PackageValidator` (`Package/PackageValidator.cs`). Note the
 asymmetry, it matters for rollout:
 
-- `PackageValidator.Validate<T>` **warns and continues** — an invalid object still loads.
-- `PackageValidator.ValidateList<T>` **drops the invalid element** — so adding `[Required]` to a
+- `PackageValidator.Validate<T>` **warns and continues**: an invalid object still loads.
+- `PackageValidator.ValidateList<T>` **drops the invalid element**, so adding `[Required]` to a
   `DynamicListConfig` or `TagItem` field silently removes whole entries from every package that
   predates the field. Never retro-fit `[Required]`.
 
@@ -191,7 +196,7 @@ the manifest and a profile** have no writer leg at all: §4a.
 What follows in this section is why the rule was parser and writer in one change, and it is
 still how the system folder writers validate.
 
-**No config type in Core has `[JsonExtensionData]`** — verified,
+**No config type in Core has `[JsonExtensionData]`**: verified,
 `grep -rn JsonExtensionData src/NeoRadar.Core --include=*.cs` returns nothing. Combined with a
 typed writer writing only the fields it knows about, the consequence is:
 
@@ -226,8 +231,19 @@ writer that skips the `IOwnPackageWrites` call saves correctly and shows nothing
 new package FILE needs a watcher entry, a `Reload*` on `IPackageLoaderService` and its event as
 well (`datasets/msaw.geojson` is the model).
 
+A new package file the client watches, in order (`ReloadPackageFilesOnChangeTests`):
+1. a watcher entry in `PackageFileWatcher`;
+2. a `Reload*` on `IPackageLoaderService`;
+3. a typed `*FileChanged` event;
+4. one line in `ReloadPackageFilesOnChange`, following `msaw.geojson`;
+5. if a Configurator writer saves it, an `IOwnPackageWrites` notice naming it so the echo is ignored and
+   the same reload runs once.
+
+A new `Profile` property: copy it in `ProfileCopy` and compare it in `ProfileFileDifference` (or name it
+as left alone), in the same piece of work as the Configurator field.
+
 If the field has a structural invariant, add it to that writer's validation list so the write
-fails before touching disk — `SystemConfigWriter.ValidateTargets` and `ValidateLabels` are the model
+fails before touching disk; `SystemConfigWriter.ValidateTargets` and `ValidateLabels` are the model
 (each runs on the typed read of the document a save hands over), and the failure path returns
 `ConfigWriteResult.Fail` and writes nothing.
 
@@ -247,78 +263,13 @@ dotnet test tests/NeoRadar.Core.Tests/NeoRadar.Core.Tests.csproj --filter Config
 
 ## 4a · Lists, policy, targets, labels, mapstyle, expressions and shapes are edited as documents: nothing is serialised, so nothing is deleted
 
-`systems/lists.{json,yaml,yml}` is the first file moved onto the document model
-(`@client/src/NeoRadar.Core/Package/Documents/`). The Lists section holds the file's own text as a
-`PackageDocument` inside a `DocumentDraft`; every change a user makes is one `DocumentEdit` at a
-path (`SetValue`, `AddKey`, `Remove`, `InsertElement`, `MoveElement`, `RenameKey`), planned as one
-patch of that text and checked by reading the patched text back through the client's own loader.
-`ListsConfigWriter.Write(packagePath, document)` reads the document once as the loader will (a
-file the client could not load is never written), writes `document.ToBytes()` through
-`AtomicConfigWriter` and tells `IOwnPackageWrites.ListsFile`. The typed `DynamicListConfig` is only
-ever READ from the document. `systems/<id>/policy.{json,yaml,yml}` is the second file on the model:
-`PolicyConfigWriter.Write(packagePath, systemId, document)` resolves the document as the loader
-will (`SystemPolicies.Resolve`, so a policy that would leave the system on defaults is never
-written and the refusal carries the reader's own message) and tells
-`IOwnPackageWrites.PolicyFile`, whose one reload publishes `PolicyFileChanged`.
-`systems/<id>/targets.{json,yaml,yml}` is the third: `SystemConfigWriter.WriteTargets(packagePath,
-systemId, document)` reads the document as the loader will, runs `ValidateTargets` on that read
-(an unknown selector name in any list, an airborne variant with neither a sprite nor a shape),
-and tells `IOwnPackageWrites.SystemFile` with `geometryAffected` false.
-`systems/<id>/labels.{json,yaml,yml}` is the fourth: `SystemConfigWriter.WriteLabels(packagePath,
-systemId, document)` reads the document as the loader will, its ground section too, runs
-`ValidateLabels` on that read (an unknown selector name on a label variant or a style variant of
-either section) and tells `IOwnPackageWrites.SystemFile` the same way. The typed `WriteLabels`,
-its ground override and its YAML refusal are deleted.
-`systems/<id>/mapstyle.{json,yaml,yml}` is the fifth: `SystemConfigWriter.WriteMapStyle(packagePath,
-systemId, document)` reads the document as the loader reads the file (strict JSON, or YAML through
-`YamlToJson`; a file naming no map of styles is refused) and tells `IOwnPackageWrites.SystemFile`
-with `geometryAffected` true. The typed `WriteMapStyle`, `MapStyleSerializer` and the YAML refusal
-are deleted.
-`systems/expressions.{json,yaml,yml}` is the sixth: `ExpressionsConfigWriter.Write(packagePath,
-document)` reads the document as the loader reads the file (a file that is no map, or whose
-`expressions` or `rules` is no map, or a rule whose value is no text, is refused) and tells
-`IOwnPackageWrites.ExpressionsFile`. A condition the parser rejects loads as one that is never true,
-so the WRITER writes it; the Expressions SECTION is stricter and saves nothing while the client
-cannot read the condition of any expression. The typed `Write`, its YAML refusal and
-`ConfiguratorClone`'s expressions path are deleted.
-`systems/shapes.{json,yaml,yml}` is the seventh: `ShapesConfigWriter.Write(packagePath, document)`
-reads the document as the loader reads the file, then holds that read to `Validate`, the rules the
-typed write always enforced (a shape with no elements, an element with no drawing kind or two, a
-line under 2 points, a polygon under 3, a radius, a size or a stroke width of zero, a reference to no
-shape or to itself, an opacity outside 0 to 1). The loader reads every one of those and
-`ShapeCompiler` skips them at draw time, so the refusal is the writer's own, in its own words, and
-tells `IOwnPackageWrites.ShapesFile` when it does write. The typed `Write`, its YAML refusal,
-`ConfiguratorClone` and the `ShapesConfig` entry of the write context are deleted.
-`manifest.json` is the ninth, after the zones dataset: `ManifestWriter.Write(packagePath, document)`
-reads the document as `PackageLoaderService.LoadPackage` reads the file, refuses what
-`ManifestWriter.Validate` names (what the loader's validation warns of, and a map layer with no
-name, no source or a type other than geojson), and tells `IOwnPackageWrites.ManifestFile`. The
-loader reads `manifest.json` and nothing else, so a YAML document is refused. The manifest never
-had a typed Configurator writer; the typed write its two run-time writers shared
-(`SaveManifestLastActiveProfile`, `SaveManifestPlugins`) is replaced by `Package/ManifestKeyPatch`,
-which sets one key in the file's own text; the launcher's four writers (`IgnorePathService`,
-`ProviderUpdater`, `LocalPackageLinker`, `PackageDeletionService.ConvertRemoteToLocal`) set their
-keys the same way, and `ManifestIsNeverWrittenWholeTests` fails a file in `src/` that serialises
-`PackageManifest`. An update leaves the manifest the provider served on disk, with those keys set
-in it. So a new key the client writes is added in three places, or an update or a save loses it:
-`Package/ManifestClientKeys.All`, the Configurator's `ManifestFields.WrittenByTheClient` (a test
-holds the two equal), and `Package/CarriedManifestSettings` when it is a controller's setting that
-must outlive an update or a reinstall. These writers and the radar's profile save never refuse for
-a comment or a trailing comma where the key or item goes: they remove it from that one container
-(`PackageDocument.WithoutWhatBlocks`) and log a Warning. A Configurator section does not: its
-draft keeps the refusal to show.
-A profile (`profiles/**/*.stp`, and its local copy under the data root) is the tenth:
-`ProfileStorageService.Write(packagePath, namespace, profile, document, target)` reads the document
-as the loader reads a profile, refuses one with no name, no map or a window area of one to three
-edges, writes the document's bytes as the local copy, the package file or both, and tells
-`IOwnPackageWrites.ProfileFile` for each file written. `Promote` copies the local copy's bytes over
-the package file; `RevertToPackage` and the two deletes remove a file and end in `ProfileFile` or
-`ProfileFileRemoved`. The typed `Save` is deleted. Consequences
-for a new lists, policy, targets, labels, mapstyle, expressions, shapes, manifest or profile field:
+Read reference/document-writers.md when you change or add a writer, add a manifest key the client writes, or need
+to know what a file's writer reads the document as and refuses: it is each file's writer in turn.
+
+Consequences for a new lists, policy, targets, labels, mapstyle, expressions, shapes, manifest or profile field:
 
 - **A field the client model does not know survives every save**, with its comments, key order,
-  quoting, rule blocks and line endings. There is no erase-on-save hazard and no
-  `ReformatNotice` for this file.
+  quoting, rule blocks and line endings. There is no erase-on-save hazard.
 - **There is no writer leg and no `ConfigWriterTests` round-trip.** The parser leg (§3) is still
   what makes the client READ the field. What a save writes is pinned by
   `ListsConfigWriterTests` (Core) and, per field, by
@@ -366,9 +317,9 @@ That matters because the two real sector files are YAML where it counts:
 
 ```
 $ ls @sectorsrc/UK-Sector-File/package/systems/default
-labels.json  mapstyle.yaml  policy.json  targets.json
+'labels copy 2.json'  'labels copy.json'  labels.json  mapstyle.yaml  policy.json  targets.json
 $ ls @sectorsrc/UK-Sector-File/package/systems
-default  expressions.json  gatwick-smr  lgw  lhr  'lists copy.yaml'  lists.yaml  node  sco  shapes.json  smr  stc
+default  expressions.json  gatwick-smr  lgw  lhr  lists.yaml  node  sco  shapes.json  smr  stc
 ```
 
 `@sectorsrc/LFXX-Sector-File` is identical in shape: `mapstyle.yaml` per system, `lists.yaml` at
@@ -378,8 +329,8 @@ an expressions or a shapes file in either format. The four LFXX `labels.json` fi
 section holding bare row grids in place of `labels`): the Tags section opens them read-only and
 says so; they are converted by hand.
 
-Two files are JSON only: the manifest, because the loader reads `manifest.json` and nothing else,
-and a profile, which is a `.stp`. The read-only banner
+Three files are JSON only: the manifest, because the loader reads `manifest.json` and nothing else,
+a profile, which is a `.stp`, and the zones dataset, whose writer refuses a document that is not JSON. The read-only banner
 now means a file the document model cannot follow, or one that is not the shape its section expects
 (a shapes file whose `shapes` is no map, a labels file in the older layout); it names the reason,
 and a save reports the same.
@@ -428,7 +379,7 @@ Two shell contracts:
 | `IConfiguratorSaveable` | `Screens/Configurator/IConfiguratorSaveable.cs` | `IsDirty`, `DirtyChanged`, `TrySave()`, `SaveStatus` / `SaveFailed` (the footer shows them), `File`, `DiscardEdits()`, `ReloadIfStale()`. The shell saves every dirty section, not only the one on show. |
 | `IConfiguratorScopedSection` | `Screens/Configurator/IConfiguratorScopedSection.cs` | `SetSystem(AtmSystem?)`. System-scoped sections re-read on every switch and resolve the store's current instance by id; never cache the system. |
 
-Three rules every section follows (`src/NeoRadar/CLAUDE.md` § Configurator):
+Three rules every section follows (`@client .claude/rules/configurator-shell.md` § Saving):
 
 - **Nothing is live before a save.** Every section that edits a file holds a draft of the
   document (§7a) and never touches the store, Profiles among them.
@@ -448,257 +399,38 @@ Systems works on folders and Map Edit on the profile the radar holds; neither ha
 `ConfigWriteResult.Errors` and return `false`. Silent success on a refused write is the worst
 outcome, because the author believes the edit landed.
 
-### 7a · A lists field is one declaration
+### What a new piece of the Configurator owes the shell
 
-The Lists section has no hand-wired field. `Sections/ListFields.cs` declares every property of
-the lists schema once: `OfList` and `OfColumn` are `FieldDeclaration`s (the dotted path under the
-list or the column, a label, a `FieldKind`, a heading, and what the kind needs: a range, a
-vocabulary read from Core, what an absent key reads as), and `NotEdited` gives each property with
-no editor its reason. The view model builds one editor per declaration
-(`Fields/FieldEditors.Create`, one editor class per kind) and the view is generated from them.
-For a new lists field:
+Each line points at the `@client .claude/rules/configurator-*.md` file that states the rule; the rule is
+stated there once.
 
-1. Copy the changed `@schemas/systems/lists.schema.json` over
-   `tests/NeoRadar.Tests/Screens/Configurator/Fixtures/lists.schema.json`.
-   `ListFieldsSchemaTests` now fails, naming the property: a schema property is a declared field
-   or has a stated reason, or the build is red.
-2. Add one `FieldDeclaration` line (or one `NotEdited` reason). A vocabulary comes from the code
-   that parses the value, never a list typed here.
-3. Move the pinned counts in `ListFieldsSchemaTests` and `ListsOneEditOnTheRealFileTests`. The
-   second then sets the new field on the real UK file with no further code, and clears it if
-   the file writes it.
+- A new section: one `AddConfiguratorSection<TViewModel, TView>(id, label, icon, group, order,
+  scopeHint)` line in `ConfiguratorSections.AddConfiguratorSections`, the interfaces it implements
+  being what the shell asks of it (`@client configurator-shell.md` § Sections).
+- A new text in a view takes a `cfg_text_*` class; a moved view comes off the
+  `NoConfiguratorView_SetsAFontSizeOnATextItself_ButTheViewsStillToMove` table (`@client configurator-shell.md` § Look).
+- A new long column of generated rows wraps its row in `DeferredRow`; a test walking every editor
+  calls `DeferredRows.BuildAllIn(view)` first (`@client configurator-shell.md` § Sections).
+- A new operation that moves or rewrites package files outside its own section asks `UnsavedEdits`
+  (`@client configurator-shell.md` § Saving).
+- A new reference field needs only `FieldDeclaration.Names`; a section that gains a field the index
+  judges passes the index (`@client configurator-references.md`).
+- A new field kind gets clear-to-absent for nothing; one that edits several keys names them in
+  `SiblingKeys` (`@client configurator-fields.md`).
+- A new selector on a variant is a new probe in `Preview/VariantProbes` and a sentence in
+  `Preview/NotDrawnReasons` (`@client configurator-previews.md`).
+- A new engine use in the Configurator adds its row to
+  `ExpressionsTruthLineTests.NoConfiguratorFile_ButThePreviewsOwn_HoldsATagEngineOrAnEvaluator_OrAsksOneAboutAnAircraft`
+  (`@client configurator-previews.md`).
+- The golden switches for the Configurator's frozen tables: `NEORADAR_UPDATE_REFERENCE_INDEX_GOLDEN=1`,
+  `NEORADAR_UPDATE_PREVIEW_GOLDEN=1`, `NEORADAR_UPDATE_TARGET_PREVIEW_GOLDEN=1`,
+  `NEORADAR_UPDATE_LISTS_PREVIEW_GOLDEN=1` (each also named beside its test in the rules files).
 
-A value the client reads in a shape no kind holds yet is a new `FieldKind` plus its editor class
-and its template in `Fields/FieldEditorView.axaml`, never a special case in the section.
+### 7a · A field is one declaration
 
-**A policy field is one declaration too.** `Sections/PolicyFields.cs` declares the policy schema:
-`OfPolicy` (each field by its path from the top of the file), `OfKind(kind)` (the three maps keyed
-by safety net kind), `Tables` (`RowsDeclaration`s: a list of rows such as `safetyNets.stca.regions`,
-or a map of rows by key such as `runwayMonitoring.runways`) and `NotEdited`. The steps are the
-three above with `policy.schema.json`, `PolicyFieldsSchemaTests` and
-`PolicyOneEditOnTheRealFileTests`. Three things are particular to policy:
-
-- **A number carries its unit in its label and takes the schema's range.** `PolicyFieldsSchemaTests`
-  holds each declared minimum, maximum, exclusive minimum, whole-number flag and absent-key default
-  to the pinned schema, and fails a number whose key names a unit (`Nm`, `Ft`, `S`, `Kts`, `Fpm`,
-  `Deg`) that its label does not show.
-- **A section that is in force by being written is declared `FieldKind.Block`**
-  (`runwayMonitoring`, `runwayMonitoring.approachFunnel`, `safetyNets.stca` and its `cflLeave` and
-  `finalApproach`, `safetyNets.tct` and its `stateVector`). Clearing the last setting inside one
-  leaves the empty block, where any other map goes with its last key (`WrittenBlocks`). A new
-  section whose reader tells absent from empty must be declared so, or clearing its last setting
-  switches it off.
-- **A name list the reader spells only inside its own switch** is written once in `PolicyFields`
-  and held to the schema's `enum` and to what `SystemPolicies.Resolve` accepts
-  (`EveryNameOfEveryPicker_IsTakenByThePolicyReader`). Kinds, severities, attention states and
-  sound ids are read from Core.
-
-**A targets field is one declaration as well.** `Sections/TargetFields.cs` declares one variant
-(`OfVariant`, the path under the variant) for all four lists, and `NotEdited` the lists and
-containers. The steps are the three above with `targets.schema.json`, `TargetFieldsSchemaTests`
-and `TargetsOneEditOnTheRealFileTests` (which drives the new field on the UK `default` and `lhr`
-files with no further code). Three things are particular to targets:
-
-- **A number's absent-key default is held to the reader as well as the schema**
-  (`EveryNumberTheReaderGivesADefault_ShowsThatDefaultWhenAbsent`): add the new number to that
-  test's table from the code that draws it, and give it a unit in its label where the schema
-  gives it in metres or its key ends in `Ms`.
-- **A selector list the client reads empty as absent is declared `EmptyIsAbsent`** (and
-  `AbsentChoices` where absent is not every name), so no edit writes `[]` and an authored `[]`
-  shows what it reads as. `Sections/UnreachableVariants` must learn any new selector, or its
-  never-drawn marker lies.
-- **A nested block is a plain container unless the reader tells absent from empty.**
-  `primaryPlotSynthesis` and `historyTrailShape` are excused in `NotEdited` with that reason; a
-  block that is in force by being written is `FieldKind.Block`, as in policy.
-
-**A labels field is one declaration, in the owner it belongs to.** `Sections/LabelFields.cs`
-declares the file: `OfRoot` (the font scale and the altitude format), `OfSection` (a section's
-`tagPositioning`), `OfLabelVariant`, `OfStyleVariant`, and `NotEdited` for the lists and
-containers; a tag item's fields are `Sections/TagItemFields.Fields`, the one list a list column
-places under `tagItem` too. The steps are the three above with `labels.schema.json`,
-`LabelFieldsSchemaTests` (and `TagItemFieldsSchemaTests` for an item field) and
-`LabelsOneEditOnTheRealFileTests`, which drives the new field through the Tags section on the UK
-`default` and `lhr` files with no further code; `FieldClearedBackToAbsentTests` sets and clears
-it where no owner writes it. Particular to labels:
-
-- **The section is parts over one draft, each with its owner's path.** `LabelsDraft` is the
-  plumbing; `LabelOwnerFieldsViewModel` is one owner's editors; `TagVariantListViewModel` a
-  section's label variants or style variants; `TagGridViewModel` a label variant's rows and the
-  selected item. A new owner is a declaration list and one `LabelOwnerFieldsViewModel`.
-- **A tag item field reaches Lists as well**, unless `ListFields` filters it out; move
-  `ListColumnFieldsOrderTests` when it does.
-- **A new selector of a label or style variant is taught to `Sections/UnreachableVariants`**
-  (`VariantSelectors`), or the never-drawn marker lies.
-- **What an item reads in the preview is a sample, not a field**: it comes from
-  `OfferedName.Sample` and `.Options` and is never written (`Preview/TagPreviewSamples`).
-
-**A mapstyle field is one declaration too.** `Sections/MapStyleFields.cs` declares the file:
-`OfBlocks` (each field by its path from the top of the file), `OfLayer` (what one layer style
-holds, placed under `layerStyles` and the layer's source with `UnderKeys`), the four style lists
-`LineStyle`, `FillStyle`, `PointStyle` and `TextStyle` (declared once, placed under a layer and
-under `routeDraw`), `Pages` (the ten pages) and `NotEdited` (each property nothing reads, or a
-container, with its reason). The steps are the three above with `mapstyle.schema.json`,
-`MapStyleFieldsSchemaTests` and `MapStyleOneEditOnTheRealFileTests` (which sets and clears the new
-field on the eight UK files with no further code). Particular to mapstyle:
-
-- **A property is declared only if something reads it.** A text style key the layer label or the
-  route draw's fix label never reads is excused in `NotEdited`, and
-  `ExcusedLeaves_AreTextStylePropertiesNoReaderOfTheirOwnerReads_AndAMapLayersSprite` holds each
-  excuse to the reader; add the reader's key list beside `TextReadByALayer` when one changes.
-- **A block the reader tells absent from empty is `FieldKind.Block`** (`rdf`, `stcaPairLine`, a
-  layer's `pointStyle`), as in policy; `BlocksInForceByBeingWritten_AreTheOnesTheReaderTellsFromAbsent`
-  holds the list.
-- **A colour takes no rule, and its alpha is kept**: an authored four-part colour stays as
-  written when another field is edited or its swatch changes, and a new colour is three whole
-  numbers (`MapStyleColourAlphaTests`).
-- **Opening a page writes nothing**; a style appears with its first setting and leaves with its
-  last (`MapsSectionTests`).
-
-**An expressions field is one declaration too.** `Sections/ExpressionFields.cs` declares the file:
-`Condition` (the condition a named expression is: the whole value under its name, placed with
-`OfExpression(name)`), `OfRule` (a rule's `value` and `expression`, by their path under the rule)
-and `NotEdited` (the schema link and the three containers). The steps are the three above with
-`expressions.schema.json`, `ExpressionFieldsSchemaTests` and `ExpressionsOneEditOnTheRealFileTests`.
-Particular to expressions:
-
-- **A new operator, join or condition form is not a field.** It is taught to `ExpressionParser`
-  and to `Fields/ConditionNode` (`Operators`, `Joins`, the forms `Read` and `Write` know), which
-  every section's condition editor shares, and `expressions-condition-characterisation.txt` gains
-  its row (`NEORADAR_UPDATE_EXPRESSIONS_GOLDEN=1`): what the section and the bare node show, keep
-  and write for it must be the same.
-- **Both keys of a rule are required by the schema, so neither is cleared**: an emptied `value`
-  is written `""` (`SingleEntry`, `Required`) and a rule left naming nothing is written `[]`
-  (`FieldKind.References`). A new rule key the schema does not require is declared without
-  `Required` and then clears to absent like any field.
-- **An entry of either map is added, removed and renamed by the section, not by a field**: a new
-  expression is `["AND", []]`, which the section does not save until it holds a condition; the
-  last entry removed leaves `{}`, because the schema requires both maps.
-- **Every name comes from `IExpressionVocabulary`**: the key picker of a comparison and the
-  catalogue are `KeyReferences`, so a new catalog key or a plugin-exported name is offered with no
-  edit here.
-
-**A shapes field is one declaration too.** `Sections/ShapeFields.cs` declares the file: `OfShape`
-(a shape's six fields, by their path under the shape), `Kind` (the picker of which of an element's
-six keys is written), `OfElement` (`Kind` and an element's nineteen properties, by their path under
-the element) and `NotEdited` (the schema link and the five containers). The steps are the three
-above with `shapes.schema.json`, `ShapeFieldsSchemaTests` and `ShapesOneEditOnTheRealFileTests`
-(which sets and clears the new field on every shape or element of the UK file, in JSON and in
-YAML, with no further code). Particular to shapes:
-
-- **An element field shows for the kinds that read it.** Its `AppliesTo` asks `FieldContext.Variant`,
-  which is the key the element's kind is written as. A field `ShapeCompiler` does not read for a
-  kind is not shown for it (a reference shows its shape, offset, scale and rotate and nothing else).
-- **A new kind of element is a `FieldAlternative` of `ShapeFields.Kind`**: its key, what it is first
-  written with (nothing invented: an empty list or map, and `[0, 0]` for a point), the kinds whose
-  value it takes as it stands, and the keys only some kinds read (`AlsoReads`), which leave when a
-  kind that does not read them is picked. It needs its geometry fields, its arm in `ShapeCompiler`
-  and its rule in `ShapesConfigWriter.Validate` as well.
-- **What a field shows for an absent key is what the client draws for one**: add its row to
-  `WhatAFieldShowsForAnAbsentKey_IsWhatTheClientDrawsForOne`, which writes that value into a shape
-  and asks `ShapeCompiler` for the same primitives. A number takes the schema's range and nothing
-  narrower.
-- **Two numbers are `FieldKind.Point` and a list of them `FieldKind.PointList`**, typed one pair a
-  line and written one `[x, y]` a line where the list is new to the file, in the file's own layout
-  where it is not.
-- **The section's table gains the row**: `shapes-characterisation.txt` holds what every field of a
-  shape and of each kind offers and writes (`NEORADAR_UPDATE_SHAPES_GOLDEN=1`).
-- **A property that names a shape offers the shapes being edited.** `ConfiguratorVocabulary.ShapeNames`
-  given the field's context reads `EditedPackageShapes`, which the Shapes section reports to, so a
-  shape is offered to a target variant before it is saved; a new shape-naming property takes that
-  as its `Choices`.
-
-**A zones property is one declaration too.** `Sections/ZoneFields.cs` declares the dataset:
-`OfZone` (the four properties of a zone the client reads, by their path under the zone:
-`properties.tags`, `.id`, `.floor`, `.ceiling`) and `NotEdited` (every other schema property with
-its reason: the file's `type`, `name`, `crs` and `bbox`, the list of features, a feature's `type`,
-`id`, `bbox`, `geometry` and `properties` map). The steps are the three above with
-`@schemas/datasets/zones.schema.json` (pinned as `Fixtures/zones.schema.json`, held to the
-repository's by `ZonesSchemaPinTests`), `ZoneFieldsSchemaTests` and
-`ZonesOneEditOnTheRealFileTests` (the UK `zones.geojson`, pinned beside the system files).
-Particular to zones:
-
-- **Geometry is never edited and no zone is added, removed or moved.** A new property of a zone
-  is a declaration under `properties`; a property of the geometry, of the feature or of the file
-  is excused in `NotEdited` and kept byte for byte, as is any property the schema does not name
-  (a zones file listed in `mapLayers` carries its layer styling there).
-- **The parser leg is two files.** `Package/ZonesDataset.cs` (`ZoneProperties`) deserialises the
-  property and `Sectors/ZoneIndex.cs` decides what a zone is built with; a property only the
-  first reads is read and ignored.
-- **The writer follows the loader, the section follows the schema.** `ZonesDatasetWriter` refuses
-  by name what `ZoneIndex` would skip a zone for in its properties (no tags, a tag holding a
-  space, a ceiling below the floor) and a bound the loader cannot read; it does not refuse a tag
-  off the schema's pattern or a tag listed twice, which the loader takes. The tags editor is the
-  stricter half (`WordPattern`, `DistinctWords`, `Required`), so no edit made in the section puts
-  one in the file. A new rule the loader enforces goes in the writer; one only the schema states
-  goes in the declaration.
-- **A tag is offered from where it is read.** The tags box offers the tags the draft already uses
-  and the zone tags the stored systems' resolved policies read
-  (`ConfiguratorVocabulary.ZoneTagsThePoliciesRead`). A new policy key that names a zone tag adds
-  its line there, or the tag is not offered.
-- **A package with no zones file is not given one**: the section says so and the writer refuses.
-
-**A manifest property is one declaration too.** `Sections/ManifestFields.cs` declares the file:
-`OfManifest` (name, version, description and the six altitude format fields, by their path from the
-top of the file), `FontRows` (the fonts as rows of alias and file), `OfLayer` (the 26 fields of a
-map layer, by their path under the layer; under `defaultStyle` they are `MapStyleFields.OfLayer`,
-because the manifest's default style and a mapstyle's layer style are merged and read by one
-reader) and `NotEdited` (every other schema property with its reason). The steps are the three
-above with `@schemas/package/manifest.schema.json` (pinned as `Fixtures/manifest.schema.json`, held
-to the repository's by `ManifestSchemaPinTests`), `ManifestFieldsSchemaTests` and
-`ManifestOneEditOnTheRealFileTests` (the manifests of the built UK and LFXX packages, pinned beside
-the system files). Particular to the manifest:
-
-- **A key the client writes while the package is in use is never a field.** `lastActiveProfile`,
-  `plugins`, `ignorePaths`, `remoteSource`, `installedFiles` and `lastOpened` are
-  `ManifestFields.WrittenByTheClient`: excused in `NotEdited` as the client's where the schema
-  names them, and a save takes each from the file as it is on disk then, because the client
-  patches them under an open Configurator. A new key the client writes at run time is added to
-  that list and written through `Package/ManifestKeyPatch` (one key set in the file's own text),
-  never by serialising `PackageManifest` over the file.
-- **Identity is kept, not edited.** `id`, `namespace` and `createdAt` have no editor: the local
-  profiles folder and the server scope follow the namespace.
-- **The writer follows the loader's validation, and adds the layer rules the validator never
-  reaches.** `ManifestWriter.Validate` refuses, in the model's own words, a manifest with no id,
-  name, version, namespace or createdAt and a centerPoint that is not two numbers, and by its
-  place and name a layer with no name, no source or a type other than geojson. A new rule the
-  loader enforces goes there.
-- **A layer field under `defaultStyle` is a mapstyle layer field.** Declare it in
-  `MapStyleFields.OfLayer` and it reaches the manifest with no second declaration, unless the
-  manifest schema does not name it (`textWeight`, `textSharpness`), in which case
-  `ManifestFields.InTheManifestSchema` leaves it out until the schema does.
-- **A new layer and a new font are written with the keys the schema requires and nothing chosen
-  for the author** (`ManifestFields.NewLayer`, `RowsDeclaration.NewRow`); the writer refuses a
-  layer until it has a name and a source.
-- **The layers being edited reach Map Style before a save** through
-  `Vocabulary/EditedPackageManifest`, which the Manifest section reports to. A new section that
-  lists or offers the manifest's layers reads it, and falls back to the stored manifest.
-
-**A profile property is one declaration too.** `Sections/ProfileFields.cs` declares the file:
-`OfProfile` (the seventeen properties the section edits, by their path from the top of the file)
-and `NotEdited` (every other schema property with its reason). The steps are the three above with
-`@schemas/profile.schema.json` (pinned as `Fixtures/profile.schema.json`, held to the repository's
-by `ProfileSchemaPinTests`), `ProfileFieldsSchemaTests` and `ProfilesOneEditOnTheRealFileTests`
-(the five egxx profiles pinned in `tests/NeoRadar.Core.Tests/Package/Documents/PinnedProfiles`).
-Particular to a profile:
-
-- **What the controller sets from the radar is never a field.** `map.items` (with each row's
-  `show`, which Map Edit sets to force an automatic item off through
-  `IProfileStore.SetItemOverride`), `map.hideTags` and `map.showTags` (Map Edit's map data
-  switches, `IProfileStore.SetTagShown`), the three filter switches, the speed vector, the hidden
-  tag groups and the related profiles are excused in `NotEdited` as the controller's and kept as written. A new property the radar's own menus set
-  is excused the same way, and must be a property of `Profile`, copied in `ProfileCopy` and
-  compared in `ProfileFileDifference`, or the radar's save never writes it (§4).
-- **A new property an author sets is declared, and still needs the model property** for the
-  client to read it and for the radar's save to keep it.
-- **A profile has two files.** The draft is of the file the stores read (the local copy, else the
-  package file) and a save writes its bytes to the target picked. The writer's refusals are in
-  `ProfileStorageService.Check`; a new rule the loader enforces goes there.
-- **A coordinate is declared `EveryDigit`**, so its box shows every digit the file writes; a number
-  with a few decimals is not.
-- **A property required by the schema all the way down is declared `Required`**
-  (`AFieldIsRequired_ExactlyWhenTheSchemaRequiresItAndEveryMapAboveIt`); every other one clears
-  to absent. The four edges of the window area clear one at a time and the writer refuses a save
-  that leaves only some.
+Read reference/configurator-fields.md when you declare the field in its Configurator section: the three steps
+for a lists field, then what is particular to policy, targets, labels, mapstyle, expressions, shapes, zones, the
+manifest and a profile.
 
 ---
 
@@ -746,4 +478,7 @@ Particular to a profile:
       model property added so the radar's save keeps it, `ProfileFieldsSchemaTests` and
       `ProfilesOneEditOnTheRealFileTests` green; a rule the loader enforces added to
       `ProfileStorageService.Check`.
+- [ ] A new kind of package-check finding is an `AuthoringFindingKind` member and its check in
+      `Package/Authoring/`, with a bug-named test in `PackageAuthoringCheckTests`
+      (`CheckPackageAuthoringTests`, `PackageCheckWiringTests`).
 - [ ] Rollout path written, all five lines, checked against both live sector files.

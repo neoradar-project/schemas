@@ -144,7 +144,7 @@ These hold for code, comments, docs, UI copy and commit messages in every repo; 
   `C1-D7`, `B110`, `G-TOOL-04`). It states what the code does in terms that stay true once the plan is
   done; where a pointer helps, it names a test or a method.
 - Names carry the meaning: a loop or action is verb first, data is a noun, an event is past tense.
-- A comment MAY state a thread, a lock, a unit, a sentinel or an ordering, and must be true: re-read the
+- A comment MAY state a thread, a lock or gate, a unit, a sentinel or an ordering, and must be true: re-read the
   code before writing or keeping one.
 This block is identical in all six repos.
 <!-- /shared:writing-rules -->

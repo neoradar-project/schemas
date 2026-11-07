@@ -1,6 +1,6 @@
 ---
 name: cross-repo-contract-change
-description: Land one contract change in lockstep across the five NeoRadar repos (@client, @server, @hub, @cli, @schemas) in the right order. Use when the user says "keep the repos in lockstep", "what else has to change", "I only have the server checkout", "cross-repo change", "which repos does this touch", "the sibling repo is missing", "mirror this on the client", or is changing a session frame, a panel route, the server-dataset artifact or a package schema from inside one repo. Covers the repo id registry, the four lockstep pairs, which repos actually move for which lane, the order, and the per-repo verify command.
+description: Land one contract change in lockstep across @client, @server, @hub, @cli and @schemas. Use for "keep the repos in lockstep", "which repos does this touch", "what else has to change", "I only have the server checkout", "the sibling repo is missing", "mirror this on the client", or a session frame, panel route, server-dataset or package schema change made from one repo.
 ---
 
 > **Shared skill.** Copied verbatim into `@client`, `@server`, `@hub`, `@cli`, `@schemas`. Editing one copy alone is a break, not a cleanup.
@@ -9,7 +9,7 @@ description: Land one contract change in lockstep across the five NeoRadar repos
 Four separate contracts run between these repos, and each one has a different blast radius. Pick the lane first, then work the order. Use `@id` tokens, never absolute paths.
 
 Comment style for any code you touch: the target repo's own `CLAUDE.md`, not this one. The heading
-is not named the same in each (`@client` § Code style and comments, `@server` § Style, `@hub` and
+is not named the same in each (`@client` § Writing rules and `.claude/rules/csharp-style.md`, `@server` `CLAUDE.md` § Go style, `@hub` and
 `@cli` state it inline), so read the file rather than jumping to a section.
 
 ## 1 · The registry is data, not guesswork
@@ -53,7 +53,7 @@ Straight from `lockstepPairs` in the registry, and these are hard pairs, not con
 @server/internal/trajectory/testdata/copx-matcher-cases.json  ↔  @client/tests/NeoRadar.Core.Tests/FutureOwnership/Copx/copx-matcher-cases.json
 ```
 
-The 38 vector files are byte-identical LF on both sides, and `diff -r` between the two directories must report only `vectors.sha256` (client-side only). The vocabulary copy sits outside `Vectors/`, so that `diff -r` never sees it; check it with its own `diff`. A one-sided edit is a contract break.
+The 42 vector files are byte-identical LF on both sides, and `diff -r` between the two directories must report only `vectors.sha256` (client-side only). The vocabulary copy sits outside `Vectors/`, so that `diff -r` never sees it; check it with its own `diff`. A one-sided edit is a contract break.
 
 Third copy to remember, NOT in `lockstepPairs`: `@hub/src/lib/panel/types.ts` hand-mirrors the panel wire in TypeScript. It is a real third transcription of some lane-A types; `contract.AirportConfig` is reused by `@server/internal/vaccconfig/http_airports.go`, so `AirportConfig` exists in Go, in C# as `AirportConfigDto`, and in TS as `AirportConfig`. Identifier names differ across all three; **the JSON key is the contract.**
 
@@ -68,7 +68,7 @@ Third copy to remember, NOT in `lockstepPairs`: `@hub/src/lib/panel/types.ts` ha
    `go test ./internal/contract -run TestVocabularyManifestIsCurrent -update-vocabulary`
    `TestVocabularyManifestIsCurrent` fails the build while `vocabulary.json` is stale.
 3. **`@client`**: mirror the DTO, register **every** new type on `ServerContractJsonContext` (source-gen only, no reflection fallback), dispatch or send it, copy the vector in **identical bytes**, add the C# assertion. Full procedure and the traps are in the `serverlink-wire-change` skill; do not improvise the client half from this file.
-4. **`@client`**: copy the regenerated `@server/internal/contract/vocabulary.json` byte for byte to `@client/tests/NeoRadar.Core.Tests/ServerLink/vocabulary.json`, then refresh the hash manifest: `pwsh .github/scripts/check-golden-vectors.ps1 -Update`, then re-run it with no switch. The manifest hashes the 38 vectors plus a 39th line for `../vocabulary.json`, so a mirrored copy without `-Update` fails the gate.
+4. **`@client`**: copy the regenerated `@server/internal/contract/vocabulary.json` byte for byte to `@client/tests/NeoRadar.Core.Tests/ServerLink/vocabulary.json`, then refresh the hash manifest: `pwsh .github/scripts/check-golden-vectors.ps1 -Update`, then re-run it with no switch. The manifest hashes the 42 vectors plus a 43rd line for `../vocabulary.json`, so a mirrored copy without `-Update` fails the gate.
 5. **`@hub`**: only if the type also appears on a `/v1/panel` route. Update `@hub/src/lib/panel/types.ts` and whatever renders it.
 6. Run `WireVocabularyManifestTests` on the client. It reads the committed copy and checks the contract version, features, frame types, declared error codes, enum members and enum openness against the C# side, so no part of this is by eye. Only `CommittedManifest_IsByteIdenticalToTheServerRepoCopy` may skip, and only when `@server` does not resolve.
 
@@ -88,7 +88,7 @@ Third copy to remember, NOT in `lockstepPairs`: `@hub/src/lib/panel/types.ts` ha
 
 1. **`@cli`**: the writer.
 2. **`@client`**: the reader, under `src/NeoRadar.Core/Package/`.
-3. **`@schemas`**: update `package/manifest.schema.json`, `profile.schema.json`, `systems/*.schema.json` or `datasets/*.schema.json`. Only part of this is tested: `@client`'s `SystemsSchemaDriftTests` and `SchemaVocabularyDriftTests` (`tests/NeoRadar.Core.Tests/Package/`) compare six systems schemas, the profile schema and the zones and radars dataset schemas against the C# models and vocabularies. `package/manifest.schema.json`, `systems/mapstyle.schema.json` and the other dataset schemas have no such test, and `@cli` only writes a `$schema` URL, so there nothing fails if you forget; that is exactly why it needs to be on the checklist.
+3. **`@schemas`**: update `package/manifest.schema.json`, `profile.schema.json`, `systems/*.schema.json` or `datasets/*.schema.json`. Only part of this is tested. `@client`'s `SystemsSchemaDriftTests` and `SchemaVocabularyDriftTests` (`tests/NeoRadar.Core.Tests/Package/`) compare six systems schemas, the profile schema and the zones and radars dataset schemas against the C# models and vocabularies; `LayerHeaderSchemaTests` does the `map-layer` header; and each Configurator `<X>FieldsSchemaTests` (`tests/NeoRadar.Tests/Screens/Configurator/`) holds its declared fields against a schema copy pinned in Fixtures. The `areas`, `cas`, `msaw`, `path-rules` and `stca-runways` dataset schemas have no such test, and `@cli` only writes a `$schema` URL, so there nothing fails if you forget; that is exactly why it needs to be on the checklist.
 
 ## 5 · Verify, per repo
 
