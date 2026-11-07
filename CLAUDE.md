@@ -1,36 +1,36 @@
 # CLAUDE.md
 
+<!-- shared:constellation -->
 ## The NeoRadar constellation
 
-Six repos, developed together. Cross-repo references use `@id` tokens, never paths:
-`@client` (C# radar client), `@server` (Go compute tier), `@hub` (JS management dashboard),
-`@cli` (JS package and dataset build pipeline), `@schemas` (shared JSON Schemas), `@pluginsdk` (C#
-plugin SDK, vendored into `@client` at `extern/NeoRadar.PluginSdk`). Data ids:
-`@packages` (built packages), `@sectorsrc` (CLI source sector files), `@data` (runtime data root).
+Six repos, developed together. Cross-repo references use `@id` tokens, never paths: `@client` (C# radar
+client), `@server` (Go compute tier), `@hub` (JS management dashboard), `@cli` (JS package and dataset
+build pipeline), `@schemas` (shared JSON Schemas), `@pluginsdk` (C# plugin SDK, vendored into `@client` at
+`extern/NeoRadar.PluginSdk`). Data: `@packages` (built packages), `@sectorsrc` (CLI source sector files),
+`@data` (runtime data root). An id resolves through the `NEORADAR_<ID>_DIR` env var, then
+`neoradar.repos.local.json` at the repo root (gitignored, per-machine), then an upward scan using the
+`defaultSubpaths` in `neoradar.repos.json`. If it does not resolve, say so and work from this repo alone;
+never guess a path. A sibling repo is normally absent in CI, and that is not an error.
 
-Resolve an id in this order: the `NEORADAR_<ID>_DIR` env var; then `neoradar.repos.local.json`
-at this repo root (gitignored, per-machine); then an upward scan using the `defaultSubpaths` in
-`neoradar.repos.json`. If an id does not resolve, say so and work from this repo alone. Never
-guess a path. A sibling repo is normally ABSENT in CI, which is the expected case, not an error.
-
-These pairs move in LOCKSTEP. A one-sided edit is a break, not a cleanup:
+These pairs move in LOCKSTEP; a one-sided edit is a break, not a cleanup:
 - `@server/internal/contract/` and `@client/src/NeoRadar.Core/ServerLink/Contract/`
 - `@server/internal/contract/testdata/*.json` and `@client/tests/NeoRadar.Core.Tests/ServerLink/Vectors/*.json`
 - `@server/internal/contract/vocabulary.json` and `@client/tests/NeoRadar.Core.Tests/ServerLink/vocabulary.json`
-- `@server/internal/trajectory/testdata/copx-matcher-cases.json` and `@client/tests/NeoRadar.Core.Tests/FutureOwnership/Copx/copx-matcher-cases.json`
+- `@server/internal/trajectory/testdata/copx-matcher-cases.json` and
+  `@client/tests/NeoRadar.Core.Tests/FutureOwnership/Copx/copx-matcher-cases.json`
 
-Stance: alpha. Do not write backwards-compatibility or fallback layers unless asked, especially
-in ServerLink. Document any process change and how it rolls out to other sector files. The
-infrastructure serves thousands of users, so handle failure paths and never swallow an error.
-Never add `Co-Authored-By` or any AI attribution to a commit or PR.
-
-This block is identical in all six repos. Editing one copy alone is a break.
+Alpha: no backwards-compatibility or fallback layers unless asked, especially in ServerLink. Every process
+or data-format change states how it rolls out to the existing sector files. Thousands of controllers use
+this, so failure paths are handled and logged, never swallowed. Commits are signed (never `--no-verify`,
+never bypass signing), made only when asked and never pushed unless asked; no commit or PR carries
+`Co-Authored-By` or any other AI attribution. This block is identical in all six repos.
+<!-- /shared:constellation -->
 
 ## What this repo is
 
 The JSON Schemas for the NeoRadar package format: `package/manifest.schema.json`,
-`profile.schema.json`, `systems/{expressions,labels,lists,mapstyle,shapes,targets}.schema.json`,
-`injector/scenario.schema.json`, and the sector source's `data/` files. No
+`profile.schema.json`, `systems/{expressions,labels,lists,mapstyle,policy,shapes,targets}.schema.json`,
+the `datasets/` files, `injector/scenario.schema.json`, and the sector source's `data/` files. No
 code, no build, no tests. Consumers: source sector files (`@sectorsrc`) reference them by raw
 URL on `main` (`.../schemas/refs/heads/main/systems/targets.schema.json`), so authors' editors
 validate live; `@cli` builds those files into packages; `@client` parses the same files at load
@@ -51,7 +51,8 @@ model just silently fails to appear in authors' completion. That is how `textWei
 `lists.schema.json`: the tag-item shape is duplicated between those two files and only one was
 updated.
 
-`@client`'s `SystemsSchemaDriftTests` is the guard. It resolves this repo through
+`@client`'s `SystemsSchemaDriftTests` is the guard for property names; `SchemaVocabularyDriftTests` is the
+enum half (below). It resolves this repo through
 `ConstellationRepos`, skips when absent (the normal CI case), and asserts that each schema's
 property names and the matching models' `[JsonPropertyName]` names are the same SET - both
 directions, so a schema advertising something the parser ignores fails too. It checks presence
@@ -69,21 +70,19 @@ checked out together, which is the intent: say in the change what the Configurat
 
 ## The expression catalogue mirror
 
-`@client`'s `ExpressionCatalog` (`Utils/Expressions/ExpressionCatalog.cs`, exactly 306
-entries) is THE whitelist for a tag `itemName`, a list column and an `&ref`. Every key is mirrored
-THREE times here, as a `const` or `enum` member in `expressions.schema.json`, `labels.schema.json`
-and `lists.schema.json`, and `SystemsSchemaDriftTests` does not check enums, so a key added to the
-catalogue and not to all three files is invisible to authors and to CI alike. Check by set
-difference, not by eye: collect every `enum` member and `const` string in each file and subtract the
-catalogue's `Add("...")` names; the result must be empty in all three. The 2026-09 coordination
-work added `sectorIndicator`, `minutesToSectorExit`, `nextControllerIsManual`, `sectorEntryLevel`,
-`sectorExitLevel`, `sectorEntryLevelSource`, `sectorExitLevelSource`, `coordinatedLevel` and
-`temporaryAltitude` this way; all three files list all 285 that a row of theirs can read. Two
-groups are the exceptions. The seven `session` keys (`myPosition`, `onlinePositions`,
-`arrivalRunways`, `departureRunways`, `aupAreas`, `activeAreas`, `preActiveAreas`): only a map
-item's `showWhen` reads them, never a label or a list, so they are in `expressions.schema.json`
-alone, where an expression a `showWhen` names is written. The fourteen `area` keys (`areaName`
-to `areaAupId`): only an `area` list's row reads them, so they are in `lists.schema.json` and
+`@client`'s `ExpressionCatalog` (`Utils/Expressions/ExpressionCatalog.cs`) is THE whitelist for a tag
+`itemName`, a list column and an `&ref`. Every aircraft key is mirrored THREE times here, as a `const` or
+`enum` member in `expressions.schema.json`, `labels.schema.json` and `lists.schema.json`, and
+`SystemsSchemaDriftTests` does not check enums. `SchemaVocabularyDriftTests` checks that each aircraft key
+is offered by all three, each `session` key by `expressions.schema.json`, and each click action by the
+schemas that take one (`EveryAircraftExpression_IsOfferedByTheSchema`,
+`EverySessionExpression_IsOfferedByTheExpressionsSchema`, `EveryClickAction_IsOfferedByTheSchema`). It does
+not check the reverse direction for keys, nor the `area` and `net` keys, so check those by set difference,
+not by eye: collect every `enum` member and `const` string in each file and subtract the catalogue's
+`Add("...")` names; the result must be empty. Two groups are the exceptions to "all three". The `session`
+keys: only a map item's `showWhen` reads them, never a label or a list, so they are in
+`expressions.schema.json` alone, where an expression a `showWhen` names is written. The `area` and `net`
+keys: only an `area` or `net` list's row reads them, so they are in `lists.schema.json` and
 `expressions.schema.json` and not in `labels.schema.json`.
 
 ## datasets/path-rules.schema.json
@@ -130,3 +129,22 @@ every sector-file author. A schema change IS a package-format change: it needs t
 `@cli` change, the matching `@client` parser change, and a written rollout path for existing
 sector files. Widening (a new optional property) is safe. Narrowing, renaming, or making a
 property required breaks live authors and must never land alone.
+
+<!-- shared:writing-rules -->
+## Writing rules
+
+These hold for code, comments, docs, UI copy and commit messages in every repo; the hook in
+`.claude/hooks/style-check.sh` flags the first four on each edit.
+- UK English.
+- No em dashes anywhere. Use a period, semicolon, colon or middot.
+- C#: explicit types, never `var`.
+- A comment says only what the code cannot, in at most two lines. It never restates the code, narrates
+  history or explains a mechanism in prose; if it needs more room, the name is wrong.
+- A comment never cites a roadmap, phase, wave, track, card, backlog, plan or decision id (`P8`, `Wave 3`,
+  `C1-D7`, `B110`, `G-TOOL-04`). It states what the code does in terms that stay true once the plan is
+  done; where a pointer helps, it names a test or a method.
+- Names carry the meaning: a loop or action is verb first, data is a noun, an event is past tense.
+- A comment MAY state a thread, a lock, a unit, a sentinel or an ordering, and must be true: re-read the
+  code before writing or keeping one.
+This block is identical in all six repos.
+<!-- /shared:writing-rules -->
