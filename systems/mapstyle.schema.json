@@ -528,12 +528,12 @@
         "labelDistance": {
           "type": "boolean",
           "default": true,
-          "description": "Show the distance in nautical miles from the aircraft to the vector's end, the point it snapped to or the cursor: one decimal below 99.95, else whole. The prediction tool's distance is the track it draws. TopSky's Vector_AHDG_Label_Dist."
+          "description": "Show the distance in nautical miles from the aircraft to the vector's end, the point it snapped to or the cursor: one decimal below 99.95, else whole. The prediction tool's distance is the track it draws. Shown unless set false; that default is NeoRadar's own, not TopSky's (it corresponds to Vector_AHDG_Label_Dist)."
         },
         "labelTime": {
           "type": "boolean",
           "default": true,
-          "description": "Show the minutes to go over that distance at the aircraft's ground speed, as 7'. Not shown while the ground speed is 0. TopSky's Vector_AHDG_Label_Time."
+          "description": "Show the minutes to go over that distance at the aircraft's ground speed, as 7'. Not shown while the ground speed is 0. Shown unless set false; that default is NeoRadar's own, not TopSky's (it corresponds to Vector_AHDG_Label_Time)."
         }
       },
       "additionalProperties": false
