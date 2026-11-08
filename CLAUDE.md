@@ -95,6 +95,18 @@ re-ranged in the server's table is changed here and in `@cli/src/definitions/pat
 copy, held equal as JSON by `@cli`'s `path-rules.test.ts` when both are checked out). The cross-row bounds depend on the
 deployment's own values and stay the server's check. Not a package file: the client never reads it.
 
+## datasets/runway-preferences.schema.json
+
+The vAcc's runway preferences (`runwayPreferences.json` in a package environment, carried in
+`server-dataset.json` under `runwayPreferences`): per airport, its IANA zone and its configurations in
+order, each `fixed` (one runway set) or `alternates` (a cycle of runway sets from an epoch), with an
+optional `when` whose keys are the rows of `@server/internal/runwayprefs`' condition table. Two copies of one
+vocabulary: a condition added, renamed or re-ranged in the server's table is changed here and in
+`@cli/src/definitions/runway-preferences.schema.json` (a copy, held equal as JSON by `@cli`'s
+`runway-preferences.test.ts` when both are checked out). A name repeated within an airport, a zone that
+does not load, a `localTime` whose `from` equals its `to` and an epoch that is no real date stay the
+server's check. Not a package file: the client never reads it.
+
 ## data/holds.schema.json and data/altimetry.schema.json
 
 The vAcc's reference data: `data/holds.geojson` and `data/altimetry.json` in the vAcc's sector

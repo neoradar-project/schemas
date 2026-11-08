@@ -1,0 +1,272 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NeoRadar runwayPreferences document",
+  "description": "The vAcc's runway preferences: what the server picks at an airport where no controller and no published layer names a runway on either side. Authored as runwayPreferences.json beside the package's config.json; `neoradar-cli convert` checks it against this schema and carries it in server-dataset.json under `runwayPreferences`. No file, an airport not listed, or no configuration that holds means the server picks from the wind alone. An airport's configurations are tried in order and the first whose `when` holds wins; an absent `when` always holds. The server refuses a document whole, naming the key. Not expressible here and checked by the server: a configuration name repeated within one airport; a timezone that is not a loadable IANA zone; a localTime whose `from` equals its `to`; an epoch that is not a real calendar date.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "vacc",
+    "airports"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Editor hint only. `neoradar-cli convert` drops it, because the server refuses unknown keys."
+    },
+    "vacc": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The vAcc this document is for: the package manifest namespace, any case. The server and the convert refuse any other."
+    },
+    "description": {
+      "type": "string",
+      "description": "Free text for the author."
+    },
+    "airports": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Preferences per airport, keyed by 4-letter upper-case ICAO code.",
+      "patternProperties": {
+        "^[A-Z]{4}$": {
+          "$ref": "#/$defs/airport"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "airport": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "One airport's configurations, tried in order; the first whose `when` holds is picked.",
+      "required": [
+        "timezone",
+        "configurations"
+      ],
+      "properties": {
+        "timezone": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The airport's IANA time zone (Europe/London), which every localTime, days and changeAt is read in."
+        },
+        "description": {
+          "type": "string",
+          "description": "Free text for the author, and where a file marks a value its source does not give."
+        },
+        "configurations": {
+          "type": "array",
+          "minItems": 1,
+          "description": "The airport's configurations in order of preference.",
+          "items": {
+            "$ref": "#/$defs/configuration"
+          }
+        }
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "One runway configuration. A fixed one names its runway set in `runways`; an alternating one names a cycle of runway sets in `alternation`. Each refuses the other's block.",
+      "required": [
+        "name",
+        "mode"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 24,
+          "description": "The name the wire and the client show, unique within its airport. 1 to 24 characters."
+        },
+        "description": {
+          "type": "string",
+          "description": "Free text for the author."
+        },
+        "when": {
+          "$ref": "#/$defs/when"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "fixed",
+            "alternates"
+          ],
+          "description": "`fixed`: the runway set in `runways` always. `alternates`: the runway set of the phase of `alternation` in effect."
+        },
+        "runways": {
+          "$ref": "#/$defs/runwaySet"
+        },
+        "alternation": {
+          "$ref": "#/$defs/alternation"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["mode"],
+            "properties": { "mode": { "const": "fixed" } }
+          },
+          "then": {
+            "required": ["runways"],
+            "properties": { "runways": true, "alternation": false }
+          }
+        },
+        {
+          "if": {
+            "required": ["mode"],
+            "properties": { "mode": { "const": "alternates" } }
+          },
+          "then": {
+            "required": ["alternation"],
+            "properties": { "alternation": true, "runways": false }
+          }
+        }
+      ]
+    },
+    "runwaySet": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The runways in use, at least one on either side. A side left empty is no runways there.",
+      "required": [
+        "departure",
+        "arrival"
+      ],
+      "properties": {
+        "departure": {
+          "type": "array",
+          "uniqueItems": true,
+          "description": "Departure runways, by designator.",
+          "items": {
+            "$ref": "#/$defs/designator"
+          }
+        },
+        "arrival": {
+          "type": "array",
+          "uniqueItems": true,
+          "description": "Arrival runways, by designator, the preferred first.",
+          "items": {
+            "$ref": "#/$defs/designator"
+          }
+        }
+      },
+      "anyOf": [
+        {
+          "properties": { "departure": { "type": "array", "minItems": 1 } }
+        },
+        {
+          "properties": { "arrival": { "type": "array", "minItems": 1 } }
+        }
+      ]
+    },
+    "designator": {
+      "type": "string",
+      "pattern": "^(0[1-9]|[12][0-9]|3[0-6])[LCR]?$",
+      "description": "A runway designator: 01 to 36, then L, C or R where the airport has parallels (27L, 09, 18C)."
+    },
+    "alternation": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A cycle of runway sets. The phase in effect is floor(civil days from epoch to the cycle date / periodDays) mod the number of phases, counting back before the epoch; the cycle date is the local date, or the day before when the local time is before changeAt.",
+      "required": [
+        "periodDays",
+        "epoch",
+        "phases"
+      ],
+      "properties": {
+        "periodDays": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "How long each phase lasts. Unit: civil days."
+        },
+        "epoch": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "The local date the first phase starts, YYYY-MM-DD."
+        },
+        "changeAt": {
+          "type": "string",
+          "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+          "description": "The local time a phase turns, HH:MM. Default 00:00."
+        },
+        "phases": {
+          "type": "array",
+          "minItems": 2,
+          "description": "The runway sets in cycle order, from the epoch.",
+          "items": {
+            "$ref": "#/$defs/runwaySet"
+          }
+        }
+      }
+    },
+    "when": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Conditions, all of which must hold; an absent `when` always holds. Wind limits apply to every runway of the runway set in effect, departure and arrival, and hold when there is no METAR; visibility and ceiling limits fail when there is none.",
+      "properties": {
+        "maxTailwind": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Holds when every runway's tailwind, from the gust when reported, is at or below it. Unit: kt."
+        },
+        "maxCrosswind": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Holds when every runway's crosswind, from the gust when reported, is at or below it. Unit: kt."
+        },
+        "minHeadwind": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Holds when every runway's headwind, from the mean speed (a gust never helps), is at or above it. Unit: kt."
+        },
+        "maxVisibility": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Holds when the prevailing visibility is at or below it. Unit: m."
+        },
+        "maxCeiling": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Holds when a ceiling exists at or below it. Unit: ft."
+        },
+        "localTime": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Holds when the airport's local time is in [from, to); wraps midnight when `to` is before `from`.",
+          "required": [
+            "from",
+            "to"
+          ],
+          "properties": {
+            "from": {
+              "type": "string",
+              "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "Start, inclusive, HH:MM local."
+            },
+            "to": {
+              "type": "string",
+              "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+              "description": "End, exclusive, HH:MM local."
+            }
+          }
+        },
+        "days": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "Holds when the local weekday of the instant is listed.",
+          "items": {
+            "type": "string",
+            "enum": [
+              "mon",
+              "tue",
+              "wed",
+              "thu",
+              "fri",
+              "sat",
+              "sun"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
