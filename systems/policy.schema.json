@@ -3455,7 +3455,7 @@
       "properties": {
         "providers": {
           "type": "object",
-          "description": "Keyed by provider name as the provider declares it (Generic, Server, the HTTP allocator's name, a plugin's). Omission keeps the provider; disabling is explicit.",
+          "description": "Keyed by provider name as the provider declares it (Generic, the HTTP allocator's name, a plugin's). Omission keeps the provider; disabling is explicit.",
           "additionalProperties": {
             "type": "object",
             "properties": {
