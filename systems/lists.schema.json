@@ -2059,7 +2059,7 @@
       "headingMenuOpensOnRunway": {
         "type": "boolean",
         "default": false,
-        "description": "An aircraft list only. The heading menu opened from this list, on an aircraft with no assigned heading, opens on the magnetic heading of its departure runway at its origin (the flight plan's runway, else the airport's first active departure runway), as TopSky's DEP list does; with no runway known it opens on the magnetic track. Absent: the menu opens on the assigned heading, else the magnetic track."
+        "description": "An aircraft list only. The heading menu opened from this list, on an aircraft with no assigned heading, opens on the magnetic heading of its departure runway at its origin (the flight plan's runway, else the server's suggested departure runway, else the airport's first active departure runway), as TopSky's DEP list does; with no runway known it opens on the magnetic track. Absent: the menu opens on the assigned heading, else the magnetic track."
       },
       "style": {
         "type": "object",
