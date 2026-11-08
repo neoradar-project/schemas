@@ -334,7 +334,7 @@
                           {
                             "type": "string",
                             "const": "computedAssignedRate",
-                            "description": "The computed assigned vertical rate in hundreds of ft/min (2 digits), with a -/+ at the end of the string for a maximum or a minimum (the /ARC-/ and /ARC+/ scratchpad flags); blank when no rate is assigned."
+                            "description": "The computed assigned vertical rate in hundreds of ft/min (2 digits), as the TopSky ARC item prints it: a - at the end for a maximum (/ARC-/), a = for an exact rate (/ARC=/) and nothing for a minimum (/ARC+/, which an unqualified rate means, as in EuroScope); blank when the rate rounds to zero hundreds."
                           },
                           {
                             "type": "string",
