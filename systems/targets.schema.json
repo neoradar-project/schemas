@@ -1168,6 +1168,11 @@
                       },
                       {
                         "type": "string",
+                        "const": "openVerticalAid",
+                        "description": "Open the Vertical Aid Window on this aircraft: its planned and expected vertical profiles against time, the stretch in our airspace, its cleared level, top of climb and descent. The one window then follows the selected aircraft. Available to an observer."
+                      },
+                      {
+                        "type": "string",
                         "const": "invokeRadarSeparation",
                         "description": "TopSky's \"Invoke SEP tool\": start RADARSEP with this aircraft as the first pick; the next aircraft clicked makes the set, and until then the hovered aircraft is drawn as its preview. Available to an observer."
                       },
