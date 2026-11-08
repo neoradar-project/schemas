@@ -160,6 +160,7 @@
                                           "assignedMach",
                                           "assignedVerticalRate",
                                           "clearanceIssued",
+                                          "localiserCleared",
                                           "assignedSquawk",
                                           "ownedByMe",
                                           "ownedByCallsign",
@@ -252,6 +253,11 @@
                                             "type": "string",
                                             "const": "computedAssignedSpeed",
                                             "description": "The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "computedAssignedRate",
+                                            "description": "The computed assigned vertical rate in hundreds of ft/min (2 digits), with a -/+ at the end of the string for a maximum or a minimum (the /ARC-/ and /ARC+/ scratchpad flags); blank when no rate is assigned."
                                           },
                                           {
                                             "type": "string",
