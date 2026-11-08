@@ -516,6 +516,24 @@
         "dashArray": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/dashArray",
           "description": "Dash and gap in logical pixels, e.g. [12, 6]. Prediction tool only; the straight heading line is always solid."
+        },
+        "snapTo": {
+          "enum": [
+            "displayed",
+            "all"
+          ],
+          "default": "displayed",
+          "description": "The VOR, NDB and fix points the vector's end snaps to while the cursor is over one: the label shows the point's name and the release gives a direct-to it in place of a heading. displayed: only the points this view draws, so it never snaps to one the controller cannot see. all: every point of the package's vor, ndb and fix map layers, drawn or not. Holding Alt while dragging never snaps. TopSky's AHDG known-point snapping."
+        },
+        "labelDistance": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the distance in nautical miles from the aircraft to the vector's end, the point it snapped to or the cursor: one decimal below 99.95, else whole. The prediction tool's distance is the track it draws. Shown unless set false; that default is NeoRadar's own, not TopSky's (it corresponds to Vector_AHDG_Label_Dist)."
+        },
+        "labelTime": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the minutes to go over that distance at the aircraft's ground speed, as 7'. Not shown while the ground speed is 0. Shown unless set false; that default is NeoRadar's own, not TopSky's (it corresponds to Vector_AHDG_Label_Time)."
         }
       },
       "additionalProperties": false
