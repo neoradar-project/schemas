@@ -333,6 +333,11 @@
                           },
                           {
                             "type": "string",
+                            "const": "computedAssignedRate",
+                            "description": "The computed assigned vertical rate in hundreds of ft/min (2 digits), as the TopSky ARC item prints it: a - at the end for a maximum (/ARC-/), a = for an exact rate (/ARC=/) and nothing for a minimum (/ARC+/, which an unqualified rate means, as in EuroScope); blank when the rate rounds to zero hundreds."
+                          },
+                          {
+                            "type": "string",
                             "const": "computedCFL",
                             "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
                           },
@@ -870,6 +875,11 @@
                               "type": "string",
                               "const": "manualAlerts",
                               "description": "Every manual alert standing on this aircraft, space-joined in code order (missedApproach inboundEstimate irregular weather). Test one with [\"contains\", \"manualAlerts\", \"weather\"]; manualAlert reads only the lowest."
+                            },
+                            {
+                              "type": "string",
+                              "const": "localiserCleared",
+                              "description": "Cleared for the localiser by the /LLZ/ scratchpad flag (1 or 0), shared with every controller over the scratchpad. It ends on an ILS or visual clearance or an assigned heading. A package shows LLZ on its heading item while it holds."
                             },
                             {
                               "type": "string",
@@ -2060,6 +2070,11 @@
       "autoOpenWhen": {
         "$ref": "#/items/properties/filterExpressions",
         "description": "With autoOpen, only a row this condition holds for opens the list and holds it open, read as filterExpressions is, over the list's own rows; the other rows are still shown. TopSky's Lost List Setup B is autoOpen with autoOpenWhen [\"==\", \"lostChecked\", \"0\"]: it opens while a lost flight's row is unchecked and may be closed once every row is checked; it never closes itself. Absent: every row counts."
+      },
+      "headingMenuOpensOnRunway": {
+        "type": "boolean",
+        "default": false,
+        "description": "An aircraft list only. The heading menu opened from this list, on an aircraft with no assigned heading, opens on the magnetic heading of its departure runway at its origin (the flight plan's runway, else the server's suggested departure runway, else the airport's first active departure runway), as TopSky's DEP list does; with no runway known it opens on the magnetic track. Absent: the menu opens on the assigned heading, else the magnetic track."
       },
       "style": {
         "type": "object",

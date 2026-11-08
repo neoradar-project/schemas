@@ -330,6 +330,11 @@
                           },
                           {
                             "type": "string",
+                            "const": "computedAssignedRate",
+                            "description": "The computed assigned vertical rate in hundreds of ft/min (2 digits), as the TopSky ARC item prints it: a - at the end for a maximum (/ARC-/), a = for an exact rate (/ARC=/) and nothing for a minimum (/ARC+/, which an unqualified rate means, as in EuroScope); blank when the rate rounds to zero hundreds."
+                          },
+                          {
+                            "type": "string",
                             "const": "computedCFL",
                             "description": " The computed assigned flight level, which is blank if the aircaft has reached its CFL."
                           },
@@ -867,6 +872,11 @@
                               "type": "string",
                               "const": "manualAlerts",
                               "description": "Every manual alert standing on this aircraft, space-joined in code order (missedApproach inboundEstimate irregular weather). Test one with [\"contains\", \"manualAlerts\", \"weather\"]; manualAlert reads only the lowest."
+                            },
+                            {
+                              "type": "string",
+                              "const": "localiserCleared",
+                              "description": "Cleared for the localiser by the /LLZ/ scratchpad flag (1 or 0), shared with every controller over the scratchpad. It ends on an ILS or visual clearance or an assigned heading. A package shows LLZ on its heading item while it holds."
                             },
                             {
                               "type": "string",
