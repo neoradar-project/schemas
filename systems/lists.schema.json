@@ -2056,6 +2056,11 @@
         "$ref": "#/items/properties/filterExpressions",
         "description": "With autoOpen, only a row this condition holds for opens the list and holds it open, read as filterExpressions is, over the list's own rows; the other rows are still shown. TopSky's Lost List Setup B is autoOpen with autoOpenWhen [\"==\", \"lostChecked\", \"0\"]: it opens while a lost flight's row is unchecked and may be closed once every row is checked; it never closes itself. Absent: every row counts."
       },
+      "headingMenuOpensOnRunway": {
+        "type": "boolean",
+        "default": false,
+        "description": "An aircraft list only. The heading menu opened from this list, on an aircraft with no assigned heading, opens on the magnetic heading of its departure runway at its origin (the flight plan's runway, else the airport's first active departure runway), as TopSky's DEP list does; with no runway known it opens on the magnetic track. Absent: the menu opens on the assigned heading, else the magnetic track."
+      },
       "style": {
         "type": "object",
         "properties": {
