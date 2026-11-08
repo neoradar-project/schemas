@@ -160,6 +160,7 @@
                                           "assignedMach",
                                           "assignedVerticalRate",
                                           "clearanceIssued",
+                                          "localiserCleared",
                                           "assignedSquawk",
                                           "ownedByMe",
                                           "ownedByCallsign",
@@ -252,6 +253,11 @@
                                             "type": "string",
                                             "const": "computedAssignedSpeed",
                                             "description": "The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "computedAssignedRate",
+                                            "description": "The computed assigned vertical rate in hundreds of ft/min (2 digits), as the TopSky ARC item prints it: a - at the end for a maximum (/ARC-/), a = for an exact rate (/ARC=/) and nothing for a minimum (/ARC+/, which an unqualified rate means, as in EuroScope); blank when the rate rounds to zero hundreds."
                                           },
                                           {
                                             "type": "string",
