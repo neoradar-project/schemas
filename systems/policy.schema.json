@@ -912,14 +912,14 @@
               "apw",
               "aiw",
               "holdIntrusion",
-              "holdAdherence",
               "mtcd",
               "tct",
               "rimcas",
               "stca",
               "afdas",
               "emergency",
-              "ntz"
+              "ntz",
+              "holdAdherence"
             ]
           },
           "additionalProperties": {
@@ -966,14 +966,14 @@
                   "apw",
                   "aiw",
                   "holdIntrusion",
-                  "holdAdherence",
                   "mtcd",
                   "tct",
                   "rimcas",
                   "stca",
                   "afdas",
                   "emergency",
-                  "ntz"
+                  "ntz",
+                  "holdAdherence"
                 ]
               },
               "additionalProperties": {
@@ -1050,14 +1050,14 @@
               "apw",
               "aiw",
               "holdIntrusion",
-              "holdAdherence",
               "mtcd",
               "tct",
               "rimcas",
               "stca",
               "afdas",
               "emergency",
-              "ntz"
+              "ntz",
+              "holdAdherence"
             ]
           },
           "uniqueItems": true,
@@ -1131,14 +1131,14 @@
                   "apw",
                   "aiw",
                   "holdIntrusion",
-                  "holdAdherence",
                   "mtcd",
                   "tct",
                   "rimcas",
                   "stca",
                   "afdas",
                   "emergency",
-                  "ntz"
+                  "ntz",
+                  "holdAdherence"
                 ]
               },
               "description": "The kinds whose alerts lift a track out of the filters, each at or above minSeverity. Absent, or empty, is every kind. Whichever kinds are named, a pairwise alert of a named kind (STCA, TCT) lifts both of its aircraft at any severity, so a TCT in its warning band and the other aircraft of a conflict are never left to the filters. TopSky lifts emergency, stca, msaw, afdas, apw, aiw and tct, and never clam, ram or mtcd: the safety nets, not the monitoring aids. An emergency code bypasses whatever this says."
@@ -3290,14 +3290,14 @@
               "apw",
               "aiw",
               "holdIntrusion",
-              "holdAdherence",
               "mtcd",
               "tct",
               "rimcas",
               "stca",
               "afdas",
               "emergency",
-              "ntz"
+              "ntz",
+              "holdAdherence"
             ]
           },
           "additionalProperties": {
@@ -3455,7 +3455,7 @@
       "properties": {
         "providers": {
           "type": "object",
-          "description": "Keyed by provider name as the provider declares it (Generic, Server, the HTTP allocator's name, a plugin's). Omission keeps the provider; disabling is explicit.",
+          "description": "Keyed by provider name as the provider declares it (Generic, the HTTP allocator's name, a plugin's). Omission keeps the provider; disabling is explicit.",
           "additionalProperties": {
             "type": "object",
             "properties": {
