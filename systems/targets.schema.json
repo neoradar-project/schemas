@@ -1054,7 +1054,7 @@
                       {
                         "type": "string",
                         "const": "manualTransferMenu",
-                        "description": "Opens the manual transfer menu: the online controllers to hand the flight to by hand. Only for a flight nobody else has."
+                        "description": "Opens the manual transfer menu: the online controllers to hand the flight to by hand. Only for a flight you hold."
                       },
                       {
                         "type": "string",
