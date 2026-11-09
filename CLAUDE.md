@@ -98,14 +98,20 @@ deployment's own values and stay the server's check. Not a package file: the cli
 ## datasets/runway-preferences.schema.json
 
 The vAcc's runway preferences (`runwayPreferences.json` in a package environment, carried in
-`server-dataset.json` under `runwayPreferences`): per airport, its IANA zone and its configurations in
-order, each `fixed` (one runway set) or `alternates` (a cycle of runway sets from an epoch), with an
-optional `when` whose keys are the rows of `@server/internal/runwayprefs`' condition table. Two copies of one
-vocabulary: a condition added, renamed or re-ranged in the server's table is changed here and in
+`server-dataset.json` under `runwayPreferences`): per airport, its IANA zone, its configurations in
+order, its `exclude` list (runways kept out of every pick unless a condition holds), or both, never
+neither; and its named `conditions`. A configuration is `fixed` (one runway set) or `alternates` (a cycle
+of runway sets from an epoch). A `when` or an `unless` is one `$defs/condition`: a `leaf` object whose keys
+are the rows of `@server/internal/runwayprefs`' condition table (`dates` and `maxRvr` among them), a
+`"$name"`, or a `combination` `["AND"|"OR"|"NOT", [conditions]]`. Two copies of one vocabulary: a condition
+added, renamed or re-ranged in the server's table is changed here and in
 `@cli/src/definitions/runway-preferences.schema.json` (a copy, held equal as JSON by `@cli`'s
-`runway-preferences.test.ts` when both are checked out). A name repeated within an airport, a zone that
-does not load, a `localTime` whose `from` equals its `to` and an epoch that is no real date stay the
-server's check. Not a package file: the client never reads it.
+`runway-preferences.test.ts` when both are checked out), whose refusal reasons key on these `$defs`. The
+server's check alone: a name repeated within an airport, a zone that does not load, a `localTime` whose
+`from` equals its `to`, an epoch or `dates` end that is no real date, a `dates` range whose `from` is not
+before its `to`, an unknown `$name` or one referring back to itself, a wind limit under `unless`, and an
+exclusion with no `unless` of a runway a fixed configuration, or every phase of an alternation, names.
+Not a package file: the client never reads it.
 
 ## data/holds.schema.json and data/altimetry.schema.json
 
