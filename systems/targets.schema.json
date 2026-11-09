@@ -160,6 +160,7 @@
                                           "assignedMach",
                                           "assignedVerticalRate",
                                           "clearanceIssued",
+                                          "localiserCleared",
                                           "assignedSquawk",
                                           "ownedByMe",
                                           "ownedByCallsign",
@@ -252,6 +253,11 @@
                                             "type": "string",
                                             "const": "computedAssignedSpeed",
                                             "description": "The computed assigned speed, with a -/+ at the end of the string (2 digits)."
+                                          },
+                                          {
+                                            "type": "string",
+                                            "const": "computedAssignedRate",
+                                            "description": "The computed assigned vertical rate in hundreds of ft/min (2 digits), as the TopSky ARC item prints it: a - at the end for a maximum (/ARC-/), a = for an exact rate (/ARC=/) and nothing for a minimum (/ARC+/, which an unqualified rate means, as in EuroScope); blank when the rate rounds to zero hundreds."
                                           },
                                           {
                                             "type": "string",
@@ -1047,6 +1053,11 @@
                       },
                       {
                         "type": "string",
+                        "const": "manualTransferMenu",
+                        "description": "Opens the manual transfer menu: the online controllers to hand the flight to by hand. Only for a flight you hold."
+                      },
+                      {
+                        "type": "string",
                         "const": "groundStatusMenu",
                         "description": "Opens the ground status menu."
                       },
@@ -1159,6 +1170,11 @@
                         "type": "string",
                         "const": "showTctLegs",
                         "description": "Show or hide this aircraft's TCT legs for the session: both predicted paths of its earliest tactical conflict to the closest point, in mapstyle tctLeg colours, with the minimum and the time to it on the other aircraft's leg. While shown, the pair's speed vectors and route legs hide unless either has an STCA. Available to an observer."
+                      },
+                      {
+                        "type": "string",
+                        "const": "openVerticalAid",
+                        "description": "Open the Vertical Aid Window on this aircraft: its planned and expected vertical profiles against time, the stretch in our airspace, its cleared level, top of climb and descent. The one window then follows the selected aircraft. Available to an observer."
                       },
                       {
                         "type": "string",
