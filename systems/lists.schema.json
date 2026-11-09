@@ -1919,6 +1919,11 @@
                     },
                     {
                       "type": "string",
+                      "const": "manualTransferMenu",
+                      "description": "Opens the manual transfer menu: the online controllers to hand the flight to by hand. Only for a flight nobody else has."
+                    },
+                    {
+                      "type": "string",
                       "const": "openPrivateMessage",
                       "description": "Opens the private message input box for a controller."
                     },
