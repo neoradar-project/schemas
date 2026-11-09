@@ -363,6 +363,20 @@
           },
           "additionalProperties": false,
           "description": "Style of the waypoints along the route"
+        },
+        "headingLegDashArray": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 2,
+          "items": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "default": [
+            8,
+            4
+          ],
+          "description": "Dash and gap in pixels of the leg drawn while an aircraft is off its plan laterally. Empty draws it solid; exactly one number is not valid."
         }
       },
       "additionalProperties": false,
