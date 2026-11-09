@@ -217,7 +217,7 @@ section.
 **A save reaches the running views through one path, and it is the on-disk path.** Each writer
 tells `IOwnPackageWrites` (implemented by `Package/ReloadPackageFilesOnChange`) what it wrote, through
 the member for its file: `SystemFile(path, systemId, geometryAffected)`, `PolicyFile(path, systemId)`,
-`ListsFile`, `ExpressionsFile`, `ShapesFile`, `ZonesFile`, `ManifestFile` (the manifest: the package
+`ListsFile`, `ExpressionsFile`, `ShapesFile`, `ZonesFile`, `AreasFile`, `ManifestFile` (the manifest: the package
 is read again from it and `ManifestFileChanged` announced), `SystemFolder(systemId)` (a system
 folder created, filled, removed or renamed: the store gains or drops the system and
 `SystemListChanged` is announced), `ProfileFile(path)` (a profile file written or patched on disk:
@@ -468,6 +468,11 @@ manifest and a profile.
       in `NotEdited`), read by `ZoneProperties` and `ZoneIndex`, `ZoneFieldsSchemaTests` and
       `ZonesOneEditOnTheRealFileTests` green; a new policy key naming a zone tag added to
       `ZoneTagsThePoliciesRead`; no geometry edited.
+- [ ] For areas: the pinned schema copy refreshed (`Fixtures/areas.schema.json`), the key declared in
+      `AreaFields` (or excused in `NotEdited` with its reason), and, if the client reads it,
+      the writer's check in `AreasDatasetWriter` added for it (held only to a value the user changed),
+      `AreaFieldsSchemaTests`, `AreasDatasetWriterTests` and `AreasOneEditOnTheRealFileTests` green;
+      no geometry edited, and `datasets/cas.geojson` stays read only.
 - [ ] For the manifest: the pinned schema copy refreshed, the property declared in `ManifestFields` (or
       excused in `NotEdited`; a key the client writes at run time is excused as the client's and
       added to `WrittenByTheClient`), `ManifestFieldsSchemaTests` and
