@@ -365,13 +365,21 @@
           "description": "Style of the waypoints along the route"
         },
         "headingLegDashArray": {
-          "type": "array",
-          "minItems": 0,
-          "maxItems": 2,
-          "items": {
-            "type": "number",
-            "exclusiveMinimum": 0
-          },
+          "anyOf": [
+            {
+              "type": "array",
+              "maxItems": 0
+            },
+            {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          ],
           "default": [
             8,
             4
