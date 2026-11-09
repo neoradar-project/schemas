@@ -40,8 +40,8 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `datasets/zones.geojson` | `@schemas/datasets/zones.schema.json` | **none** (hand-authored) | `Package/ZonesDataset.cs`, built into zones by `Sectors/ZoneIndex.cs` | `ZonesDatasetWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): a zone's `properties.tags`, `id`, `floor` and `ceiling` only, never a coordinate, and it creates no file |
 | `datasets/radars.json` | `@schemas/datasets/radars.schema.json` | `writeRadarsDataset` (`@cli/src/helper/radars.ts`) | `Package/RadarsDataset.cs` | none |
 | `datasets/msaw.geojson` | `@schemas/datasets/msaw.schema.json` | `buildMsawDataset` (`@cli/src/commands/converter/topsky/topsky-msaw.ts`) | `Package/MsawDataset.cs` | none |
-| `datasets/areas.geojson` | `@schemas/datasets/areas.schema.json` | `buildAreasDataset` (`.../topsky/topsky-areas.ts`) | `Package/AreasDataset.cs` (name, category, `label` (its `x`, `y` and `text`), `preActiveS`, `uuid`, limits, `activation`: `when`, `lowerFt`, `upperFt`, `userText`, `aup`; `display`: the `active` and `preActive` looks and the reduced label's items; the geometry; and the file's own `display`: label font, colours, `aupUserText`), judged by `MapItems/AreaActivation/` and drawn by the desktop's `AreaDisplayModule`; its `origin` and `items` are a map layer header, read by `Package/Layers/LayerHeaderReader` | none: no section edits the file and nothing in the client writes it, so every byte stays; Map Edit shows its items as every layer's |
-| `datasets/cas.geojson` | `@schemas/datasets/cas.schema.json` | `writeControlledAirspace` (`@cli/src/commands/converter/cas.ts`), from the sector file and the vAcc's `data/cas.json` | `SafetyNets/Aiw/CasDataset.cs`, loaded by `Aiw/ControlledAirspaceStore` | none |
+| `datasets/areas.geojson` | `@schemas/datasets/areas.schema.json` | `buildAreasDataset` (`.../topsky/topsky-areas.ts`) | `Package/AreasDataset.cs` (name, category, `label` (its `x`, `y` and `text`), `preActiveS`, `uuid`, limits, `activation`: `when`, `lowerFt`, `upperFt`, `userText`, `aup`; `display`: the `active` and `preActive` looks and the reduced label's items; the geometry; and the file's own `display`: label font, colours, `aupUserText`), judged by `MapItems/AreaActivation/` and drawn by the desktop's `AreaDisplayModule`; its `origin` and `items` are a map layer header, read by `Package/Layers/LayerHeaderReader` | `AreasDatasetWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): an area's `inhibits` (including `tct`), `circle` (x, y, radiusM) and `apwBufferLatNm` and `apwBufferVertFt` only, never a coordinate, and it creates no file. Every other property is kept as written with its reason in `AreaFields.NotEdited`; Map Edit shows its items as every layer's |
+| `datasets/cas.geojson` | `@schemas/datasets/cas.schema.json` | `writeControlledAirspace` (`@cli/src/commands/converter/cas.ts`), from the sector file and the vAcc's `data/cas.json` | `SafetyNets/Aiw/CasDataset.cs`, loaded by `Aiw/ControlledAirspaceStore` | none, by decision: read only. neoradar-cli builds the file from the sector file and `data/cas.json`, so an edit would be lost on the next build. The Areas section lists its volumes for reference (`AreasSectionViewModel.CasReason`) and no save writes it |
 | `datasets/stca-runways.json` | `@schemas/datasets/stca-runways.schema.json` | `buildStcaRunwaysDataset` (`.../topsky/topsky-stca.ts`) | not read by the client | none |
 | `server-dataset.json` | none | `@cli/src/helper/server-dataset.ts` (`areaActivation.aupUrl` from `TopSkySettings.txt` `HTTP_AUP_URL`) | not read by the client; `@server` imports it | none |
 
@@ -209,7 +209,7 @@ parser (§3), writer (this section), Configurator section view model (§7).
 
 All writes route through `Package/Writers/`:
 `ISystemConfigWriter`, `IExpressionsConfigWriter`, `IListsConfigWriter`, `IShapesConfigWriter`,
-`IPolicyConfigWriter`, `IZonesDatasetWriter`, `IManifestWriter`, `ISystemFolderWriter`, `IProfileStorageService`, all singletons, registered in
+`IPolicyConfigWriter`, `IZonesDatasetWriter`, `IAreasDatasetWriter`, `IManifestWriter`, `ISystemFolderWriter`, `IProfileStorageService`, all singletons, registered in
 `PackageModule.AddPackageServices`. Every one of them writes through
 `AtomicConfigWriter.Write` (tmp file + `File.Move` overwrite). Never `File.WriteAllText` a package file from a
 section.
@@ -217,7 +217,7 @@ section.
 **A save reaches the running views through one path, and it is the on-disk path.** Each writer
 tells `IOwnPackageWrites` (implemented by `Package/ReloadPackageFilesOnChange`) what it wrote, through
 the member for its file: `SystemFile(path, systemId, geometryAffected)`, `PolicyFile(path, systemId)`,
-`ListsFile`, `ExpressionsFile`, `ShapesFile`, `ZonesFile`, `ManifestFile` (the manifest: the package
+`ListsFile`, `ExpressionsFile`, `ShapesFile`, `ZonesFile`, `AreasFile`, `ManifestFile` (the manifest: the package
 is read again from it and `ManifestFileChanged` announced), `SystemFolder(systemId)` (a system
 folder created, filled, removed or renamed: the store gains or drops the system and
 `SystemListChanged` is announced), `ProfileFile(path)` (a profile file written or patched on disk:
@@ -468,6 +468,11 @@ manifest and a profile.
       in `NotEdited`), read by `ZoneProperties` and `ZoneIndex`, `ZoneFieldsSchemaTests` and
       `ZonesOneEditOnTheRealFileTests` green; a new policy key naming a zone tag added to
       `ZoneTagsThePoliciesRead`; no geometry edited.
+- [ ] For areas: the pinned schema copy refreshed (`Fixtures/areas.schema.json`), the key declared in
+      `AreaFields` (or excused in `NotEdited` with its reason), and, if the client reads it,
+      the writer's check in `AreasDatasetWriter` added for it (held only to a value the user changed),
+      `AreaFieldsSchemaTests`, `AreasDatasetWriterTests` and `AreasOneEditOnTheRealFileTests` green;
+      no geometry edited, and `datasets/cas.geojson` stays read only.
 - [ ] For the manifest: the pinned schema copy refreshed, the property declared in `ManifestFields` (or
       excused in `NotEdited`; a key the client writes at run time is excused as the client's and
       added to `WrittenByTheClient`), `ManifestFieldsSchemaTests` and
