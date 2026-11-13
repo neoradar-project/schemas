@@ -984,7 +984,7 @@
                       {
                         "type": "string",
                         "const": "decorrelateTarget",
-                        "description": "Decorrelates the target by hand; sticky until correlated again. There is no correlateTarget: correlating names a flight plan, which the callsignMenu asks for."
+                        "description": "Decorrelates the target by hand; sticky until correlated again, or handed back to the automatic rules with the callsign menu's AUTO CORR. There is no correlateTarget: correlating names a flight plan, which the callsignMenu asks for."
                       },
                       {
                         "type": "string",

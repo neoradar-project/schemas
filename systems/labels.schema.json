@@ -1655,7 +1655,7 @@
             {
               "type": "string",
               "const": "decorrelateTarget",
-              "description": "Decorrelates the target by hand; sticky until correlated again. There is no correlateTarget: correlating names a flight plan, which the callsignMenu asks for."
+              "description": "Decorrelates the target by hand; sticky until correlated again, or handed back to the automatic rules with the callsign menu's AUTO CORR. There is no correlateTarget: correlating names a flight plan, which the callsignMenu asks for."
             },
             {
               "type": "string",
@@ -1681,26 +1681,6 @@
               "type": "string",
               "const": "manualTransferMenu",
               "description": "Opens the manual transfer menu: the online controllers to hand the flight to by hand. Only for a flight you hold."
-            },
-            {
-              "type": "string",
-              "const": "openPrivateMessage",
-              "description": "Opens the private message input box for a controller."
-            },
-            {
-              "type": "string",
-              "const": "showAtisLines",
-              "description": "Shows the ATIS lines for a controller."
-            },
-            {
-              "type": "string",
-              "const": "focusMetar",
-              "description": "Displays the full METAR in the focus bar."
-            },
-            {
-              "type": "string",
-              "const": "acknowledgeMetarUpdate",
-              "description": "Acknowledges the METAR update."
             },
             {
               "type": "string",
