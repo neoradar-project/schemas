@@ -2377,13 +2377,13 @@
               "type": "number",
               "exclusiveMinimum": 0,
               "default": 2000,
-              "description": "The same where both bands are at or above verticalUpperFromFl: the 2000 ft standard there (TCT.NATS02.02). TopSky uses 1500."
+              "description": "The same for a pair where either band is above verticalUpperFromFl: the 2000 ft standard there (ICAO Doc 4444 5.3.2, TCT.NATS02.02). TopSky uses 1500."
             },
             "verticalUpperFromFl": {
               "type": "integer",
               "exclusiveMinimum": 0,
               "default": 410,
-              "description": "Where the upper vertical minimum starts: a pair both of whose bands are at or above this flight level takes verticalUpperFt."
+              "description": "Where the upper vertical minimum starts: a pair either of whose bands is above this flight level takes verticalUpperFt. An aircraft within vertical.atLevelFt of it is at it, not above."
             },
             "regions": {
               "type": "array",
