@@ -1889,13 +1889,8 @@
                     },
                     {
                       "type": "string",
-                      "const": "correlateTarget",
-                      "description": "Correlates the target by hand; sticky for the session."
-                    },
-                    {
-                      "type": "string",
                       "const": "decorrelateTarget",
-                      "description": "Decorrelates the target by hand; sticky until correlated again."
+                      "description": "Decorrelates the target by hand; sticky until correlated again, or handed back to the automatic rules with the callsign menu's AUTO CORR."
                     },
                     {
                       "type": "string",
@@ -1946,11 +1941,6 @@
                       "type": "string",
                       "const": "toggleNetSound",
                       "description": "A net list cell only: switches the row's net's sound off, or on again, where controllerMay grants sound; saved in the profile."
-                    },
-                    {
-                      "type": "string",
-                      "const": "acknowledgeMetarUpdate",
-                      "description": "Acknowledges the METAR update."
                     },
                     {
                       "type": "string",
