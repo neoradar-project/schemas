@@ -39,26 +39,6 @@
                 "$ref": "#/definitions/squawkCodeOrRange"
               },
               "description": "Codes that never identify, as literals (\"7010\") or inclusive ranges (\"7001-7007\")."
-            },
-            "conformance": {
-              "type": "object",
-              "properties": {
-                "maxDistanceFromRouteNm": {
-                  "type": [
-                    "number",
-                    "null"
-                  ],
-                  "description": "Refuse an assigned-code correlation when the target is further than this from the filed route. Skipped when no route geometry is available."
-                },
-                "minGroundSpeedKt": {
-                  "type": [
-                    "integer",
-                    "null"
-                  ],
-                  "description": "Apply the conformance gate only at or above this ground speed."
-                }
-              },
-              "additionalProperties": false
             }
           },
           "additionalProperties": false
