@@ -95,7 +95,6 @@
                   "type": "string",
                   "enum": [
                     "callsign",
-                    "type",
                     "isTimingOut",
                     "lastPositionUpdateReceivedAt",
                     "squawk",
@@ -374,18 +373,23 @@
                     },
                     {
                       "type": "string",
+                      "const": "altitudeIsQnh",
+                      "description": "1 when computedAltitude shows the QNH altitude, 0 when it shows the pressure altitude: QNH at or below the transition altitude of a vAcc area holding the aircraft, else of the profile the tag's view shows"
+                    },
+                    {
+                      "type": "string",
                       "const": "transitionAltitude",
-                      "description": "The transition altitude set by the user."
+                      "description": "Transition altitude (ft) of the profile the tag's view shows; a list or a net reads the main window's. No vAcc area's is read here: altitudeIsQnh follows those"
                     },
                     {
                       "type": "string",
                       "const": "gndFilterOn",
-                      "description": "The active profile's GND filter toggle is on. Reads the main view's profile, as transitionAltitude does."
+                      "description": "The GND filter toggle is on in the profile the tag's view shows; a list or a net reads the main window's"
                     },
                     {
                       "type": "string",
                       "const": "primFilterOn",
-                      "description": "The active profile's PRIM filter toggle is on. Reads the main view's profile, as transitionAltitude does."
+                      "description": "The PRIM filter toggle is on in the profile the tag's view shows; a list or a net reads the main window's"
                     },
                     {
                       "type": "string",
