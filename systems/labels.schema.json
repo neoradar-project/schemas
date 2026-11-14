@@ -1742,11 +1742,11 @@
         },
         "applyToIsArrival": {
           "type": "boolean",
-          "description": "Restricts this variant to aircraft that are an arrival."
+          "description": "Restricts this variant to aircraft that are an arrival: the plan says arrival and the aircraft is airborne or on the ground within 5 nm of that airport."
         },
         "applyToIsDeparture": {
           "type": "boolean",
-          "description": "Restricts this variant to aircraft that are a departure."
+          "description": "Restricts this variant to aircraft that are a departure: the plan says departure and the aircraft is airborne or on the ground within 5 nm of that airport."
         },
         "detailed": {
           "type": "boolean",
@@ -1784,11 +1784,11 @@
         },
         "applyToIsArrival": {
           "type": "boolean",
-          "description": "Whether this style variant should be applied when the aircraft is an arrival."
+          "description": "Whether this style variant should be applied when the aircraft is an arrival: the plan says arrival and the aircraft is airborne or on the ground within 5 nm of that airport."
         },
         "applyToIsDeparture": {
           "type": "boolean",
-          "description": "Whether this style variant should be applied when the aircraft is a departure."
+          "description": "Whether this style variant should be applied when the aircraft is a departure: the plan says departure and the aircraft is airborne or on the ground within 5 nm of that airport."
         },
         "font": {
           "type": "string",
