@@ -73,20 +73,21 @@ Every root schema except `lists` sets **`additionalProperties: false`**:
 
 ```
 $ python -c "import json,glob; [print(f, json.load(open(f,encoding='utf-8')).get('additionalProperties','ABSENT')) for f in sorted(glob.glob('systems/*.json')+glob.glob('datasets/*.json'))]"
-datasets\areas.schema.json        False
-datasets\cas.schema.json          False
-datasets\map-layer.schema.json    False
-datasets\msaw.schema.json         False
-datasets\path-rules.schema.json   False
-datasets\radars.schema.json       False
-datasets\zones.schema.json        False
-systems\expressions.schema.json   False
-systems\labels.schema.json        False
-systems\lists.schema.json         ABSENT
-systems\mapstyle.schema.json      False
-systems\policy.schema.json        False
-systems\shapes.schema.json        False
-systems\targets.schema.json       False
+datasets\areas.schema.json              False
+datasets\cas.schema.json                False
+datasets\map-layer.schema.json          False
+datasets\msaw.schema.json               False
+datasets\path-rules.schema.json         False
+datasets\radars.schema.json             False
+datasets\runway-preferences.schema.json False
+datasets\zones.schema.json              False
+systems\expressions.schema.json         False
+systems\labels.schema.json              False
+systems\lists.schema.json               ABSENT
+systems\mapstyle.schema.json            False
+systems\policy.schema.json              False
+systems\shapes.schema.json              False
+systems\targets.schema.json             False
 ```
 
 So an author who writes the new field **before** the schema lands sees a red editor error. The
