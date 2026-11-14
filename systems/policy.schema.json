@@ -3466,7 +3466,7 @@
     },
     "squawk": {
       "type": "object",
-      "description": "The squawk provider chain: the package's priority per provider name, providers it disables, the reserved codes no provider may hand out, the circuit codes, and a first-party HTTP allocator. A provider the package does not name keeps what it declared.",
+      "description": "The squawk provider chain on this system: the priority per provider name, providers it disables, the reserved codes no provider may hand out, and the circuit codes. A provider the system does not name keeps what it declared. The package's HTTP allocator is authored once in manifest.json under squawk.http, and ranked or disabled here by its name.",
       "properties": {
         "providers": {
           "type": "object",
@@ -3499,42 +3499,6 @@
             "$ref": "#/definitions/squawkCodeOrRange"
           },
           "description": "Codes reserved for circuit traffic."
-        },
-        "http": {
-          "type": "object",
-          "description": "A first-party HTTP allocator: one POST per request carrying callsign, origin, destination, flightRule, aircraftType, cruiseLevelFt and circuit; one JSON object back carrying the code.",
-          "properties": {
-            "endpoint": {
-              "type": "string",
-              "format": "uri",
-              "description": "Absolute http or https URL."
-            },
-            "name": {
-              "type": "string",
-              "description": "Provider name in the chain. Default Http."
-            },
-            "priority": {
-              "type": "integer",
-              "description": "Declared priority. Default 50: above the server, below a plugin's 100."
-            },
-            "timeoutSeconds": {
-              "type": "integer",
-              "minimum": 1,
-              "description": "Default 5."
-            },
-            "codeProperty": {
-              "type": "string",
-              "description": "The response property carrying the code. Default code."
-            },
-            "apiKeyEnvironmentVariable": {
-              "type": "string",
-              "description": "Environment variable holding the API key, sent as a bearer token. The key never lives in the package."
-            }
-          },
-          "required": [
-            "endpoint"
-          ],
-          "additionalProperties": false
         }
       },
       "additionalProperties": false
