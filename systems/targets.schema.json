@@ -1253,12 +1253,14 @@
             },
             "arrival": {
               "type": "array",
+              "description": "Used for an aircraft on the ground whose plan says arrival and which is within 5 nm of that airport. Departure is tested first.",
               "items": {
                 "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items"
               }
             },
             "departure": {
               "type": "array",
+              "description": "Used for an aircraft on the ground whose plan says departure and which is within 5 nm of that airport. Tested before arrival.",
               "items": {
                 "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items"
               }
