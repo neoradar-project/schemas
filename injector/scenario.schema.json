@@ -372,6 +372,11 @@
         },
         "aircraftType": { "type": "string" },
         "broadcastFlightplan": { "type": "boolean" },
+        "sendNonFiniteAltitude": {
+          "type": "boolean",
+          "default": false,
+          "description": "Test fault: the aircraft's ^, #SL and #ST packets carry NaN as the altitude. The legacy @ keeps its integer altitude."
+        },
         "flightPlan": { "$ref": "#/$defs/flightPlan" },
         "route": { "$ref": "#/$defs/routePoints" },
         "startAtSeconds": {
