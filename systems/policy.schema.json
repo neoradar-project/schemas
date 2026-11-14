@@ -991,7 +991,7 @@
         },
         "acknowledge": {
           "type": "object",
-          "description": "What the acknowledgeAlert click action does. The colour always stays: acknowledging says the controller has seen the alert, not that it has gone. An acknowledgement belongs to the alert it was given on (its kind, the other aircraft, and an emergency's squawk) and covers only that alert at that severity, so another alert on top, a severity rise, a new other aircraft or a changed emergency code shows unacknowledged and sounds; each alert standing on an aircraft keeps its own. It is forgotten once that alert ends, so the next alert of that kind asks again. A pairwise alert also re-arms for good when its predicted separation closes (rearmOnCpaDecreaseNm).",
+          "description": "What the acknowledgeAlert click action does. The colour always stays: acknowledging says the controller has seen the alert, not that it has gone. An acknowledgement belongs to the alert it was given on (its kind, the other aircraft, and an emergency's squawk) and covers only that alert at that severity or lower, so another alert on top, a severity rise, a new other aircraft or a changed emergency code shows unacknowledged and sounds; each alert standing on an aircraft keeps its own. It is forgotten once that alert ends, so the next alert of that kind asks again. A pairwise alert also re-arms for good when its predicted separation closes (rearmOnCpaDecreaseNm).",
           "properties": {
             "silencesSound": {
               "type": "boolean",

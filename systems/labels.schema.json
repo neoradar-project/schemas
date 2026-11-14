@@ -1489,7 +1489,7 @@
             {
               "type": "string",
               "const": "acknowledgeAlert",
-              "description": "Acknowledge the highest safety net alert on this aircraft: the repeat sound stops and alertAcknowledged reads 1, the colour stays. It covers that alert alone (its kind, other aircraft and emergency code) at that severity and is forgotten when that alert ends, so another alert on top, a severity rise or a new alert of the same kind asks again. Available to an observer."
+              "description": "Acknowledge the highest safety net alert on this aircraft: the repeat sound stops and alertAcknowledged reads 1, the colour stays. It covers that alert alone (its kind, other aircraft and emergency code) at that severity or lower and is forgotten when that alert ends or rises, so another alert on top, a severity rise or a new alert of the same kind asks again. Available to an observer."
             },
             {
               "type": "string",
