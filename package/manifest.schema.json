@@ -461,7 +461,8 @@
             "timeoutSeconds": {
               "type": "integer",
               "minimum": 1,
-              "description": "Default 5."
+              "maximum": 60,
+              "description": "Seconds a request waits before the chain moves on, 1 to 60: a controller is waiting on the code. Default 5."
             },
             "codeProperty": {
               "type": "string",
