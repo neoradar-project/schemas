@@ -1251,12 +1251,26 @@
                   "description": "Horizontal alignment of the header label within the column."
                 },
                 "color": {
-                  "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/0",
-                  "description": "RGB colour array [r,g,b] or [r,g,b,a]. Overrides the sorted-column highlight for this header."
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255
+                  },
+                  "minItems": 3,
+                  "maxItems": 4,
+                  "description": "RGB colour array [r,g,b] or [r,g,b,a]. Overrides the sorted-column highlight for this header, each channel from 0 to 255 (an alpha of at most 1 is a fraction). Any other value is refused: the header draws without it and the client reports it in client.log."
                 },
                 "backgroundColor": {
-                  "$ref": "#/items/properties/columns/items/properties/tagItem/properties/color/anyOf/0",
-                  "description": "RGB colour array [r,g,b] or [r,g,b,a] painted behind the header label."
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 255
+                  },
+                  "minItems": 3,
+                  "maxItems": 4,
+                  "description": "RGB colour array [r,g,b] or [r,g,b,a] painted behind the header label, each channel from 0 to 255 (an alpha of at most 1 is a fraction). Any other value is refused: the header draws without it and the client reports it in client.log."
                 },
                 "fontSize": {
                   "type": "integer",
@@ -2090,7 +2104,10 @@
                 "maxItems": 3
               },
               "headerOpacity": {
-                "type": "number"
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "How opaque the header background is, from 0 (clear) to 1 (opaque). Any other value is refused: that part draws opaque and the client reports it in client.log."
               },
               "bodyColor": {
                 "type": "array",
@@ -2104,7 +2121,10 @@
                 "maxItems": 3
               },
               "bodyOpacity": {
-                "type": "number"
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "How opaque the body background is, from 0 (clear) to 1 (opaque). Any other value is refused: that part draws opaque and the client reports it in client.log."
               },
               "backdrop": {
                 "type": "string",
