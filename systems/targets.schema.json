@@ -144,7 +144,6 @@
                                         "type": "string",
                                         "enum": [
                                           "callsign",
-                                          "type",
                                           "isTimingOut",
                                           "lastPositionUpdateReceivedAt",
                                           "squawk",
