@@ -1225,8 +1225,10 @@
               "type": "string"
             },
             "width": {
-              "type": "number",
-              "description": "Column width in pixels. Ignored when widthChars is set."
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "description": "Column width in whole pixels, 1 to 1000. Ignored when widthChars is set. Any other value is refused: the client leaves this column out (or, with widthChars, ignores the value) and reports it in client.log."
             },
             "widthChars": {
               "type": "integer",
@@ -2079,8 +2081,11 @@
             "properties": {
               "headerColor": {
                 "type": "array",
+                "description": "[R, G, B], each a whole number from 0 to 255. A colour with any other channel is refused: the list draws the theme colour and the client reports it in client.log.",
                 "items": {
-                  "type": "number"
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
                 },
                 "minItems": 3,
                 "maxItems": 3
@@ -2090,8 +2095,11 @@
               },
               "bodyColor": {
                 "type": "array",
+                "description": "[R, G, B], each a whole number from 0 to 255. A colour with any other channel is refused: the list draws the theme colour and the client reports it in client.log.",
                 "items": {
-                  "type": "number"
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 255
                 },
                 "minItems": 3,
                 "maxItems": 3
@@ -2150,12 +2158,14 @@
             "default": false
           },
           "headerTextSize": {
-            "type": "number",
-            "default": 11
+            "type": "integer",
+            "default": 11,
+            "description": "Text size in whole pixels. A fractional size is refused: the list draws at 11 and the client reports it in client.log."
           },
           "bodyTextSize": {
-            "type": "number",
-            "default": 11
+            "type": "integer",
+            "default": 11,
+            "description": "Text size in whole pixels. A fractional size is refused: the list draws at 11 and the client reports it in client.log."
           },
           "fontFamily": {
             "type": "string",
