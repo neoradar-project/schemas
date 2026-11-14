@@ -2081,7 +2081,7 @@
             "properties": {
               "headerColor": {
                 "type": "array",
-                "description": "[R, G, B], each a whole number from 0 to 255. A colour with any other channel is refused: the list draws the theme colour and the client reports it in client.log.",
+                "description": "[R, G, B], each a whole number from 0 to 255; no alpha, which headerOpacity and bodyOpacity give. Any other value, another length or a channel outside that, is refused: the list draws the theme colour and the client reports it in client.log.",
                 "items": {
                   "type": "integer",
                   "minimum": 0,
@@ -2095,7 +2095,7 @@
               },
               "bodyColor": {
                 "type": "array",
-                "description": "[R, G, B], each a whole number from 0 to 255. A colour with any other channel is refused: the list draws the theme colour and the client reports it in client.log.",
+                "description": "[R, G, B], each a whole number from 0 to 255; no alpha, which headerOpacity and bodyOpacity give. Any other value, another length or a channel outside that, is refused: the list draws the theme colour and the client reports it in client.log.",
                 "items": {
                   "type": "integer",
                   "minimum": 0,
