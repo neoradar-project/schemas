@@ -1240,8 +1240,7 @@
             "center",
             "right"
           ],
-          "default": "center",
-          "description": "Text alignment: left, center or right. On a radar tag the row's first shown item places the whole row within the tag's widest row; in a list it aligns the item's text within its cell."
+          "description": "Text alignment: left, center or right. On a radar tag the row's first shown item places the whole row within the tag's widest row, and absent is left; in a list it aligns the item's text within its cell, and absent is centred."
         },
         "lineHeight": {
           "anyOf": [
