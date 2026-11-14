@@ -42,15 +42,14 @@ wrong and you will hunt for a CLI emitter that does not exist.
 | `datasets/msaw.geojson` | `@schemas/datasets/msaw.schema.json` | `buildMsawDataset` (`@cli/src/commands/converter/topsky/topsky-msaw.ts`) | `Package/MsawDataset.cs` | none |
 | `datasets/areas.geojson` | `@schemas/datasets/areas.schema.json` | `buildAreasDataset` (`.../topsky/topsky-areas.ts`) | `Package/AreasDataset.cs` (name, category, `label` (its `x`, `y` and `text`), `preActiveS`, `uuid`, limits, `activation`: `when`, `lowerFt`, `upperFt`, `userText`, `aup`; `display`: the `active` and `preActive` looks and the reduced label's items; the geometry; and the file's own `display`: label font, colours, `aupUserText`), judged by `MapItems/AreaActivation/` and drawn by the desktop's `AreaDisplayModule`; its `origin` and `items` are a map layer header, read by `Package/Layers/LayerHeaderReader` | `AreasDatasetWriter.Write`, which writes the edited `PackageDocument` as it stands (§4a): an area's `inhibits` (including `tct`), `circle` (x, y, radiusM) and `apwBufferLatNm` and `apwBufferVertFt` only, never a coordinate, and it creates no file. Every other property is kept as written with its reason in `AreaFields.NotEdited`; Map Edit shows its items as every layer's |
 | `datasets/cas.geojson` | `@schemas/datasets/cas.schema.json` | `writeControlledAirspace` (`@cli/src/commands/converter/cas.ts`), from the sector file and the vAcc's `data/cas.json` | `SafetyNets/Aiw/CasDataset.cs`, loaded by `Aiw/ControlledAirspaceStore` | none, by decision: read only. neoradar-cli builds the file from the sector file and `data/cas.json`, so an edit would be lost on the next build. The Areas section lists its volumes for reference (`AreasSectionViewModel.CasReason`) and no save writes it |
-| `datasets/stca-runways.json` | `@schemas/datasets/stca-runways.schema.json` | `buildStcaRunwaysDataset` (`.../topsky/topsky-stca.ts`) | not read by the client | none |
 | `server-dataset.json` | none | `@cli/src/helper/server-dataset.ts` (`areaActivation.aupUrl` from `TopSkySettings.txt` `HTTP_AUP_URL`) | not read by the client; `@server` imports it | none |
 
 `policy.json`, `targets.json`, `labels.json`, a mapstyle, the expressions file and the shapes file are edited as documents, as lists is (§4a): the section holds the file's own text, so the §4 erase-on-save hazard does not apply to them and the test in §8 is the schema test of §7a instead. A system with no policy file gets one at the first save that has something in it. Its sections are owned by the modules that consume them (`Correlation/CorrelationPolicySection.cs` is the model), not by `Package/`, so a new section is a property on `SystemPolicy` plus a section type and a `Resolve` beside the module that reads it, called from both `SystemPolicies.Resolve` and `SystemPolicies.ResolveEachSection` (the load's, where a section that cannot be read is taken down alone: a net off, anything else on its absent default); a new safety net also adds its line to `ResolveSafetyNetsEachNet` and `EveryNetOff`.
 
 **The `systems/*` configs have no CLI leg.** `downloadBasePackage` (`@cli/src/commands/init-package.ts`)
 downloads the whole starter tree from the `neoradar-project/base-package` release and unzips it; the
-CLI never generates or rewrites a systems config. The only `$schema` keys it writes are on the five
-datasets it emits (`radars`, `msaw`, `areas`, `stca-runways`, `cas`) and the two reference data files its import
+CLI never generates or rewrites a systems config. The only `$schema` keys it writes are on the four
+datasets it emits (`radars`, `msaw`, `areas`, `cas`) and the two reference data files its import
 commands write (`holds`, `altimetry`, schemas under `@schemas/data/`; `grep -rn '\$schema' @cli/src`), so a
 dataset schema that moves needs its constant there moved too. A new systems-config field therefore lands in
 `@schemas` + `@client` + optionally the base-package template, and the "emitter" step is a no-op.
@@ -80,7 +79,6 @@ datasets\map-layer.schema.json    False
 datasets\msaw.schema.json         False
 datasets\path-rules.schema.json   False
 datasets\radars.schema.json       False
-datasets\stca-runways.schema.json False
 datasets\zones.schema.json        False
 systems\expressions.schema.json   False
 systems\labels.schema.json        False
