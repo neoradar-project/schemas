@@ -779,7 +779,7 @@
                             {
                               "type": "string",
                               "const": "alertAcknowledged",
-                              "description": "1 while the controller has acknowledged the highest alert (the acknowledgeAlert action); a change of kind or severity clears it. Gate a blink on it and leave the colour alone."
+                              "description": "1 while the controller has acknowledged the highest alert itself (the acknowledgeAlert action); another alert on top, a severity rise, a new other aircraft or a changed emergency code reads 0. Gate a blink on it and leave the colour alone."
                             },
                             {
                               "type": "string",
@@ -1740,7 +1740,7 @@
                       {
                         "type": "string",
                         "const": "acknowledgeAlert",
-                        "description": "Acknowledge the highest safety net alert on this aircraft: the repeat sound stops and alertAcknowledged reads 1, the colour stays. A change of kind or severity re-arms it. Available to an observer."
+                        "description": "Acknowledge the highest safety net alert on this aircraft: the repeat sound stops and alertAcknowledged reads 1, the colour stays. It covers that alert alone (its kind, other aircraft and emergency code) at that severity and is forgotten when that alert ends, so another alert on top, a severity rise or a new alert of the same kind asks again. Available to an observer."
                       },
                       {
                         "type": "string",
