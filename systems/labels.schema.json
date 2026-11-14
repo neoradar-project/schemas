@@ -1363,7 +1363,7 @@
         "separatorBefore": {
           "type": "boolean",
           "default": true,
-          "description": "Whether add a blank padding the item."
+          "description": "Adds the column gap before this item when the row already shows something, as EuroScope's \"need separator before\". Ignored on a row's first shown item."
         },
         "showPlusMinus": {
           "anyOf": [
