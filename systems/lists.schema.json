@@ -2159,7 +2159,7 @@
           },
           "fontFamily": {
             "type": "string",
-            "description": "Font family for this list's column headers and cells. Bundled with the client: \"Roboto Mono\" (the default when this is absent), \"Cascadia Mono\", \"Inter\". A column whose tagItem sets its own style.fontFamily wins over this for that column. An unknown name falls back to Roboto Mono."
+            "description": "Font family for this list's column headers and cells. Bundled with the client: \"Roboto Mono\" (the default when this is absent), \"Cascadia Mono\", \"Inter\"; or the alias of a font the package manifest lists under fonts, which wins over a bundled name. A column whose tagItem sets its own fontFamily wins over this for that column. An unknown name, or a package font whose file is missing or unreadable, falls back to Roboto Mono."
           },
           "paddingLeft": {
             "type": "integer",
