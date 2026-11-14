@@ -1258,7 +1258,7 @@
               }
             }
           ],
-          "description": "Line height of the item, can also be an expression rule."
+          "description": "Line height of the item as a multiple of its font size, as in CSS (1.2 is 1.2 times the font size): a floor on the row's height on a radar tag. Can also be an expression rule."
         },
         "color": {
           "anyOf": [
@@ -1819,7 +1819,7 @@
         },
         "lineHeight": {
           "type": "number",
-          "description": "Line height of the label text."
+          "description": "Line height of the label text as a multiple of each item's font size, as in CSS (1.2 is 1.2 times the font size): a floor on each row's height. A tag item's own lineHeight wins over this."
         },
         "textColor": {
           "$ref": "#/$defs/tagItem/properties/color",
