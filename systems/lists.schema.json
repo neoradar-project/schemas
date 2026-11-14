@@ -1234,7 +1234,7 @@
               "type": "integer",
               "minimum": 1,
               "maximum": 200,
-              "description": "Column width in characters, measured at the column's own font and size. Overrides width. Prefer this: a pixel width means a different number of visible characters at every body text size."
+              "description": "Column width in whole characters, 1 to 200, measured at the column's own font and size. Overrides width. Prefer this: a pixel width means a different number of visible characters at every body text size. Any other value is refused: the client leaves this column out and reports it in client.log."
             },
             "header": {
               "type": "object",
@@ -1262,7 +1262,7 @@
                   "type": "integer",
                   "minimum": 6,
                   "maximum": 48,
-                  "description": "Overrides the list style headerTextSize for this column."
+                  "description": "Overrides the list style headerTextSize for this column, in whole pixels from 6 to 48. Any other value is refused: the header draws at the list's header size and the client reports it in client.log."
                 },
                 "fontWeight": {
                   "type": "string",
@@ -1495,7 +1495,7 @@
                       }
                     }
                   ],
-                  "description": "Line height of the item, can also be an expression rule."
+                  "description": "Does nothing in a list: a list row is as tall as its text. A radar label in labels.json uses it; here the client reports it in client.log and the Configurator keeps it as written."
                 },
                 "color": {
                   "anyOf": [
@@ -1599,8 +1599,7 @@
                 },
                 "separatorBefore": {
                   "type": "boolean",
-                  "default": true,
-                  "description": "Whether add a blank padding the item."
+                  "description": "Does nothing in a list: columns sit at their widths. A radar label in labels.json uses it; here the client reports it in client.log and the Configurator keeps it as written."
                 },
                 "showPlusMinus": {
                   "anyOf": [
@@ -2118,7 +2117,7 @@
                 "description": "What sits behind the list. 'transparent' lets the radar show through on every platform; 'blur' asks for a frosted backdrop and falls back to 'transparent' where the platform has none (macOS, Linux). Omitted, any headerOpacity or bodyOpacity below 1 still means 'transparent'."
               },
               "rowColor": {
-                "description": "Colour of every cell in the row: an RGB or RGBA array, one =rule, or an array of =rule where the first that matches wins. In a YAML file a literal block (|) of =rule lines, one per line, is read as this array.",
+                "description": "Colour of every cell in the row: an [R, G, B] or [R, G, B, A] array of whole numbers from 0 to 255, one =rule, or an array of =rule where the first that matches wins. In a YAML file a literal block (|) of =rule lines, one per line, is read as this array.",
                 "anyOf": [
                   {
                     "anyOf": [
@@ -2128,10 +2127,12 @@
                       {
                         "type": "array",
                         "items": {
-                          "type": "number"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "minItems": 3,
-                        "maxItems": 3
+                        "maxItems": 4
                       }
                     ]
                   },
@@ -2159,13 +2160,17 @@
           },
           "headerTextSize": {
             "type": "integer",
+            "minimum": 6,
+            "maximum": 48,
             "default": 11,
-            "description": "Text size in whole pixels. A fractional size is refused: the list draws at 11 and the client reports it in client.log."
+            "description": "Text size in whole pixels, 6 to 48. Any other value is refused: the list draws at 11 and the client reports it in client.log."
           },
           "bodyTextSize": {
             "type": "integer",
+            "minimum": 6,
+            "maximum": 48,
             "default": 11,
-            "description": "Text size in whole pixels. A fractional size is refused: the list draws at 11 and the client reports it in client.log."
+            "description": "Text size in whole pixels, 6 to 48. Any other value is refused: the list draws at 11 and the client reports it in client.log."
           },
           "fontFamily": {
             "type": "string",
@@ -2176,14 +2181,14 @@
             "minimum": 0,
             "maximum": 64,
             "default": 0,
-            "description": "Inset in DIP between the list frame and the first column. Without it a left-aligned first column sits against the border. The header bar and each row highlight still span the full frame; only their content moves in, and the window widens to keep every column visible."
+            "description": "Inset in whole DIP, 0 to 64, between the list frame and the first column; any other value is refused, the inset is 0 and the client reports it in client.log. Without it a left-aligned first column sits against the border. The header bar and each row highlight still span the full frame; only their content moves in, and the window widens to keep every column visible."
           },
           "paddingRight": {
             "type": "integer",
             "minimum": 0,
             "maximum": 64,
             "default": 0,
-            "description": "Inset in DIP between the last column and the list frame. Separate from paddingLeft because the first and last columns usually carry opposite text alignments, so the optical gap they need is not the same."
+            "description": "Inset in whole DIP, 0 to 64, between the last column and the list frame; any other value is refused, the inset is 0 and the client reports it in client.log. Separate from paddingLeft because the first and last columns usually carry opposite text alignments, so the optical gap they need is not the same."
           }
         },
         "additionalProperties": false
