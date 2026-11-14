@@ -1240,8 +1240,7 @@
             "center",
             "right"
           ],
-          "default": "center",
-          "description": "Text alignment of the item, can be left, center or right."
+          "description": "Text alignment: left, center or right. On a radar tag the row's first shown item places the whole row within the tag's widest row, and absent is left; in a list it aligns the item's text within its cell, and absent is centred."
         },
         "lineHeight": {
           "anyOf": [
@@ -1258,7 +1257,7 @@
               }
             }
           ],
-          "description": "Line height of the item, can also be an expression rule."
+          "description": "Line height of the item as a multiple of its font size, as in CSS (1.2 is 1.2 times the font size): a floor on the row's height on a radar tag. Can also be an expression rule."
         },
         "color": {
           "anyOf": [
@@ -1363,7 +1362,7 @@
         "separatorBefore": {
           "type": "boolean",
           "default": true,
-          "description": "Whether add a blank padding the item."
+          "description": "Adds the column gap before this item when the row already shows something, as EuroScope's \"need separator before\". Ignored on a row's first shown item."
         },
         "showPlusMinus": {
           "anyOf": [
@@ -1819,7 +1818,7 @@
         },
         "lineHeight": {
           "type": "number",
-          "description": "Line height of the label text."
+          "description": "Line height of the label text as a multiple of each item's font size, as in CSS (1.2 is 1.2 times the font size): a floor on each row's height. A tag item's own lineHeight wins over this."
         },
         "textColor": {
           "$ref": "#/$defs/tagItem/properties/color",
