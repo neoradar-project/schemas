@@ -27,13 +27,6 @@
     "createdAt": {
       "type": "string"
     },
-    "centerPoint": {
-      "type": "array",
-      "items": {
-        "type": "number"
-      },
-      "description": "NOT HONOURED. Parsed and validated as [lon, lat] but never read: the startup viewport comes from the active profile's map/windowArea."
-    },
     "mapLayers": {
       "type": "array",
       "items": {
@@ -421,7 +414,19 @@
       }
     },
     "lastActiveProfile": {
-      "type": "string"
+      "type": "object",
+      "description": "Written by the client while the package is in use: the profile it last had open, as the main window's profile and the one on show, each a path under the package. Not an author's setting.",
+      "properties": {
+        "mainProfile": {
+          "type": "string",
+          "description": "The main window's profile."
+        },
+        "activeProfile": {
+          "type": "string",
+          "description": "The profile on show, which may be the main one."
+        }
+      },
+      "additionalProperties": false
     },
     "remoteSource": {
       "type": "object",
@@ -513,16 +518,25 @@
       "items": {
         "type": "string"
       }
+    },
+    "installedFiles": {
+      "type": "object",
+      "description": "Written by the client when it installs or updates the package from a provider: each file it installed, by its path in the package, with that file's checksum. Not an author's setting.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "lastOpened": {
+      "type": "string",
+      "description": "Written by the client each time the launcher opens the package: when, as an ISO 8601 time. Not an author's setting."
     }
   },
   "required": [
-    "$schema",
     "id",
     "name",
     "version",
     "namespace",
-    "createdAt",
-    "centerPoint"
+    "createdAt"
   ],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#",
