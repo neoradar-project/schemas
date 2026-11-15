@@ -205,8 +205,8 @@ the system files). Particular to the manifest:
 
 - **A key the client writes while the package is in use is never a field.** `lastActiveProfile`,
   `plugins`, `ignorePaths`, `remoteSource`, `installedFiles` and `lastOpened` are
-  `ManifestFields.WrittenByTheClient`: excused in `NotEdited` as the client's where the schema
-  names them, and a save takes each from the file as it is on disk then, because the client
+  `ManifestFields.WrittenByTheClient`: named by the schema as the client writes them and excused in
+  `NotEdited` as the client's, and a save takes each from the file as it is on disk then, because the client
   patches them under an open Configurator. A new key the client writes at run time is added to
   that list and written through `Package/ManifestKeyPatch` (one key set in the file's own text),
   never by serialising `PackageManifest` over the file.
@@ -214,13 +214,13 @@ the system files). Particular to the manifest:
   profiles folder and the server scope follow the namespace.
 - **The writer follows the loader's validation, and adds the layer rules the validator never
   reaches.** `ManifestWriter.Validate` refuses, in the model's own words, a manifest with no id,
-  name, version, namespace or createdAt and a centerPoint that is not two numbers, and by its
+  name, version, namespace or createdAt, and by its
   place and name a layer with no name, no source or a type other than geojson. A new rule the
   loader enforces goes there.
 - **A layer field under `defaultStyle` is a mapstyle layer field.** Declare it in
-  `MapStyleFields.OfLayer` and it reaches the manifest with no second declaration, unless the
-  manifest schema does not name it (`textWeight`, `textSharpness`), in which case
-  `ManifestFields.InTheManifestSchema` leaves it out until the schema does.
+  `MapStyleFields.OfLayer` and it reaches the manifest with no second declaration; the manifest
+  schema offers a layer's default style what the mapstyle offers a layer style, and one reader
+  (`LayerStyleParser`) reads both.
 - **A new layer and a new font are written with the keys the schema requires and nothing chosen
   for the author** (`ManifestFields.NewLayer`, `RowsDeclaration.NewRow`); the writer refuses a
   layer until it has a name and a source.
