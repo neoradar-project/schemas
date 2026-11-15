@@ -104,7 +104,8 @@
             },
             "width": {
               "type": "number",
-              "default": 1
+              "default": 2,
+              "description": "In logical pixels."
             },
             "opacity": {
               "type": "number",
@@ -321,12 +322,12 @@
                 "diamond",
                 "cross"
               ],
-              "default": "circle"
+              "default": "square"
             },
             "size": {
               "type": "number",
-              "default": 10,
-              "description": "Size of the point in cartesian units"
+              "default": 3,
+              "description": "Half the point's radius in logical pixels; 0 or less draws the 6 pixel default."
             },
             "sprite": {
               "type": "string",
@@ -350,7 +351,8 @@
             },
             "strokeWidth": {
               "type": "number",
-              "default": 1
+              "default": 0,
+              "description": "0 draws no outline, whatever the stroke colour; a cross then takes the line's width."
             },
             "rotation": {
               "type": "number",
@@ -810,7 +812,8 @@
                 "$ref": "#/properties/routeDraw/properties/pointStyle/properties/strokeOpacity"
               },
               "strokeWidth": {
-                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/strokeWidth"
+                "type": "number",
+                "default": 1
               },
               "rotation": {
                 "$ref": "#/properties/routeDraw/properties/pointStyle/properties/rotation"
