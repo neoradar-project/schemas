@@ -19,6 +19,11 @@
     "namespace": {
       "type": "string"
     },
+    "vacc": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]{1,7}$",
+      "description": "The server vAcc this package belongs to, for packages that split one vAcc's airspace between them (e.g. lfxx for the French FIR packages). The client asks the server for this scope; absent, it asks for the namespace. The namespace still names the controller's profiles folder."
+    },
     "createdAt": {
       "type": "string"
     },
