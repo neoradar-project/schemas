@@ -4,13 +4,6 @@
     "name": {
       "type": "string"
     },
-    "type": {
-      "type": "string",
-      "enum": [
-        "situation",
-        "profile"
-      ]
-    },
     "updatedAt": {
       "type": "string"
     },
@@ -316,7 +309,6 @@
   },
   "required": [
     "name",
-    "type",
     "map"
   ],
   "additionalProperties": false,
