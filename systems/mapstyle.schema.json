@@ -530,7 +530,7 @@
         },
         "dashArray": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/dashArray",
-          "description": "Dash and gap in logical pixels, e.g. [12, 6]. Prediction tool only; the straight heading line is always solid."
+          "description": "Dash and gap in logical pixels, e.g. [12, 6], for both heading tools. Not written, the straight line is solid and the turn tool dashes 12 6."
         },
         "snapTo": {
           "enum": [
