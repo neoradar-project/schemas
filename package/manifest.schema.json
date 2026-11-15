@@ -442,7 +442,7 @@
       "properties": {
         "http": {
           "type": "object",
-          "description": "A first-party HTTP allocator, built once for the package and offered to every system's chain: one POST per request carrying callsign, origin, destination, flightRule, aircraftType, cruiseLevelFt and circuit; one JSON object back carrying the code. A block that breaks a rule here is refused whole: no allocator is built, nothing is sent, and client.log names the field and the rule.",
+          "description": "A first-party HTTP allocator, built once for the package and offered to every system's chain: one POST per request carrying callsign, origin, destination, flightRule, aircraftType, and cruiseLevelFt; one JSON object back carrying the code. A block that breaks a rule here is refused whole: no allocator is built, nothing is sent, and client.log names the field and the rule.",
           "properties": {
             "endpoint": {
               "type": "string",
