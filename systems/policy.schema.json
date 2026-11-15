@@ -2421,7 +2421,7 @@
                   },
                   "heading": {
                     "type": "object",
-                    "description": "An assigned heading, TopSky's TCT_AHDG_*. Believed while the track is within toleranceDeg of it, or until maxTurnS after the clearance; after that it is disbelieved and the route and ground track rules apply. The heading is taken as a track, with no wind and no magnetic variation.",
+                    "description": "An assigned heading, TopSky's TCT_AHDG_*. Believed while the track is within toleranceDeg of it, or until maxTurnS after the clearance; after that it is disbelieved and the route and ground track rules apply. The heading is magnetic: the monitor adds the magnetic variation (WMM) at the aircraft and flies the heading with the drift the aircraft shows now held; no wind is forecast.",
                     "properties": {
                       "reactionS": {
                         "type": "number",
@@ -2929,7 +2929,7 @@
             },
             "heading": {
               "type": "object",
-              "description": "An assigned heading, TopSky's TCT_AHDG_*. Believed while the track is within toleranceDeg of it, or until maxTurnS after the clearance; after that it is disbelieved and the route and ground track rules apply. The heading is taken as a track, with no wind and no magnetic variation.",
+              "description": "An assigned heading, TopSky's TCT_AHDG_*. Believed while the track is within toleranceDeg of it, or until maxTurnS after the clearance; after that it is disbelieved and the route and ground track rules apply. The heading is magnetic: the monitor adds the magnetic variation (WMM) at the aircraft and flies the heading with the drift the aircraft shows now held; no wind is forecast.",
               "properties": {
                 "reactionS": {
                   "type": "number",
