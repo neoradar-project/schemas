@@ -785,7 +785,7 @@
                     "type": "integer",
                     "minimum": 0,
                     "default": 0,
-                    "description": "Milliseconds between reshapes of a STATIONARY aircraft's blob. 0 reshapes only on movement, so traffic on stand holds one shape."
+                    "description": "Milliseconds between reshapes of a STATIONARY aircraft's blob; on a view with an aircraft refresh (map.sweepIntervalSeconds) it reshapes once per refresh instead. 0 reshapes only on movement, so traffic on stand holds one shape."
                   },
                   "primaryPlotSynthesis": {
                     "type": "object",
