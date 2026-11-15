@@ -3466,7 +3466,7 @@
     },
     "squawk": {
       "type": "object",
-      "description": "The squawk provider chain on this system: the priority per provider name, providers it disables, the reserved codes no provider may hand out, and the circuit codes. A provider the system does not name keeps what it declared. The package's HTTP allocator is authored once in manifest.json under squawk.http, and ranked or disabled here by its name.",
+      "description": "The squawk provider chain on this system: the priority per provider name, providers it disables, the reserved codes no provider may hand out. A provider the system does not name keeps what it declared. The package's HTTP allocator is authored once in manifest.json under squawk.http, and ranked or disabled here by its name.",
       "properties": {
         "providers": {
           "type": "object",
@@ -3492,13 +3492,6 @@
             "$ref": "#/definitions/squawkCodeOrRange"
           },
           "description": "Codes never assigned whoever proposes them, in addition to 0000, 7500, 7600 and 7700."
-        },
-        "circuit": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/squawkCodeOrRange"
-          },
-          "description": "Codes reserved for circuit traffic."
         }
       },
       "additionalProperties": false
