@@ -109,6 +109,7 @@
                           "alternate",
                           "plannedTas",
                           "plannedFlightLevel",
+                          "plannedLevelIsVfr",
                           "rmk",
                           "flightTimeHours",
                           "flightTimeMinutes",
