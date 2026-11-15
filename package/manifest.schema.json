@@ -511,7 +511,7 @@
       "items": {
         "type": "string"
       },
-      "description": "Plugins this package loads when it is opened. Each entry is a .dll or a .nrplugin archive, given either as a full path or as a path relative to the package root (e.g. \"plugins/UKControllerPlugin.nrplugin\"). A .nrplugin is referenced as the archive, never as the binary it unpacks. The client's plugin window writes full paths here; a package ships its own plugins as relative ones."
+      "description": "Plugins this package offers to load when it is opened. Each entry is a .dll or a .nrplugin archive, given either as a full path or as a path relative to the package root (e.g. \"plugins/UKControllerPlugin.nrplugin\"). An entry is an offer: it loads for a controller only once they approve it in Plugin Settings, and an approved file that changes asks again. A network or device path (one that starts with two slashes or backslashes) is refused, and a relative entry must stay inside the package. A .nrplugin is referenced as the archive, never as the binary it unpacks. The client's plugin window writes full paths here, approved as it writes them; a package ships its own plugins as relative ones."
     },
     "ignorePaths": {
       "type": "array",
