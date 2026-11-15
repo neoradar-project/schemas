@@ -400,22 +400,22 @@
                           {
                             "type": "string",
                             "const": "altitudeIsQnh",
-                            "description": "1 when computedAltitude shows the QNH altitude, 0 when it shows the pressure altitude: QNH at or below the transition altitude of a vAcc area holding the aircraft, else of the profile the tag's view shows"
+                            "description": "1 when computedAltitude shows the QNH altitude, 0 when it shows the pressure altitude: QNH at or below the transition altitude of a vAcc area holding the aircraft, else of the profile the view drawing the tag or symbol shows; a list or a net reads the main window's"
                           },
                           {
                             "type": "string",
                             "const": "transitionAltitude",
-                            "description": "Transition altitude (ft) of the profile the tag's view shows; a list or a net reads the main window's. No vAcc area's is read here: altitudeIsQnh follows those"
+                            "description": "Transition altitude (ft) of the profile the view drawing the tag or symbol shows; a list or a net reads the main window's. No vAcc area's is read here: altitudeIsQnh follows those"
                           },
                           {
                             "type": "string",
                             "const": "gndFilterOn",
-                            "description": "The GND filter toggle is on in the profile the tag's view shows; a list or a net reads the main window's"
+                            "description": "The GND filter toggle is on in the profile the view drawing the tag or symbol shows; a list or a net reads the main window's"
                           },
                           {
                             "type": "string",
                             "const": "primFilterOn",
-                            "description": "The PRIM filter toggle is on in the profile the tag's view shows; a list or a net reads the main window's"
+                            "description": "The PRIM filter toggle is on in the profile the view drawing the tag or symbol shows; a list or a net reads the main window's"
                           },
                           {
                             "type": "string",
