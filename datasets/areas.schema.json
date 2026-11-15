@@ -102,153 +102,24 @@
       "description": "[above the separation level, below it IFR, below it VFR]. Overrides the policy's global buffers for this area alone, which is how a vAcc widens the margin around one danger area without widening every one."
     },
     "activation": {
-      "description": "One rule. An area is active when ANY of its rules says so, and an area with no rule at all is inactive until a controller activates it by hand. neoradar-cli writes the condition form, { when, lowerFt, upperFt, userText }; the kind forms are what it wrote before.",
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["when"],
-          "properties": {
-            "when": {
-              "description": "A condition over the controller's session, as a map item's showWhen: the area is active while it holds. [] always holds; [\"has\", \"aupAreas\", id] reads the airspace use plan; a within is a schedule. A condition the client cannot read never activates the area.",
-              "allOf": [
-                {
-                  "$ref": "../systems/expressions.schema.json#/properties/expressions/additionalProperties"
-                }
-              ]
-            },
-            "lowerFt": { "type": "number", "description": "The area's lowest level while this entry is what activates it, in place of the area's own; FEET." },
-            "upperFt": { "type": "number", "description": "The area's highest level while this entry is what activates it; FEET." },
-            "userText": { "type": "string", "description": "Text shown while this entry is what activates the area." },
-            "aup": { "type": "string", "description": "The airspace use plan id this entry reads. While the entry activates the area, the notice period of that id supplies the limits in place of the area's own." }
-          },
-          "description": "The first entry whose when holds activates the area and supplies its limits."
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["kind"],
-          "properties": {
-            "kind": { "type": "string", "const": "always" }
-          },
-          "description": "Permanently active. Nothing else is consulted."
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["kind", "from", "to", "days", "start", "end", "zone"],
-          "properties": {
-            "kind": { "type": "string", "const": "schedule" },
-            "from": {
-              "type": "string",
-              "pattern": "^(\\d{4}|\\d{6})$",
-              "description": "First day of the period: MMDD for a rule that repeats every year, YYMMDD for a one-off one."
-            },
-            "to": {
-              "type": "string",
-              "pattern": "^(\\d{4}|\\d{6})$",
-              "description": "Last day of the period, same two forms. A period whose end is before its start wraps through the new year."
-            },
-            "days": {
-              "type": "string",
-              "pattern": "^[0-7]+$",
-              "description": "Weekday digits, 1 Monday to 7 Sunday, in any order; \"0\" alone means continuous from the first day of the period to the last, ignoring weekdays."
-            },
-            "start": {
-              "type": "string",
-              "pattern": "^([01]\\d|2[0-4]):[0-5]\\d$",
-              "description": "Start time of day in the rule's own zone."
-            },
-            "end": {
-              "type": "string",
-              "pattern": "^([01]\\d|2[0-4]):[0-5]\\d$",
-              "description": "End time of day in the rule's own zone. An end before the start runs into the next day."
-            },
-            "zone": {
-              "type": "string",
-              "description": "IANA zone the times are in, or \"UTC\". A source file that splits one schedule into a winter and a summer range at the daylight-saving dates is FOLDED into a single rule in the vAcc's local zone, which is what removes the yearly edit those files need; the fold is only applied when every split range agrees once converted, so a mis-named zone leaves the ranges as the UTC the file wrote and warns."
-            },
-            "lowerFt": {
-              "type": "number",
-              "description": "Narrows the area's own lowerFt while this rule is what activates it, in FEET. Absent uses the area's."
-            },
-            "upperFt": {
-              "type": "number",
-              "description": "Narrows the area's own upperFt the same way, in FEET."
-            },
-            "userText": {
-              "type": "string",
-              "description": "Free text this rule shows in place of the area's own while it is active."
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["when"],
+      "properties": {
+        "when": {
+          "description": "A condition over the controller's session, as a map item's showWhen: the area is active while it holds. [] always holds; [\"has\", \"aupAreas\", id] reads the airspace use plan; a within is a schedule. A condition the client cannot read never activates the area.",
+          "allOf": [
+            {
+              "$ref": "../systems/expressions.schema.json#/properties/expressions/additionalProperties"
             }
-          }
+          ]
         },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["kind", "ref"],
-          "properties": {
-            "kind": { "type": "string", "const": "aup" },
-            "ref": {
-              "type": "string",
-              "description": "The name to match in the airspace use plan feed, which is usually the area's own name. The feed's record may narrow the area's levels for that day's activation."
-            }
-          },
-          "description": "Active while the live airspace use plan feed carries a current record of this name. The notice is the vAcc's, fetched by the server from the HTTP_AUP_URL of its TopSkySettings.txt; nothing here is compiled in."
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["kind", "icao", "text"],
-          "properties": {
-            "kind": { "type": "string", "const": "notam" },
-            "icao": { "type": "string" },
-            "text": { "type": "string" }
-          },
-          "description": "Active while a current NOTAM from this ICAO contains this text. Carried through for a vAcc that authors it; nothing evaluates it until a NOTAM source exists, and .dev area-info says so rather than reporting the area inactive."
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["kind"],
-          "properties": {
-            "kind": { "type": "string", "const": "runways" },
-            "arr": {
-              "type": "array",
-              "items": { "type": "string" },
-              "description": "Active while any of these runways is in use for arrivals. An empty list is no condition, never a condition nothing satisfies."
-            },
-            "notArr": {
-              "type": "array",
-              "items": { "type": "string" },
-              "description": "Inactive while any of these is in use for arrivals."
-            },
-            "dep": { "type": "array", "items": { "type": "string" } },
-            "notDep": { "type": "array", "items": { "type": "string" } }
-          },
-          "description": "Active for a runway configuration, which is how a noise-abatement or approach-dependent area follows the runway in use."
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["kind"],
-          "properties": {
-            "kind": { "type": "string", "const": "position" },
-            "yours": {
-              "type": "array",
-              "items": { "type": "string" },
-              "description": "Active while the local controller works one of these positions."
-            },
-            "notYours": { "type": "array", "items": { "type": "string" } },
-            "online": {
-              "type": "array",
-              "items": { "type": "string" },
-              "description": "Active while one of these positions is online, whoever works it."
-            },
-            "notOnline": { "type": "array", "items": { "type": "string" } }
-          },
-          "description": "Active by who is on position. An empty list is no condition."
-        }
-      ]
+        "lowerFt": { "type": "number", "description": "The area's lowest level while this entry is what activates it, in place of the area's own; FEET." },
+        "upperFt": { "type": "number", "description": "The area's highest level while this entry is what activates it; FEET." },
+        "userText": { "type": "string", "description": "Text shown while this entry is what activates the area." },
+        "aup": { "type": "string", "description": "The airspace use plan id this entry reads. While the entry activates the area, the notice period of that id supplies the limits in place of the area's own." }
+      },
+      "description": "One rule, { when, lowerFt, upperFt, userText, aup }, the only form the client acts on. An area is active while ANY of its entries' when holds, and the first entry whose when holds supplies its limits and text; an area with no entry, or none whose when holds, is inactive. An entry with no when (the kind forms neoradar-cli once wrote: always, schedule, aup, notam, runways, position) never activates its area: the schema refuses it, client.log names it as a [PackageCheck] finding, and converting the source file again with a current neoradar-cli writes the condition form."
     },
     "area": {
       "type": "object",
@@ -369,7 +240,7 @@
             "kind": {
               "type": "string",
               "enum": ["tsa", "stcaInhibit", "mtcdInhibit", "clamRamInhibit"],
-              "description": "What the area is for. tsa is a segregated or restricted area APW watches; the other three switch one net off inside themselves while active rather than raising anything: stcaInhibit STCA (pairs judged and kept silent), clamRamInhibit CLAM and RAM, mtcdInhibit MTCD, which is not built. An inhibit area switches its net off only while its activation makes it active, as TopSky's code tests the state of a DD area too, so one with no activation entry never does."
+              "description": "What the area is for. tsa is a segregated or restricted area APW watches; the other three switch one net off inside themselves while active rather than raising anything: stcaInhibit STCA (pairs judged and kept silent), clamRamInhibit CLAM and RAM, mtcdInhibit MTCD, which is not built, so client.log says once per load that no net reads it. An inhibit area switches its net off only while its activation makes it active, as TopSky's code tests the state of a DD area too, so one with no activation entry never does."
             },
             "category": {
               "type": "string",
@@ -424,7 +295,7 @@
                 "type": "string",
                 "enum": ["msaw", "aiw", "apw", "sap", "clamRam", "tct"]
               },
-              "description": "Nets switched OFF for an aircraft strictly inside this area, at its current position and level, while the area is active: aiw (no infringement is judged), clamRam (CLAM and RAM judge and stay silent) and apw (APW does not watch this area). msaw and sap are read by no net yet. tct is the exception: a TCT pair with either aircraft inside is still judged and kept silent, so it alerts on the first check outside. A limit above the transition altitude is a flight level."
+              "description": "Nets switched OFF for an aircraft strictly inside this area, at its current position and level, while the area is active: aiw and msaw (neither judges an aircraft whose current position is inside, MSAW never reading the prediction against the area), clamRam (CLAM and RAM judge and stay silent) and apw (APW does not watch this area). sap is read by no net yet, and client.log says so once per load. tct is the exception: a TCT pair with either aircraft inside is still judged and kept silent, so it alerts on the first check outside. A limit above the transition altitude is a flight level."
             },
             "apwBufferLatNm": { "$ref": "#/$defs/buffer" },
             "apwBufferVertFt": { "$ref": "#/$defs/buffer" },
