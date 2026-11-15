@@ -3492,13 +3492,6 @@
             "$ref": "#/definitions/squawkCodeOrRange"
           },
           "description": "Codes never assigned whoever proposes them, in addition to 0000, 7500, 7600 and 7700."
-        },
-        "circuit": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/squawkCodeOrRange"
-          },
-          "description": "Codes reserved for circuit traffic."
         }
       },
       "additionalProperties": false
