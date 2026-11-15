@@ -246,6 +246,7 @@
       }
     },
     "relatedLoginProfiles": {
+      "description": "Login callsigns, for example EGLL_TWR, that Connect lists first for this profile. Connect opens showing only the login profiles of the package with these callsigns (matched ignoring case), with Show all one click away; when none of them matches, every login profile is listed.",
       "type": "array",
       "items": {
         "type": "string"
