@@ -65,27 +65,32 @@
                       {
                         "type": "array",
                         "items": {
-                          "type": "number"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "minItems": 3,
                         "maxItems": 3,
-                        "description": "RGB color array [r,g,b]"
+                        "description": "RGB colour [r, g, b], each a whole number from 0 to 255"
                       },
                       {
                         "type": "array",
                         "items": {
-                          "type": "number"
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 255
                         },
                         "minItems": 4,
                         "maxItems": 4,
-                        "description": "RGBA color array [r,g,b,a]"
+                        "description": "RGBA colour [r, g, b, a], each a whole number from 0 to 255; an alpha of 255 is opaque"
                       }
                     ],
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+                    "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
                   },
                   "width": {
                     "type": "number",
-                    "default": 1
+                    "default": 1.4,
+                    "description": "Line width in logical pixels. Never drawn thinner than 1."
                   },
                   "opacity": {
                     "type": "number",
@@ -101,9 +106,6 @@
                     "description": "Dash, gap, dash, gap and so on, in logical pixels: an even number of values, repeated along the line. An odd count repeats with dashes and gaps swapped; a value of 0 or less draws solid"
                   }
                 },
-                "required": [
-                  "color"
-                ],
                 "additionalProperties": false
               },
               "fillStyle": {
@@ -117,9 +119,6 @@
                     "default": 1
                   }
                 },
-                "required": [
-                  "color"
-                ],
                 "additionalProperties": false
               },
               "pointStyle": {
@@ -136,12 +135,12 @@
                       "shape"
                     ],
                     "default": "circle",
-                    "description": "The built-in symbol, a sprite, or shape for the shape named by shape."
+                    "description": "The built-in symbol, a sprite, or shape for the shape named by shape. Lower case only: any other value reads as absent and the package check says so."
                   },
                   "size": {
                     "type": "number",
-                    "default": 10,
-                    "description": "Size of the point in cartesian units"
+                    "default": 3,
+                    "description": "The dot's radius in logical pixels. 0 draws the layer's own 3 pixel dot; a negative size draws no dot."
                   },
                   "sprite": {
                     "type": "string",
@@ -153,7 +152,7 @@
                   },
                   "fillColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+                    "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
                   },
                   "fillOpacity": {
                     "type": "number",
@@ -161,7 +160,7 @@
                   },
                   "strokeColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+                    "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
                   },
                   "strokeOpacity": {
                     "type": "number",
@@ -187,7 +186,7 @@
                   },
                   "color": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a) NOT HONOURED here: a map label takes its point's own colour at full alpha. Set the point colour instead."
+                    "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. The label's red, green and blue; a label is always drawn opaque. Not written: each label takes its point's colour."
                   },
                   "fontFamily": {
                     "type": "string",
@@ -196,7 +195,8 @@
                   },
                   "fontSize": {
                     "type": "number",
-                    "default": 12
+                    "default": 10,
+                    "description": "Label size in pixels. Not written: 10, or 11 on a layer named label."
                   },
                   "fontWeight": {
                     "type": "string",
@@ -216,7 +216,21 @@
                       "900"
                     ],
                     "default": "normal",
-                    "description": "NOT HONOURED: the label atlas is rasterised at one weight. Use a bold fontFamily if the renderer gains per-layer families."
+                    "description": "Coarse stroke weight, applied as a coverage threshold shift so no second atlas is needed. Overridden by textWeight when both are set."
+                  },
+                  "textWeight": {
+                    "type": "number",
+                    "minimum": -0.45,
+                    "maximum": 0.45,
+                    "default": 0,
+                    "description": "Fine stroke weight. Negative thins the strokes, positive thickens them, 0 is the font's own weight. Overrides fontWeight."
+                  },
+                  "textSharpness": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "default": 0,
+                    "description": "Edge hardness. 0 keeps the rasteriser's own antialiasing, 1 gives a near-binary edge. A negative textWeight with some sharpness gives a thin, crisp look."
                   },
                   "size": {
                     "type": "number",
@@ -288,7 +302,7 @@
                   },
                   "outlineColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a) NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
+                    "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
                   },
                   "outlineWidth": {
                     "type": "number",
@@ -307,7 +321,7 @@
                   },
                   "dropShadowColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a) NOT HONOURED.",
+                    "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. NOT HONOURED.",
                     "default": [
                       0,
                       0,
@@ -354,7 +368,7 @@
                   },
                   "backgroundColor": {
                     "$ref": "#/properties/mapLayers/items/properties/defaultStyle/properties/lineStyle/properties/color",
-                    "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+                    "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
                   },
                   "backgroundOpacity": {
                     "type": "number",
