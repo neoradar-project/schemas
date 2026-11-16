@@ -140,7 +140,8 @@
             },
             "fontFamily": {
               "type": "string",
-              "default": "RobotoMono-Regular"
+              "default": "Inter",
+              "description": "The face of the fix labels: an alias of the manifest's fonts or a font the client bundles (Inter, RobotoMono). Not written: Inter. A name that is neither draws in Inter and is told once in client.log."
             },
             "fontSize": {
               "type": "number",
@@ -164,12 +165,7 @@
                 "900"
               ],
               "default": "normal",
-              "description": "NOT HONOURED here: route labels draw through the screen-text path, which carries no per-label weight yet. Honoured on a layer textStyle."
-            },
-            "size": {
-              "type": "number",
-              "default": 10,
-              "description": "NOT HONOURED. Use fontSize."
+              "description": "The weight of the fix labels, drawn by the same coverage window as a map layer's labels. Not written: normal."
             },
             "offset": {
               "type": "array",
@@ -183,36 +179,9 @@
                 0
               ]
             },
-            "anchor": {
-              "type": "string",
-              "enum": [
-                "start",
-                "middle",
-                "end"
-              ],
-              "default": "middle",
-              "description": "NOT HONOURED. Labels are positioned by offset alone."
-            },
-            "baseline": {
-              "type": "string",
-              "enum": [
-                "top",
-                "middle",
-                "bottom",
-                "alphabetic"
-              ],
-              "default": "middle",
-              "description": "NOT HONOURED. Labels are positioned by offset alone."
-            },
-            "letterSpacing": {
-              "type": "number",
-              "default": 0,
-              "description": "NOT HONOURED."
-            },
             "lineHeight": {
               "type": "number",
-              "default": 0,
-              "description": "NOT HONOURED. Map labels are single-line."
+              "description": "Pixels from one line's baseline to the next in a fix label. Not written or 0: 12."
             },
             "align": {
               "type": "string",
@@ -221,18 +190,18 @@
                 "center",
                 "right"
               ],
-              "default": "center",
-              "description": "NOT HONOURED. Map labels are single-line."
+              "default": "left",
+              "description": "Where each line of a fix label (the name, the ETA, the profile line) sits beside the others. Not written: left."
             },
             "wordWrap": {
               "type": "boolean",
               "default": false,
-              "description": "NOT HONOURED. Map labels are single-line."
+              "description": "On, a line of a fix label breaks at the last space before it passes wordWrapWidth; a word wider stays whole. Not written: off."
             },
             "wordWrapWidth": {
               "type": "number",
               "default": 100,
-              "description": "NOT HONOURED. Map labels are single-line."
+              "description": "Pixels a fix label's line may run to while wordWrap is on. Not written: 100."
             },
             "outlineColor": {
               "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
@@ -246,40 +215,6 @@
               "type": "number",
               "default": 1
             },
-            "dropShadow": {
-              "type": "boolean",
-              "default": false,
-              "description": "NOT HONOURED."
-            },
-            "dropShadowColor": {
-              "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-              "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. NOT HONOURED.",
-              "default": [
-                0,
-                0,
-                0
-              ]
-            },
-            "dropShadowAngle": {
-              "type": "number",
-              "default": 0.5235987755982988,
-              "description": "NOT HONOURED."
-            },
-            "dropShadowBlur": {
-              "type": "number",
-              "default": 0,
-              "description": "NOT HONOURED."
-            },
-            "dropShadowDistance": {
-              "type": "number",
-              "default": 5,
-              "description": "NOT HONOURED."
-            },
-            "dropShadowOpacity": {
-              "type": "number",
-              "default": 1,
-              "description": "NOT HONOURED."
-            },
             "scaleWithZoom": {
               "type": "boolean",
               "default": true,
@@ -287,25 +222,25 @@
             },
             "minZoom": {
               "type": "number",
-              "description": "NOT HONOURED. Zoom gating is per layer, not per text style."
+              "description": "The fix labels are hidden below this map zoom. Inclusive. Not written: no lower limit."
             },
             "maxZoom": {
               "type": "number",
-              "description": "NOT HONOURED. Zoom gating is per layer, not per text style."
+              "description": "The fix labels are hidden above this map zoom. Inclusive. Not written: no upper limit."
             },
             "padding": {
               "type": "number",
               "default": 0,
-              "description": "NOT HONOURED."
+              "description": "Pixels the plate reaches past the fix label's lines on every side. Used only where backgroundOpacity is above 0. Not written: 0."
             },
             "backgroundColor": {
               "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-              "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
+              "description": "The colour of the plate behind each fix label. backgroundOpacity multiplies its alpha; written alone, it draws at its own alpha. Not written: the map background."
             },
             "backgroundOpacity": {
               "type": "number",
               "default": 0,
-              "description": "NOT HONOURED: labels have no background plate."
+              "description": "Above 0, one plate is drawn behind each fix label's lines, its colour's alpha times this. Not written: 1 where backgroundColor is written, else no plate."
             }
           },
           "additionalProperties": false
@@ -833,8 +768,8 @@
               },
               "fontFamily": {
                 "type": "string",
-                "default": "RobotoMono-Regular",
-                "description": "NOT HONOURED here: map labels are rasterised in the renderer-wide font family."
+                "default": "Inter",
+                "description": "The face the layer's labels draw in: an alias of the manifest's fonts or a font the client bundles (Inter, RobotoMono). Not written: the manifest's default style for the layer, else Inter. A name that is neither draws in Inter and is told once in client.log."
               },
               "fontSize": {
                 "type": "number",
@@ -860,11 +795,6 @@
                 "default": 0,
                 "description": "Edge hardness. 0 keeps the rasteriser's own antialiasing, 1 gives a near-binary edge. A negative textWeight with some sharpness gives a thin, crisp look."
               },
-              "size": {
-                "type": "number",
-                "default": 10,
-                "description": "NOT HONOURED. Use fontSize."
-              },
               "offset": {
                 "type": "array",
                 "items": {
@@ -877,36 +807,9 @@
                   0
                 ]
               },
-              "anchor": {
-                "type": "string",
-                "enum": [
-                  "start",
-                  "middle",
-                  "end"
-                ],
-                "default": "middle",
-                "description": "NOT HONOURED. Labels are positioned by offset alone."
-              },
-              "baseline": {
-                "type": "string",
-                "enum": [
-                  "top",
-                  "middle",
-                  "bottom",
-                  "alphabetic"
-                ],
-                "default": "middle",
-                "description": "NOT HONOURED. Labels are positioned by offset alone."
-              },
-              "letterSpacing": {
-                "type": "number",
-                "default": 0,
-                "description": "NOT HONOURED."
-              },
               "lineHeight": {
                 "type": "number",
-                "default": 0,
-                "description": "NOT HONOURED. Map labels are single-line."
+                "description": "Pixels from one line's baseline to the next, in the label's own size. A label breaks at each line break in its text, and at spaces with wordWrap. Not written or 0: 1.2 times the font size."
               },
               "align": {
                 "type": "string",
@@ -915,66 +818,18 @@
                   "center",
                   "right"
                 ],
-                "default": "center",
-                "description": "NOT HONOURED. Map labels are single-line."
+                "default": "left",
+                "description": "Where each line of a label sits beside the others. Not written: left."
               },
               "wordWrap": {
                 "type": "boolean",
                 "default": false,
-                "description": "NOT HONOURED. Map labels are single-line."
+                "description": "On, a line breaks at the last space before it passes wordWrapWidth; a word wider than that stays whole. Not written: off."
               },
               "wordWrapWidth": {
                 "type": "number",
                 "default": 100,
-                "description": "NOT HONOURED. Map labels are single-line."
-              },
-              "outlineColor": {
-                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-                "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
-              },
-              "outlineWidth": {
-                "type": "number",
-                "default": 0,
-                "description": "NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
-              },
-              "outlineOpacity": {
-                "type": "number",
-                "default": 1,
-                "description": "NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
-              },
-              "dropShadow": {
-                "type": "boolean",
-                "default": false,
-                "description": "NOT HONOURED."
-              },
-              "dropShadowColor": {
-                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-                "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. NOT HONOURED.",
-                "default": [
-                  0,
-                  0,
-                  0
-                ]
-              },
-              "dropShadowAngle": {
-                "type": "number",
-                "default": 0.5235987755982988,
-                "description": "NOT HONOURED."
-              },
-              "dropShadowBlur": {
-                "type": "number",
-                "default": 0,
-                "description": "NOT HONOURED."
-              },
-              "dropShadowDistance": {
-                "type": "number",
-                "default": 5,
-                "description": "NOT HONOURED."
-              },
-              "dropShadowOpacity": {
-                "type": "number",
-                "default": 1,
-                "description": "NOT HONOURED."
+                "description": "Pixels a line may run to while wordWrap is on, in the label's own size. Not written: 100."
               },
               "scaleWithZoom": {
                 "type": "boolean",
@@ -983,25 +838,25 @@
               },
               "minZoom": {
                 "type": "number",
-                "description": "NOT HONOURED. Zoom gating is per layer, not per text style."
+                "description": "The labels are hidden below this map zoom, on the scale the layer's own minimum zoom is on. Inclusive. Not written: no lower limit."
               },
               "maxZoom": {
                 "type": "number",
-                "description": "NOT HONOURED. Zoom gating is per layer, not per text style."
+                "description": "The labels are hidden above this map zoom. Inclusive. Not written: no upper limit."
               },
               "padding": {
                 "type": "number",
                 "default": 0,
-                "description": "NOT HONOURED."
+                "description": "Pixels the plate reaches past the text on every side, in the label's own size. Used only where backgroundOpacity is above 0. Not written: 0."
               },
               "backgroundColor": {
                 "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-                "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
+                "description": "The colour of the plate behind the layer's labels. backgroundOpacity multiplies its alpha; written alone, it draws at its own alpha. Not written: the map background."
               },
               "backgroundOpacity": {
                 "type": "number",
                 "default": 0,
-                "description": "NOT HONOURED: labels have no background plate."
+                "description": "Above 0, a plate is drawn behind each label and over the map under it, its colour's alpha times this. Not written: 1 where backgroundColor is written, else no plate."
               }
             },
             "additionalProperties": false
