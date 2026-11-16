@@ -1062,8 +1062,8 @@
         },
         "emergencySquawk": {
           "type": "boolean",
-          "default": true,
-          "description": "Raises an alert-severity Emergency on any aircraft squawking an emergency code (emergencyCodes: 7500, 7600 and 7700 unless the package adds one), with the code's words and the code as alertText. A code set while the transponder is on standby, or on a track only a primary radar sees, raises nothing. Client-side and needs no server."
+          "default": false,
+          "description": "Off unless true. Raises an alert-severity Emergency on any aircraft squawking an emergency code (emergencyCodes: 7500, 7600 and 7700 unless the package adds one), with the code's words and the code as alertText. A code set while the transponder is on standby, or on a track only a primary radar sees, raises nothing. Client-side and needs no server."
         },
         "emergencyCodes": {
           "type": "object",
@@ -1174,7 +1174,7 @@
         },
         "ram": {
           "type": "object",
-          "description": "Route adherence monitoring, evaluated on the client against the route expansion the server landed on the flight plan, so the numbers are the package's. It measures cross-track distance to the leg the aircraft is flying and raises a warning-severity Ram with the distance as alertText. The server is still the only route expander, so with no server there is no expansion and the net is silent rather than clean; .dev ram-info says which of the two it is. Absent is every default below, as an absent safetyNets section is.",
+          "description": "Route adherence monitoring, evaluated on the client against the route expansion the server landed on the flight plan, so the numbers are the package's. It measures cross-track distance to the leg the aircraft is flying and raises a warning-severity Ram with the distance as alertText. The server is still the only route expander, so with no server there is no expansion and the net is silent rather than clean; .dev ram-info says which of the two it is. Absent is off; a section authored here, even an empty one, is on at every default below.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -1285,7 +1285,7 @@
         },
         "msaw": {
           "type": "object",
-          "description": "Minimum safe altitude warning, evaluated on the client against the package's own datasets/msaw.geojson. Unlike stca this net is ON wherever that file exists: its figures are the vAcc's own published surface rather than a tuning nobody has done, so absent means every default below. WITH NO SURFACE THE NET IS SILENT RATHER THAN CLEAN, and .dev msaw-info says which of the two it is instead of reporting every aircraft above a minimum. Raises an alert-severity Msaw with the minimum as alertText, and publishes the minimum under each aircraft as the msaFt expression whether or not it alerts. It judges the altitude an altimeter set to QNH reads, as TopSky and EUROCONTROL's MSAW reference do: the pressure altitude corrected by the QNH of the nearest airport METAR within 100 NM, the frame a cleared altitude is flown in; with no such METAR, or a pilot client that relays no pressure difference, the true altitude. An approach-clearance inhibit (TopSky's MSAW_AppInhibit) is authored as safetyNets.kinds.msaw.exclude.when over clearedFlightLevel, 2 for a visual approach and 1 for an ILS, never under safetyNets.exclude, which would take the approach out of AFDAS as well.",
+          "description": "Minimum safe altitude warning, evaluated on the client against the package's own datasets/msaw.geojson. Absent is off; a section authored here, even an empty one, is on at every default below, wherever that file exists. WITH NO SURFACE THE NET IS SILENT RATHER THAN CLEAN, and .dev msaw-info says which of the two it is instead of reporting every aircraft above a minimum. Raises an alert-severity Msaw with the minimum as alertText, and publishes the minimum under each aircraft as the msaFt expression whether or not it alerts. It judges the altitude an altimeter set to QNH reads, as TopSky and EUROCONTROL's MSAW reference do: the pressure altitude corrected by the QNH of the nearest airport METAR within 100 NM, the frame a cleared altitude is flown in; with no such METAR, or a pilot client that relays no pressure difference, the true altitude. An approach-clearance inhibit (TopSky's MSAW_AppInhibit) is authored as safetyNets.kinds.msaw.exclude.when over clearedFlightLevel, 2 for a visual approach and 1 for an ILS, never under safetyNets.exclude, which would take the approach out of AFDAS as well.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -2095,7 +2095,7 @@
         },
         "aiw": {
           "type": "object",
-          "description": "Airspace infringement warning, evaluated on the client: a track with Mode C, correlated or not (an uncorrelated one is unknown traffic tied to no plan, judged only against the CAS dataset or controlled zones: under the online-volume fallback, whose volumes reach the surface under a TMA, it stays out), that no controller is tracking and that is off any discrete code ATC assigned it, inside controlled airspace, which is the most common real incident on VATSIM. Controlled airspace is, first, zones tagged controlledZoneTag, which replace everything else; else the package's datasets/cas.geojson (built by neoradar-cli from the sector file's outlines and the vAcc's data/cas.json), judged strictly inside each volume, a limit in feet on the altitude on QNH and a flight level on the pressure altitude, and only where the point's owner by sector-file order is online (and ours under scope own); else every ACTIVE volume whose sector an online controller works. An active area may switch the net off (datasets/areas.geojson inhibits aiw, or safetyNets.kinds.aiw.inhibitInActiveAreas). A primary blip and a transponder on standby are never judged. It raises a warning-severity Aiw naming the airspace. 'Not on frequency' is deliberately not part of the rule: a pilot's tuned frequency is in neither the position stream nor the datafeed, so neither half can evaluate it. Absent is every default below, as an absent safetyNets section is. .dev aiw-info prints the airspace set it used.",
+          "description": "Airspace infringement warning, evaluated on the client: a track with Mode C, correlated or not (an uncorrelated one is unknown traffic tied to no plan, judged only against the CAS dataset or controlled zones: under the online-volume fallback, whose volumes reach the surface under a TMA, it stays out), that no controller is tracking and that is off any discrete code ATC assigned it, inside controlled airspace, which is the most common real incident on VATSIM. Controlled airspace is, first, zones tagged controlledZoneTag, which replace everything else; else the package's datasets/cas.geojson (built by neoradar-cli from the sector file's outlines and the vAcc's data/cas.json), judged strictly inside each volume, a limit in feet on the altitude on QNH and a flight level on the pressure altitude, and only where the point's owner by sector-file order is online (and ours under scope own); else every ACTIVE volume whose sector an online controller works. An active area may switch the net off (datasets/areas.geojson inhibits aiw, or safetyNets.kinds.aiw.inhibitInActiveAreas). A primary blip and a transponder on standby are never judged. It raises a warning-severity Aiw naming the airspace. 'Not on frequency' is deliberately not part of the rule: a pilot's tuned frequency is in neither the position stream nor the datafeed, so neither half can evaluate it. Absent is off; a section authored here, even an empty one, is on at every default below. .dev aiw-info prints the airspace set it used.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -2148,7 +2148,7 @@
         },
         "bust": {
           "type": "object",
-          "description": "Level bust: the aircraft has passed through its cleared level by more than triggerFt. Raises an alert-severity Bust worded with the cleared level, as BUST A060 or BUST FL350. A client net; absent is every default below, the values the server tuned it with, never off.",
+          "description": "Level bust: the aircraft has passed through its cleared level by more than triggerFt. Raises an alert-severity Bust worded with the cleared level, as BUST A060 or BUST FL350. A client net; absent is off, and a section authored here, even an empty one, is on at every default below, the values the server tuned it with.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -2207,7 +2207,7 @@
         },
         "clam": {
           "type": "object",
-          "description": "Cleared level adherence monitoring: the aircraft is more than triggerFt off its cleared level and not closing on it. Raises a warning-severity Clam worded with the cleared level, as CLAM FL350, and stands down while a bust stands on the same aircraft. A client net; absent is every default below, the values the server tuned it with, never off.",
+          "description": "Cleared level adherence monitoring: the aircraft is more than triggerFt off its cleared level and not closing on it. Raises a warning-severity Clam worded with the cleared level, as CLAM FL350, and stands down while a bust stands on the same aircraft. A client net; absent is off, and a section authored here, even an empty one, is on at every default below, the values the server tuned it with.",
           "properties": {
             "enabled": {
               "type": "boolean",
