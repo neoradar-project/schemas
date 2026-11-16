@@ -400,7 +400,9 @@
         "type": "object",
         "properties": {
           "alias": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[^\\s,#]([^,#]*[^\\s,#])?$",
+            "description": "The family name a tag item, a list column, a map layer's text style or a route label names to draw with this font. No space at either end and no comma or #: the client refuses such an alias, tells it once in client.log and registers nothing under it."
           },
           "src": {
             "type": "string"
