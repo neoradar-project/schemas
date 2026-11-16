@@ -61,7 +61,8 @@ these schemas stay hand-written rather than generated. `mapstyle.schema.json` an
 `defaultStyle` have no case there because `MapStyleParser` reads them by hand; their guard is the
 reader itself (`MapStyleSchemaPinTests` and `ManifestSchemaPinTests` write every key the pinned schema
 offers and fail on one the reader never asks for, and a package writing such a key gets an `UnreadKey`
-finding). No description says a key is not honoured: a key the client does not read is deleted.
+finding). The one exception is a text style's `text` and `backgroundColor`, which those two tests list as
+offered and not yet read; every other key the client does not read is deleted, not described as ignored.
 
 **A schema change is not finished here.** A property added or changed in a `systems/`, manifest or
 profile schema also needs `@client`'s Configurator to edit it or preserve it on save. A
