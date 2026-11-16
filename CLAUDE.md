@@ -57,8 +57,11 @@ enum half (below). It resolves this repo through
 property names and the matching models' `[JsonPropertyName]` names are the same SET - both
 directions, so a schema advertising something the parser ignores fails too. It checks presence
 only: types, ranges, enums and descriptions carry intent no C# property expresses, which is why
-these schemas stay hand-written rather than generated. `mapstyle.schema.json` has no case because
-`MapStyleParser` reads it by hand with nothing to reflect over; it needs eyes.
+these schemas stay hand-written rather than generated. `mapstyle.schema.json` and a manifest layer's
+`defaultStyle` have no case there because `MapStyleParser` reads them by hand; their guard is the
+reader itself (`MapStyleSchemaPinTests` and `ManifestSchemaPinTests` write every key the pinned schema
+offers and fail on one the reader never asks for, and a package writing such a key gets an `UnreadKey`
+finding). No description says a key is not honoured: a key the client does not read is deleted.
 
 **A schema change is not finished here.** A property added or changed in a `systems/`, manifest or
 profile schema also needs `@client`'s Configurator to edit it or preserve it on save. A

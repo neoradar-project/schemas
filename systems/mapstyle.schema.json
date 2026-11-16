@@ -166,11 +166,6 @@
               "default": "normal",
               "description": "NOT HONOURED here: route labels draw through the screen-text path, which carries no per-label weight yet. Honoured on a layer textStyle."
             },
-            "size": {
-              "type": "number",
-              "default": 10,
-              "description": "NOT HONOURED. Use fontSize."
-            },
             "offset": {
               "type": "array",
               "items": {
@@ -182,32 +177,6 @@
                 0,
                 0
               ]
-            },
-            "anchor": {
-              "type": "string",
-              "enum": [
-                "start",
-                "middle",
-                "end"
-              ],
-              "default": "middle",
-              "description": "NOT HONOURED. Labels are positioned by offset alone."
-            },
-            "baseline": {
-              "type": "string",
-              "enum": [
-                "top",
-                "middle",
-                "bottom",
-                "alphabetic"
-              ],
-              "default": "middle",
-              "description": "NOT HONOURED. Labels are positioned by offset alone."
-            },
-            "letterSpacing": {
-              "type": "number",
-              "default": 0,
-              "description": "NOT HONOURED."
             },
             "lineHeight": {
               "type": "number",
@@ -245,40 +214,6 @@
             "outlineOpacity": {
               "type": "number",
               "default": 1
-            },
-            "dropShadow": {
-              "type": "boolean",
-              "default": false,
-              "description": "NOT HONOURED."
-            },
-            "dropShadowColor": {
-              "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-              "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. NOT HONOURED.",
-              "default": [
-                0,
-                0,
-                0
-              ]
-            },
-            "dropShadowAngle": {
-              "type": "number",
-              "default": 0.5235987755982988,
-              "description": "NOT HONOURED."
-            },
-            "dropShadowBlur": {
-              "type": "number",
-              "default": 0,
-              "description": "NOT HONOURED."
-            },
-            "dropShadowDistance": {
-              "type": "number",
-              "default": 5,
-              "description": "NOT HONOURED."
-            },
-            "dropShadowOpacity": {
-              "type": "number",
-              "default": 1,
-              "description": "NOT HONOURED."
             },
             "scaleWithZoom": {
               "type": "boolean",
@@ -860,11 +795,6 @@
                 "default": 0,
                 "description": "Edge hardness. 0 keeps the rasteriser's own antialiasing, 1 gives a near-binary edge. A negative textWeight with some sharpness gives a thin, crisp look."
               },
-              "size": {
-                "type": "number",
-                "default": 10,
-                "description": "NOT HONOURED. Use fontSize."
-              },
               "offset": {
                 "type": "array",
                 "items": {
@@ -876,32 +806,6 @@
                   0,
                   0
                 ]
-              },
-              "anchor": {
-                "type": "string",
-                "enum": [
-                  "start",
-                  "middle",
-                  "end"
-                ],
-                "default": "middle",
-                "description": "NOT HONOURED. Labels are positioned by offset alone."
-              },
-              "baseline": {
-                "type": "string",
-                "enum": [
-                  "top",
-                  "middle",
-                  "bottom",
-                  "alphabetic"
-                ],
-                "default": "middle",
-                "description": "NOT HONOURED. Labels are positioned by offset alone."
-              },
-              "letterSpacing": {
-                "type": "number",
-                "default": 0,
-                "description": "NOT HONOURED."
               },
               "lineHeight": {
                 "type": "number",
@@ -927,54 +831,6 @@
                 "type": "number",
                 "default": 100,
                 "description": "NOT HONOURED. Map labels are single-line."
-              },
-              "outlineColor": {
-                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-                "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
-              },
-              "outlineWidth": {
-                "type": "number",
-                "default": 0,
-                "description": "NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
-              },
-              "outlineOpacity": {
-                "type": "number",
-                "default": 1,
-                "description": "NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
-              },
-              "dropShadow": {
-                "type": "boolean",
-                "default": false,
-                "description": "NOT HONOURED."
-              },
-              "dropShadowColor": {
-                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-                "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. NOT HONOURED.",
-                "default": [
-                  0,
-                  0,
-                  0
-                ]
-              },
-              "dropShadowAngle": {
-                "type": "number",
-                "default": 0.5235987755982988,
-                "description": "NOT HONOURED."
-              },
-              "dropShadowBlur": {
-                "type": "number",
-                "default": 0,
-                "description": "NOT HONOURED."
-              },
-              "dropShadowDistance": {
-                "type": "number",
-                "default": 5,
-                "description": "NOT HONOURED."
-              },
-              "dropShadowOpacity": {
-                "type": "number",
-                "default": 1,
-                "description": "NOT HONOURED."
               },
               "scaleWithZoom": {
                 "type": "boolean",
