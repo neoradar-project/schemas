@@ -32,11 +32,11 @@
       "minItems": 3,
       "maxItems": 4,
       "items": {
-        "type": "number",
+        "type": "integer",
         "minimum": 0,
         "maximum": 255
       },
-      "description": "Literal colour as [r, g, b] or [r, g, b, a], each 0-255. A literal is never overridden by the variant's plotColor."
+      "description": "Literal colour as [r, g, b] or [r, g, b, a], each a whole number from 0 to 255, the alpha too; one outside this reads as absent and is reported in client.log. A literal is never overridden by the variant's plotColor."
     },
     "shape": {
       "type": "object",

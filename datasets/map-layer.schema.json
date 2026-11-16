@@ -122,10 +122,10 @@
     },
     "color": {
       "type": "array",
-      "items": { "type": "number", "minimum": 0, "maximum": 255 },
+      "items": { "type": "integer", "minimum": 0, "maximum": 255 },
       "minItems": 3,
       "maxItems": 4,
-      "description": "[r, g, b] or [r, g, b, a], each 0 to 255."
+      "description": "[r, g, b] or [r, g, b, a], each a whole number from 0 to 255, the alpha too; an alpha of 255 is opaque. A colour outside this reads as absent and is reported in client.log."
     },
     "dashArray": {
       "type": "array",
