@@ -184,7 +184,7 @@
                   "fontFamily": {
                     "type": "string",
                     "default": "RobotoMono-Regular",
-                    "description": "NOT HONOURED here: map labels are rasterised in the renderer-wide font family."
+                    "description": "The face the layer's labels draw in, in every system whose mapstyle names none: an alias of the manifest's fonts or a font the client bundles (Inter, RobotoMono). Not written: Inter. A name that is neither draws in Inter and is told once in client.log."
                   },
                   "fontSize": {
                     "type": "number",
