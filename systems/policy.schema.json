@@ -127,6 +127,15 @@
             }
           },
           "additionalProperties": false
+        },
+        "uncorrelatedDetail": {
+          "type": "string",
+          "enum": [
+            "full",
+            "surveillance"
+          ],
+          "default": "surveillance",
+          "description": "What the Selection Detail window shows of an uncorrelated track. surveillance, the default, shows only what the radar knows: the same grid with the callsign and the transmitted code, every flight plan and controller data box empty and Open FP disabled, until the track correlates. full opts out: it shows the flight plan and controller data as for a correlated track."
         }
       },
       "additionalProperties": false
