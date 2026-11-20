@@ -627,6 +627,7 @@
                         "kOutgoingTransfer",
                         "kIntruder",
                         "kConcerned",
+                        "kRedundant",
                         "kPlannedToYouDeviating"
                       ]
                     }
