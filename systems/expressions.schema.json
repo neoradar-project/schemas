@@ -930,6 +930,11 @@
                             },
                             {
                               "type": "string",
+                              "const": "isRedundant",
+                              "description": "Attention state is Redundant: handed off by us and accepted, still inside a volume we work."
+                            },
+                            {
+                              "type": "string",
                               "const": "isConcerned",
                               "description": "Predicted to enter an owned sector."
                             }

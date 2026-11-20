@@ -904,6 +904,11 @@
                     },
                     {
                       "type": "string",
+                      "const": "isRedundant",
+                      "description": "Attention state is Redundant: handed off by us and accepted, still inside a volume we work."
+                    },
+                    {
+                      "type": "string",
                       "const": "isConcerned",
                       "description": "Predicted to enter an owned sector."
                     }
@@ -1842,7 +1847,8 @@
               "kAssumed",
               "kOutgoingTransfer",
               "kIntruder",
-              "kConcerned"
+              "kConcerned",
+              "kRedundant"
             ]
           },
           "description": "Text color of the label (in RGB) for each attention state. This overrides the default text color."
@@ -2363,6 +2369,7 @@
           "kOutgoingTransfer",
           "kIntruder",
           "kConcerned",
+          "kRedundant",
           "kPlannedToYouDeviating"
         ]
       }

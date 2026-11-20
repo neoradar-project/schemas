@@ -1720,7 +1720,8 @@
                   "kAssumed",
                   "kOutgoingTransfer",
                   "kIntruder",
-                  "kConcerned"
+                  "kConcerned",
+                  "kRedundant"
                 ]
               },
               "description": "The attention states a source may be in, in place of scope; soundScope absent then sounds for every source."
@@ -1737,7 +1738,8 @@
                   "kAssumed",
                   "kOutgoingTransfer",
                   "kIntruder",
-                  "kConcerned"
+                  "kConcerned",
+                  "kRedundant"
                 ]
               },
               "description": "The attention states the other aircraft of a pair may be in. Absent is every state."
@@ -2076,7 +2078,7 @@
               "type": "array",
               "minItems": 1,
               "uniqueItems": true,
-              "items": { "enum": ["kUnconcerned", "kNotified", "kIncomingTransfer", "kAssumed", "kOutgoingTransfer", "kIntruder", "kConcerned"] },
+              "items": { "enum": ["kUnconcerned", "kNotified", "kIncomingTransfer", "kAssumed", "kOutgoingTransfer", "kIntruder", "kConcerned", "kRedundant"] },
               "description": "The attention states judged, in place of scope."
             },
             "bufferLat": {
@@ -2797,7 +2799,8 @@
                   "kAssumed",
                   "kOutgoingTransfer",
                   "kIntruder",
-                  "kConcerned"
+                  "kConcerned",
+                  "kRedundant"
                 ]
               },
               "description": "The attention states a source may be in, TopSky's TCT_Min_State_Source as a list. In place of scope."
@@ -2814,7 +2817,8 @@
                   "kAssumed",
                   "kOutgoingTransfer",
                   "kIntruder",
-                  "kConcerned"
+                  "kConcerned",
+                  "kRedundant"
                 ]
               },
               "description": "The attention states the other aircraft of a pair may be in, TopSky's TCT_Min_State_Target. Absent is every state."
