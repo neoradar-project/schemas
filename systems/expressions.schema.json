@@ -144,7 +144,6 @@
                           "scratchpad",
                           "assignedHold",
                           "groundStatus",
-                          "clearanceQueuePosition",
                           "attentionState",
                           "offPlanLevel",
                           "offPlanLateral",
