@@ -681,6 +681,14 @@
                           "maximum": 1
                         },
                         "description": "Per-step opacity, oldest last. Shorter than steps repeats the final value."
+                      },
+                      "scaleRamp": {
+                        "type": "array",
+                        "items": {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        "description": "Per-step size of the trail shape, oldest last: 1 is the shape as drawn, 0.5 half its size, so [1, 0.8, 0.6, 0.45, 0.3] tapers the trail behind the aircraft. Shorter than steps repeats the final value."
                       }
                     },
                     "required": [
