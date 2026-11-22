@@ -80,6 +80,7 @@
                     "alternate",
                     "plannedTas",
                     "plannedFlightLevel",
+                    "plannedLevelIsVfr",
                     "rmk",
                     "flightTimeHours",
                     "flightTimeMinutes",
@@ -95,7 +96,6 @@
                   "type": "string",
                   "enum": [
                     "callsign",
-                    "type",
                     "isTimingOut",
                     "lastPositionUpdateReceivedAt",
                     "squawk",
@@ -118,7 +118,6 @@
                     "scratchpad",
                     "assignedHold",
                     "groundStatus",
-                    "clearanceQueuePosition",
                     "attentionState",
                     "offPlanLevel",
                     "offPlanLateral",
@@ -374,18 +373,23 @@
                     },
                     {
                       "type": "string",
+                      "const": "altitudeIsQnh",
+                      "description": "1 when computedAltitude shows the QNH altitude, 0 when it shows the pressure altitude: QNH at or below the transition altitude of a vAcc area holding the aircraft, else of the profile the tag's view shows"
+                    },
+                    {
+                      "type": "string",
                       "const": "transitionAltitude",
-                      "description": "The transition altitude set by the user."
+                      "description": "Transition altitude (ft) of the profile the tag's view shows; a list or a net reads the main window's. No vAcc area's is read here: altitudeIsQnh follows those"
                     },
                     {
                       "type": "string",
                       "const": "gndFilterOn",
-                      "description": "The active profile's GND filter toggle is on. Reads the main view's profile, as transitionAltitude does."
+                      "description": "The GND filter toggle is on in the profile the tag's view shows; a list or a net reads the main window's"
                     },
                     {
                       "type": "string",
                       "const": "primFilterOn",
-                      "description": "The active profile's PRIM filter toggle is on. Reads the main view's profile, as transitionAltitude does."
+                      "description": "The PRIM filter toggle is on in the profile the tag's view shows; a list or a net reads the main window's"
                     },
                     {
                       "type": "string",
@@ -750,7 +754,7 @@
                     {
                       "type": "string",
                       "const": "alertAcknowledged",
-                      "description": "1 while the controller has acknowledged the highest alert (the acknowledgeAlert action); a change of kind or severity clears it. Gate a blink on it and leave the colour alone."
+                      "description": "1 while the controller has acknowledged the highest alert itself (the acknowledgeAlert action); another alert on top, a severity rise, a new other aircraft or a changed emergency code reads 0. Gate a blink on it and leave the colour alone."
                     },
                     {
                       "type": "string",
@@ -896,6 +900,11 @@
                       "type": "string",
                       "const": "isIntruder",
                       "description": "Attention state is Intruder."
+                    },
+                    {
+                      "type": "string",
+                      "const": "isRedundant",
+                      "description": "Attention state is Redundant: handed off by us and accepted, still inside a volume we work."
                     },
                     {
                       "type": "string",
@@ -1240,8 +1249,7 @@
             "center",
             "right"
           ],
-          "default": "center",
-          "description": "Text alignment of the item, can be left, center or right."
+          "description": "Text alignment: left, center or right. On a radar tag the row's first shown item places the whole row within the tag's widest row, and absent is left; in a list it aligns the item's text within its cell, and absent is centred."
         },
         "lineHeight": {
           "anyOf": [
@@ -1258,7 +1266,7 @@
               }
             }
           ],
-          "description": "Line height of the item, can also be an expression rule."
+          "description": "Line height of the item as a multiple of its font size, as in CSS (1.2 is 1.2 times the font size): a floor on the row's height on a radar tag. Can also be an expression rule."
         },
         "color": {
           "anyOf": [
@@ -1363,7 +1371,7 @@
         "separatorBefore": {
           "type": "boolean",
           "default": true,
-          "description": "Whether add a blank padding the item."
+          "description": "Adds the column gap before this item when the row already shows something, as EuroScope's \"need separator before\". Ignored on a row's first shown item."
         },
         "showPlusMinus": {
           "anyOf": [
@@ -1490,7 +1498,7 @@
             {
               "type": "string",
               "const": "acknowledgeAlert",
-              "description": "Acknowledge the highest safety net alert on this aircraft: the repeat sound stops and alertAcknowledged reads 1, the colour stays. A change of kind or severity re-arms it. Available to an observer."
+              "description": "Acknowledge the highest safety net alert on this aircraft: its repeat sound stops and alertAcknowledged reads 1, the colour stays; an alert standing under it that is not acknowledged still repeats. It covers that alert alone (its kind, other aircraft and emergency code) at that severity or lower and is forgotten when that alert ends or rises, so another alert on top, a severity rise or a new alert of the same kind asks again. Available to an observer."
             },
             {
               "type": "string",
@@ -1655,7 +1663,7 @@
             {
               "type": "string",
               "const": "decorrelateTarget",
-              "description": "Decorrelates the target by hand; sticky until correlated again. There is no correlateTarget: correlating names a flight plan, which the callsignMenu asks for."
+              "description": "Decorrelates the target by hand; sticky until correlated again, or handed back to the automatic rules with the callsign menu's AUTO CORR. There is no correlateTarget: correlating names a flight plan, which the callsignMenu asks for."
             },
             {
               "type": "string",
@@ -1681,26 +1689,6 @@
               "type": "string",
               "const": "manualTransferMenu",
               "description": "Opens the manual transfer menu: the online controllers to hand the flight to by hand. Only for a flight you hold."
-            },
-            {
-              "type": "string",
-              "const": "openPrivateMessage",
-              "description": "Opens the private message input box for a controller."
-            },
-            {
-              "type": "string",
-              "const": "showAtisLines",
-              "description": "Shows the ATIS lines for a controller."
-            },
-            {
-              "type": "string",
-              "const": "focusMetar",
-              "description": "Displays the full METAR in the focus bar."
-            },
-            {
-              "type": "string",
-              "const": "acknowledgeMetarUpdate",
-              "description": "Acknowledges the METAR update."
             },
             {
               "type": "string",
@@ -1763,11 +1751,11 @@
         },
         "applyToIsArrival": {
           "type": "boolean",
-          "description": "Restricts this variant to aircraft that are an arrival."
+          "description": "Restricts this variant to aircraft that are an arrival: the plan says arrival and the aircraft is airborne or on the ground within 5 nm of that airport."
         },
         "applyToIsDeparture": {
           "type": "boolean",
-          "description": "Restricts this variant to aircraft that are a departure."
+          "description": "Restricts this variant to aircraft that are a departure: the plan says departure and the aircraft is airborne or on the ground within 5 nm of that airport."
         },
         "detailed": {
           "type": "boolean",
@@ -1805,11 +1793,11 @@
         },
         "applyToIsArrival": {
           "type": "boolean",
-          "description": "Whether this style variant should be applied when the aircraft is an arrival."
+          "description": "Whether this style variant should be applied when the aircraft is an arrival: the plan says arrival and the aircraft is airborne or on the ground within 5 nm of that airport."
         },
         "applyToIsDeparture": {
           "type": "boolean",
-          "description": "Whether this style variant should be applied when the aircraft is a departure."
+          "description": "Whether this style variant should be applied when the aircraft is a departure: the plan says departure and the aircraft is airborne or on the ground within 5 nm of that airport."
         },
         "font": {
           "type": "string",
@@ -1839,7 +1827,7 @@
         },
         "lineHeight": {
           "type": "number",
-          "description": "Line height of the label text."
+          "description": "Line height of the label text as a multiple of each item's font size, as in CSS (1.2 is 1.2 times the font size): a floor on each row's height. A tag item's own lineHeight wins over this."
         },
         "textColor": {
           "$ref": "#/$defs/tagItem/properties/color",
@@ -1858,7 +1846,8 @@
               "kAssumed",
               "kOutgoingTransfer",
               "kIntruder",
-              "kConcerned"
+              "kConcerned",
+              "kRedundant"
             ]
           },
           "description": "Text color of the label (in RGB) for each attention state. This overrides the default text color."
@@ -2379,6 +2368,7 @@
           "kOutgoingTransfer",
           "kIntruder",
           "kConcerned",
+          "kRedundant",
           "kPlannedToYouDeviating"
         ]
       }

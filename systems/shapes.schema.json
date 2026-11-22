@@ -32,11 +32,11 @@
       "minItems": 3,
       "maxItems": 4,
       "items": {
-        "type": "number",
+        "type": "integer",
         "minimum": 0,
         "maximum": 255
       },
-      "description": "Literal colour as [r, g, b] or [r, g, b, a], each 0-255. A literal is never overridden by the variant's plotColor."
+      "description": "Literal colour as [r, g, b] or [r, g, b, a], each a whole number from 0 to 255, the alpha too; one outside this reads as absent and is reported in client.log. A literal is never overridden by the variant's plotColor."
     },
     "shape": {
       "type": "object",
@@ -111,7 +111,7 @@
             "end": { "type": "number", "description": "Arc end in degrees, 0 = up, clockwise." }
           },
           "required": ["radius"],
-          "description": "Stroked circle or arc. Filled circles are not implemented yet."
+          "description": "Circle or arc, stroked. A full circle with fill true is filled (an arc with fill is drawn as its outline)."
         },
         "rect": {
           "type": "object",
@@ -134,7 +134,7 @@
         "fill": {
           "type": "boolean",
           "default": false,
-          "description": "Fill a polygon or rect instead of stroking its outline."
+          "description": "Fill a polygon, rect or full circle instead of stroking its outline."
         },
         "closed": {
           "type": "boolean",

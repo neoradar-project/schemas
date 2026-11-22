@@ -39,26 +39,6 @@
                 "$ref": "#/definitions/squawkCodeOrRange"
               },
               "description": "Codes that never identify, as literals (\"7010\") or inclusive ranges (\"7001-7007\")."
-            },
-            "conformance": {
-              "type": "object",
-              "properties": {
-                "maxDistanceFromRouteNm": {
-                  "type": [
-                    "number",
-                    "null"
-                  ],
-                  "description": "Refuse an assigned-code correlation when the target is further than this from the filed route. Skipped when no route geometry is available."
-                },
-                "minGroundSpeedKt": {
-                  "type": [
-                    "integer",
-                    "null"
-                  ],
-                  "description": "Apply the conformance gate only at or above this ground speed."
-                }
-              },
-              "additionalProperties": false
             }
           },
           "additionalProperties": false
@@ -147,6 +127,15 @@
             }
           },
           "additionalProperties": false
+        },
+        "uncorrelatedDetail": {
+          "type": "string",
+          "enum": [
+            "full",
+            "surveillance"
+          ],
+          "default": "surveillance",
+          "description": "What the Selection Detail window shows of an uncorrelated track. surveillance, the default, shows only what the radar knows: the same grid with the callsign and the transmitted code, every flight plan and controller data box empty and Open FP disabled, until the track correlates. full opts out: it shows the flight plan and controller data as for a correlated track."
         }
       },
       "additionalProperties": false
@@ -1011,7 +1000,7 @@
         },
         "acknowledge": {
           "type": "object",
-          "description": "What the acknowledgeAlert click action does. The colour always stays: acknowledging says the controller has seen the alert, not that it has gone, and a change of kind or severity re-arms it by itself. A pairwise alert also re-arms for good when the other aircraft changes or its predicted separation closes (rearmOnCpaDecreaseNm).",
+          "description": "What the acknowledgeAlert click action does. The colour always stays: acknowledging says the controller has seen the alert, not that it has gone. An acknowledgement belongs to the alert it was given on (its kind, the other aircraft, and an emergency's squawk) and covers only that alert at that severity or lower, so another alert on top, a severity rise, a new other aircraft or a changed emergency code shows unacknowledged and sounds; each alert standing on an aircraft keeps its own. It is forgotten once that alert ends, so the next alert of that kind asks again. A pairwise alert also re-arms for good when its predicted separation closes (rearmOnCpaDecreaseNm).",
           "properties": {
             "silencesSound": {
               "type": "boolean",
@@ -1028,13 +1017,13 @@
               "type": "number",
               "minimum": 0,
               "default": 1,
-              "description": "Nautical miles a pairwise alert's predicted closest lateral distance must shrink after the click before the acknowledgement is spent, TopSky's de-acknowledge on a separation decrease: an STCA acknowledged at 2.8 NM that closes to 1.8 NM sounds and asks again, and opening back out does not re-acknowledge it. 0 turns the rule off; a new other aircraft re-arms either way. STCA and TCT carry a predicted distance; any other pairwise alert keeps the kind-and-severity rule."
+              "description": "Nautical miles a pairwise alert's predicted closest lateral distance must shrink after the click before the acknowledgement is spent, TopSky's de-acknowledge on a separation decrease: an STCA acknowledged at 2.8 NM that closes to 1.8 NM sounds and asks again, and opening back out does not re-acknowledge it. One acknowledged with no predicted distance (an STCA pair held by proximity alone) is spent by any distance predicted later. 0 turns both rules off; a new other aircraft is a new alert either way. STCA and TCT carry a predicted distance; any other alert has no closer pass to re-arm on."
             },
             "pairs": {
               "type": "string",
               "enum": ["both", "one"],
               "default": "both",
-              "description": "What acknowledging one aircraft of a pairwise alert (STCA, TCT) does to the other. both acknowledges the same alert on the other aircraft too, while it is that aircraft's highest, so the partner stops blinking and repeating with it; one leaves the other end to be acknowledged on its own."
+              "description": "What acknowledging one aircraft of a pairwise alert (STCA, TCT) does to the other. both acknowledges the same alert on the other aircraft too, wherever it stands among that aircraft's alerts, so the partner stops blinking and repeating with it; one leaves the other end to be acknowledged on its own."
             }
           },
           "additionalProperties": false
@@ -1082,8 +1071,8 @@
         },
         "emergencySquawk": {
           "type": "boolean",
-          "default": true,
-          "description": "Raises an alert-severity Emergency on any aircraft squawking an emergency code (emergencyCodes: 7500, 7600 and 7700 unless the package adds one), with the code's words and the code as alertText. A code set while the transponder is on standby, or on a track only a primary radar sees, raises nothing. Client-side and needs no server."
+          "default": false,
+          "description": "Off unless true. Raises an alert-severity Emergency on any aircraft squawking an emergency code (emergencyCodes: 7500, 7600 and 7700 unless the package adds one), with the code's words and the code as alertText. A code set while the transponder is on standby, or on a track only a primary radar sees, raises nothing. Client-side and needs no server."
         },
         "emergencyCodes": {
           "type": "object",
@@ -1194,7 +1183,7 @@
         },
         "ram": {
           "type": "object",
-          "description": "Route adherence monitoring, evaluated on the client against the route expansion the server landed on the flight plan, so the numbers are the package's. It measures cross-track distance to the leg the aircraft is flying and raises a warning-severity Ram with the distance as alertText. The server is still the only route expander, so with no server there is no expansion and the net is silent rather than clean; .dev ram-info says which of the two it is. Absent is every default below, as an absent safetyNets section is.",
+          "description": "Route adherence monitoring, evaluated on the client against the route expansion the server landed on the flight plan, so the numbers are the package's. It measures cross-track distance to the leg the aircraft is flying and raises a warning-severity Ram with the distance as alertText. The server is still the only route expander, so with no server there is no expansion and the net is silent rather than clean; .dev ram-info says which of the two it is. Absent is off; a section authored here, even an empty one, is on at every default below.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -1305,7 +1294,7 @@
         },
         "msaw": {
           "type": "object",
-          "description": "Minimum safe altitude warning, evaluated on the client against the package's own datasets/msaw.geojson. Unlike stca this net is ON wherever that file exists: its figures are the vAcc's own published surface rather than a tuning nobody has done, so absent means every default below. WITH NO SURFACE THE NET IS SILENT RATHER THAN CLEAN, and .dev msaw-info says which of the two it is instead of reporting every aircraft above a minimum. Raises an alert-severity Msaw with the minimum as alertText, and publishes the minimum under each aircraft as the msaFt expression whether or not it alerts. It judges the altitude an altimeter set to QNH reads, as TopSky and EUROCONTROL's MSAW reference do: the pressure altitude corrected by the QNH of the nearest airport METAR within 100 NM, the frame a cleared altitude is flown in; with no such METAR, or a pilot client that relays no pressure difference, the true altitude. An approach-clearance inhibit (TopSky's MSAW_AppInhibit) is authored as safetyNets.kinds.msaw.exclude.when over clearedFlightLevel, 2 for a visual approach and 1 for an ILS, never under safetyNets.exclude, which would take the approach out of AFDAS as well.",
+          "description": "Minimum safe altitude warning, evaluated on the client against the package's own datasets/msaw.geojson. Absent is off; a section authored here, even an empty one, is on at every default below, wherever that file exists. WITH NO SURFACE THE NET IS SILENT RATHER THAN CLEAN, and .dev msaw-info says which of the two it is instead of reporting every aircraft above a minimum. Raises an alert-severity Msaw with the minimum as alertText, and publishes the minimum under each aircraft as the msaFt expression whether or not it alerts. It judges the altitude an altimeter set to QNH reads, as TopSky and EUROCONTROL's MSAW reference do: the pressure altitude corrected by the QNH of the nearest airport METAR within 100 NM, the frame a cleared altitude is flown in; with no such METAR, or a pilot client that relays no pressure difference, the true altitude. An approach-clearance inhibit (TopSky's MSAW_AppInhibit) is authored as safetyNets.kinds.msaw.exclude.when over clearedFlightLevel, 2 for a visual approach and 1 for an ILS, never under safetyNets.exclude, which would take the approach out of AFDAS as well.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -1731,7 +1720,8 @@
                   "kAssumed",
                   "kOutgoingTransfer",
                   "kIntruder",
-                  "kConcerned"
+                  "kConcerned",
+                  "kRedundant"
                 ]
               },
               "description": "The attention states a source may be in, in place of scope; soundScope absent then sounds for every source."
@@ -1748,7 +1738,8 @@
                   "kAssumed",
                   "kOutgoingTransfer",
                   "kIntruder",
-                  "kConcerned"
+                  "kConcerned",
+                  "kRedundant"
                 ]
               },
               "description": "The attention states the other aircraft of a pair may be in. Absent is every state."
@@ -2087,7 +2078,7 @@
               "type": "array",
               "minItems": 1,
               "uniqueItems": true,
-              "items": { "enum": ["kUnconcerned", "kNotified", "kIncomingTransfer", "kAssumed", "kOutgoingTransfer", "kIntruder", "kConcerned"] },
+              "items": { "enum": ["kUnconcerned", "kNotified", "kIncomingTransfer", "kAssumed", "kOutgoingTransfer", "kIntruder", "kConcerned", "kRedundant"] },
               "description": "The attention states judged, in place of scope."
             },
             "bufferLat": {
@@ -2115,7 +2106,7 @@
         },
         "aiw": {
           "type": "object",
-          "description": "Airspace infringement warning, evaluated on the client: a track with Mode C, correlated or not (an uncorrelated one is unknown traffic tied to no plan, judged only against the CAS dataset or controlled zones: under the online-volume fallback, whose volumes reach the surface under a TMA, it stays out), that no controller is tracking and that is off any discrete code ATC assigned it, inside controlled airspace, which is the most common real incident on VATSIM. Controlled airspace is, first, zones tagged controlledZoneTag, which replace everything else; else the package's datasets/cas.geojson (built by neoradar-cli from the sector file's outlines and the vAcc's data/cas.json), judged strictly inside each volume, a limit in feet on the altitude on QNH and a flight level on the pressure altitude, and only where the point's owner by sector-file order is online (and ours under scope own); else every ACTIVE volume whose sector an online controller works. An active area may switch the net off (datasets/areas.geojson inhibits aiw, or safetyNets.kinds.aiw.inhibitInActiveAreas). A primary blip and a transponder on standby are never judged. It raises a warning-severity Aiw naming the airspace. 'Not on frequency' is deliberately not part of the rule: a pilot's tuned frequency is in neither the position stream nor the datafeed, so neither half can evaluate it. Absent is every default below, as an absent safetyNets section is. .dev aiw-info prints the airspace set it used.",
+          "description": "Airspace infringement warning, evaluated on the client: a track with Mode C, correlated or not (an uncorrelated one is unknown traffic tied to no plan, judged only against the CAS dataset or controlled zones: under the online-volume fallback, whose volumes reach the surface under a TMA, it stays out), that no controller is tracking and that is off any discrete code ATC assigned it, inside controlled airspace, which is the most common real incident on VATSIM. Controlled airspace is, first, zones tagged controlledZoneTag, which replace everything else; else the package's datasets/cas.geojson (built by neoradar-cli from the sector file's outlines and the vAcc's data/cas.json), judged strictly inside each volume, a limit in feet on the altitude on QNH and a flight level on the pressure altitude, and only where the point's owner by sector-file order is online (and ours under scope own); else every ACTIVE volume whose sector an online controller works. An active area may switch the net off (datasets/areas.geojson inhibits aiw, or safetyNets.kinds.aiw.inhibitInActiveAreas). A primary blip and a transponder on standby are never judged. It raises a warning-severity Aiw naming the airspace. 'Not on frequency' is deliberately not part of the rule: a pilot's tuned frequency is in neither the position stream nor the datafeed, so neither half can evaluate it. Absent is off; a section authored here, even an empty one, is on at every default below. .dev aiw-info prints the airspace set it used.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -2168,7 +2159,7 @@
         },
         "bust": {
           "type": "object",
-          "description": "Level bust: the aircraft has passed through its cleared level by more than triggerFt. Raises an alert-severity Bust worded with the cleared level, as BUST A060 or BUST FL350. A client net; absent is every default below, the values the server tuned it with, never off.",
+          "description": "Level bust: the aircraft has passed through its cleared level by more than triggerFt. Raises an alert-severity Bust worded with the cleared level, as BUST A060 or BUST FL350. A client net; absent is off, and a section authored here, even an empty one, is on at every default below, the values the server tuned it with.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -2227,7 +2218,7 @@
         },
         "clam": {
           "type": "object",
-          "description": "Cleared level adherence monitoring: the aircraft is more than triggerFt off its cleared level and not closing on it. Raises a warning-severity Clam worded with the cleared level, as CLAM FL350, and stands down while a bust stands on the same aircraft. A client net; absent is every default below, the values the server tuned it with, never off.",
+          "description": "Cleared level adherence monitoring: the aircraft is more than triggerFt off its cleared level and not closing on it. Raises a warning-severity Clam worded with the cleared level, as CLAM FL350, and stands down while a bust stands on the same aircraft. A client net; absent is off, and a section authored here, even an empty one, is on at every default below, the values the server tuned it with.",
           "properties": {
             "enabled": {
               "type": "boolean",
@@ -2377,13 +2368,13 @@
               "type": "number",
               "exclusiveMinimum": 0,
               "default": 2000,
-              "description": "The same where both bands are at or above verticalUpperFromFl: the 2000 ft standard there (TCT.NATS02.02). TopSky uses 1500."
+              "description": "The minimum for the part of either aircraft's band above verticalUpperFromFl, judged against the other band: the 2000 ft standard there (ICAO Doc 4444 5.3.2, TCT.NATS02.02). TopSky uses 1500."
             },
             "verticalUpperFromFl": {
               "type": "integer",
               "exclusiveMinimum": 0,
               "default": 410,
-              "description": "Where the upper vertical minimum starts: a pair both of whose bands are at or above this flight level takes verticalUpperFt."
+              "description": "Where the upper vertical minimum starts: the part of either aircraft's band above this flight level is judged on verticalUpperFt against the other band, the rest on verticalFt. An aircraft within vertical.atLevelFt of it is at it, not above."
             },
             "regions": {
               "type": "array",
@@ -2441,7 +2432,7 @@
                   },
                   "heading": {
                     "type": "object",
-                    "description": "An assigned heading, TopSky's TCT_AHDG_*. Believed while the track is within toleranceDeg of it, or until maxTurnS after the clearance; after that it is disbelieved and the route and ground track rules apply. The heading is taken as a track, with no wind and no magnetic variation.",
+                    "description": "An assigned heading, TopSky's TCT_AHDG_*. Believed while the track is within toleranceDeg of it, or until maxTurnS after the clearance; after that it is disbelieved and the route and ground track rules apply. The heading is magnetic: the monitor adds the magnetic variation (WMM) at the aircraft and flies the heading with the drift the aircraft shows now held; no wind is forecast.",
                     "properties": {
                       "reactionS": {
                         "type": "number",
@@ -2808,7 +2799,8 @@
                   "kAssumed",
                   "kOutgoingTransfer",
                   "kIntruder",
-                  "kConcerned"
+                  "kConcerned",
+                  "kRedundant"
                 ]
               },
               "description": "The attention states a source may be in, TopSky's TCT_Min_State_Source as a list. In place of scope."
@@ -2825,7 +2817,8 @@
                   "kAssumed",
                   "kOutgoingTransfer",
                   "kIntruder",
-                  "kConcerned"
+                  "kConcerned",
+                  "kRedundant"
                 ]
               },
               "description": "The attention states the other aircraft of a pair may be in, TopSky's TCT_Min_State_Target. Absent is every state."
@@ -2949,7 +2942,7 @@
             },
             "heading": {
               "type": "object",
-              "description": "An assigned heading, TopSky's TCT_AHDG_*. Believed while the track is within toleranceDeg of it, or until maxTurnS after the clearance; after that it is disbelieved and the route and ground track rules apply. The heading is taken as a track, with no wind and no magnetic variation.",
+              "description": "An assigned heading, TopSky's TCT_AHDG_*. Believed while the track is within toleranceDeg of it, or until maxTurnS after the clearance; after that it is disbelieved and the route and ground track rules apply. The heading is magnetic: the monitor adds the magnetic variation (WMM) at the aircraft and flies the heading with the drift the aircraft shows now held; no wind is forecast.",
               "properties": {
                 "reactionS": {
                   "type": "number",
@@ -3372,7 +3365,7 @@
               "inhibitInActiveAreas": {
                 "type": "boolean",
                 "default": false,
-                "description": "Whether every ACTIVE segregated area (datasets/areas.geojson kind tsa) switches this net off for an aircraft strictly inside it, at its current position and level, a limit above the transition altitude read as a flight level: TopSky's STCA_Inhibit_ActiveAreas, AIW_Inhibit_ActiveAreas and Divergence_Inhibit_ActiveAreas. Read by stca, aiw, clam and ram. Without it only the areas that name the net switch it off: an area's inhibits (aiw, clamRam for clam and ram) or its kind (stcaInhibit, clamRamInhibit). STCA, CLAM and RAM keep judging inside and stay silent, so leaving the area alerts on the first report outside; AIW stops judging. Never on emergency or rimcas."
+                "description": "Whether every ACTIVE segregated area (datasets/areas.geojson kind tsa) switches this net off for an aircraft strictly inside it, at its current position and level, a limit above the transition altitude read as a flight level: TopSky's STCA_Inhibit_ActiveAreas, AIW_Inhibit_ActiveAreas and Divergence_Inhibit_ActiveAreas. Read by stca, tct, aiw, msaw, clam and ram. Without it only the areas that name the net switch it off: an area's inhibits (aiw, clamRam for clam and ram) or its kind (stcaInhibit, clamRamInhibit). STCA, CLAM and RAM keep judging inside and stay silent, so leaving the area alerts on the first report outside; AIW stops judging. Never on emergency or rimcas."
               },
               "controllerMay": {
                 "type": "array",
@@ -3486,7 +3479,7 @@
     },
     "squawk": {
       "type": "object",
-      "description": "The squawk provider chain: the package's priority per provider name, providers it disables, the reserved codes no provider may hand out, the circuit codes, and a first-party HTTP allocator. A provider the package does not name keeps what it declared.",
+      "description": "The squawk provider chain on this system: the priority per provider name, providers it disables, the reserved codes no provider may hand out. A provider the system does not name keeps what it declared. The package's HTTP allocator is authored once in manifest.json under squawk.http, and ranked or disabled here by its name.",
       "properties": {
         "providers": {
           "type": "object",
@@ -3512,49 +3505,6 @@
             "$ref": "#/definitions/squawkCodeOrRange"
           },
           "description": "Codes never assigned whoever proposes them, in addition to 0000, 7500, 7600 and 7700."
-        },
-        "circuit": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/squawkCodeOrRange"
-          },
-          "description": "Codes reserved for circuit traffic."
-        },
-        "http": {
-          "type": "object",
-          "description": "A first-party HTTP allocator: one POST per request carrying callsign, origin, destination, flightRule, aircraftType, cruiseLevelFt and circuit; one JSON object back carrying the code.",
-          "properties": {
-            "endpoint": {
-              "type": "string",
-              "format": "uri",
-              "description": "Absolute http or https URL."
-            },
-            "name": {
-              "type": "string",
-              "description": "Provider name in the chain. Default Http."
-            },
-            "priority": {
-              "type": "integer",
-              "description": "Declared priority. Default 50: above the server, below a plugin's 100."
-            },
-            "timeoutSeconds": {
-              "type": "integer",
-              "minimum": 1,
-              "description": "Default 5."
-            },
-            "codeProperty": {
-              "type": "string",
-              "description": "The response property carrying the code. Default code."
-            },
-            "apiKeyEnvironmentVariable": {
-              "type": "string",
-              "description": "Environment variable holding the API key, sent as a bearer token. The key never lives in the package."
-            }
-          },
-          "required": [
-            "endpoint"
-          ],
-          "additionalProperties": false
         }
       },
       "additionalProperties": false

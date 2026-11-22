@@ -104,14 +104,34 @@
     },
     "controllers": {
       "type": "array",
-      "description": "Parsed, recorded and ignored. The injector logs no controller in; the NeoRadar user is the only one.",
+      "description": "Simulated controllers. An entry with lat and lon is a scripted ATC peer: with --server local the injector logs it on, reports its position every 5 s, announces ATC and its real name to the relay owner, and answers a handoff addressed to it with a handoff accept after acceptHandoffsAfterS. An entry without a position is recorded and not run. A peer callsign must not be an aircraft's, another peer's or the relay owner's.",
       "items": {
         "type": "object",
         "properties": {
-          "callsign": { "type": "string" },
-          "frequency": { "type": "string" }
+          "callsign": { "type": "string", "description": "Letters, digits and underscores, 15 at most, for a peer." },
+          "frequency": { "type": "string", "description": "MHz, 118.000 to 136.975, for a peer." },
+          "facility": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6,
+            "default": 5,
+            "description": "FSD facility of a peer: 1 FSS, 2 DEL, 3 GND, 4 TWR, 5 APP, 6 CTR. Needs lat and lon."
+          },
+          "lat": { "type": "number", "minimum": -90, "maximum": 90, "description": "A peer's latitude, degrees. With lon, makes the entry a peer." },
+          "lon": { "type": "number", "minimum": -180, "maximum": 180, "description": "A peer's longitude, degrees. With lat, makes the entry a peer." },
+          "acceptHandoffsAfterS": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Seconds after a handoff to this peer before it accepts. Absent: it never answers. Needs lat and lon."
+          }
         },
-        "required": ["callsign", "frequency"]
+        "required": ["callsign", "frequency"],
+        "dependentRequired": {
+          "lat": ["lon"],
+          "lon": ["lat"],
+          "facility": ["lat", "lon"],
+          "acceptHandoffsAfterS": ["lat", "lon"]
+        }
       }
     },
     "namedRoutes": {
@@ -372,6 +392,11 @@
         },
         "aircraftType": { "type": "string" },
         "broadcastFlightplan": { "type": "boolean" },
+        "sendNonFiniteAltitude": {
+          "type": "boolean",
+          "default": false,
+          "description": "Test fault: the aircraft's ^, #SL and #ST packets carry NaN as the altitude. The legacy @ keeps its integer altitude."
+        },
         "flightPlan": { "$ref": "#/$defs/flightPlan" },
         "route": { "$ref": "#/$defs/routePoints" },
         "startAtSeconds": {

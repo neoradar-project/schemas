@@ -106,6 +106,7 @@
                           "alternate",
                           "plannedTas",
                           "plannedFlightLevel",
+                          "plannedLevelIsVfr",
                           "rmk",
                           "flightTimeHours",
                           "flightTimeMinutes",
@@ -121,7 +122,6 @@
                         "type": "string",
                         "enum": [
                           "callsign",
-                          "type",
                           "isTimingOut",
                           "lastPositionUpdateReceivedAt",
                           "squawk",
@@ -144,7 +144,6 @@
                           "scratchpad",
                           "assignedHold",
                           "groundStatus",
-                          "clearanceQueuePosition",
                           "attentionState",
                           "offPlanLevel",
                           "offPlanLateral",
@@ -400,18 +399,23 @@
                           },
                           {
                             "type": "string",
+                            "const": "altitudeIsQnh",
+                            "description": "1 when computedAltitude shows the QNH altitude, 0 when it shows the pressure altitude: QNH at or below the transition altitude of a vAcc area holding the aircraft, else of the profile the view drawing the tag or symbol shows; a list or a net reads the main window's"
+                          },
+                          {
+                            "type": "string",
                             "const": "transitionAltitude",
-                            "description": "The transition altitude set by the user."
+                            "description": "Transition altitude (ft) of the profile the view drawing the tag or symbol shows; a list or a net reads the main window's. No vAcc area's is read here: altitudeIsQnh follows those"
                           },
                           {
                             "type": "string",
                             "const": "gndFilterOn",
-                            "description": "The active profile's GND filter toggle is on. Reads the main view's profile, as transitionAltitude does."
+                            "description": "The GND filter toggle is on in the profile the view drawing the tag or symbol shows; a list or a net reads the main window's"
                           },
                           {
                             "type": "string",
                             "const": "primFilterOn",
-                            "description": "The active profile's PRIM filter toggle is on. Reads the main view's profile, as transitionAltitude does."
+                            "description": "The PRIM filter toggle is on in the profile the view drawing the tag or symbol shows; a list or a net reads the main window's"
                           },
                           {
                             "type": "string",
@@ -776,7 +780,7 @@
                             {
                               "type": "string",
                               "const": "alertAcknowledged",
-                              "description": "1 while the controller has acknowledged the highest alert (the acknowledgeAlert action); a change of kind or severity clears it. Gate a blink on it and leave the colour alone."
+                              "description": "1 while the controller has acknowledged the highest alert itself (the acknowledgeAlert action); another alert on top, a severity rise, a new other aircraft or a changed emergency code reads 0. Gate a blink on it and leave the colour alone."
                             },
                             {
                               "type": "string",
@@ -922,6 +926,11 @@
                               "type": "string",
                               "const": "isIntruder",
                               "description": "Attention state is Intruder."
+                            },
+                            {
+                              "type": "string",
+                              "const": "isRedundant",
+                              "description": "Attention state is Redundant: handed off by us and accepted, still inside a volume we work."
                             },
                             {
                               "type": "string",

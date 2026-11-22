@@ -13,20 +13,24 @@
             {
               "type": "array",
               "items": {
-                "type": "number"
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
               },
               "minItems": 3,
               "maxItems": 3,
-              "description": "RGB color array [r,g,b]"
+              "description": "RGB colour [r, g, b], each a whole number from 0 to 255"
             },
             {
               "type": "array",
               "items": {
-                "type": "number"
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
               },
               "minItems": 4,
               "maxItems": 4,
-              "description": "RGBA color array [r,g,b,a]"
+              "description": "RGBA colour [r, g, b, a], each a whole number from 0 to 255; an alpha of 255 is opaque"
             }
           ],
           "description": "Color for single transmission circles"
@@ -78,10 +82,6 @@
           "description": "Precision at high altitude in NM"
         }
       },
-      "required": [
-        "singleTransmissionColor",
-        "concurrentTransmissionColor"
-      ],
       "additionalProperties": false,
       "description": "Radio Direction Finder configuration. If not present, RDF will be disabled"
     },
@@ -100,11 +100,12 @@
                   "$ref": "#/properties/rdf/properties/singleTransmissionColor/anyOf/1"
                 }
               ],
-              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+              "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
             },
             "width": {
               "type": "number",
-              "default": 1
+              "default": 2,
+              "description": "In logical pixels."
             },
             "opacity": {
               "type": "number",
@@ -125,9 +126,6 @@
               "description": "Dash array [length, gap]"
             }
           },
-          "required": [
-            "color"
-          ],
           "additionalProperties": false
         },
         "textStyle": {
@@ -138,11 +136,12 @@
             },
             "color": {
               "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+              "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
             },
             "fontFamily": {
               "type": "string",
-              "default": "RobotoMono-Regular"
+              "default": "Inter",
+              "description": "The face of the fix labels: an alias of the manifest's fonts or a font the client bundles (Inter, RobotoMono). Not written: Inter. A name that is neither draws in Inter and is told once in client.log."
             },
             "fontSize": {
               "type": "number",
@@ -166,12 +165,7 @@
                 "900"
               ],
               "default": "normal",
-              "description": "NOT HONOURED here: route labels draw through the screen-text path, which carries no per-label weight yet. Honoured on a layer textStyle."
-            },
-            "size": {
-              "type": "number",
-              "default": 10,
-              "description": "NOT HONOURED. Use fontSize."
+              "description": "The weight of the fix labels, drawn by the same coverage window as a map layer's labels. Not written: normal."
             },
             "offset": {
               "type": "array",
@@ -185,36 +179,9 @@
                 0
               ]
             },
-            "anchor": {
-              "type": "string",
-              "enum": [
-                "start",
-                "middle",
-                "end"
-              ],
-              "default": "middle",
-              "description": "NOT HONOURED. Labels are positioned by offset alone."
-            },
-            "baseline": {
-              "type": "string",
-              "enum": [
-                "top",
-                "middle",
-                "bottom",
-                "alphabetic"
-              ],
-              "default": "middle",
-              "description": "NOT HONOURED. Labels are positioned by offset alone."
-            },
-            "letterSpacing": {
-              "type": "number",
-              "default": 0,
-              "description": "NOT HONOURED."
-            },
             "lineHeight": {
               "type": "number",
-              "default": 0,
-              "description": "NOT HONOURED. Map labels are single-line."
+              "description": "Pixels from one line's baseline to the next in a fix label. Not written or 0: 12."
             },
             "align": {
               "type": "string",
@@ -223,22 +190,22 @@
                 "center",
                 "right"
               ],
-              "default": "center",
-              "description": "NOT HONOURED. Map labels are single-line."
+              "default": "left",
+              "description": "Where each line of a fix label (the name, the ETA, the profile line) sits beside the others. Not written: left."
             },
             "wordWrap": {
               "type": "boolean",
               "default": false,
-              "description": "NOT HONOURED. Map labels are single-line."
+              "description": "On, a line of a fix label breaks at the last space before it passes wordWrapWidth; a word wider stays whole. Not written: off."
             },
             "wordWrapWidth": {
               "type": "number",
               "default": 100,
-              "description": "NOT HONOURED. Map labels are single-line."
+              "description": "Pixels a fix label's line may run to while wordWrap is on. Not written: 100."
             },
             "outlineColor": {
               "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+              "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
             },
             "outlineWidth": {
               "type": "number",
@@ -248,40 +215,6 @@
               "type": "number",
               "default": 1
             },
-            "dropShadow": {
-              "type": "boolean",
-              "default": false,
-              "description": "NOT HONOURED."
-            },
-            "dropShadowColor": {
-              "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a) NOT HONOURED.",
-              "default": [
-                0,
-                0,
-                0
-              ]
-            },
-            "dropShadowAngle": {
-              "type": "number",
-              "default": 0.5235987755982988,
-              "description": "NOT HONOURED."
-            },
-            "dropShadowBlur": {
-              "type": "number",
-              "default": 0,
-              "description": "NOT HONOURED."
-            },
-            "dropShadowDistance": {
-              "type": "number",
-              "default": 5,
-              "description": "NOT HONOURED."
-            },
-            "dropShadowOpacity": {
-              "type": "number",
-              "default": 1,
-              "description": "NOT HONOURED."
-            },
             "scaleWithZoom": {
               "type": "boolean",
               "default": true,
@@ -289,25 +222,25 @@
             },
             "minZoom": {
               "type": "number",
-              "description": "NOT HONOURED. Zoom gating is per layer, not per text style."
+              "description": "The fix labels are hidden below this map zoom. Inclusive. Not written: no lower limit."
             },
             "maxZoom": {
               "type": "number",
-              "description": "NOT HONOURED. Zoom gating is per layer, not per text style."
+              "description": "The fix labels are hidden above this map zoom. Inclusive. Not written: no upper limit."
             },
             "padding": {
               "type": "number",
               "default": 0,
-              "description": "NOT HONOURED."
+              "description": "Pixels the plate reaches past the fix label's lines on every side. Used only where backgroundOpacity is above 0. Not written: 0."
             },
             "backgroundColor": {
               "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+              "description": "The colour of the plate behind each fix label. backgroundOpacity multiplies its alpha; written alone, it draws at its own alpha. Not written: the map background."
             },
             "backgroundOpacity": {
               "type": "number",
               "default": 0,
-              "description": "NOT HONOURED: labels have no background plate."
+              "description": "Above 0, one plate is drawn behind each fix label's lines, its colour's alpha times this. Not written: 1 where backgroundColor is written, else no plate."
             }
           },
           "additionalProperties": false
@@ -324,12 +257,12 @@
                 "diamond",
                 "cross"
               ],
-              "default": "circle"
+              "default": "square"
             },
             "size": {
               "type": "number",
-              "default": 10,
-              "description": "Size of the point in cartesian units"
+              "default": 3,
+              "description": "Half the point's radius in logical pixels; 0 or less draws the 6 pixel default."
             },
             "sprite": {
               "type": "string",
@@ -337,7 +270,7 @@
             },
             "fillColor": {
               "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+              "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
             },
             "fillOpacity": {
               "type": "number",
@@ -345,7 +278,7 @@
             },
             "strokeColor": {
               "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-              "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+              "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
             },
             "strokeOpacity": {
               "type": "number",
@@ -353,7 +286,8 @@
             },
             "strokeWidth": {
               "type": "number",
-              "default": 1
+              "default": 0,
+              "description": "0 draws no outline, whatever the stroke colour; a cross then takes the line's width."
             },
             "rotation": {
               "type": "number",
@@ -363,6 +297,28 @@
           },
           "additionalProperties": false,
           "description": "Style of the waypoints along the route"
+        },
+        "headingLegDashArray": {
+          "anyOf": [
+            {
+              "type": "array",
+              "maxItems": 0
+            },
+            {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          ],
+          "default": [
+            8,
+            4
+          ],
+          "description": "Dash and gap in pixels of the leg drawn while an aircraft is off its plan laterally. Empty draws it solid; exactly one number is not valid."
         }
       },
       "additionalProperties": false,
@@ -446,7 +402,7 @@
         },
         "minorTickColor": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
         },
         "majorTickType": {
           "type": "string",
@@ -476,7 +432,7 @@
         },
         "majorTickColor": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
         },
         "color": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color"
@@ -490,10 +446,6 @@
           "description": "Dash array [length, gap]"
         }
       },
-      "required": [
-        "lengthNm",
-        "color"
-      ],
       "additionalProperties": false,
       "description": "Extended centerlines configuration"
     },
@@ -503,11 +455,11 @@
       "properties": {
         "lineColour": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
         },
         "textColour": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
         },
         "lineWidth": {
           "type": "number",
@@ -515,7 +467,7 @@
         },
         "dashArray": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/dashArray",
-          "description": "Dash and gap in logical pixels, e.g. [12, 6]. Prediction tool only; the straight heading line is always solid."
+          "description": "Dash and gap in logical pixels, e.g. [12, 6], for both heading tools. Not written, or a dash of 0 or less or a negative gap, the straight line is solid and the turn tool dashes 12 6; the package check names a refused one."
         },
         "snapTo": {
           "enum": [
@@ -544,7 +496,7 @@
       "properties": {
         "color": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a). Red when absent."
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. Red when absent."
         },
         "lineWidth": {
           "type": "number",
@@ -563,7 +515,7 @@
       "properties": {
         "lineColour": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a). FPLSEP orange when absent."
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. FPLSEP orange when absent."
         },
         "textColour": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
@@ -683,27 +635,27 @@
       "properties": {
         "startCircleColour": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
         },
         "endCircleColour": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
         },
         "dashedLineColour": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
         },
         "distanceTextColour": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
         },
         "startBearingTextColour": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
         },
         "endBearingTextColour": {
           "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-          "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so."
         }
       },
       "additionalProperties": false,
@@ -722,7 +674,8 @@
               },
               "width": {
                 "type": "number",
-                "default": 1
+                "default": 1.4,
+                "description": "Line width in logical pixels. Never drawn thinner than 1."
               },
               "opacity": {
                 "type": "number",
@@ -738,9 +691,6 @@
                 "description": "Dash, gap, dash, gap and so on, in logical pixels: an even number of values, repeated along the line. An odd count repeats with dashes and gaps swapped; a value of 0 or less draws solid"
               }
             },
-            "required": [
-              "color"
-            ],
             "additionalProperties": false
           },
           "fillStyle": {
@@ -754,9 +704,6 @@
                 "default": 1
               }
             },
-            "required": [
-              "color"
-            ],
             "additionalProperties": false
           },
           "pointStyle": {
@@ -773,10 +720,12 @@
                   "shape"
                 ],
                 "default": "circle",
-                "description": "The built-in symbol, a sprite, or shape for the shape named by shape."
+                "description": "The built-in symbol, a sprite, or shape for the shape named by shape. Lower case only: any other value reads as absent and the package check says so."
               },
               "size": {
-                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/size"
+                "type": "number",
+                "default": 3,
+                "description": "The dot's radius in logical pixels. 0 draws the layer's own 3 pixel dot; a negative size draws no dot."
               },
               "sprite": {
                 "$ref": "#/properties/routeDraw/properties/pointStyle/properties/sprite"
@@ -798,7 +747,8 @@
                 "$ref": "#/properties/routeDraw/properties/pointStyle/properties/strokeOpacity"
               },
               "strokeWidth": {
-                "$ref": "#/properties/routeDraw/properties/pointStyle/properties/strokeWidth"
+                "type": "number",
+                "default": 1
               },
               "rotation": {
                 "$ref": "#/properties/routeDraw/properties/pointStyle/properties/rotation"
@@ -814,16 +764,17 @@
               },
               "color": {
                 "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-                "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a) NOT HONOURED here: a map label takes its point's own colour at full alpha. Set the point colour instead."
+                "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. The label's red, green and blue; a label is always drawn opaque. Not written: each label takes its point's colour."
               },
               "fontFamily": {
                 "type": "string",
-                "default": "RobotoMono-Regular",
-                "description": "NOT HONOURED here: map labels are rasterised in the renderer-wide font family."
+                "default": "Inter",
+                "description": "The face the layer's labels draw in: an alias of the manifest's fonts or a font the client bundles (Inter, RobotoMono). Not written: the manifest's default style for the layer, else Inter. A name that is neither draws in Inter and is told once in client.log."
               },
               "fontSize": {
                 "type": "number",
-                "default": 12
+                "default": 10,
+                "description": "Label size in pixels. Not written: 10, or 11 on a layer named label."
               },
               "fontWeight": {
                 "$ref": "#/properties/routeDraw/properties/textStyle/properties/fontWeight",
@@ -844,11 +795,6 @@
                 "default": 0,
                 "description": "Edge hardness. 0 keeps the rasteriser's own antialiasing, 1 gives a near-binary edge. A negative textWeight with some sharpness gives a thin, crisp look."
               },
-              "size": {
-                "type": "number",
-                "default": 10,
-                "description": "NOT HONOURED. Use fontSize."
-              },
               "offset": {
                 "type": "array",
                 "items": {
@@ -861,36 +807,9 @@
                   0
                 ]
               },
-              "anchor": {
-                "type": "string",
-                "enum": [
-                  "start",
-                  "middle",
-                  "end"
-                ],
-                "default": "middle",
-                "description": "NOT HONOURED. Labels are positioned by offset alone."
-              },
-              "baseline": {
-                "type": "string",
-                "enum": [
-                  "top",
-                  "middle",
-                  "bottom",
-                  "alphabetic"
-                ],
-                "default": "middle",
-                "description": "NOT HONOURED. Labels are positioned by offset alone."
-              },
-              "letterSpacing": {
-                "type": "number",
-                "default": 0,
-                "description": "NOT HONOURED."
-              },
               "lineHeight": {
                 "type": "number",
-                "default": 0,
-                "description": "NOT HONOURED. Map labels are single-line."
+                "description": "Pixels from one line's baseline to the next, in the label's own size. A label breaks at each line break in its text, and at spaces with wordWrap. Not written or 0: 1.2 times the font size."
               },
               "align": {
                 "type": "string",
@@ -899,66 +818,18 @@
                   "center",
                   "right"
                 ],
-                "default": "center",
-                "description": "NOT HONOURED. Map labels are single-line."
+                "default": "left",
+                "description": "Where each line of a label sits beside the others. Not written: left."
               },
               "wordWrap": {
                 "type": "boolean",
                 "default": false,
-                "description": "NOT HONOURED. Map labels are single-line."
+                "description": "On, a line breaks at the last space before it passes wordWrapWidth; a word wider than that stays whole. Not written: off."
               },
               "wordWrapWidth": {
                 "type": "number",
                 "default": 100,
-                "description": "NOT HONOURED. Map labels are single-line."
-              },
-              "outlineColor": {
-                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-                "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a) NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
-              },
-              "outlineWidth": {
-                "type": "number",
-                "default": 0,
-                "description": "NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
-              },
-              "outlineOpacity": {
-                "type": "number",
-                "default": 1,
-                "description": "NOT HONOURED here. Text outlines are supported on routeDraw.textStyle only."
-              },
-              "dropShadow": {
-                "type": "boolean",
-                "default": false,
-                "description": "NOT HONOURED."
-              },
-              "dropShadowColor": {
-                "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-                "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a) NOT HONOURED.",
-                "default": [
-                  0,
-                  0,
-                  0
-                ]
-              },
-              "dropShadowAngle": {
-                "type": "number",
-                "default": 0.5235987755982988,
-                "description": "NOT HONOURED."
-              },
-              "dropShadowBlur": {
-                "type": "number",
-                "default": 0,
-                "description": "NOT HONOURED."
-              },
-              "dropShadowDistance": {
-                "type": "number",
-                "default": 5,
-                "description": "NOT HONOURED."
-              },
-              "dropShadowOpacity": {
-                "type": "number",
-                "default": 1,
-                "description": "NOT HONOURED."
+                "description": "Pixels a line may run to while wordWrap is on, in the label's own size. Not written: 100."
               },
               "scaleWithZoom": {
                 "type": "boolean",
@@ -967,25 +838,25 @@
               },
               "minZoom": {
                 "type": "number",
-                "description": "NOT HONOURED. Zoom gating is per layer, not per text style."
+                "description": "The labels are hidden below this map zoom, on the scale the layer's own minimum zoom is on. Inclusive. Not written: no lower limit."
               },
               "maxZoom": {
                 "type": "number",
-                "description": "NOT HONOURED. Zoom gating is per layer, not per text style."
+                "description": "The labels are hidden above this map zoom. Inclusive. Not written: no upper limit."
               },
               "padding": {
                 "type": "number",
                 "default": 0,
-                "description": "NOT HONOURED."
+                "description": "Pixels the plate reaches past the text on every side, in the label's own size. Used only where backgroundOpacity is above 0. Not written: 0."
               },
               "backgroundColor": {
                 "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
-                "description": "RGBA color array [r,g,b,a] or [r,g,b] (0-255, and 0-1 for a)"
+                "description": "The colour of the plate behind the layer's labels. backgroundOpacity multiplies its alpha; written alone, it draws at its own alpha. Not written: the map background."
               },
               "backgroundOpacity": {
                 "type": "number",
                 "default": 0,
-                "description": "NOT HONOURED: labels have no background plate."
+                "description": "Above 0, a plate is drawn behind each label and over the map under it, its colour's alpha times this. Not written: 1 where backgroundColor is written, else no plate."
               }
             },
             "additionalProperties": false
@@ -1001,11 +872,6 @@
       "description": "Layer styles for the map, this is a dictionary of layer names to layer styles, and overrides the default values in the manifest for the layer"
     }
   },
-  "required": [
-    "inactiveSectorBackgroundColor",
-    "activeSectorBackgroundColor",
-    "neighborSectorBorderLineColor"
-  ],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"
 }

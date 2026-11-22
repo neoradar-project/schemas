@@ -129,6 +129,7 @@
                                           "alternate",
                                           "plannedTas",
                                           "plannedFlightLevel",
+                                          "plannedLevelIsVfr",
                                           "rmk",
                                           "flightTimeHours",
                                           "flightTimeMinutes",
@@ -144,7 +145,6 @@
                                         "type": "string",
                                         "enum": [
                                           "callsign",
-                                          "type",
                                           "isTimingOut",
                                           "lastPositionUpdateReceivedAt",
                                           "squawk",
@@ -167,7 +167,6 @@
                                           "scratchpad",
                                           "assignedHold",
                                           "groundStatus",
-                                          "clearanceQueuePosition",
                                           "attentionState",
                                           "offPlanLevel",
                                           "offPlanLateral",
@@ -326,8 +325,13 @@
                                           },
                                           {
                                             "type": "string",
+                                            "const": "altitudeIsQnh",
+                                            "description": "1 when computedAltitude shows the QNH altitude, 0 when it shows the pressure altitude: QNH at or below the transition altitude of a vAcc area holding the aircraft, else of the profile the tag's view shows"
+                                          },
+                                          {
+                                            "type": "string",
                                             "const": "transitionAltitude",
-                                            "description": "The transition altitude set by the user."
+                                            "description": "Transition altitude (ft) of the profile the tag's view shows; a list or a net reads the main window's. No vAcc area's is read here: altitudeIsQnh follows those"
                                           },
                                           {
                                             "type": "string",
@@ -622,6 +626,7 @@
                         "kOutgoingTransfer",
                         "kIntruder",
                         "kConcerned",
+                        "kRedundant",
                         "kPlannedToYouDeviating"
                       ]
                     }
@@ -781,7 +786,7 @@
                     "type": "integer",
                     "minimum": 0,
                     "default": 0,
-                    "description": "Milliseconds between reshapes of a STATIONARY aircraft's blob. 0 reshapes only on movement, so traffic on stand holds one shape."
+                    "description": "Milliseconds between reshapes of a STATIONARY aircraft's blob; on a view with an aircraft refresh (map.sweepIntervalSeconds) it reshapes once per refresh instead. 0 reshapes only on movement, so traffic on stand holds one shape."
                   },
                   "primaryPlotSynthesis": {
                     "type": "object",
@@ -984,7 +989,7 @@
                       {
                         "type": "string",
                         "const": "decorrelateTarget",
-                        "description": "Decorrelates the target by hand; sticky until correlated again. There is no correlateTarget: correlating names a flight plan, which the callsignMenu asks for."
+                        "description": "Decorrelates the target by hand; sticky until correlated again, or handed back to the automatic rules with the callsign menu's AUTO CORR. There is no correlateTarget: correlating names a flight plan, which the callsignMenu asks for."
                       },
                       {
                         "type": "string",
@@ -1154,7 +1159,7 @@
                       {
                         "type": "string",
                         "const": "acknowledgeAlert",
-                        "description": "Acknowledge the highest safety net alert on this aircraft: the repeat sound stops and alertAcknowledged reads 1, the colour stays. A change of kind or severity re-arms it. Available to an observer."
+                        "description": "Acknowledge the highest safety net alert on this aircraft: its repeat sound stops and alertAcknowledged reads 1, the colour stays; an alert standing under it that is not acknowledged still repeats. It covers that alert alone (its kind, other aircraft and emergency code) at that severity or lower and is forgotten when that alert ends or rises, so another alert on top, a severity rise or a new alert of the same kind asks again. Available to an observer."
                       },
                       {
                         "type": "string",
@@ -1253,12 +1258,14 @@
             },
             "arrival": {
               "type": "array",
+              "description": "Used for an aircraft on the ground whose plan says arrival and which is within 5 nm of that airport. Departure is tested first.",
               "items": {
                 "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items"
               }
             },
             "departure": {
               "type": "array",
+              "description": "Used for an aircraft on the ground whose plan says departure and which is within 5 nm of that airport. Tested before arrival.",
               "items": {
                 "$ref": "#/properties/groundSymbology/anyOf/1/properties/default/items"
               }
