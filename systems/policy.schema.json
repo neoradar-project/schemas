@@ -14,13 +14,14 @@
         "mode": {
           "type": "string",
           "enum": [
+            "off",
             "always",
             "assignedCode",
             "modeS",
             "assignedCodeOrModeS"
           ],
-          "default": "always",
-          "description": "Which identification methods this system honours. always correlates every target, which is the existing behaviour."
+          "default": "off",
+          "description": "Which identification methods this system honours. off correlates every track whatever the radar coverage or transponder, and ignores datasets/radars.json. always correlates every target a radar sees with its transponder on: a standby transponder is primary only. The other modes correlate on an assigned code, Mode S, or either. A controller's own correlate and decorrelate hold in every mode."
         },
         "assignedCode": {
           "type": "object",
@@ -68,6 +69,11 @@
             }
           },
           "additionalProperties": false
+        },
+        "radarCoverage": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether datasets/radars.json limits what is seen; off by default during alpha. false skips the coverage rules (a position no radar covers draws no target; primary cover alone is a plot with no code) and correlates by the mode alone; a standby transponder is still primary only. Mode off never reads coverage."
         },
         "decorrelateOnCodeChange": {
           "type": "boolean",
