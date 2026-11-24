@@ -914,7 +914,8 @@
                   "historyTrailsSkipSteps": {
                     "type": "integer",
                     "minimum": 0,
-                    "default": 0
+                    "default": 0,
+                    "description": "Updates between two trail marks, counted back from the aircraft: 2 draws a mark 2, 4, 6... updates old. On a display with a sweep (map.sweepIntervalSeconds) an update is a sweep. The trail moves with every update, keeping its spacing. 0 and 1 draw a mark at every update."
                   },
                   "speedVectorColor": {
                     "description": "Colour of the speed vector. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array (a at most 1 is a fraction, above 1 is 0-255), a \"=rule\" or \"&key\" reference, or an array of references tried in order. The first entry that matches and reads as a colour wins; it is resolved per aircraft when the aircraft's data changes, never per frame.",

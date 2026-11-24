@@ -1879,6 +1879,40 @@
           "$ref": "#/$defs/tagItem/properties/color",
           "description": "Border color of the label when the aircraft is hovered (in RGB). Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array, a \"=rule\" or \"&key\" reference, or an array of references tried in order. It is resolved per aircraft when the tag's content is, never per frame."
         },
+        "leaderBase": {
+          "type": "object",
+          "additionalProperties": false,
+          "anyOf": [{ "required": ["text"] }, { "required": ["shape"] }],
+          "description": "Text or a shape at the aircraft end of the leader line, such as a track's subtext letters: it is drawn distance from the aircraft in the direction of the tag, upright, so it goes round the aircraft with the tag (tag above, letters above; tag below, letters below), and the leader line starts leaderStart from the aircraft, beyond it. With a tagPositioning that steps (rotationEnabled, snapDragToStep or snapWhileDragging) the direction is put on the stepDegrees lattice, so the shape takes exactly one of the step positions. Drawn only where the tag is.",
+          "properties": {
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Text centred on the leader line, in the font, size and weight of the tag's first item that shows text, so it reads as the tag does. Wins over shape."
+            },
+            "shape": {
+              "type": "string",
+              "description": "A shapes.json name. Its origin is put on the leader line; draw it centred on its origin."
+            },
+            "distance": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 200,
+              "default": 12,
+              "description": "Logical pixels from the aircraft to the text's centre or the shape's origin."
+            },
+            "leaderStart": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 300,
+              "description": "Logical pixels from the aircraft to where the leader line starts. Absent is distance plus 6. A tag nearer than this has no leader line."
+            },
+            "color": {
+              "$ref": "#/$defs/tagItem/properties/color",
+              "description": "Colour of the shape's elements that have no colour of their own. Absent is the leader line colour. Takes every form a tag item color takes, resolved per aircraft when the tag's content is."
+            }
+          }
+        },
         "leaderLineColor": {
           "$ref": "#/$defs/tagItem/properties/color",
           "description": "Color of the leader line drawn between the aircraft position and the label (in RGB). Omit it and no leader line is drawn for this variant. Takes every form a tag item color takes: an [r,g,b] or [r,g,b,a] array, a \"=rule\" or \"&key\" reference, or an array of references tried in order. It is resolved per aircraft when the tag's content is, never per frame."
@@ -2008,6 +2042,9 @@
         "hoverBorderColor": {
           "$ref": "#/$defs/styleVariant/properties/hoverBorderColor"
         },
+        "leaderBase": {
+          "$ref": "#/$defs/styleVariant/properties/leaderBase"
+        },
         "leaderLineColor": {
           "$ref": "#/$defs/styleVariant/properties/leaderLineColor"
         },
@@ -2117,6 +2154,11 @@
           "default": false,
           "description": "Settles a dragged tag onto the stepDegrees lattice when the drag ends. The drag itself stays free, so the tag does not jump under the pointer."
         },
+        "snapWhileDragging": {
+          "type": "boolean",
+          "default": false,
+          "description": "Keeps a dragged tag on the stepDegrees lattice for the whole drag: the tag jumps from one position round the aircraft to the next as the pointer moves (Paris-CDG's eight 45 degree positions), its distance still free between minLeaderLength and maxLeaderLength. Implies snapDragToStep."
+        },
         "minLeaderLength": {
           "type": "number",
           "minimum": 0,
@@ -2128,6 +2170,18 @@
           "minimum": 0,
           "maximum": 1000,
           "description": "Longest distance in logical pixels from the aircraft to the tag centre. Absent leaves the drag unbounded."
+        },
+        "initialBearing": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 360,
+          "description": "Where a new tag is first put, in degrees clockwise from straight up: 45 is up and right. It is put initialLeaderLength from the aircraft, then on the stepDegrees lattice when a drag snaps, within minLeaderLength and maxLeaderLength. Absent keeps the client's default place, still put on the lattice and within the bounds."
+        },
+        "initialLeaderLength": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1000,
+          "description": "Logical pixels from the aircraft to a new tag's centre, with initialBearing. Absent is minLeaderLength."
         },
         "autoDeconflict": {
           "type": "boolean",

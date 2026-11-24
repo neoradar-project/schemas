@@ -237,6 +237,12 @@
               "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
               "description": "The colour of the plate behind each fix label. backgroundOpacity multiplies its alpha; written alone, it draws at its own alpha. Not written: the map background."
             },
+            "cornerRadius": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 12,
+              "description": "Pixels of corner radius on the plate behind each fix label, rounded with whole-pixel steps. Used only where backgroundOpacity is above 0. Not written: square corners."
+            },
             "backgroundOpacity": {
               "type": "number",
               "default": 0,
