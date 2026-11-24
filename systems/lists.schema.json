@@ -266,6 +266,8 @@
                           "suggestedDepRunway",
                           "suggestedSid",
                           "suggestedStar",
+                          "suggestedSidLevel",
+                          "suggestedStarLevel",
                           "waypoints",
                           "segments",
                           "explicitSegments",
