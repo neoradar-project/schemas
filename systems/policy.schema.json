@@ -1794,7 +1794,7 @@
             },
             "noCfl": {
               "type": "object",
-              "description": "The second vertical hypothesis (NETALERT 15's multi-hypothesis): where levelOffAtCfl stops a track at its cleared level inside the lookahead, the pair is judged again as if neither aircraft stops there, on minima no wider than these, and a conflict on either alerts. It catches a bust through the clearance before it happens, which levelOffAtCfl alone alerts only once it has; VATSIM does not guarantee a cleared level. The narrower minima keep it to serious busts with real lateral erosion. Absent is off; an empty object is on at the defaults.",
+              "description": "The second vertical hypothesis (NETALERT 15's multi-hypothesis): where levelOffAtCfl stops a track at its cleared level inside the lookahead, the pair is judged again as if neither aircraft stops there, on minima no wider than these, and a conflict on either alerts. It catches a bust through the clearance before it happens, which levelOffAtCfl alone alerts only once it has; VATSIM does not guarantee a cleared level. The narrower minima keep it to serious busts with real lateral erosion. Absent or an empty object is on at the defaults; enabled false switches it off. A pair holding at one fix is never judged this way, so a step down a stack onto the level above the aircraft below does not alert.",
               "properties": {
                 "enabled": {
                   "type": "boolean",
