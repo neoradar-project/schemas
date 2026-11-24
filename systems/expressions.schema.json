@@ -263,6 +263,8 @@
                           "suggestedDepRunway",
                           "suggestedSid",
                           "suggestedStar",
+                          "defaultSidLevel",
+                          "defaultStarLevel",
                           "waypoints",
                           "segments",
                           "explicitSegments",
@@ -416,6 +418,11 @@
                             "type": "string",
                             "const": "primFilterOn",
                             "description": "The PRIM filter toggle is on in the profile the view drawing the tag or symbol shows; a list or a net reads the main window's"
+                          },
+                          {
+                            "type": "string",
+                            "const": "screenType",
+                            "description": "The screen type the profile of the view drawing the tag or symbol names, as its screenType key writes it; empty when it names none. A list or a net reads the main window's"
                           },
                           {
                             "type": "string",
