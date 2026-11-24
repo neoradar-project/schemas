@@ -109,6 +109,10 @@
     "atmSystem": {
       "type": "string"
     },
+    "screenType": {
+      "type": "string",
+      "description": "The type of screen this profile is: any name the package chooses, such as smr, atm or delivery. Its system reads it as the screenType expression key, and the system's mapstyle screenTypes entry of that name is laid over its map style. Absent, the profile names no screenType and reads as empty."
+    },
     "map": {
       "type": "object",
       "properties": {
