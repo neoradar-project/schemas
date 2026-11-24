@@ -264,7 +264,6 @@
                           "suggestedSid",
                           "suggestedStar",
                           "defaultSidLevel",
-                          "defaultStarLevel",
                           "waypoints",
                           "segments",
                           "explicitSegments",
