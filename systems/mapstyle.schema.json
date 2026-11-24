@@ -870,6 +870,19 @@
         "additionalProperties": false
       },
       "description": "Layer styles for the map, this is a dictionary of layer names to layer styles, and overrides the default values in the manifest for the layer"
+    },
+    "screenTypes": {
+      "type": "object",
+      "description": "Map style laid over this one for a view whose profile names the screen type: a map of screen type names, as a profile's screenType key writes them, to the keys that differ on that screen type. A block is merged key by key, so a screenType writes only what it changes; a list or a value replaces the base one whole.",
+      "additionalProperties": {
+        "type": "object",
+        "description": "The mapstyle keys this screen type changes, merged over the base: any key a mapstyle takes but screenTypes.",
+        "allOf": [
+          {
+            "$ref": "#"
+          }
+        ]
+      }
     }
   },
   "additionalProperties": false,
