@@ -82,11 +82,14 @@
                   },
                   "width": {
                     "type": "number",
+                    "minimum": 0,
                     "default": 1.4,
                     "description": "Line width in logical pixels. Never drawn thinner than 1."
                   },
                   "opacity": {
                     "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
                     "default": 1
                   },
                   "dashArray": {
@@ -109,6 +112,8 @@
                   },
                   "opacity": {
                     "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
                     "default": 1
                   }
                 },
@@ -132,6 +137,7 @@
                   },
                   "size": {
                     "type": "number",
+                    "minimum": 0,
                     "default": 3,
                     "description": "The dot's radius in logical pixels. 0 draws the layer's own 3 pixel dot; a negative size draws no dot."
                   },
@@ -149,6 +155,8 @@
                   },
                   "fillOpacity": {
                     "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
                     "default": 1
                   },
                   "strokeColor": {
@@ -157,10 +165,13 @@
                   },
                   "strokeOpacity": {
                     "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
                     "default": 1
                   },
                   "strokeWidth": {
                     "type": "number",
+                    "minimum": 0,
                     "default": 1
                   },
                   "rotation": {
@@ -188,6 +199,7 @@
                   },
                   "fontSize": {
                     "type": "number",
+                    "exclusiveMinimum": 0,
                     "default": 10,
                     "description": "Label size in pixels. Not written: 10, or 11 on a layer named label."
                   },
@@ -239,6 +251,7 @@
                   },
                   "lineHeight": {
                     "type": "number",
+                    "minimum": 0,
                     "description": "Pixels from one line's baseline to the next, in the label's own size. A label breaks at each line break in its text, and at spaces with wordWrap. Not written or 0: 1.2 times the font size. A system's mapstyle layer style overrides it."
                   },
                   "align": {
@@ -258,6 +271,7 @@
                   },
                   "wordWrapWidth": {
                     "type": "number",
+                    "minimum": 0,
                     "default": 100,
                     "description": "Pixels a line may run to while wordWrap is on, in the label's own size. Not written: 100. A system's mapstyle layer style overrides it."
                   },
@@ -268,14 +282,17 @@
                   },
                   "minZoom": {
                     "type": "number",
+                    "minimum": 0,
                     "description": "The labels are hidden below this map zoom, on the scale the layer's own minimum zoom is on. Inclusive. Not written: no lower limit. A system's mapstyle layer style overrides it."
                   },
                   "maxZoom": {
                     "type": "number",
+                    "minimum": 0,
                     "description": "The labels are hidden above this map zoom. Inclusive. Not written: no upper limit. A system's mapstyle layer style overrides it."
                   },
                   "padding": {
                     "type": "number",
+                    "minimum": 0,
                     "default": 0,
                     "description": "Pixels the plate reaches past the text on every side, in the label's own size. Used only where backgroundOpacity is above 0. Not written: 0. A system's mapstyle layer style overrides it."
                   },
@@ -285,6 +302,8 @@
                   },
                   "backgroundOpacity": {
                     "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
                     "default": 0,
                     "description": "Above 0, a plate is drawn behind each label and over the map under it, its colour's alpha times this. Not written: 1 where backgroundColor is written, else no plate. A system's mapstyle layer style overrides it."
                   }

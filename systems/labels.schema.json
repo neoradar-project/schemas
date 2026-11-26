@@ -1811,6 +1811,7 @@
         },
         "fontSize": {
           "type": "number",
+          "exclusiveMinimum": 0,
           "description": "Font size of the label."
         },
         "fontWeight": {
@@ -1833,6 +1834,7 @@
         },
         "lineHeight": {
           "type": "number",
+          "exclusiveMinimum": 0,
           "description": "Line height of the label text as a multiple of each item's font size, as in CSS (1.2 is 1.2 times the font size): a floor on each row's height. A tag item's own lineHeight wins over this."
         },
         "textColor": {
@@ -1871,6 +1873,8 @@
         },
         "roundedCorners": {
           "type": "number",
+          "minimum": 0,
+          "maximum": 100,
           "default": 0,
           "description": "Rounded corners of the label (0-100). This is the default rounded corners for all states."
         },
@@ -1933,6 +1937,8 @@
         },
         "detailedRoundedCorners": {
           "type": "number",
+          "minimum": 0,
+          "maximum": 100,
           "default": 0,
           "description": "Rounded corners of the label when the aircraft is hovered (0-100). This overrides the default rounded corners."
         },
@@ -1942,6 +1948,7 @@
         },
         "detailedFontSize": {
           "type": "number",
+          "exclusiveMinimum": 0,
           "description": "Font size of the label when the aircraft is hovered. This overrides the default font size."
         },
         "detailedFontWeight": {
@@ -1964,38 +1971,46 @@
         },
         "tagContainerPaddingLeft": {
           "type": "number",
+          "minimum": 0,
           "default": 2,
           "description": "Padding of the tag container in the left direction. The default is 2."
         },
         "tagContainerPaddingRight": {
           "type": "number",
+          "minimum": 0,
           "default": 2,
           "description": "Padding of the tag container in the right direction. The default is 2."
         },
         "tagContainerPaddingTop": {
           "type": "number",
+          "minimum": 0,
           "default": 2,
           "description": "Padding of the tag container in the top direction. The default is 2."
         },
         "tagContainerPaddingBottom": {
           "type": "number",
+          "minimum": 0,
           "default": 2,
           "description": "Padding of the tag container in the bottom direction. The default is 2."
         },
         "detailedTagContainerPaddingLeft": {
           "type": "number",
+          "minimum": 0,
           "description": "Padding of the tag container in the left direction when the aircraft is hovered."
         },
         "detailedTagContainerPaddingRight": {
           "type": "number",
+          "minimum": 0,
           "description": "Padding of the tag container in the right direction when the aircraft is hovered."
         },
         "detailedTagContainerPaddingTop": {
           "type": "number",
+          "minimum": 0,
           "description": "Padding of the tag container in the top direction when the aircraft is hovered."
         },
         "detailedTagContainerPaddingBottom": {
           "type": "number",
+          "minimum": 0,
           "description": "Padding of the tag container in the bottom direction when the aircraft is hovered."
         }
       },

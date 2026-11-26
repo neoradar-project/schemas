@@ -293,6 +293,7 @@
                       "integer",
                       "null"
                     ],
+                    "minimum": 0,
                     "description": "The agreed level for a flight climbing through the point. Null means the agreement says nothing about a climbing flight."
                   },
                   "descendFt": {
@@ -300,6 +301,7 @@
                       "integer",
                       "null"
                     ],
+                    "minimum": 0,
                     "description": "The agreed level for a flight descending through the point. Null means the agreement says nothing about a descending flight."
                   }
                 },
@@ -1536,6 +1538,7 @@
                   },
                   "aboveFl": {
                     "type": "integer",
+                    "minimum": 0,
                     "description": "Applies at or above this flight level, for example 410 for the 2000 ft band."
                   },
                   "lateralNm": { "type": "number", "exclusiveMinimum": 0 },
@@ -2402,6 +2405,7 @@
                   },
                   "aboveFl": {
                     "type": "integer",
+                    "minimum": 0,
                     "description": "Applies at or above this flight level."
                   },
                   "lateralNm": {
