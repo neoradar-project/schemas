@@ -397,12 +397,17 @@
           "default": false,
           "description": "Test fault: the aircraft's ^, #SL and #ST packets carry NaN as the altitude. The legacy @ keeps its integer altitude."
         },
+        "prefiled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Logs the aircraft on and files its flight plan at the start of the run, with no position until startAtSeconds; with no start time it waits for the 'start' verb. Needs a flight plan it broadcasts."
+        },
         "flightPlan": { "$ref": "#/$defs/flightPlan" },
         "route": { "$ref": "#/$defs/routePoints" },
         "startAtSeconds": {
           "type": "number",
           "minimum": 0,
-          "description": "Seconds from scenario start before this aircraft appears. The sweatbox START record is minutes and is converted on read."
+          "description": "Seconds from scenario start before this aircraft appears. A prefiled aircraft logs on and files at the start and only its position waits. The sweatbox START record is minutes and is converted on read."
         },
         "startAfterSeconds": { "type": "number", "minimum": 0, "description": "Accepted spelling of startAtSeconds." },
         "delaySeconds": { "$ref": "#/$defs/delay" },
