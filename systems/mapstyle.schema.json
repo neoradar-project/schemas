@@ -48,36 +48,43 @@
         },
         "circleRadius": {
           "type": "number",
+          "exclusiveMinimum": 0,
           "default": 10,
           "description": "Default circle radius in NM"
         },
         "circlePrecision": {
           "type": "number",
+          "minimum": 0,
           "default": 10,
           "description": "Default precision/offset in NM"
         },
         "circleThreshold": {
           "type": "number",
+          "minimum": 0,
           "default": 10,
           "description": "Minimum circle size in pixels"
         },
         "lowAltitude": {
           "type": "number",
+          "minimum": 0,
           "default": 3000,
           "description": "Minimum altitude filter in feet"
         },
         "highAltitude": {
           "type": "number",
+          "minimum": 0,
           "default": 41100,
           "description": "Maximum altitude for interpolation in feet"
         },
         "lowPrecision": {
           "type": "number",
+          "minimum": 0,
           "default": 2,
           "description": "Precision at low altitude in NM"
         },
         "highPrecision": {
           "type": "number",
+          "minimum": 0,
           "default": 25,
           "description": "Precision at high altitude in NM"
         }
@@ -104,11 +111,14 @@
             },
             "width": {
               "type": "number",
+              "minimum": 0,
               "default": 2,
               "description": "In logical pixels."
             },
             "opacity": {
               "type": "number",
+              "minimum": 0,
+              "maximum": 1,
               "default": 1
             },
             "dashArray": {
@@ -145,6 +155,7 @@
             },
             "fontSize": {
               "type": "number",
+              "exclusiveMinimum": 0,
               "default": 12
             },
             "fontWeight": {
@@ -181,6 +192,7 @@
             },
             "lineHeight": {
               "type": "number",
+              "minimum": 0,
               "description": "Pixels from one line's baseline to the next in a fix label. Not written or 0: 12."
             },
             "align": {
@@ -200,6 +212,7 @@
             },
             "wordWrapWidth": {
               "type": "number",
+              "minimum": 0,
               "default": 100,
               "description": "Pixels a fix label's line may run to while wordWrap is on. Not written: 100."
             },
@@ -209,10 +222,13 @@
             },
             "outlineWidth": {
               "type": "number",
+              "minimum": 0,
               "default": 0
             },
             "outlineOpacity": {
               "type": "number",
+              "minimum": 0,
+              "maximum": 1,
               "default": 1
             },
             "scaleWithZoom": {
@@ -222,14 +238,17 @@
             },
             "minZoom": {
               "type": "number",
+              "minimum": 0,
               "description": "The fix labels are hidden below this map zoom. Inclusive. Not written: no lower limit."
             },
             "maxZoom": {
               "type": "number",
+              "minimum": 0,
               "description": "The fix labels are hidden above this map zoom. Inclusive. Not written: no upper limit."
             },
             "padding": {
               "type": "number",
+              "minimum": 0,
               "default": 0,
               "description": "Pixels the plate reaches past the fix label's lines on every side. Used only where backgroundOpacity is above 0. Not written: 0."
             },
@@ -245,6 +264,8 @@
             },
             "backgroundOpacity": {
               "type": "number",
+              "minimum": 0,
+              "maximum": 1,
               "default": 0,
               "description": "Above 0, one plate is drawn behind each fix label's lines, its colour's alpha times this. Not written: 1 where backgroundColor is written, else no plate."
             }
@@ -267,6 +288,7 @@
             },
             "size": {
               "type": "number",
+              "minimum": 0,
               "default": 3,
               "description": "Half the point's radius in logical pixels; 0 or less draws the 6 pixel default."
             },
@@ -280,6 +302,8 @@
             },
             "fillOpacity": {
               "type": "number",
+              "minimum": 0,
+              "maximum": 1,
               "default": 1
             },
             "strokeColor": {
@@ -288,10 +312,13 @@
             },
             "strokeOpacity": {
               "type": "number",
+              "minimum": 0,
+              "maximum": 1,
               "default": 1
             },
             "strokeWidth": {
               "type": "number",
+              "minimum": 0,
               "default": 0,
               "description": "0 draws no outline, whatever the stroke colour; a cross then takes the line's width."
             },
@@ -365,6 +392,7 @@
     },
     "neighborSectorBorderLineWidth": {
       "type": "number",
+      "minimum": 0,
       "default": 1,
       "description": "Line width of the neighbor sector border, this is the line that separates your sector from another active neighbor sectors"
     },
@@ -373,10 +401,12 @@
       "properties": {
         "lengthNm": {
           "type": "number",
+          "minimum": 0,
           "description": "Length of the extended centerline in nautical miles"
         },
         "thresholdOffsetNm": {
           "type": "number",
+          "minimum": 0,
           "default": 0,
           "description": "Offset of the extended centerline from the threshold in nautical miles"
         },
@@ -394,15 +424,18 @@
         },
         "minorTickSpacingNm": {
           "type": "number",
+          "exclusiveMinimum": 0,
           "description": "Spacing between minor ticks in nautical miles"
         },
         "minorTickLengthNm": {
           "type": "number",
+          "minimum": 0,
           "default": 0.5,
           "description": "Length of the minor tick in nautical miles, this does not apply to circle ticks"
         },
         "minorTickWidth": {
           "type": "number",
+          "minimum": 0,
           "default": 1,
           "description": "Line width of the major tick, or the radius of the circle in arbitrary units"
         },
@@ -424,15 +457,18 @@
         },
         "majorTickSpacingNm": {
           "type": "number",
+          "exclusiveMinimum": 0,
           "description": "Spacing between major ticks in nautical miles"
         },
         "majorTickLengthNm": {
           "type": "number",
+          "minimum": 0,
           "default": 1,
           "description": "Length of the major tick in nautical miles, this does not apply to circle ticks"
         },
         "majorTickWidth": {
           "type": "number",
+          "minimum": 0,
           "default": 1,
           "description": "Line width of the major tick, or the radius of the circle"
         },
@@ -445,6 +481,7 @@
         },
         "lineWidth": {
           "type": "number",
+          "minimum": 0,
           "default": 1
         },
         "dashArray": {
@@ -469,6 +506,7 @@
         },
         "lineWidth": {
           "type": "number",
+          "minimum": 0,
           "description": "Line width in logical pixels."
         },
         "dashArray": {
@@ -506,6 +544,7 @@
         },
         "lineWidth": {
           "type": "number",
+          "minimum": 0,
           "description": "Line width in logical pixels, 1 when absent."
         },
         "dashArray": {
@@ -529,6 +568,7 @@
         },
         "lineWidth": {
           "type": "number",
+          "minimum": 0,
           "description": "Line width in logical pixels, 1 when absent."
         }
       },
@@ -680,11 +720,14 @@
               },
               "width": {
                 "type": "number",
+                "minimum": 0,
                 "default": 1.4,
                 "description": "Line width in logical pixels. Never drawn thinner than 1."
               },
               "opacity": {
                 "type": "number",
+                "minimum": 0,
+                "maximum": 1,
                 "default": 1
               },
               "dashArray": {
@@ -707,6 +750,8 @@
               },
               "opacity": {
                 "type": "number",
+                "minimum": 0,
+                "maximum": 1,
                 "default": 1
               }
             },
@@ -730,6 +775,7 @@
               },
               "size": {
                 "type": "number",
+                "minimum": 0,
                 "default": 3,
                 "description": "The dot's radius in logical pixels. 0 draws the layer's own 3 pixel dot; a negative size draws no dot."
               },
@@ -754,6 +800,7 @@
               },
               "strokeWidth": {
                 "type": "number",
+                "minimum": 0,
                 "default": 1
               },
               "rotation": {
@@ -779,6 +826,7 @@
               },
               "fontSize": {
                 "type": "number",
+                "exclusiveMinimum": 0,
                 "default": 10,
                 "description": "Label size in pixels. Not written: 10, or 11 on a layer named label."
               },
@@ -815,6 +863,7 @@
               },
               "lineHeight": {
                 "type": "number",
+                "minimum": 0,
                 "description": "Pixels from one line's baseline to the next, in the label's own size. A label breaks at each line break in its text, and at spaces with wordWrap. Not written or 0: 1.2 times the font size."
               },
               "align": {
@@ -834,6 +883,7 @@
               },
               "wordWrapWidth": {
                 "type": "number",
+                "minimum": 0,
                 "default": 100,
                 "description": "Pixels a line may run to while wordWrap is on, in the label's own size. Not written: 100."
               },
@@ -844,14 +894,17 @@
               },
               "minZoom": {
                 "type": "number",
+                "minimum": 0,
                 "description": "The labels are hidden below this map zoom, on the scale the layer's own minimum zoom is on. Inclusive. Not written: no lower limit."
               },
               "maxZoom": {
                 "type": "number",
+                "minimum": 0,
                 "description": "The labels are hidden above this map zoom. Inclusive. Not written: no upper limit."
               },
               "padding": {
                 "type": "number",
+                "minimum": 0,
                 "default": 0,
                 "description": "Pixels the plate reaches past the text on every side, in the label's own size. Used only where backgroundOpacity is above 0. Not written: 0."
               },
@@ -861,6 +914,8 @@
               },
               "backgroundOpacity": {
                 "type": "number",
+                "minimum": 0,
+                "maximum": 1,
                 "default": 0,
                 "description": "Above 0, a plate is drawn behind each label and over the map under it, its colour's alpha times this. Not written: 1 where backgroundColor is written, else no plate."
               }

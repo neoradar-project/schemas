@@ -46,10 +46,12 @@
           "default": true
         },
         "upperFilterValue": {
-          "type": "number"
+          "type": "number",
+          "minimum": 0
         },
         "lowerFilterValue": {
-          "type": "number"
+          "type": "number",
+          "minimum": 0
         },
         "speedVector": {
           "type": "object",
@@ -72,7 +74,8 @@
           "additionalProperties": false
         },
         "transitionAltitude": {
-          "type": "number"
+          "type": "number",
+          "minimum": 0
         },
         "disableAntiAliasing": {
           "type": "boolean",
@@ -133,7 +136,8 @@
           "additionalProperties": false
         },
         "zoom": {
-          "type": "number"
+          "type": "number",
+          "minimum": 0
         },
         "orientation": {
           "type": "number"
