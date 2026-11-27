@@ -707,6 +707,26 @@
       "additionalProperties": false,
       "description": "Distance measurement tool configuration"
     },
+    "rangeRings": {
+      "type": "object",
+      "description": "The look of the range rings the .rings command draws (.rings CENTER RADIUS COUNT). Absent, and every key absent, draws them as before: dark grey [75, 75, 75, 204], two logical pixels wide, solid. Rings already on screen take a change at once. The .vis visibility rings are not drawn with it.",
+      "properties": {
+        "color": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/color",
+          "description": "RGBA colour [r, g, b, a] or [r, g, b], each a whole number from 0 to 255, the alpha too (255 is opaque). Any other value reads as absent and the package check says so. [75, 75, 75, 204] when absent."
+        },
+        "lineWidth": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Line width in logical pixels, 2 when absent."
+        },
+        "dashArray": {
+          "$ref": "#/properties/routeDraw/properties/lineStyle/properties/dashArray",
+          "description": "Dash and gap in logical pixels, e.g. [6, 4]. Absent, or a dash or gap of 0 or less, is solid."
+        }
+      },
+      "additionalProperties": false
+    },
     "layerStyles": {
       "type": "object",
       "additionalProperties": {
